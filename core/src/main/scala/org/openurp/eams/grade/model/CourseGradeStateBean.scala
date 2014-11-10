@@ -1,11 +1,10 @@
-package org.openurp.eams.grade.domain
+package org.openurp.eams.grade.model
 
-import org.openurp.eams.grade.CourseGradeState
-import org.openurp.eams.grade.ExamGradeState
-import org.openurp.eams.teach.lesson.GradeTypeConstants
-import org.openurp.teach.code.GradeType
-import org.openurp.teach.code.ScoreMarkStyle
-import org.openurp.teach.Lesson
+import org.openurp.eams.grade.{ CourseGradeState, ExamGradeState }
+import org.openurp.teach.code.{ GradeType, ScoreMarkStyle }
+import org.openurp.teach.code.model.{ GradeTypeBean, ScoreMarkStyleBean }
+import org.openurp.teach.lesson.Lesson
+import org.openurp.eams.grade.domain.AbstractGradeState
 
 /**
  * 成绩状态表
@@ -35,7 +34,7 @@ class CourseGradeStateBean extends AbstractGradeState with CourseGradeState {
   def this(lesson: Lesson) {
     this()
     this.lesson = lesson
-    this.scoreMarkStyle = new ScoreMarkStyle(ScoreMarkStyle.PERCENT)
+    this.scoreMarkStyle = new ScoreMarkStyleBean(ScoreMarkStyle.Percent)
   }
 
   def updateStatus(gradeType: GradeType, status: Int) {
@@ -70,13 +69,13 @@ class CourseGradeStateBean extends AbstractGradeState with CourseGradeState {
       val gradeTypeState = iter.next().asInstanceOf[ExamGradeState]
       if (null != gradeType &&
         gradeTypeState.gradeType.id == gradeType.id) {
-        return gradeTypeState.getPercent
+        return gradeTypeState.percent
       }
     }
     null
   }
 
   def gradeType: GradeType = {
-    new GradeTypeBean(GradeTypeConstants.FINAL_ID)
+    new GradeTypeBean(GradeType.Final)
   }
 }

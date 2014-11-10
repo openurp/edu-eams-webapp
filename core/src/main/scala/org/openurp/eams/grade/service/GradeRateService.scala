@@ -1,6 +1,6 @@
 package org.openurp.eams.grade.service
 
-import org.openurp.eams.grade.domain.GradeRateConfig
+import org.openurp.eams.grade.model.GradeRateConfig
 import org.openurp.teach.code.ScoreMarkStyle
 import org.openurp.teach.core.Project
 import org.openurp.teach.grade.CourseGrade

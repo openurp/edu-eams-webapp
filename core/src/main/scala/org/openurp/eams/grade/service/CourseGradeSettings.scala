@@ -1,7 +1,7 @@
 package org.openurp.eams.grade.service
 
 import org.openurp.eams.grade.domain.CourseGradeSetting
-import org.openurp.teach.Project
+import org.openurp.teach.core.Project
 
 /**
  * 课程成绩设置服务

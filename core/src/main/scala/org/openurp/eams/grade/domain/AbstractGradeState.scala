@@ -3,8 +3,8 @@ package org.openurp.eams.grade.domain
 import java.util.Date
 import org.openurp.eams.grade.GradeState
 import org.beangle.data.model.bean.LongIdBean
-import org.openurp.teach.Grade
 import org.openurp.teach.code.ScoreMarkStyle
+import org.openurp.teach.grade.Grade
 
 /**
  * 成绩状态抽象基类
@@ -21,7 +21,7 @@ abstract class AbstractGradeState extends LongIdBean with GradeState {
   /**
    * 成绩录入状态
    */
-  var status: Int = Grade.Status.NEW
+  var status: Int = Grade.Status.New
 
   /**
    * 小数点后保留几位
@@ -41,8 +41,8 @@ abstract class AbstractGradeState extends LongIdBean with GradeState {
   /**
    * 确认的和发布的全部算作确认过的
    */
-  def confirmed: Boolean = status >= Grade.Status.CONFIRMED
+  def confirmed: Boolean = status >= Grade.Status.Confirmed
 
-  def published: Boolean = status == Grade.Status.PUBLISHED
+  def published: Boolean = status == Grade.Status.Published
 
 }

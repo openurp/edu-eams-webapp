@@ -2,7 +2,7 @@ package org.openurp.eams.grade.service
 
 import org.openurp.teach.code.GradeType
 import org.openurp.eams.grade.CourseGradeState
-import org.openurp.teach.Lesson
+import org.openurp.teach.lesson.Lesson
 
 trait CourseGradeService {
 
@@ -34,7 +34,7 @@ trait CourseGradeService {
    *            如果为空,则发布影响总评和最终
    * @param isPublished
    */
-  def publish(lessonIdSeq: String, gradeTypes: Array[GradeType], isPublished: Boolean): Unit
+  def publish(lessonIds: Array[Integer], gradeTypes: Array[GradeType], isPublished: Boolean): Unit
 
   /**
    * 查询成绩状态

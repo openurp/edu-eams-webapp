@@ -1,29 +1,25 @@
 package org.openurp.eams.grade.service.internal
 
 import java.text.NumberFormat
-import java.util.Iterator
-import java.util.List
-import java.util.Map
-import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.impl.BaseServiceImpl
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.beangle.commons.lang.Numbers
-import org.beangle.commons.lang.Strings
+import java.{ util => ju }
+import java.lang.{ Float => JFloat }
+
+import org.beangle.commons.lang.{ Numbers, Strings }
 import org.beangle.commons.script.ExpressionEvaluator
-import com.ekingstar.eams.core.Project
-import com.ekingstar.eams.teach.code.industry.GradeType
-import com.ekingstar.eams.teach.code.industry.ScoreMarkStyle
-import com.ekingstar.eams.teach.grade.model.GradeRateConfig
-import com.ekingstar.eams.teach.grade.model.GradeRateItem
-import com.ekingstar.eams.teach.grade.service.GradeRateService
-import com.ekingstar.eams.teach.lesson.CourseGrade
-import com.ekingstar.eams.teach.lesson.GradeTypeConstants
-//remove if not needed
-import scala.collection.JavaConversions._
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.beangle.data.model.dao.EntityDao
+import org.openurp.eams.grade.model.GradeRateConfig
+import org.openurp.eams.grade.service.GradeRateService
+import org.openurp.teach.code.{ GradeType, ScoreMarkStyle }
+import org.openurp.teach.code.model.GradeTypeBean
+import org.openurp.teach.core.Project
+import org.openurp.teach.grade.CourseGrade
 
-class GradeRateServiceImpl extends BaseServiceImpl with GradeRateService {
+class GradeRateServiceImpl extends GradeRateService {
 
-  private var expressionEvaluator: ExpressionEvaluator = _
+  var entityDao: EntityDao = _
+
+  var expressionEvaluator: ExpressionEvaluator = _
 
   /**
    * 依照绩点规则计算平均绩点
@@ -31,13 +27,13 @@ class GradeRateServiceImpl extends BaseServiceImpl with GradeRateService {
    * @param rule
    */
   def calcGp(grade: CourseGrade): java.lang.Float = {
-    val conifg = getConfig(grade.getStd.getProject, grade.getMarkStyle)
+    val conifg = getConfig(grade.std.project, grade.markStyle)
     if (null != conifg) {
       var gp = calcGp(grade.score, conifg)
-      if (null != gp && gp.floatValue() > 1 && null != grade.score && 
+      if (null != gp && gp.floatValue() > 1 && null != grade.score &&
         grade.score < 61) {
-        if (null != 
-          grade.getExamGrade(new GradeType(GradeTypeConstants.MAKEUP_ID))) gp = 1.0f
+        if (null !=
+          grade.getExamGrade(new GradeTypeBean(GradeType.Makeup))) gp = 1.0f
       }
       return gp
     }
@@ -53,12 +49,12 @@ class GradeRateServiceImpl extends BaseServiceImpl with GradeRateService {
    */
   private def calcGp(score: java.lang.Float, conifg: GradeRateConfig): java.lang.Float = {
     if (null == score || score.floatValue() <= 0) return new java.lang.Float(0) else {
-      var iter = conifg.getItems.iterator()
+      var iter = conifg.items.iterator
       while (iter.hasNext) {
         val gradeRateItem = iter.next()
         if (gradeRateItem.inScope(score)) {
           if (Strings.isNotEmpty(gradeRateItem.gpExp)) {
-            val data = CollectUtils.newHashMap()
+            val data = new ju.HashMap[String, Any]
             data.put("score", score)
             return expressionEvaluator.eval(gradeRateItem.gpExp, data, classOf[Float])
           } else {
@@ -81,7 +77,7 @@ class GradeRateServiceImpl extends BaseServiceImpl with GradeRateService {
   def convert(score: String, scoreMarkStyle: ScoreMarkStyle, project: Project): java.lang.Float = {
     if (Strings.isBlank(score)) return null
     val config = getConfig(project, scoreMarkStyle).asInstanceOf[GradeRateConfig]
-    if (null == config || config.getItems.size == 0) {
+    if (null == config || config.items.size == 0) {
       if (Numbers.isDigits(score)) new java.lang.Float(Numbers.toFloat(score)) else null
     } else {
       val newScore = config.convert(score)
@@ -100,7 +96,7 @@ class GradeRateServiceImpl extends BaseServiceImpl with GradeRateService {
     if (null == config || null == score) {
       false
     } else {
-      Float.compare(score, config.getPassScore) >= 0
+      JFloat.compare(score, config.passScore) >= 0
     }
   }
 
@@ -128,11 +124,12 @@ class GradeRateServiceImpl extends BaseServiceImpl with GradeRateService {
    * 查询记录方式对应的配置
    */
   def getConfig(project: Project, scoreMarkStyle: ScoreMarkStyle): GradeRateConfig = {
-    if (null == project || project.isTransient) return null
+    if (null == project || !project.persisted) return null
     val builder = OqlBuilder.from(classOf[GradeRateConfig], "config")
       .where("config.project=:project and config.scoreMarkStyle=:markStyle", project, scoreMarkStyle)
       .cacheable()
-    entityDao.uniqueResult(builder)
+    val rs = entityDao.search(builder)
+    if (rs.isEmpty) null else rs.head
   }
 
   /**
@@ -141,15 +138,11 @@ class GradeRateServiceImpl extends BaseServiceImpl with GradeRateService {
    * @param project
    * @return
    */
-  def getMarkStyles(project: Project): List[ScoreMarkStyle] = {
+  def getMarkStyles(project: Project): Seq[ScoreMarkStyle] = {
     val builder = OqlBuilder.from(classOf[GradeRateConfig], "config")
       .where("config.project=:project", project)
-      .select("config.scoreMarkStyle")
       .cacheable()
-    entityDao.search(builder)
-  }
-
-  def setExpressionEvaluator(expressionEvaluator: ExpressionEvaluator) {
-    this.expressionEvaluator = expressionEvaluator
+    val rs = entityDao.search(builder)
+    rs.map(_.scoreMarkStyle)
   }
 }

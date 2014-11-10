@@ -1,8 +1,9 @@
 package org.openurp.eams.grade.domain
 
 import org.openurp.eams.grade.CourseGradeState
-import org.openurp.teach.CourseGrade
 import org.openurp.eams.grade.service.GradeRateService
+import org.openurp.teach.grade.model.CourseGradeBean
+import org.openurp.teach.grade.CourseGrade
 
 /**
  * 成绩计算器
@@ -33,17 +34,10 @@ trait CourseGradeCalculator {
    *
    * @param grade
    */
-  def calc(grade: CourseGrade, state: CourseGradeState): Unit
+  def calc(grade: CourseGradeBean, state: CourseGradeState): Unit
 
   /**
    * 更新最终
    */
-  def updateScore(grade: CourseGrade, score: java.lang.Float): Unit
-
-  /**
-   * 得到用以转换成绩用的服务
-   *
-   * @return
-   */
-  def getGradeRateService(): GradeRateService
+  def updateScore(grade: CourseGradeBean, score: java.lang.Float): Unit
 }

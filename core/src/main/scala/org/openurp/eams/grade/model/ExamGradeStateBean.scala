@@ -1,7 +1,8 @@
-package org.openurp.eams.grade.domain
+package org.openurp.eams.grade.model
 
 import org.openurp.eams.grade.{CourseGradeState, ExamGradeState}
 import org.openurp.teach.code.GradeType
+import org.openurp.eams.grade.domain.AbstractGradeState
 
 /**
  * 考试成绩状态

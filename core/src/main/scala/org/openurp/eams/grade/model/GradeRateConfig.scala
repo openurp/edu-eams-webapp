@@ -1,17 +1,15 @@
-package org.openurp.eams.grade.domain
+package org.openurp.eams.grade.model
 
 import java.text.NumberFormat
-
-import org.beangle.data.model.bean.LongIdBean
-import org.openurp.teach.Project
 import org.openurp.teach.code.ScoreMarkStyle
-
-import javax.persistence.Entity
+import scala.collection.mutable.ListBuffer
+import scala.collection.mutable.Buffer
+import org.openurp.teach.core.ProjectBasedObject
 
 /**
  * 成绩分级配置
  */
-class GradeRateConfig extends LongIdBean {
+class GradeRateConfig extends ProjectBasedObject[Integer] {
 
   /**
    * 成绩记录方式
@@ -19,14 +17,9 @@ class GradeRateConfig extends LongIdBean {
   var scoreMarkStyle: ScoreMarkStyle = _
 
   /**
-   * 对应培养类型(默认為空)
-   */
-  var project: Project = _
-
-  /**
    * 成绩分级配置项
    */
-  var items: List[GradeRateItem] = _
+  var items: Buffer[GradeRateItem] = new ListBuffer[GradeRateItem]
 
   /**
    * 及格线

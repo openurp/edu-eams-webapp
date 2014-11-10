@@ -1,11 +1,11 @@
-package org.openurp.eams.grade.domain
+package org.openurp.eams.grade.model
 
-import org.beangle.data.model.bean.LongIdBean
+import org.beangle.data.model.bean.IntIdBean
 
 /**
  * 成绩分级配置项
  */
-class GradeRateItem extends LongIdBean {
+class GradeRateItem extends IntIdBean {
 
   /**
    * 成绩配置

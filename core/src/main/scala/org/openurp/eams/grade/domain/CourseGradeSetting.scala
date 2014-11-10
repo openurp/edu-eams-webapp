@@ -9,6 +9,7 @@ import org.openurp.teach.core.ProjectBasedObject
 import org.openurp.teach.core.Project
 import org.openurp.teach.code.model.GradeTypeBean
 import scala.collection.mutable.Buffer
+import org.openurp.teach.code.model.ExamStatusBean
 /**
  * 课程成绩配置
  *
@@ -53,24 +54,24 @@ class CourseGradeSetting extends ProjectBasedObject[Long] {
 
   def this(project: Project) {
     this()
-    finalCandinateTypes += new GradeTypeBean(GradeType.GA_ID)
-    finalCandinateTypes += new GradeTypeBean(GradeType.MAKEUP_ID)
-    finalCandinateTypes += new GradeTypeBean(GradeType.DELAY_ID)
-    publishableTypes += new GradeTypeBean(GradeType.FINAL_ID)
-    publishableTypes += new GradeTypeBean(GradeType.MAKEUP_ID)
-    publishableTypes += new GradeTypeBean(GradeType.DELAY_ID)
-    publishableTypes += new GradeTypeBean(GradeType.GA_ID)
-    gaElementTypes += new GradeTypeBean(GradeType.USUAL_ID)
-    gaElementTypes += new GradeTypeBean(GradeType.MIDDLE_ID)
-    gaElementTypes += new GradeTypeBean(GradeType.END_ID)
-    allowExamStatuses += new ExamStatus(ExamStatus.NORMAL)
-    allowExamStatuses += new ExamStatus(ExamStatus.MISC)
-    emptyScoreStatuses += new ExamStatus(ExamStatus.ABSENT)
-    emptyScoreStatuses += new ExamStatus(ExamStatus.CHEAT)
-    emptyScoreStatuses += new ExamStatus(ExamStatus.VIOLATION)
-    emptyScoreStatuses += new ExamStatus(ExamStatus.DELAY)
-    emptyScoreStatuses += new ExamStatus(ExamStatus.MISC)
-    emptyScoreStatuses += new ExamStatus(ExamStatus.UNQUALIFY)
+    finalCandinateTypes += new GradeTypeBean(GradeType.Ga)
+    finalCandinateTypes += new GradeTypeBean(GradeType.Makeup)
+    finalCandinateTypes += new GradeTypeBean(GradeType.Delay)
+    publishableTypes += new GradeTypeBean(GradeType.Final)
+    publishableTypes += new GradeTypeBean(GradeType.Makeup)
+    publishableTypes += new GradeTypeBean(GradeType.Delay)
+    publishableTypes += new GradeTypeBean(GradeType.Ga)
+    gaElementTypes += new GradeTypeBean(GradeType.Usual)
+    gaElementTypes += new GradeTypeBean(GradeType.Middle)
+    gaElementTypes += new GradeTypeBean(GradeType.End)
+    allowExamStatuses += new ExamStatusBean(ExamStatus.Normal)
+    allowExamStatuses += new ExamStatusBean(ExamStatus.Misc)
+    emptyScoreStatuses += new ExamStatusBean(ExamStatus.Absent)
+    emptyScoreStatuses += new ExamStatusBean(ExamStatus.Cheat)
+    emptyScoreStatuses += new ExamStatusBean(ExamStatus.Violation)
+    emptyScoreStatuses += new ExamStatusBean(ExamStatus.Delay)
+    emptyScoreStatuses += new ExamStatusBean(ExamStatus.Misc)
+    emptyScoreStatuses += new ExamStatusBean(ExamStatus.Unqualify)
   }
 }
 
