@@ -18,6 +18,11 @@
       <artifactId>openurp-platform-web</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.openurp.teach</groupId>
+      <artifactId>openurp-teach-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
 </project>
 

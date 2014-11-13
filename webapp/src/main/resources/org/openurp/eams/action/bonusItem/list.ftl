@@ -1,0 +1,20 @@
+[#ftl]
+[@b.head/]
+[@b.grid items=bonusItems var="bonusItem"]
+  [@b.gridbar]
+    bar.addItem("${b.text("action.new")}",action.add());
+    bar.addItem("${b.text("action.modify")}",action.edit());
+    bar.addItem("${b.text("action.delete")}",action.remove("确认删除?"));
+  [/@]
+  [@b.row]
+    [@b.boxcol /]
+    [@b.col width="10%" property="code" title="代码"]${bonusItem.code}[/@]
+    [@b.col width="15%" property="name" title="名称"][@b.a href="!info?id=${bonusItem.id}"]${bonusItem.name}[/@][/@]
+    [@b.col width="10%" property="grade" title="年级"]${bonusItem.grade!}[/@]
+    [@b.col width="15%" property="stdLabel" title="学生类别标签"]${(bonusItem.stdLabel.name)!}[/@]
+    [@b.col width="10%" property="maxScore" title="最大加分值"]${bonusItem.maxScore!}[/@]
+    [@b.col width="15%" property="beginTime" title="开始学期"]${(bonusItem.beginTime.name)!}[/@]
+    [@b.col width="15%" property="endTime" title="结束学期"]${(bonusItem.endTime.name)!}[/@]
+  [/@]
+  [/@]
+[@b.foot/]
