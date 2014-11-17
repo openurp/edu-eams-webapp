@@ -9,7 +9,7 @@
   <groupId>org.openurp.eams</groupId>
   <artifactId>openurp-eams-core</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <packaging>war</packaging>
+  <packaging>jar</packaging>
   <name>Openurp EAMS Core</name>
 
   <dependencies>

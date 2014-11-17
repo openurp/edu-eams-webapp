@@ -1,0 +1,6 @@
+[#ftl]
+[@b.navmenu]
+	[@ems.guard res="/teach/grade/course/makeup"][@b.navitem title="缓补考成绩管理" href="/teach/grade/course/makeup" /][/@]
+	[@ems.guard res="/teach/grade/course/end-makeup"][@b.navitem title="毕业前大补考成绩管理" href="/teach/grade/course/end-makeup" /][/@]
+	[@ems.guard res="/teach/grade/course/last-makeup-task"][@b.navitem title="班级清考成绩管理" href="/teach/grade/course/last-makeup-task" /][/@]
+[/@]

@@ -19,22 +19,28 @@ trait CourseGradeCalculator {
    * @param grade
    * @return 计算结果,但不改动成绩
    */
-  def calcScore(grade: CourseGrade, state: CourseGradeState): java.lang.Float
+  def calcScore(grade: CourseGrade): java.lang.Float
 
   /**
    * 计算总评成绩
-   *
-   * @param grade
-   * @return 总评成绩,但不改动成绩
    */
-  def calcGa(grade: CourseGrade, state: CourseGradeState): java.lang.Float
+  def calcEndGa(grade: CourseGrade): java.lang.Float
 
+  /**
+   * 计算总评成绩
+   */
+  def calcDelayGa(grade: CourseGrade): java.lang.Float
+
+  /**
+   * 计算总评成绩
+   */
+  def calcMakeupGa(grade: CourseGrade): java.lang.Float
   /**
    * 计算总评成绩,最终成绩,是否通过和绩点
    *
    * @param grade
    */
-  def calc(grade: CourseGradeBean, state: CourseGradeState): Unit
+  def calc(grade: CourseGrade): Unit
 
   /**
    * 更新最终

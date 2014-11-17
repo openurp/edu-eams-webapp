@@ -1,0 +1,6 @@
+[#ftl]
+[@b.head/]
+	[#include "stdGradeStat.ftl"/]
+	[@b.div style="margin-top:10px;text-align:center;font-weight:bold;"]成绩列表[/@]
+	[#include "../../../../components/studentGrades.ftl"]
+[@b.foot/]

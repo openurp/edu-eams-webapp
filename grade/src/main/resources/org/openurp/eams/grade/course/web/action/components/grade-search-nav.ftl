@@ -1,0 +1,7 @@
+[#ftl]
+[@b.navmenu]
+	[@ems.guard res="/teach/grade/lesson/report"][@b.navitem title="教学班成绩" href="/teach/grade/lesson/report" /][/@]
+	[@ems.guard res="/teach/grade/course/stat"][@b.navitem title="课程成绩统计" href="/teach/grade/course/stat" /][/@]
+	[@ems.guard res="/teach/grade/course/term-report"][@b.navitem title="每学期成绩" href="/teach/grade/course/term-report" /][/@]
+	[@ems.guard res="/teach/grade/course/multi-std-report"][@b.navitem title="行政班级成绩" href="/teach/grade/course/multi-std-report" /][/@]
+[/@]

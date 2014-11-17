@@ -1,0 +1,10 @@
+
+GradeInputSwitch=Grade Input Switch
+GradeInputSwitch.project=Project
+GradeInputSwitch.semester=Semester
+GradeInputSwitch.startAt=Start At
+GradeInputSwitch.endAt=End At
+GradeInputSwitch.types=Types
+GradeInputSwitch.opened=Opened
+GradeInputSwitch.needValidate=Need Validate
+GradeInputSwitch.remark=Remark

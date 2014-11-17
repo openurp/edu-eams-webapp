@@ -17,30 +17,25 @@ import org.openurp.teach.code.model.ExamStatusBean
  */
 class CourseGradeSetting extends ProjectBasedObject[Long] {
 
+  var precision: Short = 0
   /**
-   * 可以转换为最终成绩的考试成绩类型id
+   * 总评成绩的组成部分
    */
-  var finalCandinateTypes: Buffer[GradeType] = new mutable.ListBuffer[GradeType]
+  var endGaElements: collection.Set[GradeType] = new mutable.HashSet[GradeType]
 
   /**
    * 总评成绩的组成部分
    */
-  var gaElementTypes: Buffer[GradeType] = new mutable.ListBuffer[GradeType]
-
+  var delayGaElements: collection.Set[GradeType] = new mutable.HashSet[GradeType]
   /**
-   * 可以发布的成绩
+   * 总评成绩的组成部分
    */
-  var publishableTypes: Buffer[GradeType] = new mutable.ListBuffer[GradeType]
+  var makeupGaElements: collection.Set[GradeType] = new mutable.HashSet[GradeType]
 
   /**
    * 允许补考考试类型
    */
   var allowExamStatuses: collection.Set[ExamStatus] = new mutable.HashSet[ExamStatus]
-
-  /**
-   * 是否计算总评的考试情况
-   */
-  var calcGaExamStatus: Boolean = false
 
   /**
    * 不允许录入成绩的考试类型列表
@@ -54,16 +49,16 @@ class CourseGradeSetting extends ProjectBasedObject[Long] {
 
   def this(project: Project) {
     this()
-    finalCandinateTypes += new GradeTypeBean(GradeType.Ga)
-    finalCandinateTypes += new GradeTypeBean(GradeType.Makeup)
-    finalCandinateTypes += new GradeTypeBean(GradeType.Delay)
-    publishableTypes += new GradeTypeBean(GradeType.Final)
-    publishableTypes += new GradeTypeBean(GradeType.Makeup)
-    publishableTypes += new GradeTypeBean(GradeType.Delay)
-    publishableTypes += new GradeTypeBean(GradeType.Ga)
-    gaElementTypes += new GradeTypeBean(GradeType.Usual)
-    gaElementTypes += new GradeTypeBean(GradeType.Middle)
-    gaElementTypes += new GradeTypeBean(GradeType.End)
+    endGaElements += new GradeTypeBean(GradeType.Usual)
+    endGaElements += new GradeTypeBean(GradeType.Middle)
+    endGaElements += new GradeTypeBean(GradeType.End)
+
+    delayGaElements += new GradeTypeBean(GradeType.Usual)
+    delayGaElements += new GradeTypeBean(GradeType.Middle)
+    delayGaElements += new GradeTypeBean(GradeType.Delay)
+
+    makeupGaElements += new GradeTypeBean(GradeType.Makeup)
+
     allowExamStatuses += new ExamStatusBean(ExamStatus.Normal)
     allowExamStatuses += new ExamStatusBean(ExamStatus.Misc)
     emptyScoreStatuses += new ExamStatusBean(ExamStatus.Absent)
@@ -72,6 +67,15 @@ class CourseGradeSetting extends ProjectBasedObject[Long] {
     emptyScoreStatuses += new ExamStatusBean(ExamStatus.Delay)
     emptyScoreStatuses += new ExamStatusBean(ExamStatus.Misc)
     emptyScoreStatuses += new ExamStatusBean(ExamStatus.Unqualify)
+  }
+
+  def getRemovableElements(gradeType: GradeType): collection.Set[GradeType] = {
+    gradeType.id match {
+      case GradeType.EndGa    => endGaElements
+      case GradeType.DelayGa  => Set(new GradeTypeBean(GradeType.Delay))
+      case GradeType.MakeupGa => makeupGaElements
+      case _                  => Set.empty
+    }
   }
 }
 

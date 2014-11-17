@@ -17,6 +17,14 @@ import org.openurp.teach.grade.Grade.Status._
 import org.openurp.teach.code.GradeType
 import org.beangle.commons.lang.Strings
 import org.beangle.data.model.dao.Operation
+import org.openurp.teach.grade.model.CourseGradeBean
+import org.openurp.teach.grade.model.ExamGradeBean
+import org.openurp.eams.grade.model.CourseGradeStateBean
+import scala.collection.mutable.Buffer
+import org.openurp.teach.grade.ExamGrade
+import org.openurp.teach.grade.GaGrade
+import org.openurp.eams.grade.ExamGradeState
+import org.openurp.eams.grade.GaGradeState
 
 class CourseGradeServiceImpl extends CourseGradeService {
 
@@ -68,75 +76,86 @@ class CourseGradeServiceImpl extends CourseGradeService {
     if (null == gradeState) {
       return
     }
-    val published = CollectUtils.newArrayList()
-    for (egs <- gradeState.states if egs.status == Published) published.add(egs.gradeType)
+    val published = new collection.mutable.ListBuffer[GradeType]
+    for (egs <- gradeState.gaStates if egs.status == Published) published += egs.gradeType
     val grades = getGrades(gradeState.lesson)
     for (grade <- grades) {
       updateGradeState(grade, gradeState)
-      for (state <- gradeState.states) {
+      for (state <- gradeState.examStates) {
         val gradeType = state.gradeType
-        val examGrade = grade.getExamGrade(gradeType)
-        val examState = gradeState.getState(gradeType)
+        val examGrade = grade.getGrade(gradeType).asInstanceOf[ExamGradeBean]
+        val examState = gradeState.getState(gradeType).asInstanceOf[ExamGradeState]
+        examGrade.percent = examState.percent
         updateGradeState(examGrade, examState)
       }
-      calculator.calc(grade, gradeState)
+      for (state <- gradeState.gaStates) {
+        val gradeType = state.gradeType
+        val gaGrade = grade.getGrade(gradeType)
+        val gaState = gradeState.getState(gradeType)
+        updateGradeState(gaGrade, gaState)
+      }
+      calculator.calc(grade)
     }
     entityDao.saveOrUpdate(grades)
-    if (!published.isEmpty) publish(gradeState.lesson.id.toString, published.toArray(Array.ofDim[GradeType](published.size)),
-      true)
+    if (!published.isEmpty) publish(Array(gradeState.lesson.id), published.toArray, true)
   }
 
   def remove(lesson: Lesson, gradeType: GradeType) {
-    val state = getState(lesson)
+    val state = getState(lesson).asInstanceOf[CourseGradeStateBean]
     val courseGrades = entityDao.findBy(classOf[CourseGrade], "lesson", List(lesson))
     val gradeSetting = settings.getSetting(lesson.project)
-    val save = CollectUtils.newArrayList()
-    val remove = CollectUtils.newArrayList()
+    val save = new collection.mutable.ListBuffer[Any]
+    val remove = new collection.mutable.ListBuffer[Any]
     for (courseGrade <- courseGrades) {
+      val examGrades = courseGrade.examGrades.asInstanceOf[Buffer[ExamGrade]]
       if (GradeType.Final == gradeType.id) {
-        if (New == courseGrade.status) remove.add(courseGrade)
-      } else if (GradeType.GA_ID == gradeType.id) {
-        for (`type` <- gradeSetting.getGaElementTypes) {
-          val exam = courseGrade.getExamGrade(`type`)
-          if (null != exam && New == exam.status) courseGrade.getExamGrades.remove(exam)
+        if (New == courseGrade.status) remove += courseGrade
+      } else if (gradeType.isGa) {
+        for (`type` <- gradeSetting.getRemovableElements(gradeType)) {
+          val exam = courseGrade.getGrade(`type`).asInstanceOf[ExamGrade]
+          if (null != exam && New == exam.status) examGrades -= exam
         }
-        val ga = courseGrade.getExamGrade(gradeType)
-        if (null != ga && New == ga.status) courseGrade.getExamGrades.remove(ga)
-        if (CollectUtils.isNotEmpty(courseGrade.getExamGrades)) {
-          calculator.calc(courseGrade, state)
-          save.add(courseGrade)
+        val ga = courseGrade.getGrade(gradeType).asInstanceOf[GaGrade]
+        if (null != ga && New == ga.status) courseGrade.gaGrades.asInstanceOf[Buffer[GaGrade]] -= ga
+        if (!examGrades.isEmpty || !courseGrade.gaGrades.isEmpty) {
+          calculator.calc(courseGrade)
+          save += courseGrade
         } else {
-          remove.add(courseGrade)
+          remove += courseGrade
         }
       } else {
-        val examGrade = courseGrade.getExamGrade(gradeType)
-        if (null == examGrade || New != examGrade.status) //continue
-          courseGrade.examGrades -= examGrade
-        if (CollectUtils.isNotEmpty(courseGrade.getExamGrades)) {
-          calculator.calc(courseGrade, state)
-          save.add(courseGrade)
-        } else {
-          remove.add(courseGrade)
+        val examGrade = courseGrade.getGrade(gradeType).asInstanceOf[ExamGrade]
+        if (null != examGrade && New == examGrade.status) {
+          examGrades -= examGrade
+          if (!examGrades.isEmpty || !courseGrade.gaGrades.isEmpty) {
+            calculator.calc(courseGrade)
+            save += courseGrades
+          } else {
+            remove += courseGrade
+          }
         }
       }
     }
     if (null != state) {
       if (GradeType.Final == gradeType.id) {
         state.status = New
-        state.states.clear()
+        state.gaStates.clear()
+        state.examStates.clear()
       } else {
-        if (GradeType.GA_ID == gradeType.id) {
-          state.setStatus(New)
-          for (`type` <- gradeSetting.getGaElementTypes) {
-            state.states.remove(state.getState(`type`))
+        if (gradeType.isGa) {
+          state.status = New
+          for (`type` <- gradeSetting.getRemovableElements(gradeType)) {
+            state.examStates.remove(state.getState(`type`).asInstanceOf[ExamGradeState])
           }
+          state.gaStates.remove(state.getState(gradeType).asInstanceOf[GaGradeState])
+        } else {
+          state.examStates.remove(state.getState(gradeType).asInstanceOf[ExamGradeState])
         }
-        state.states.remove(state.getState(gradeType))
       }
-      if (state.states.isEmpty) {
-        remove.add(state)
+      if (state.gaStates.isEmpty && state.examStates.isEmpty) {
+        remove += state
       } else {
-        save.add(state)
+        save += state
       }
     }
     entityDao.execute(Operation.saveOrUpdate(save).remove(remove))
@@ -150,13 +169,13 @@ class CourseGradeServiceImpl extends CourseGradeService {
    */
   private def updateGradeState(grade: Grade, state: GradeState) {
     if (null != grade && null != state) {
-      grade.asInstanceOf[CourseGradeBean].markStyle = state.scoreMarkStyle
-      grade.asInstanceOf[CourseGradeBean].status = state.status
+      grade.markStyle = state.scoreMarkStyle
+      grade.status = state.status
     }
   }
 
   private def updateState(lesson: Lesson, gradeTypes: Array[GradeType], status: Int) {
-    val courseGradeStates = entityDao.findBy(classOf[CourseGradeState], "lesson", List(lesson))
+    val courseGradeStates = entityDao.findBy(classOf[CourseGradeStateBean], "lesson", List(lesson))
     var gradeState: CourseGradeStateBean = null
     for (gradeType <- gradeTypes) {
       gradeState = if (courseGradeStates.isEmpty) new CourseGradeStateBean else courseGradeStates(0)
@@ -173,7 +192,7 @@ class CourseGradeServiceImpl extends CourseGradeService {
       if (gradeType.id == GradeType.Final) {
         grade.asInstanceOf[CourseGradeBean].status = status
       } else {
-        val examGrade = grade.getExamGrade(gradeType).asInstanceOf[ExamGradeBean]
+        val examGrade = grade.getGrade(gradeType)
         if (null != examGrade) {
           examGrade.status = status
           published.add(grade)
@@ -182,7 +201,7 @@ class CourseGradeServiceImpl extends CourseGradeService {
     }
     if (status == Grade.Status.Published) toBeSaved ++= publishStack.onPublish(published, gradeState, gradeTypes)
     toBeSaved ++= Operation.saveOrUpdate(lesson, gradeState).saveOrUpdate(published).build()
-    entityDao.execute(toBeSaved.toArray(Array.ofDim[Operation](toBeSaved.size)))
+    entityDao.execute(toBeSaved.toArray: _*)
   }
 
 }

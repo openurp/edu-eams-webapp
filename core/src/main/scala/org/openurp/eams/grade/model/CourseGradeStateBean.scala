@@ -1,10 +1,11 @@
 package org.openurp.eams.grade.model
 
-import org.openurp.eams.grade.{ CourseGradeState, ExamGradeState }
+import org.openurp.eams.grade.{ CourseGradeState, ExamGradeState, GaGradeState, GradeState }
 import org.openurp.teach.code.{ GradeType, ScoreMarkStyle }
 import org.openurp.teach.code.model.{ GradeTypeBean, ScoreMarkStyleBean }
 import org.openurp.teach.lesson.Lesson
 import org.openurp.eams.grade.domain.AbstractGradeState
+import java.lang.{ Short => JShort }
 
 /**
  * 成绩状态表
@@ -24,13 +25,15 @@ class CourseGradeStateBean extends AbstractGradeState with CourseGradeState {
   /**
    * 可录入各成绩类型的状态设置
    */
-  var states: collection.Set[ExamGradeState] = new collection.mutable.HashSet[ExamGradeState]
+  var examStates: collection.mutable.Set[ExamGradeState] = new collection.mutable.HashSet[ExamGradeState]
 
   /**
-   * 其他录入人
+   * 可录入各成绩类型的状态设置
    */
-  var extraInputer: String = _
+  var gaStates: collection.mutable.Set[GaGradeState] = new collection.mutable.HashSet[GaGradeState]
 
+
+  
   def this(lesson: Lesson) {
     this()
     this.lesson = lesson
@@ -40,19 +43,31 @@ class CourseGradeStateBean extends AbstractGradeState with CourseGradeState {
   def updateStatus(gradeType: GradeType, status: Int) {
     val state = getState(gradeType).asInstanceOf[ExamGradeStateBean]
     if (null == state) {
-      val newstate = new ExamGradeStateBean
-      newstate.gradeState = this
-      newstate.gradeType = gradeType
-      newstate.status = status
-      newstate.scoreMarkStyle = scoreMarkStyle
-      states += newstate
+      if (gradeType.isGa) {
+        val newstate = new GaGradeStateBean
+        newstate.gradeState = this
+        newstate.gradeType = gradeType
+        newstate.status = status
+        newstate.scoreMarkStyle = scoreMarkStyle
+        gaStates += newstate
+      } else {
+        val newstate = new ExamGradeStateBean
+        newstate.gradeState = this
+        newstate.gradeType = gradeType
+        newstate.status = status
+        newstate.scoreMarkStyle = scoreMarkStyle
+        examStates += newstate
+      }
     } else {
       state.status = status
     }
   }
 
-  def getState(gradeType: GradeType): ExamGradeState = {
-    states.find(_.gradeType.id == gradeType.id).getOrElse(null)
+  def getState(gradeType: GradeType): GradeState = {
+    if (gradeType.isGa)
+      gaStates.find(_.gradeType.id == gradeType.id).getOrElse(null)
+    else
+      examStates.find(_.gradeType.id == gradeType.id).getOrElse(null)
   }
 
   /**
@@ -63,16 +78,8 @@ class CourseGradeStateBean extends AbstractGradeState with CourseGradeState {
     if (null == gradeTypeState) false else gradeTypeState.status == status
   }
 
-  def getPercent(gradeType: GradeType): java.lang.Float = {
-    var iter = states.iterator
-    while (iter.hasNext) {
-      val gradeTypeState = iter.next().asInstanceOf[ExamGradeState]
-      if (null != gradeType &&
-        gradeTypeState.gradeType.id == gradeType.id) {
-        return gradeTypeState.percent
-      }
-    }
-    null
+  def getPercent(gradeType: GradeType): JShort = {
+    examStates.find(_.gradeType.id == gradeType.id).map(_.percent).orNull
   }
 
   def gradeType: GradeType = {

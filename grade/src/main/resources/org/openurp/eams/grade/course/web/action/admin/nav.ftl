@@ -1,0 +1,6 @@
+[#ftl]
+[@b.navmenu]
+	[@ems.guard res="/teacher"][@b.navitem title="成绩录入(教师)" href="/teacherGrade" /][/@]
+	[@ems.guard res="/courseGrade"][@b.navitem title="成绩管理(教学任务)" href="/courseGrade" /][/@]
+	[@ems.guard res="/collegeGrade"][@b.navitem title="成绩管理(院系)" href="/collegeGrade" /][/@]
+[/@]

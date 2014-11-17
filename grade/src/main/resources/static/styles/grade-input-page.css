@@ -1,0 +1,42 @@
+.grade-input-header {
+	font-size:15px;
+	font-weight:bold
+}
+
+.grade-input-lesson-info {
+	font-size:13px;
+	border-collapse: collapse;
+	border:solid;
+	border-width:1px;
+	border-color:Wheat;
+	width:98%;
+}
+
+.grade-input-lesson-info tr {
+	background-color: #FFFFBB;
+}s
+
+.grade-input-passed {
+	
+}
+
+.grade-input-unpassed {
+	color : red;
+}
+
+#grade-input-prompt {
+	position : absolute;
+	width : 250px;
+	top : 0px;
+	right : 0px;
+	margin-right : 1%;
+	display : none;
+}
+
+input[type=text]:focus {
+	background-color : yellow;
+}
+
+.grade-input-submit-button {
+	text-align : center;
+}

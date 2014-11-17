@@ -1,0 +1,5 @@
+[#ftl]
+[@b.navmenu]
+	[@ems.guard res="/teach/grade/transcript/final"][@b.navitem title="${b.text('common.stdPersonGradeTable')}" href="/teach/grade/transcript/final" /][/@]
+	[@ems.guard res="/teach/grade/course/stat"][@b.navitem title="课程成绩统计" href="/teach/grade/course/stat" /][/@]
+[/@]

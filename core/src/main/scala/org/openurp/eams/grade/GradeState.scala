@@ -1,9 +1,9 @@
 package org.openurp.eams.grade
 
-import org.beangle.data.model.LongIdEntity
-import org.openurp.teach.code.GradeType
-import org.openurp.teach.code.ScoreMarkStyle
 import java.util.Date
+
+import org.beangle.data.model.{ LongIdEntity, TemporalOn, Updated }
+import org.openurp.teach.code.{ GradeType, ScoreMarkStyle }
 
 /**
  * 成绩状态表<br>
@@ -18,42 +18,22 @@ import java.util.Date
  *
  * @author 塞外狂人,chaostone
  */
-trait GradeState extends LongIdEntity {
+trait GradeState extends LongIdEntity with TemporalOn with Updated {
 
   /**
    * 成绩类型
-   *
-   * @return
    */
   def gradeType: GradeType
 
   /**
    * 记录方式
-   *
-   * @return
    */
   def scoreMarkStyle: ScoreMarkStyle
 
   /**
-   * 返回保留小数位
-   *
-   * @return
+   * 记录方式
    */
-  def precision: Int
-
-  /**
-   * 设置小数位
-   *
-   * @param percision
-   */
-  def setPrecision(percision: Int): Unit
-
-  /**
-   * 录入时间
-   *
-   * @return
-   */
-  def inputedAt: Date
+  def scoreMarkStyle_=(style: ScoreMarkStyle)
 
   /**
    * 是否提交确认
@@ -72,8 +52,6 @@ trait GradeState extends LongIdEntity {
 
   /**
    * 返回操作者
-   *
-   * @return
    */
   def operator: String
 }

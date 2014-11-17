@@ -4,6 +4,8 @@ import org.openurp.eams.grade.model.GradeRateConfig
 import org.openurp.teach.code.ScoreMarkStyle
 import org.openurp.teach.core.Project
 import org.openurp.teach.grade.CourseGrade
+import org.openurp.teach.code.GradeType
+import org.openurp.teach.grade.Grade
 
 /**
  * 绩点规则服务类
@@ -19,7 +21,7 @@ trait GradeRateService {
   /**
    * 计算绩点
    */
-  def calcGp(grade: CourseGrade): java.lang.Float
+  def calcGp(grade: Grade, gradeType: GradeType): java.lang.Float
 
   /**
    * 将字符串按照成绩记录方式转换成数字.<br>
@@ -46,5 +48,5 @@ trait GradeRateService {
   /**
    * 查询该项目对应的记录方式
    */
-  def getMarkStyles(project: Project): List[ScoreMarkStyle]
+  def getMarkStyles(project: Project): Seq[ScoreMarkStyle]
 }

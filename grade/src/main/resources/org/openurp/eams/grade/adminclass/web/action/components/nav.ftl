@@ -1,0 +1,7 @@
+[#ftl/]
+[@b.navmenu]
+	[@b.navitem title="班级信息" href="index!info?adminclass.id=${adminclass.id}&semester.id=${Parameters['semester.id']}"/]
+	[@b.navitem title="学期成绩" href="term?adminclass.id=${adminclass.id}&semester.id=${Parameters['semester.id']}&notprint=1" /]
+	[@b.navitem title="学业警告" href="alert?adminclass.id=${adminclass.id}&semester.id=${Parameters['semester.id']}"/]
+	[@b.navitem title="总成绩" href="all?adminclass.id=${adminclass.id}&semester.id=${Parameters['semester.id']}" /]
+[/@]

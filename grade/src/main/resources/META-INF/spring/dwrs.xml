@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dwr="http://www.directwebremoting.org/schema/spring-dwr"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+			http://www.springframework.org/schema/beans/spring-beans.xsd
+			http://www.directwebremoting.org/schema/spring-dwr
+			http://www.directwebremoting.org/schema/spring-dwr-2.0.xsd">
+	<dwr:configuration>
+		<!-- 属于eams-teach-grade
+		<dwr:create javascript="stdGrade" type="spring">
+			<dwr:param name="beanName" value="stdGrade" />
+			<dwr:include method="getCourseGradeInfo" />
+			<dwr:include method="getTeachTaskInfos" />
+			<dwr:include method="getStatus" />
+		</dwr:create>
+		<dwr:create type="spring" javascript="courseGradeService">
+			<dwr:param name="beanName" value="courseGradeService" />
+		</dwr:create>
+		 -->
+		<!-- eams-teach-grade -->
+		<dwr:create type="spring" javascript="teachTaskDwrService">
+			<dwr:param name="beanName" value="teachTaskDwrService" />
+		</dwr:create>
+		
+		<dwr:create type="spring" javascript="gradeCalcualtor">
+			<dwr:param name="beanName" value="gradeCalcualtorDwr" />
+			<dwr:include method="calcGa" />
+		</dwr:create>
+		<dwr:convert type="bean"
+			class="com.ekingstar.eams.teach.lesson.model.CourseTakeBean" />
+	</dwr:configuration>
+	<bean id="teachTaskDwrService"
+		class="org.openurp.eams.grade.course.web.dwr.TeachTaskDwrService"
+		autowire="byName" />
+</beans>

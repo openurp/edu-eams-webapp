@@ -1,0 +1,11 @@
+[#ftl]
+[@b.head/] 
+[@b.toolbar title="教学班成绩 序号:${lesson.no} 课程:${lesson.course.name}"]
+	[#--bar.addItem("申请成绩修改", "modifyGradeApply()");--]
+	bar.addClose();
+[/@]
+[@b.tabs]
+	[@b.tab label="成绩状态"][#include "../components/gradeState.ftl"/][/@]
+	[@b.tab label="成绩列表(共${grades?size}人)"][#include "../components/teachClassGrades.ftl"/]	[/@]
+[/@]
+[@b.foot/]

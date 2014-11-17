@@ -1,0 +1,33 @@
+.gradePanel {
+    background-color :#c7dbff;
+    border:solid;
+    border-width:1px;
+    border-color:#006CB2;
+}
+.gradeInputTab {
+	margin : 10px 0px 0px 0px;
+}
+.gradeInputEntrance {
+	padding:5px;
+	font-size:14px;
+	background-color:#E1ECFF;
+}
+.gradeInputEntrance .underscore {
+	border-bottom-width:1px;
+	border-bottom-color:black;
+	border-bottom-style:solid;
+	text-align:center
+}
+.gradeInputEntrance .bottom-icon-buttons {
+	vertical-align:middle;
+}
+.gradeInputEntrance .bottom-icon-buttons .button-icon {
+	text-align: right;
+	width: 40px;
+}
+.gradeInputEntrance .bottom-icon-buttons .button-icon img{
+	width: 40px;
+}
+.gradeInputEntrance .bottom-icon-buttons .button-text {
+	text-align: left;
+}

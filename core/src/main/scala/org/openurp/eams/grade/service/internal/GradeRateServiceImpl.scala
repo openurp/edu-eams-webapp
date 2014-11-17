@@ -3,7 +3,6 @@ package org.openurp.eams.grade.service.internal
 import java.text.NumberFormat
 import java.{ util => ju }
 import java.lang.{ Float => JFloat }
-
 import org.beangle.commons.lang.{ Numbers, Strings }
 import org.beangle.commons.script.ExpressionEvaluator
 import org.beangle.data.jpa.dao.OqlBuilder
@@ -14,6 +13,7 @@ import org.openurp.teach.code.{ GradeType, ScoreMarkStyle }
 import org.openurp.teach.code.model.GradeTypeBean
 import org.openurp.teach.core.Project
 import org.openurp.teach.grade.CourseGrade
+import org.openurp.teach.grade.Grade
 
 class GradeRateServiceImpl extends GradeRateService {
 
@@ -26,14 +26,12 @@ class GradeRateServiceImpl extends GradeRateService {
    *
    * @param rule
    */
-  def calcGp(grade: CourseGrade): java.lang.Float = {
+  def calcGp(grade: Grade, gradeType: GradeType): java.lang.Float = {
     val conifg = getConfig(grade.std.project, grade.markStyle)
     if (null != conifg) {
       var gp = calcGp(grade.score, conifg)
-      if (null != gp && gp.floatValue() > 1 && null != grade.score &&
-        grade.score < 61) {
-        if (null !=
-          grade.getExamGrade(new GradeTypeBean(GradeType.Makeup))) gp = 1.0f
+      if (null != gp && gp.floatValue > 1 && null != grade.score && grade.score < 61) {
+        if (grade.gradeType.id == GradeType.MakeupGa) gp = 1.0f
       }
       return gp
     }

@@ -1,8 +1,9 @@
 package org.openurp.eams.grade
 
+import org.beangle.data.model.TemporalOn
 import org.openurp.teach.code.GradeType
 import org.openurp.teach.lesson.Lesson
-
+import java.lang.{ Short => JShort }
 /**
  * 课程成绩成绩状态
  *
@@ -21,7 +22,6 @@ trait CourseGradeState extends GradeState {
    * 是否为指定状态
    *
    * @param gradeType
-   * @return
    */
   def isStatus(gradeType: GradeType, status: Int): Boolean
 
@@ -33,19 +33,18 @@ trait CourseGradeState extends GradeState {
   /**
    * 返回指定成绩类型的成绩状态
    */
-  def state(gradeType: GradeType): ExamGradeState
+  def getState(gradeType: GradeType): GradeState
 
   /**
    * 所有成绩状态
    */
-  def states: collection.Set[ExamGradeState]
-
-  def percent(gradeType: GradeType): java.lang.Float
+  def examStates: collection.Set[ExamGradeState]
 
   /**
-   * 获取其他录入人
-   *
-   * @return User
+   * 所有成绩状态
    */
-  def extraInputer: String
+  def gaStates: collection.Set[GaGradeState]
+
+  def getPercent(gradeType: GradeType): JShort
+
 }

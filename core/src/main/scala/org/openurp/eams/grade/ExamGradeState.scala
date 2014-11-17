@@ -1,5 +1,5 @@
 package org.openurp.eams.grade
-
+import java.lang.{Short =>JShort}
 /**
  * 考试成绩成绩状态
  *
@@ -15,7 +15,7 @@ trait ExamGradeState extends GradeState {
   /**
    * 百分比
    */
-  def percent: java.lang.Float
+  def percent: JShort
 
   /**
    * 获取备注

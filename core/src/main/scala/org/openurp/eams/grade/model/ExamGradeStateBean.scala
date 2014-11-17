@@ -3,6 +3,7 @@ package org.openurp.eams.grade.model
 import org.openurp.eams.grade.{CourseGradeState, ExamGradeState}
 import org.openurp.teach.code.GradeType
 import org.openurp.eams.grade.domain.AbstractGradeState
+import java.lang.{Short => JShort}
 
 /**
  * 考试成绩状态
@@ -28,9 +29,7 @@ class ExamGradeStateBean extends AbstractGradeState with ExamGradeState {
 
   /**
    * 百分比描述 <br>
-   * 10% 就是 0.1， 20% 就是 0.2<br>
-   * 和{@link ExamGradeBean#percent}的表现形式不一样
-   * FIXME change to Int
+   * 10% 就是 10， 20% 就是 20<br>
    */
-  var percent: java.lang.Float = _
+  var percent: JShort = _
 }

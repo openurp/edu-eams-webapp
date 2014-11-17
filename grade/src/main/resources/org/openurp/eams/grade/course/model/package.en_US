@@ -1,0 +1,40 @@
+
+NotPassCreditStats=Not Pass Credit Stats
+NotPassCreditStats.std=Std
+NotPassCreditStats.course=Course
+NotPassCreditStats.credit=Credit
+NotPassCreditStats.courseType=Course Type
+
+ScoreSection=Score Section
+ScoreSection.fromScore=From Score
+ScoreSection.toScore=To Score
+
+GradeModifyApplyBean=Grade Modify Apply
+GradeModifyApplyBean.std=Std
+GradeModifyApplyBean.semester=Semester
+GradeModifyApplyBean.project=Project
+GradeModifyApplyBean.course=Course
+GradeModifyApplyBean.gradeType=Grade Type
+GradeModifyApplyBean.examStatus=Exam Status
+GradeModifyApplyBean.examStatusBefore=Exam Status Before
+GradeModifyApplyBean.origScore=Orig Score
+GradeModifyApplyBean.origScoreText=Orig Score Text
+GradeModifyApplyBean.score=Score
+GradeModifyApplyBean.scoreText=Score Text
+GradeModifyApplyBean.status=Status
+GradeModifyApplyBean.applyReason=Apply Reason
+GradeModifyApplyBean.auditReason=Audit Reason
+GradeModifyApplyBean.applyer=Applyer
+GradeModifyApplyBean.auditer=Auditer
+GradeModifyApplyBean.finalAuditer=Final Auditer
+
+TotalCreditStats=Total Credit Stats
+TotalCreditStats.std=Std
+TotalCreditStats.tolCredit=Tol Credit
+
+GradeViewScope=Grade View Scope
+GradeViewScope.projects=Projects
+GradeViewScope.educations=Educations
+GradeViewScope.stdTypes=Std Types
+GradeViewScope.enrollYears=Enroll Years
+GradeViewScope.checkEvaluation=Check Evaluation

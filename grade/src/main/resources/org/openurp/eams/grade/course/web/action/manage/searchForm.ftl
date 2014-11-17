@@ -1,0 +1,6 @@
+[#ftl]
+[#assign extraSearchTR]
+	[@b.select label="成绩类型" items=gradeTypes name="statusGradeTypeId"/]
+    [@b.radios name="status" items="0:未提交,1:已提交未发布,2:已发布" value="1"/]
+[/#assign]
+[#include "../taskBasicForm.ftl"/]

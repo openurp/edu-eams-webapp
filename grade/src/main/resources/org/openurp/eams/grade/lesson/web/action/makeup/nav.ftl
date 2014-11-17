@@ -1,0 +1,6 @@
+[#ftl]
+[@b.navmenu]
+	[@ems.guard res="/teach/grade/course/makeup"][@b.navitem title="${b.text('grade.slowUpResultsManagement')}" href="/teach/grade/course/makeup" /][/@]
+	[@ems.guard res="/teach/grade/course/end-makeup"][@b.navitem title="${b.text('grade.course.makeup.BeforeGraduationUpResults')}" href="/teach/grade/course/end-makeup" /][/@]
+	[@ems.guard res="/teach/grade/course/last-makeup-task"][@b.navitem title="${b.text('grade.course.makeup.ClassClearTestResultsManagement')}" href="/teach/grade/course/last-makeup-task" /][/@]
+[/@]

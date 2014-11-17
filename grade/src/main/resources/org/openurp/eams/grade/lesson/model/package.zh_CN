@@ -1,0 +1,10 @@
+
+GradeInputSwitch=成绩录入开关
+GradeInputSwitch.project=教学项目
+GradeInputSwitch.semester=教学日历
+GradeInputSwitch.startAt=开始时间
+GradeInputSwitch.endAt=关闭时间
+GradeInputSwitch.types=允许录入成绩类型
+GradeInputSwitch.opened=成绩录入开关
+GradeInputSwitch.needValidate=成绩录入验证开关
+GradeInputSwitch.remark=备注

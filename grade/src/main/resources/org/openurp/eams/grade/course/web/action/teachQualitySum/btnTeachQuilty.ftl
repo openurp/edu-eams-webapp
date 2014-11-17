@@ -1,0 +1,1 @@
+[#ftl][#include "../teachQuality/btnTeachQuilty.ftl"/]

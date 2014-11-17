@@ -1,0 +1,5 @@
+[#ftl/]
+[@b.navmenu]
+	[@b.navitem title="${b.text('grade.teacher.modify.apply')}" href="grade-modify-apply"/]
+	[@b.navitem title="${b.text('grade.teacher.modify.myApply')}" href="grade-modify-apply!myApply"/]
+[/@]
