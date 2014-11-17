@@ -19,7 +19,10 @@
   
   <modules>
     <module>core</module>
+    <module>webapp</module>
+<!--
     <module>grade</module>
+-->
   </modules>
 
   <build>

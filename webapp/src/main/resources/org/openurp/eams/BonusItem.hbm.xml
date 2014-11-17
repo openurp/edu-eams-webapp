@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hibernate-mapping xmlns="http://www.hibernate.org/xsd/hibernate-mapping"
+  xsi:schemaLocation="http://www.hibernate.org/xsd/hibernate-mapping classpath://org/hibernate/hibernate-mapping-4.0.xsd"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" package="org.openurp.eams"
+  default-access="org.beangle.data.jpa.hibernate.PropertyAccessor">
+
+  <class name="BonusItem" entity-name="org.openurp.eams.BonusItem">
+    <cache usage="read-write" />
+    <id name="id" unsaved-value="null" type="integer">
+      <generator class="code" />
+    </id>
+    <property name="code" length="32" unique="true" not-null="true"/>
+    <property name="name" length="222" unique="true" not-null="true"/>
+    <property name="grade" length="32" not-null="true"/>
+    <property name="maxScore" not-null="true"/>
+    <many-to-one name="stdLabel" not-null="true" />
+    <many-to-one name="beginTime" not-null="true" />
+    <many-to-one name="endTime" />
+    <bag name="courses" collection-type="set" >
+      <key column="bonusItem_id" />
+      <many-to-many column="course_id" class="org.openurp.teach.core.Course" />
+    </bag>
+  </class>
+
+</hibernate-mapping>

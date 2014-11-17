@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <parent>
+    <groupId>org.openurp</groupId>
+    <artifactId>openurp-webapp-parent</artifactId>
+    <version>0.0.2</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.openurp.eams</groupId>
+  <artifactId>openurp-eams-webapp</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>war</packaging>
+  <name>Openurp EAMS Webapp</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.openurp.platform</groupId>
+      <artifactId>openurp-platform-web</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openurp.teach</groupId>
+      <artifactId>openurp-teach-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+</project>
+
