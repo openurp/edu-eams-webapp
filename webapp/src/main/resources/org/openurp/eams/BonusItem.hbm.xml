@@ -17,7 +17,7 @@
     <many-to-one name="beginTime" not-null="true" />
     <many-to-one name="endTime" />
     <bag name="courses" collection-type="set" >
-      <key column="bonusItem_id" />
+      <key column="bonus_item_id" />
       <many-to-many column="course_id" class="org.openurp.teach.core.Course" />
     </bag>
   </class>

@@ -1,6 +1,8 @@
 [#ftl]
 [@b.head/]
+[#--
 [#include "nav.ftl" /]
+--]
 [@b.toolbar title="成绩记录方式设置"/]
 	<table class="indexpanel">
 		<tr>

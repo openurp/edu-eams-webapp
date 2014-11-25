@@ -24,7 +24,9 @@ class BonusItemAction extends RestfulAction[BonusItem] {
     val endTimes = findItems(classOf[Semester])
     put("endTimes", endTimes)
 
-    val courses = findItems(classOf[Course])
+    val query = OqlBuilder.from(classOf[Course])
+    query.where("course.enabled=true").orderBy("course.name")
+    val courses = entityDao .search(query)
     put("courses", courses)
   }
 

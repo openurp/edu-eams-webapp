@@ -3,7 +3,9 @@
 [@b.toolbar title="成绩记录方式"]
 	bar.addBack();
 [/@]
+[#--
 <img src="${b.theme.iconurl("actions/keyline.png")}" height="2" width="100%" alt="keyline"/>
+--]
 [@b.grid items=markStyles var="markStyle" sortable="false" id="test"]
 	[@b.row]
 		[@b.col property="code" title="代码" width="45%"/]
@@ -12,7 +14,7 @@
 	[/@]
 [/@]
 <div id="markStylePaseScore" style="display:none;text-align:center;">
-	[@b.form name="a" theme="xml" action="!save" target="contentDiv" onsubmit="jQuery.colorbox.close();return true;"]
+	[@b.form name="a" action="!save" target="contentDiv" onsubmit="jQuery.colorbox.close();return true;"]
 		[@b.textfield name="gradeRateConfig.passScore" value="" label="及格线"/]<br/>
 		[@b.submit style="margin:auto;" value="提交"]
 			<input type="hidden" id="markStyleId" name="gradeRateConfig.scoreMarkStyle.id" value=""/>
@@ -20,6 +22,11 @@
 		[/@]
 	[/@]
 </div>
+
+[#assign base=request.contextPath/]
+<script type="text/javascript" src="${base}/static/scripts/jquery/jquery-colorbox.js"></script>
+<link id="beangle_theme_link" rel="stylesheet" href="${base}/static/themes/default/colorbox.css" type="text/css"/>
+
 	[#if !markStyles?exists || markStyles?size == 0]<p>当前没有可以添加的成绩记录方式，或已经全部设置了。</p>[/#if]
 	<script>		
 		function addChoice(id,ele) {

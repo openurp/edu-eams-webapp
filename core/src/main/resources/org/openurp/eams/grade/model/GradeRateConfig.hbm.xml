@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hibernate-mapping xmlns="http://www.hibernate.org/xsd/hibernate-mapping"
+ xsi:schemaLocation="http://www.hibernate.org/xsd/hibernate-mapping classpath://org/hibernate/hibernate-mapping-4.0.xsd" 
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" package="org.openurp.eams.grade.model"
+  default-access="org.beangle.data.jpa.hibernate.PropertyAccessor">
+    
+    <class name="GradeRateConfig" entity-name="org.openurp.eams.grade.model.GradeRateConfig" >
+        <cache usage="read-write" region="org.openurp.eams.grade.model"/>
+        <id name="id" unsaved-value="null" type="integer"><generator class="auto_increment"/></id>
+        <many-to-one name="project" not-null="true"/>
+        <many-to-one name="scoreMarkStyle" not-null="true"/>
+        <set name="items" collection-type="seq">
+            <key column="grade_rate_config_id" />
+            <one-to-many  class="org.openurp.eams.grade.model.GradeRateItem"/>
+        </set>
+        <property name="passScore"/>
+    </class>
+
+</hibernate-mapping>
