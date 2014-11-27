@@ -3,5 +3,20 @@
  xsi:schemaLocation="http://www.hibernate.org/xsd/hibernate-mapping classpath://org/hibernate/hibernate-mapping-4.0.xsd" 
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" package="org.openurp.eams.grade.model"
   default-access="org.beangle.data.jpa.hibernate.PropertyAccessor">
+  
+    <class name="ExamGradeStateBean" entity-name="org.openurp.eams.grade.ExamGradeState" >
+        <cache usage="read-write" region="org.openurp.eams.grade.model"/>
+        <id name="id" unsaved-value="null" type="long"><generator class="date"/></id>
+        <many-to-one name="gradeState" />
+        <property name="percent"/>
+        <property name="remark"/>
+        <many-to-one name="gradeType" />
+        <many-to-one name="scoreMarkStyle" />
+        <property name="status"/>
+        <property name="operator"/>
+        <property name="beginOn"/>
+        <property name="endOn"/>
+        <property name="updatedAt"/>
+    </class>
 
 </hibernate-mapping>

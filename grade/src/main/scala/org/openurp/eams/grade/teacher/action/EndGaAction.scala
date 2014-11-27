@@ -1,5 +1,14 @@
 package org.openurp.eams.grade.teacher.action
 
+import org.openurp.teach.core.model.ProjectBean
+import org.openurp.teach.core.Project
+import org.openurp.teach.code.ExamStatus
+import org.openurp.teach.code.CourseTakeType
+import org.openurp.eams.grade.model.ExamGradeStateBean
+import java.lang.{Short => JShort}
+import org.openurp.teach.code.ScoreMarkStyle
+import org.openurp.eams.grade.ExamGradeState
+
 class EndGaAction extends TeacherAction {
   
 //  protected override def getGradeTypes(gradeState: CourseGradeState): List[GradeType] = {
@@ -20,58 +29,59 @@ class EndGaAction extends TeacherAction {
 //    gradeTypes
 //  }
 
-//  /**
-//   * 总评成绩录入
-//   *
-//   * @return
-//   */
-//  def input(): String = {
+  /**
+   * 总评成绩录入
+   *
+   * @return
+   */
+  def input(): String = {
 //    val result = checkState()
 //    if (null != result) {
 //      return result
 //    }
-//    val gradeState = getGradeState
-//    val gradeTypes = settings.getSetting(getProject).getGaElementTypes
-//    var updatePercent = false
-//    for (gradeType <- gradeTypes) {
-//      val prefix = "examGradeState" + gradeType.getId
-//      val percent = getFloat(prefix + ".percent")
-//      val egs = getState(gradeType)
-//      if (null != percent && 
-//        (null == egs.getPercent || 0 != Float.compare(percent / 100F, egs.getPercent))) {
-//        egs.setPercent(percent / 100F)
-//        updatePercent = true
-//      }
-//      val examMarkStyleId = getInt(prefix + ".scoreMarkStyle.id")
-//      if (null != examMarkStyleId) egs.setScoreMarkStyle(entityDao.get(classOf[ScoreMarkStyle], examMarkStyleId))
-//    }
-//    val msg = checkLessonPermission(gradeState.getLesson)
-//    if (null != msg) {
-//      return forwardError(msg)
-//    }
-//    entityDao.saveOrUpdate(gradeState)
-//    if (updatePercent) courseGradeService.recalculate(getGradeState)
-//    val lesson = gradeState.getLesson
-//    putGradeMap(lesson, getCourseTakes(lesson))
-//    buildGradeConfig(lesson, getGradeTypes(gradeState))
-//    val putSomeParams = CollectUtils.newHashSet()
-//    putSomeParams.add("isTeacher")
-//    putSomeParams.add("GA")
-//    putSomeParams.add("NEW")
-//    putSomeParams.add("CONFIRMED")
-//    putSomeParams.add("gradeConverterConfig")
-//    putSomeParams.add("examStatuses")
-//    putSomeParams.add("USUAL")
-//    putSomeParams.add("VIOLATION")
-//    putSomeParams.add("CHEAT")
-//    putSomeParams.add("ABSENT")
-//    putSomeParams.add("DELAY")
-//    putSomeParams.add("gradeRateConfigs")
-//    put("setting", settings.getSetting(getProject))
-//    buildSomeParams(lesson, putSomeParams)
-//    put("NormalTakeType", baseCodeService.getCode(classOf[CourseTakeType], CourseTakeType.NORMAL))
-//    put("NormalExamStatus", baseCodeService.getCode(classOf[ExamStatus], ExamStatus.NORMAL))
-//    put("lesson", lesson)
-//    forward()
-//  }
+    val gradeState = getGradeState
+    val project = entityDao.get(classOf[Project], new Integer(1))
+    val gradeTypes = settings.getSetting(project).endGaElements 
+    var updatePercent = false
+    for (gradeType <- gradeTypes) {
+      val prefix = "examGradeState" + gradeType.id
+      val percent = getInt(prefix + ".percent").get
+      val egs = entityDao .get(classOf[ExamGradeState], new java.lang.Long(1))
+      if (null != percent && 
+        (null == egs.percent  || percent * 1 == egs.percent)) {
+        egs.percent = percent.shortValue
+        updatePercent = true
+      }
+      val examMarkStyleId = getInt(prefix + ".scoreMarkStyle.id")
+      if (null != examMarkStyleId) egs.scoreMarkStyle=entityDao .get(classOf[ScoreMarkStyle], examMarkStyleId)
+    }
+    val msg = checkLessonPermission(gradeState.lesson)
+    if (null != msg) {
+      return forwardError(msg)
+    }
+    entityDao.saveOrUpdate(gradeState)
+    if (updatePercent) courseGradeService.recalculate(getGradeState)
+    val lesson = gradeState.lesson
+    //putGradeMap(lesson, getCourseTakes(lesson))
+    //buildGradeConfig(lesson, getGradeTypes(gradeState))
+    val putSomeParams = new HashSet()
+    putSomeParams.add("isTeacher")
+    putSomeParams.add("GA")
+    putSomeParams.add("NEW")
+    putSomeParams.add("CONFIRMED")
+    putSomeParams.add("gradeConverterConfig")
+    putSomeParams.add("examStatuses")
+    putSomeParams.add("USUAL")
+    putSomeParams.add("VIOLATION")
+    putSomeParams.add("CHEAT")
+    putSomeParams.add("ABSENT")
+    putSomeParams.add("DELAY")
+    putSomeParams.add("gradeRateConfigs")
+    put("setting", settings.getSetting(project))
+    buildSomeParams(lesson, putSomeParams)
+    put("NormalTakeType", baseCodeService.getCode(classOf[CourseTakeType], CourseTakeType.NORMAL))
+    put("NormalExamStatus", baseCodeService.getCode(classOf[ExamStatus], ExamStatus.Normal))
+    put("lesson", lesson)
+    forward()
+  }
 }

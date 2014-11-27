@@ -17,7 +17,9 @@ import java.util.ArrayList
 import scala.collection.mutable.ListBuffer
 import scala.collection.Seq
 import scala.collection.immutable.HashMap
-
+/**
+ * 成绩记录方式设置
+ */
 class RateAction extends RestfulAction[GradeRateConfig] {
 
   override def search(): String = {
@@ -26,7 +28,9 @@ class RateAction extends RestfulAction[GradeRateConfig] {
     builder.where("grc.project=:project", project)
     populateConditions(builder)
     builder.limit(getPageLimit())
-    //builder.orderBy(Order.parse("orderBy"))
+    get("orderBy").map(orderBy => {
+      builder.orderBy(Order.parse(orderBy))
+    })
     val gradeRateConfigs = entityDao.search(builder)
     put("gradeRateConfigs", gradeRateConfigs)
     forward()
@@ -37,7 +41,6 @@ class RateAction extends RestfulAction[GradeRateConfig] {
     val builder = OqlBuilder.from(classOf[ScoreMarkStyle], "markStyle")
     populateConditions(builder)
     val project = entityDao.get(classOf[Project], new Integer(1))
-    //	  val project =getProject()
     builder.where("not exists(from " + classOf[GradeRateConfig].getName()
       + " cfg where cfg.scoreMarkStyle=markStyle and cfg.project=:project)", project)
     builder.orderBy("markStyle.code")
@@ -47,11 +50,6 @@ class RateAction extends RestfulAction[GradeRateConfig] {
 
     forward()
   }
-  //	protected def getProject():Project ={
-  //	  val project = new ProjectBean()
-  //	  project.id=1
-  //	  project
-  //	}
 
   override def save(): View = {
     var gradeRateConfig = populateEntity(classOf[GradeRateConfig], "gradeRateConfig")
@@ -62,7 +60,6 @@ class RateAction extends RestfulAction[GradeRateConfig] {
     val gradeRateConfigs = entityDao.search(builder)
     if (!gradeRateConfigs.isEmpty) {
       gradeRateConfig = gradeRateConfigs(0)
-      //gradeRateConfig
     }
     entityDao.saveOrUpdate(gradeRateConfig)
     redirect("search", "info.save.success")
@@ -79,7 +76,8 @@ class RateAction extends RestfulAction[GradeRateConfig] {
    */
 
   def setting(): String = {
-    put("gradeRateConfig", entityDao.get(classOf[GradeRateConfig], getIntId("gradeRateConfig.id")))
+    val gradeRateConfig = entityDao.get(classOf[GradeRateConfig], getIntId("gradeRateConfig"))
+    put("gradeRateConfig", gradeRateConfig)
     forward()
   }
 
@@ -87,47 +85,48 @@ class RateAction extends RestfulAction[GradeRateConfig] {
    * 保存详细配置
    */
 
-//  def saveConfigSetting(): View = {
-//    val gradeRateConfig = entityDao.get(classOf[GradeRateConfig], getIntId("gradeRateConfig.id"))
-//    val configItemIds = Strings.splitToInt(get("configItemIds", ""))
-//    // 添加配置项
-//    if (null == configItemIds || configItemIds.length == 0) {
-//      var converters = gradeRateConfig.items
-//      if (converters.isEmpty) {
-//        converters = new ListBuffer()
-//      }
-//      // 此类中没有id
-//      val configItem: GradeRateItem = populateEntity(classOf[GradeRateItem], "configItem")
-//      gradeRateConfig.items = configItem
-//      configItem.config = gradeRateConfig
-//      try {
-//        entityDao.saveOrUpdate(gradeRateConfig)
-//      } catch (Exception e) {
-//        redirect("setting", "info.action.failure", "&gradeRateConfig.id=" + gradeRateConfig.id)
-//      }
-//      redirect("setting", "info.action.success", "&gradeRateConfig.id=" + gradeRateConfig.id)
-//    } // 修改配置项
-//    else {
-//      val itemMap: Map[Int, GradeRateItem] = new HashMap()
-//      for (configItem <- gradeRateConfig.items) {
-//        itemMap.put(configItem.id, configItem)
-//      }
-//      for (i <- 0 to configItemIds.length) {
-//        var configItem: GradeRateItem = itemMap.get(configItemIds[i])
-//        configItem.grade = get("scoreName" + configItemIds[i])
-//        configItem.maxScore = getFloat("maxScore" + configItemIds[i])
-//        configItem.minScore = getFloat("minScore" + configItemIds[i])
-//        configItem.defaultScore = getFloat("defaultScore" + configItemIds[i])
-//        configItem.gpExp = get("gpExp" + configItemIds[i])
-//      }
-//      try {
-//        entityDao.saveOrUpdate(gradeRateConfig);
-//      } catch (Exception e) {
-//        redirect("search", "info.action.failure");
-//      }
-//      redirect("search", "info.action.success");
-//    }
-//  }
+  def saveConfigSetting(): View = {
+    val gradeRateConfig = entityDao.get(classOf[GradeRateConfig], getIntId("gradeRateConfig"))
+    val configItemIds = Strings.splitToInt(get("configItemIds", ""))
+    // 添加配置项
+    if (null == configItemIds || configItemIds.length == 0) {
+      val converters = gradeRateConfig.items
+      // 此类中没有id
+      val configItem: GradeRateItem = populateEntity(classOf[GradeRateItem], "configItem")
+      gradeRateConfig.items.append(configItem)
+      configItem.config = gradeRateConfig
+      try {
+        entityDao.saveOrUpdate(gradeRateConfig)
+      } catch {
+        case e: Exception => {
+          e.printStackTrace()
+          redirect("setting", "gradeRateConfig.id=" + gradeRateConfig.id, "info.action.failure")
+        }
+      }
+      redirect("setting", "gradeRateConfig.id=" + gradeRateConfig.id, "info.action.success")
+    } // 修改配置项
+    else {
+      val itemMap = new scala.collection.mutable.HashMap[Int, GradeRateItem]()
+      for (configItem <- gradeRateConfig.items) {
+        itemMap.put(configItem.id, configItem)
+      }
+      for (i <- 0 until configItemIds.length) {
+        val configItem: GradeRateItem = itemMap.get(configItemIds(i)).get
+        configItem.grade = get("scoreName" + configItemIds(i)).get
+        configItem.maxScore = getFloat("maxScore" + configItemIds(i)).get
+        configItem.minScore = getFloat("minScore" + configItemIds(i)).get
+        configItem.defaultScore = getFloat("defaultScore" + configItemIds(i)).get
+        configItem.gpExp = get("gpExp" + configItemIds(i)).get
+      }
+      try {
+        entityDao.saveOrUpdate(gradeRateConfig);
+      } catch {
+        case e: Exception =>
+          redirect("search", "info.action.failure");
+      }
+      redirect("search", "info.action.success");
+    }
+  }
 
   /**
    * 删除配置项
@@ -145,54 +144,3 @@ class RateAction extends RestfulAction[GradeRateConfig] {
     forward()
   }
 }
-//	/**
-//	 * 保存详细配置
-//	 */
-//	public String saveConfigSettng() {
-//		GradeRateConfig gradeRateConfig = (GradeRateConfig) entityDao.get(GradeRateConfig.class,
-//		        getLong("gradeRateConfig.id"));
-//		Long[] configItemIds = Strings.splitToLong(get("configItemIds"));
-//
-//		// 添加配置项
-//		if (null == configItemIds || configItemIds.length == 0) {
-//			List<GradeRateItem> converters = gradeRateConfig.getItems();
-//			if (CollectUtils.isEmpty(converters)) {
-//				converters = CollectUtils.newArrayList();
-//			}
-//			// 此类中没有id
-//			GradeRateItem configItem = populateEntity(GradeRateItem.class, "configItem");
-//			gradeRateConfig.getItems().add(configItem);
-//			configItem.setConfig(gradeRateConfig);
-//			try {
-//				entityDao.saveOrUpdate(gradeRateConfig);
-//			} catch (Exception e) {
-//				return redirect("setting", "info.action.failure",
-//				        "&gradeRateConfig.id=" + gradeRateConfig.getId());
-//			}
-//			return redirect("setting", "info.action.success",
-//			        "&gradeRateConfig.id=" + gradeRateConfig.getId());
-//		}
-//		// 修改配置项
-//		else {
-//			Map<Long, GradeRateItem> itemMap = CollectUtils.newHashMap();
-//			for (GradeRateItem configItem : gradeRateConfig.getItems()) {
-//				itemMap.put(configItem.getId(), configItem);
-//			}
-//			for (int i = 0; i < configItemIds.length; i++) {
-//				GradeRateItem configItem = itemMap.get(configItemIds[i]);
-//				configItem.setGrade(get("scoreName" + configItemIds[i]));
-//				configItem.setMaxScore(getFloat("maxScore" + configItemIds[i]));
-//				configItem.setMinScore(getFloat("minScore" + configItemIds[i]));
-//				configItem.setDefaultScore(getFloat("defaultScore" + configItemIds[i]));
-//				configItem.setGpExp(get("gpExp" + configItemIds[i]));
-//			}
-//			try {
-//				entityDao.saveOrUpdate(gradeRateConfig);
-//			} catch (Exception e) {
-//				return redirect("search", "info.action.failure");
-//			}
-//			return redirect("search", "info.action.success");
-//		}
-//	}
-//
-//}

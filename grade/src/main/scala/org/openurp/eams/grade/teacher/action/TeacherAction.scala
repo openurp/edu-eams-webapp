@@ -43,6 +43,7 @@ import org.openurp.base.Teacher
 import org.beangle.data.model.dao.EntityDao
 import org.openurp.eams.grade.service.GradeInputSwitchService
 import org.openurp.teach.code.service.BaseCodeService
+import scala.collection.mutable.HashMap
 
 /**
  * 教师管理成绩响应类
@@ -658,18 +659,18 @@ class TeacherAction extends ActionSupport {
   //    examGrade.setStatus(status)
   //  }
   //
-  //  protected def putGradeMap(lesson: Lesson, courseTakes: List[CourseTake]) {
-  //    put("courseTakes", courseTakes)
-  //    val grades = entityDao.get(classOf[CourseGrade], "lesson", lesson)
-  //    val gradeMap = CollectUtils.newHashMap()
-  //    for (grade <- grades) {
-  //      gradeMap.put(grade.getStd, grade)
-  //    }
-  //    for (take <- courseTakes if !gradeMap.containsKey(take.getStd)) {
-  //      gradeMap.put(take.getStd, new CourseGradeBean())
-  //    }
-  //    put("gradeMap", gradeMap)
-  //  }
+    protected def putGradeMap(lesson: Lesson, courseTakes: List[CourseTake]) {
+      put("courseTakes", courseTakes)
+      val grades = entityDao.get(classOf[CourseGrade], "lesson", lesson)
+      val gradeMap = new HashMap()
+      for (grade <- grades) {
+        gradeMap.put(grade.getStd, grade)
+      }
+      for (take <- courseTakes if !gradeMap.containsKey(take.getStd)) {
+        gradeMap.put(take.getStd, new CourseGradeBean())
+      }
+      put("gradeMap", gradeMap)
+    }
 
   //  /**
   //   * 试卷分析打印<br>

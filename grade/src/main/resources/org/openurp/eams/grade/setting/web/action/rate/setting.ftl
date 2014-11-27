@@ -14,7 +14,7 @@
         bar.addItem("返回","backward()");
 [/@]
     <div style="display:none" id="addConfigSetting">
-		[@b.form action="!saveConfigSettng" name="addConfigForm"]
+		[@b.form action="!saveConfigSetting" name="addConfigForm"]
         <table class="formTable" width="100%">
             <tr style="background-color: #c7dbff;">
                 <td colspan="6" style="font-weight:bold;text-align:center">添加成绩记录方式的配置</td>
@@ -48,7 +48,7 @@
         <hr/>
     </div>
     [#assign configItems = gradeRateConfig.items/]
-    [@b.form action="!saveConfigSettng" name="editConfigForm"]
+    [@b.form action="!saveConfigSetting" name="editConfigForm"]
 	    <input type="hidden" name="gradeRateConfig.id" value="${gradeRateConfig.id}"/>
 		<b>修改已设置的成绩记录方式配置</b>
 	    [@b.grid items=configItems var="configItem"]
