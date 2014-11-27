@@ -661,13 +661,13 @@ class TeacherAction extends ActionSupport {
   //
     protected def putGradeMap(lesson: Lesson, courseTakes: List[CourseTake]) {
       put("courseTakes", courseTakes)
-      val grades = entityDao.get(classOf[CourseGrade], "lesson", lesson)
-      val gradeMap = new HashMap()
+      val grades = entityDao.findBy(classOf[CourseGrade], "lesson.id", List(lesson.id))
+      val gradeMap = new HashMap[Student, CourseGrade]()
       for (grade <- grades) {
-        gradeMap.put(grade.getStd, grade)
+        gradeMap.put(grade.std, grade)
       }
-      for (take <- courseTakes if !gradeMap.containsKey(take.getStd)) {
-        gradeMap.put(take.getStd, new CourseGradeBean())
+      for (take <- courseTakes if !gradeMap.contains(take.std)) {
+        gradeMap.put(take.std, new CourseGradeBean())
       }
       put("gradeMap", gradeMap)
     }
