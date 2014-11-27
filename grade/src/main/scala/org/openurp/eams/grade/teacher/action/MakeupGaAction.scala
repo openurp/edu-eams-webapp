@@ -1,6 +1,6 @@
 package org.openurp.eams.grade.teacher.action
 
-class MakeupGaAction extends TeacherAction {
+class MakeupGaAction extends AbstractTeacherAction {
 
 //  protected def getGradeTypes(gradeState: CourseGradeState): List[GradeType] = {
 //    var gradeTypes = getAttribute("gradeTypes").asInstanceOf[List[GradeType]]
