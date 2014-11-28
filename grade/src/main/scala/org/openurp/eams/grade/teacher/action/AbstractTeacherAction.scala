@@ -50,6 +50,9 @@ import org.openurp.eams.grade.model.GaGradeStateBean
 import org.openurp.eams.grade.GradeState
 import org.openurp.teach.code.model.GradeTypeBean
 import scala.collection.mutable.HashSet
+import org.beangle.webmvc.api.annotation.view
+import org.beangle.webmvc.api.view.View
+import org.openurp.eams.grade.domain.CourseGradeHelper
 
 /**
  * 教师管理成绩响应类
@@ -61,12 +64,12 @@ class AbstractTeacherAction extends ActionSupport {
   var entityDao: EntityDao = _
   protected def checkLessonPermission(lesson: Lesson): String = {
     val teachers = entityDao.findBy(classOf[Teacher], "code", List("FIXME"))
-    if (null == teachers.isEmpty) {
-      return "只有教师才可以录入成绩"
-    }
-    if (!lesson.teachers.contains(teachers.head)) {
-      return "没有权限"
-    }
+    //    if (teachers.isEmpty) {
+    //      return "只有教师才可以录入成绩"
+    //    }
+    //    if (!lesson.teachers.contains(teachers.head)) {
+    //      return "没有权限"
+    //    }
     null
   }
 
@@ -84,7 +87,7 @@ class AbstractTeacherAction extends ActionSupport {
 
   //  var lessonGradeService: LessonGradeService = _
 
-  //  var courseGradeHelper: CourseGradeHelper = _
+  var courseGradeHelper: CourseGradeHelper = _
 
   var calculator: CourseGradeCalculator = _
 
@@ -100,7 +103,7 @@ class AbstractTeacherAction extends ActionSupport {
 
   var gradeCourseTypeProvider: GradeCourseTypeProvider = _
 
-  protected def checkState(): String = {
+  protected def checkState() = {
     val lessonId = getInt("lessonId").get
     val lesson = entityDao.get(classOf[Lesson], new Integer(lessonId))
     if (null == lesson) {
@@ -113,7 +116,7 @@ class AbstractTeacherAction extends ActionSupport {
     val gis = getGradeInputSwitch(lesson)
     put("gradeInputSwitch", gis)
     if (!gis.opened) {
-      return forward("../teacher/cannotInput")
+      throw new IllegalArgumentException("gradeInputSwitch is closed")
     }
     val gradeState = getOrCreateState(lesson)
     put("gradeState", gradeState)
@@ -124,7 +127,6 @@ class AbstractTeacherAction extends ActionSupport {
       //      return redirect(new Action(classOf[AdminAction], "inputTask", "&lessonId=" + lesson.getId), "error.grade.modifyPublished")
       throw new IllegalArgumentException("error.grade.modifyPublished")
     }
-    null
   }
 
   /**
@@ -228,39 +230,6 @@ class AbstractTeacherAction extends ActionSupport {
   //    forward()
   //  }
 
-  //  def taskList(): String = {
-  //    val teacher = getLoginTeacher
-  //    val user = entityDao.get(classOf[User], getUserId)
-  //    val semesterId = getInt("lesson.semester.id")
-  //    if (semesterId == null) {
-  //      return forwardError("error.teacher.noTask")
-  //    }
-  //    val semester = entityDao.get(classOf[Semester], semesterId)
-  //    val lessons = lessonService.getLessonByCategory(teacher.getId, lessonFilterStrategyFactory.getLessonFilterCategory(LessonFilterStrategy.TEACHER),
-  //      semester)
-  //    val builder = OqlBuilder.from(classOf[CourseGradeState], "courseGradeState")
-  //    builder.where("courseGradeState.extraInputer = :user", user)
-  //    if (!lessons.isEmpty) {
-  //      builder.where("courseGradeState.lesson not in (:lessons)", lessons)
-  //    }
-  //    builder.where("courseGradeState.lesson.semester=:semester", semester)
-  //    builder.select("courseGradeState.lesson")
-  //    lessons.addAll(entityDao.search(builder).asInstanceOf[List[Lesson]])
-  //    CollectionUtils.filter(lessons, new LessonProjectPredicate(getProject))
-  //    put("lessons", lessons)
-  //    val gradeStates = CollectUtils.newHashMap()
-  //    for (lesson <- lessons) {
-  //      val state = courseGradeService.getState(lesson)
-  //      if (state != null) gradeStates.put(lesson.getId, state)
-  //    }
-  //    put("makeupTakeCounts", makeupStdStrategy.getCourseTakeCounts(lessons))
-  //    put("gradeStates", gradeStates)
-  //    put("gradeInputSwitch", getGradeInputSwitch(getProject, semester))
-  //    put("GA", baseCodeService.getCode(classOf[GradeType], GradeTypeConstants.GA_ID))
-  //    put("MAKEUP", baseCodeService.getCode(classOf[GradeType], GradeTypeConstants.MAKEUP_ID))
-  //    put("DELAY", baseCodeService.getCode(classOf[GradeType], GradeTypeConstants.DELAY_ID))
-  //    forward()
-  //  }
 
   /**
    * 组装一些前台需要的参数
@@ -288,81 +257,81 @@ class AbstractTeacherAction extends ActionSupport {
       put("userCategoryId", getUserCategoryId)
     }
     if (putScomeParams.contains("PERCENT")) {
-      put("PERCENT", baseCodeService.getCode(classOf[ScoreMarkStyle], ScoreMarkStyle.Percent ))
+      put("PERCENT", baseCodeService.getCode(classOf[ScoreMarkStyle], ScoreMarkStyle.Percent))
     }
     //FIX ME
-//    if (putScomeParams.contains("RANK_EN")) {
-//      put("RANK_EN", baseCodeService.getCode(classOf[ScoreMarkStyle], ScoreMarkStyle.RANK_EN))
-//    }
-//    if (putScomeParams.contains("GA")) {
-//      put("GA", baseCodeService.getCode(classOf[GradeType], GradeType.EndGa ))
-//    }
-//    if (putScomeParams.contains("MIDDLE")) {
-//      put("MIDDLE", baseCodeService.getCode(classOf[GradeType], GradeType.MIDDLE_ID))
-//    }
-//    if (putScomeParams.contains("USUAL")) {
-//      put("USUAL", baseCodeService.getCode(classOf[GradeType], GradeType.USUAL_ID))
-//    }
-//    if (putScomeParams.contains("END")) {
-//      put("END", baseCodeService.getCode(classOf[GradeType], GradeType.END_ID))
-//    }
-//    if (putScomeParams.contains("MAKEUP")) {
-//      put("MAKEUP", baseCodeService.getCode(classOf[GradeType], GradeType.MAKEUP_ID))
-//    }
-//    if (putScomeParams.contains("RESTUDY")) {
-//      put("RESTUDY", CourseTakeType.RESTUDY)
-//    }
-//    if (putScomeParams.contains("REEXAM")) {
-//      put("REEXAM", CourseTakeType.REEXAM)
-//    }
-//    if (putScomeParams.contains("NORMAL")) {
-//      put("NORMAL", ExamStatus.NORMAL)
-//    }
-//    if (putScomeParams.contains("ABSENT")) {
-//      put("ABSENT", ExamStatus.ABSENT)
-//    }
-//    if (putScomeParams.contains("CHEAT")) {
-//      put("CHEAT", ExamStatus.CHEAT)
-//    }
-//    if (putScomeParams.contains("DELAY")) {
-//      put("DELAY", ExamStatus.DELAY)
-//    }
-//    if (putScomeParams.contains("VIOLATION")) {
-//      put("VIOLATION", ExamStatus.VIOLATION)
-//    }
-//    if (putScomeParams.contains("NEW")) {
-//      put("NEW", Grade.Status.NEW)
-//    }
-//    if (putScomeParams.contains("CONFIRMED")) {
-//      put("CONFIRMED", Grade.Status.CONFIRMED)
-//    }
-//    if (putScomeParams.contains("examStatuses")) {
-//      val query = OqlBuilder.from(classOf[ExamStatus], "examStatus")
-//      query.where("examStatus.effectiveAt <= :now and (examStatus.invalidAt is null or examStatus.invalidAt >= :now)",
-//        new Date())
-//      query.orderBy("examStatus.code")
-//      put("examStatuses", entityDao.search(query))
-//    }
-//    if (putScomeParams.contains("isTeacher")) {
-//      put("isTeacher", false)
-//    }
-//    if (putScomeParams.contains("gradeRateConfigs")) {
-//      val gradeRateConfigs = CollectUtils.newHashMap()
-//      val gradeTypes = getGradeTypes(state)
-//      for (gradeType <- gradeTypes) {
-//        if (GradeTypeConstants.GA_ID == gradeType.getId) {
-//          //continue
-//        }
-//        val examGradeState = state.getState(gradeType)
-//        val scoreMarkStyle = entityDao.get(classOf[ScoreMarkStyle], examGradeState.getScoreMarkStyle.getId)
-//        if (!scoreMarkStyle.isNumStyle) {
-//          if (!gradeRateConfigs.containsKey(scoreMarkStyle)) {
-//            gradeRateConfigs.put(scoreMarkStyle, gradeRateService.getConfig(getProject, scoreMarkStyle))
-//          }
-//        }
-//        put("gradeRateConfigs", gradeRateConfigs)
-//      }
-//    }
+    //    if (putScomeParams.contains("RANK_EN")) {
+    //      put("RANK_EN", baseCodeService.getCode(classOf[ScoreMarkStyle], ScoreMarkStyle.RANK_EN))
+    //    }
+    if (putScomeParams.contains("EndGa")) {
+      put("EndGa", baseCodeService.getCode(classOf[GradeType], GradeType.EndGa))
+    }
+    //    if (putScomeParams.contains("MIDDLE")) {
+    //      put("MIDDLE", baseCodeService.getCode(classOf[GradeType], GradeType.MIDDLE_ID))
+    //    }
+    //    if (putScomeParams.contains("USUAL")) {
+    //      put("USUAL", baseCodeService.getCode(classOf[GradeType], GradeType.USUAL_ID))
+    //    }
+    //    if (putScomeParams.contains("END")) {
+    //      put("END", baseCodeService.getCode(classOf[GradeType], GradeType.END_ID))
+    //    }
+    if (putScomeParams.contains("MAKEUP")) {
+      put("MAKEUP", baseCodeService.getCode(classOf[GradeType], GradeType.Makeup))
+    }
+    //    if (putScomeParams.contains("RESTUDY")) {
+    //      put("RESTUDY", CourseTakeType.RESTUDY)
+    //    }
+    //    if (putScomeParams.contains("REEXAM")) {
+    //      put("REEXAM", CourseTakeType.REEXAM)
+    //    }
+    //    if (putScomeParams.contains("NORMAL")) {
+    //      put("NORMAL", ExamStatus.NORMAL)
+    //    }
+    //    if (putScomeParams.contains("ABSENT")) {
+    //      put("ABSENT", ExamStatus.ABSENT)
+    //    }
+    //    if (putScomeParams.contains("CHEAT")) {
+    //      put("CHEAT", ExamStatus.CHEAT)
+    //    }
+    //    if (putScomeParams.contains("DELAY")) {
+    //      put("DELAY", ExamStatus.DELAY)
+    //    }
+    //    if (putScomeParams.contains("VIOLATION")) {
+    //      put("VIOLATION", ExamStatus.VIOLATION)
+    //    }
+    //    if (putScomeParams.contains("NEW")) {
+    //      put("NEW", Grade.Status.NEW)
+    //    }
+    //    if (putScomeParams.contains("CONFIRMED")) {
+    //      put("CONFIRMED", Grade.Status.CONFIRMED)
+    //    }
+    //    if (putScomeParams.contains("examStatuses")) {
+    //      val query = OqlBuilder.from(classOf[ExamStatus], "examStatus")
+    //      query.where("examStatus.effectiveAt <= :now and (examStatus.invalidAt is null or examStatus.invalidAt >= :now)",
+    //        new Date())
+    //      query.orderBy("examStatus.code")
+    //      put("examStatuses", entityDao.search(query))
+    //    }
+    if (putScomeParams.contains("isTeacher")) {
+      put("isTeacher", false)
+    }
+    //    if (putScomeParams.contains("gradeRateConfigs")) {
+    //      val gradeRateConfigs = CollectUtils.newHashMap()
+    //      val gradeTypes = getGradeTypes(state)
+    //      for (gradeType <- gradeTypes) {
+    //        if (GradeTypeConstants.GA_ID == gradeType.getId) {
+    //          //continue
+    //        }
+    //        val examGradeState = state.getState(gradeType)
+    //        val scoreMarkStyle = entityDao.get(classOf[ScoreMarkStyle], examGradeState.getScoreMarkStyle.getId)
+    //        if (!scoreMarkStyle.isNumStyle) {
+    //          if (!gradeRateConfigs.containsKey(scoreMarkStyle)) {
+    //            gradeRateConfigs.put(scoreMarkStyle, gradeRateService.getConfig(getProject, scoreMarkStyle))
+    //          }
+    //        }
+    //        put("gradeRateConfigs", gradeRateConfigs)
+    //      }
+    //    }
   }
 
   /**
@@ -376,22 +345,22 @@ class AbstractTeacherAction extends ActionSupport {
     val markStyles = new HashMap()
     val examTypes = new HashSet()
     //FIX ME 
-//    for (gradeType <- gradeTypes) {
-//      val gradeTypeState = gradeState.getState(gradeType)
-//      if (null == gradeTypeState) {
-//        //continue
-//      }
-//      var markStyle = gradeTypeState.scoreMarkStyle
-//      if (null == markStyle) markStyle = gradeState.scoreMarkStyle
-//      if (null != gradeType.examType) examTypes.add(gradeType.examType)
-//    }
-//    val converterMap = new HashMap()
-//    for (gradeTypeState <- gradeState.getStates) {
-//      markStyles.put(gradeTypeState.getGradeType.getId.toString, gradeTypeState.getScoreMarkStyle)
-//    }
-//    put("markStyles", markStyles)
-//    put("converterMap", converterMap)
-//    put("stdExamTypeMap", getStdExamTypeMap(lesson, examTypes))
+    //    for (gradeType <- gradeTypes) {
+    //      val gradeTypeState = gradeState.getState(gradeType)
+    //      if (null == gradeTypeState) {
+    //        //continue
+    //      }
+    //      var markStyle = gradeTypeState.scoreMarkStyle
+    //      if (null == markStyle) markStyle = gradeState.scoreMarkStyle
+    //      if (null != gradeType.examType) examTypes.add(gradeType.examType)
+    //    }
+    //    val converterMap = new HashMap()
+    //    for (gradeTypeState <- gradeState.getStates) {
+    //      markStyles.put(gradeTypeState.getGradeType.getId.toString, gradeTypeState.getScoreMarkStyle)
+    //    }
+    //    put("markStyles", markStyles)
+    //    put("converterMap", converterMap)
+    //    put("stdExamTypeMap", getStdExamTypeMap(lesson, examTypes))
   }
 
   //  /**
@@ -699,71 +668,70 @@ class AbstractTeacherAction extends ActionSupport {
   //    forward()
   //  }
 
-  //  /**
-  //   * 删除成绩
-  //   */
-  //  def removeGrade(): String = {
-  //    val result = checkState()
-  //    if (null != result) {
-  //      return result
-  //    }
-  //    val lesson = entityDao.get(classOf[Lesson], getLongId("lesson"))
-  //    var msg = checkLessonPermission(lesson)
-  //    if (null != msg) {
-  //      return forwardError(msg)
-  //    }
-  //    val state = courseGradeService.getState(lesson)
-  //    val gradeTypeIdSeq = get("gradeTypeIds")
-  //    if (Strings.isNotBlank(gradeTypeIdSeq)) {
-  //      val gradeTypeIds = Strings.splitToInt(get("gradeTypeIds"))
-  //      for (i <- 0 until gradeTypeIds.length) {
-  //        val gradeTypeState = state.getState(Model.newInstance(classOf[GradeType], gradeTypeIds(i)))
-  //        if (null != gradeTypeState && Grade.Status.NEW != gradeTypeState.getStatus &&
-  //          (gradeTypeState.getStatus > Grade.Status.CONFIRMED ||
-  //            gradeTypeIds(i) != GradeTypeConstants.MAKEUP_ID && state.getStatus > Grade.Status.CONFIRMED)) {
-  //          return forward(new Action(this, "inputTask"), "error.grade.modifyPublished")
-  //        }
-  //      }
-  //    }
-  //    msg = courseGradeHelper.removeLessonGrade(getUserId)
-  //    if (Strings.isEmpty(msg)) {
-  //      logHelper.info("delete grade")
-  //      redirect("inputTask", "info.delete.success", "&lessonId=" + lesson.getId)
-  //    } else {
-  //      forwardError(msg)
-  //    }
-  //  }
+  /**
+   * 删除成绩
+   */
+  def removeGrade(): View = {
+    checkState()
+    val lessonId = getInt("lessonId").get
+    val lesson = entityDao.get(classOf[Lesson], new Integer(lessonId))
+    var msg = checkLessonPermission(lesson)
+    if (null != msg) {
+      throw new IllegalArgumentException(msg)
+    }
+    val state = courseGradeService.getState(lesson)
+    get("gradeTypeIds") foreach { gradeTypeIdSeq =>
+      val gradeTypeIds = Strings.splitToInt(gradeTypeIdSeq)
+      for (i <- 0 until gradeTypeIds.length) {
+        val gradeTypeState = state.getState(new GradeTypeBean)
+        if (null != gradeTypeState && Grade.Status.New != gradeTypeState.status &&
+          (gradeTypeState.status > Grade.Status.Confirmed ||
+            gradeTypeIds(i) != GradeType.Makeup && state.status > Grade.Status.Confirmed)) {
+          throw new IllegalArgumentException("error.grade.modifyPublished")
+        }
+      }
+    }
+    msg = courseGradeHelper.removeLessonGrade(getUserId)
+    if (Strings.isEmpty(msg)) {
+      info("delete grade")
+      redirect("inputTask", "&lessonId=" + lesson.id, "info.delete.success")
+    } else {
+      throw new IllegalArgumentException(msg)
+    }
+  }
 
-  //  /**
-  //   * 打印教学班成绩
-  //   */
-  //  def report(): String = {
-  //    var lessonIdSeq = get("lessonIds")
-  //    if (Strings.isEmpty(lessonIdSeq)) lessonIdSeq = get("lessonId")
-  //    if (Strings.isEmpty(lessonIdSeq)) {
-  //      return forwardError("error.parameters.needed")
-  //    }
-  //    val lessons = entityDao.get(classOf[Lesson], Strings.splitToLong(lessonIdSeq))
-  //    val gradeTypeIdSeq = getIntIds("gradeType")
-  //    val gradeTypeIds = CollectUtils.newHashSet()
-  //    if (null != gradeTypeIdSeq) gradeTypeIds.addAll(CollectUtils.newHashSet(gradeTypeIdSeq))
-  //    if (gradeTypeIds.contains(GradeTypeConstants.MAKEUP_ID)) gradeTypeIds.add(GradeTypeConstants.DELAY_ID)
-  //    teachClassGradeHelper.report(lessons, gradeTypeIds.toArray(Array.ofDim[Integer](gradeTypeIds.size)))
-  //    val query = OqlBuilder.from(classOf[GradeRateConfig], "config")
-  //      .where("config.project=:project", getProject)
-  //    val gradeConfigMap = CollectUtils.newHashMap()
-  //    for (config <- entityDao.search(query)) {
-  //      gradeConfigMap.put(String.valueOf(config.getScoreMarkStyle.getId), config)
-  //    }
-  //    put("gradeConfigMap", gradeConfigMap)
-  //    put("GA_ID", GradeTypeConstants.GA_ID)
-  //    if (gradeTypeIds.contains(GradeTypeConstants.MAKEUP_ID)) forward("../../../../lesson/web/action/report/reportMakeup") else forward("../../../../lesson/web/action/report/reportGa")
-  //  }
+    /**
+     * 打印教学班成绩
+     */
+    def report(): String = {
+      null
+//      var lessonIdSeq = get("lessonIds")
+//      if (Strings.isEmpty(lessonIdSeq)) lessonIdSeq = get("lessonId")
+//      if (Strings.isEmpty(lessonIdSeq)) {
+//        return forwardError("error.parameters.needed")
+//      }
+//      val lessons = entityDao.get(classOf[Lesson], Strings.splitToLong(lessonIdSeq))
+//      val gradeTypeIdSeq = getIntIds("gradeType")
+//      val gradeTypeIds = CollectUtils.newHashSet()
+//      if (null != gradeTypeIdSeq) gradeTypeIds.addAll(CollectUtils.newHashSet(gradeTypeIdSeq))
+//      if (gradeTypeIds.contains(GradeTypeConstants.MAKEUP_ID)) gradeTypeIds.add(GradeTypeConstants.DELAY_ID)
+//      teachClassGradeHelper.report(lessons, gradeTypeIds.toArray(Array.ofDim[Integer](gradeTypeIds.size)))
+//      val query = OqlBuilder.from(classOf[GradeRateConfig], "config")
+//        .where("config.project=:project", getProject)
+//      val gradeConfigMap = CollectUtils.newHashMap()
+//      for (config <- entityDao.search(query)) {
+//        gradeConfigMap.put(String.valueOf(config.getScoreMarkStyle.getId), config)
+//      }
+//      put("gradeConfigMap", gradeConfigMap)
+//      put("GA_ID", GradeTypeConstants.GA_ID)
+//      if (gradeTypeIds.contains(GradeTypeConstants.MAKEUP_ID)) forward("../../../../lesson/web/action/report/reportMakeup") else forward("../../../../lesson/web/action/report/reportGa")
+    }
 
   //  /**
   //   * 查看单个教学任务所有成绩信息
   //   */
-  //  def info(): String = {
+//    def info(): String = {
+//      null
   //    val lesson = entityDao.get(classOf[Lesson], getLong("lessonId"))
   //    val msg = checkLessonPermission(lesson)
   //    if (null != msg) {
@@ -771,15 +739,19 @@ class AbstractTeacherAction extends ActionSupport {
   //    }
   //    teachClassGradeHelper.info(lesson)
   //    forward()
-  //  }
+//    }
 
   //  /**
   //   * 跳转到编辑打印内容页面
   //   */
   //  def editReport(): String = forward()
 
-  private def getGradeInputSwitch(project: Project, semester: Semester): GradeInputSwitch = {
-    var gradeInputSwitch = gradeInputSwitchService.getSwitch(project, semester)
+  def getGradeInputSwitch(project: Project, semester: Semester): GradeInputSwitch = {
+    var gradeInputSwitch: GradeInputSwitchBean = null
+    if (gradeInputSwitchService != null) {
+      gradeInputSwitch = gradeInputSwitchService.getSwitch(project, semester).asInstanceOf[GradeInputSwitchBean]
+    }
+
     if (null == gradeInputSwitch) {
       gradeInputSwitch = new GradeInputSwitchBean
       gradeInputSwitch.project = project
@@ -790,19 +762,24 @@ class AbstractTeacherAction extends ActionSupport {
     gradeInputSwitch
   }
 
-  private def getGradeInputSwitch(lesson: Lesson): GradeInputSwitch = {
+  protected def getGradeInputSwitch(lesson: Lesson): GradeInputSwitch = {
     getGradeInputSwitch(lesson.project, lesson.semester)
   }
 
   /**
    * 查找和创建成绩状态
    */
-  private def getOrCreateState(lesson: Lesson): CourseGradeState = {
+  protected def getOrCreateState(lesson: Lesson): CourseGradeState = {
     var state = courseGradeService.getState(lesson)
     val precision = getInt("precision")
-    val markStyleId = getInt("markStyleId").get
-    var markStyle: ScoreMarkStyle = null
-    if (null != markStyleId) markStyle = entityDao.get(classOf[ScoreMarkStyle], new Integer(markStyleId))
+    //    val markStyleId = get("markStyleId",classOf[Integer]).orNull
+    //    var markStyle: ScoreMarkStyle = null
+    //    if (null != markStyleId) markStyle = entityDao.get(classOf[ScoreMarkStyle], markStyleId)
+
+    val markStyle = getInt("markStyleId") match {
+      case Some(markStyleId) => entityDao.get(classOf[ScoreMarkStyle], Integer.valueOf(markStyleId))
+      case _ => null.asInstanceOf[ScoreMarkStyle]
+    }
     if (null == state) state = new CourseGradeStateBean(lesson)
     if (null != markStyleStrategy) markStyleStrategy.configMarkStyle(state, getGradeTypes(state))
     val es = state.getState(new GradeTypeBean(GradeType.EndGa))
@@ -834,7 +811,9 @@ class AbstractTeacherAction extends ActionSupport {
   protected def getProject() = {
     entityDao.get(classOf[Project], new Integer(1))
   }
-  
+
   def getUserCategoryId = 1
+
+  def getUserId = 13006
 
 }

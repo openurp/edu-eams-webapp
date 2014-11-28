@@ -48,7 +48,7 @@ class EndGaAction extends AbstractTeacherAction {
   def input(): String = {
     val result = checkState()
     if (null != result) {
-      return result
+//      return result
     }
     val gradeState = getGradeState
     val project = getProject

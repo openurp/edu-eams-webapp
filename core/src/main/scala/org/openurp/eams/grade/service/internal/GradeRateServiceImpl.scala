@@ -14,6 +14,7 @@ import org.openurp.teach.code.model.GradeTypeBean
 import org.openurp.teach.core.Project
 import org.openurp.teach.grade.CourseGrade
 import org.openurp.teach.grade.Grade
+import org.openurp.teach.code.service.BaseCodeService
 
 class GradeRateServiceImpl extends GradeRateService {
 
@@ -21,6 +22,7 @@ class GradeRateServiceImpl extends GradeRateService {
 
   var expressionEvaluator: ExpressionEvaluator = _
 
+  var baseCodeService: BaseCodeService = _
   /**
    * 依照绩点规则计算平均绩点
    *
@@ -141,6 +143,10 @@ class GradeRateServiceImpl extends GradeRateService {
       .where("config.project=:project", project)
       .cacheable()
     val rs = entityDao.search(builder)
-    rs.map(_.scoreMarkStyle)
+    if (rs.isEmpty) {
+      baseCodeService.getCodes(project, classOf[ScoreMarkStyle])
+    } else {
+      rs.map(_.scoreMarkStyle)
+    }
   }
 }

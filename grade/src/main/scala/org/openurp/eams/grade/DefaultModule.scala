@@ -3,7 +3,8 @@ package org.openurp.eams.grade
 import org.beangle.commons.inject.bind.AbstractBindModule
 import org.openurp.eams.grade.teacher.action.{EndGaAction, MakeupGaAction}
 import org.openurp.eams.grade.teacher.action.IndexAction
-import org.openurp.eams.grade.setting.web.action.RateAction
+import org.openurp.eams.grade.setting.action.RateAction
+import org.openurp.eams.grade.teacher.action.ReportAction
 
 class DefaultModule extends AbstractBindModule {
 
@@ -11,5 +12,6 @@ class DefaultModule extends AbstractBindModule {
     bind(classOf[EndGaAction], classOf[MakeupGaAction]) 
     bind(classOf[IndexAction])
     bind(classOf[RateAction])
+    bind(classOf[ReportAction])
   }
 }

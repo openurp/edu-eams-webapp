@@ -17,7 +17,7 @@
             <key column="course_grade_state_id" />
             <one-to-many  class="org.openurp.eams.grade.GaGradeState"/>
         </set>
-        <many-to-one name="scoreMarkStyle" />
+        <many-to-one name="scoreMarkStyle"  not-null="true"/>
         <property name="status"/>
         <property name="operator"/>
         <property name="beginOn"/>

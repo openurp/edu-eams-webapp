@@ -12,10 +12,32 @@ import org.openurp.eams.grade.CourseGradeState
 import org.openurp.eams.grade.model.CourseGradeStateBean
 import scala.collection.mutable.ListBuffer
 import org.openurp.teach.code.GradeType
+import org.openurp.base.Teacher
+import org.openurp.eams.grade.GradeInputSwitch
+import org.openurp.teach.core.Project
+import org.openurp.eams.grade.model.GradeInputSwitchBean
+import org.openurp.base.Semester
+import org.openurp.eams.grade.service.GradeInputSwitchService
+import scala.collection.mutable.HashSet
 
-class IndexAction extends ActionSupport {
-  var entityDao: EntityDao = _
+class IndexAction extends AbstractTeacherAction {
+  /**
+   * 查看教师的课程信息
+   */
+  def index(): String = {
+    val teacher = entityDao.get(classOf[Teacher], new Integer(13006))
+    val builder = OqlBuilder.from(classOf[Lesson], "ls")
+    builder.join("ls.teachers", "t")
+    builder.where("t.id=:teacherId", teacher.id)
+    val lessons = entityDao.search(builder)
+    println("lessons", lessons, lessons.size)
+    put("lessons", lessons)
+    forward()
+  }
 
+  /**
+   * 查看单个教学任务所有成绩信息
+   */
   @mapping(value = "{id}")
   def info(@param("id") id: String): String = {
     val lesson = entityDao.get(classOf[Lesson], Integer.valueOf(id))
@@ -26,19 +48,52 @@ class IndexAction extends ActionSupport {
     val grades = entityDao.search(query)
     put("grades", grades)
 
-//    val query2 = OqlBuilder.from(classOf[CourseGradeState])
-//    query2.where("courseGradeState.lesson=:lesson", lesson)
+    //    val query2 = OqlBuilder.from(classOf[CourseGradeState])
+    //    query2.where("courseGradeState.lesson=:lesson", lesson)
     //entityDao.search(query2)
     //gradeState.get(0)之后再put
     val gradeState = new CourseGradeStateBean
-    
+
     //put("gradeState", gradeState)
     val gradeTypes = new ListBuffer[GradeType]
-    if(null!=gradeState){
-      gradeState.examStates .foreach(es => gradeTypes += es.gradeType)
-      gradeState.gaStates .foreach(es => gradeTypes += es.gradeType)
+    if (null != gradeState) {
+      gradeState.examStates.foreach(es => gradeTypes += es.gradeType)
+      gradeState.gaStates.foreach(es => gradeTypes += es.gradeType)
     }
-    put("gradeTypes",gradeTypes)
+    put("gradeTypes", gradeTypes)
     forward()
   }
+
+  /**
+   * 录入单个教学任务成绩
+   *
+   * @return @
+   */
+  def inputTask(): String = {
+    val lesson = entityDao.get(classOf[Lesson], get("lesson.id",classOf[Integer]).get)
+    val msg = checkLessonPermission(lesson)
+    if (null != msg) {
+      throw new IllegalArgumentException(msg)
+    }
+    val gradeInputSwitch = getGradeInputSwitch(lesson)
+    put("gradeInputSwitch", gradeInputSwitch)
+    put("gradeState", getOrCreateState (lesson))
+    val putSomeParams =new HashSet[String]
+    putSomeParams.add("MAKEUP")
+    putSomeParams.add("EndGa")
+    putSomeParams.add("isTeacher")
+    put("markStyles", gradeRateService.getMarkStyles(lesson.project))
+    buildSomeParams(lesson, putSomeParams.toSet)
+    put("DELAY_ID", GradeType.Delay )
+    val gaGradeTypes = settings.getSetting(getProject).endGaElements 
+    val gaGradeTypeParams = new ListBuffer[GradeType]
+    for (gradeType <- gaGradeTypes) {
+//      gradeType = entityDao.get(classOf[GradeType], gradeType.id)
+      if (gradeInputSwitch.types.contains(gradeType)) gaGradeTypeParams.append(gradeType)
+    }
+    put("gaGradeTypes", gaGradeTypeParams)
+    put("lesson", lesson)
+    forward()
+  }
+
 }

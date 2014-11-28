@@ -8,10 +8,10 @@
     <class name="GaGradeStateBean" entity-name="org.openurp.eams.grade.GaGradeState" >
         <cache usage="read-write" region="org.openurp.eams.grade.model"/>
         <id name="id" unsaved-value="null" type="long"><generator class="date"/></id>
-        <many-to-one name="gradeState" />
+        <many-to-one name="gradeState"  not-null="true"/>
         <property name="remark"/>
-        <many-to-one name="gradeType" />
-        <many-to-one name="scoreMarkStyle" />
+        <many-to-one name="gradeType"  not-null="true"/>
+        <many-to-one name="scoreMarkStyle"  not-null="true"/>
         <property name="status"/>
         <property name="operator"/>
         <property name="beginOn"/>

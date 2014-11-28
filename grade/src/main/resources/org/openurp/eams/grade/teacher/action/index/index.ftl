@@ -1,16 +1,18 @@
 [#ftl]
 [@b.head/]
-[@b.toolbar title="学生成绩"/]
-<table class="indexpanel">
-  <tr>
-    <td class="index_view">
-    [@b.form name="indexSearchForm" action="!info" target="indexInfo" title="ui.searchForm" theme="search"]
-      [@b.textfields names="lesson.no;课程序号"/]  
-      <input type="hidden" name="orderBy" value="courseGrade.lesson.no"/>
-    [/@]
-    </td>
-    <td class="index_content">[@b.div id="indexInfo" href="!info?orderBy=courseGrade.lesson.id"/]
-    </td>
-  </tr>
-</table>
+[@b.grid items=lessons var="lesson"]
+	[@b.row]
+		[@b.col width="5%" title="attr.index"]${lesson_index+1}[/@]
+		[@b.col width="10%" title="attr.taskNo"]${(lesson.no)?if_exists}[/@]
+		[@b.col width="19%" title="attr.courseName"]${(lesson.course.name)?if_exists}[/@]
+		[@b.col width="12%" title="entity.courseType"]${(lesson.courseType.name)?if_exists}[/@]
+		[@b.col width="5%" title="attr.credit"]${(lesson.course.credits)?if_exists}[/@]
+		[@b.col width="5%" title="attr.weeks"]${(lesson.courseSchedule.weeks)?if_exists}[/@]
+		[@b.col width="5%" title="周课时"]${(lesson.courseSchedule.period)?if_exists}[/@]
+		[@b.col width="5%" title="task.studentNum"]${lesson.teachClass.courseTakes?size}[/@]
+		[@b.col width="17%" title="期末总评成绩"]
+				[@b.a href="!inputTask?lesson.id=${lesson.id}"]<U>录入</U>[/@]
+		[/@]
+	[/@]
+[/@]
 [@b.foot/]
