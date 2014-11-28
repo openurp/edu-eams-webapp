@@ -5,7 +5,7 @@ import org.openurp.eams.grade.teacher.action.{EndGaAction, MakeupGaAction}
 import org.openurp.eams.grade.teacher.action.IndexAction
 import org.openurp.eams.grade.setting.action.RateAction
 import org.openurp.eams.grade.teacher.action.ReportAction
-
+import org.openurp.eams.grade.service.internal.GradeInputSwitchServiceImpl
 class DefaultModule extends AbstractBindModule {
 
   protected override def binding() {
@@ -13,5 +13,7 @@ class DefaultModule extends AbstractBindModule {
     bind(classOf[IndexAction])
     bind(classOf[RateAction])
     bind(classOf[ReportAction])
+    
+    bind(classOf[GradeInputSwitchServiceImpl])
   }
 }

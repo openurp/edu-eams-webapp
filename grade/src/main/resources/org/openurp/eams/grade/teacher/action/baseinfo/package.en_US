@@ -1,0 +1,9 @@
+
+ThesisBaseInfoBean=Thesis Base Info
+ThesisBaseInfoBean.code=Code
+ThesisBaseInfoBean.name=Name
+ThesisBaseInfoBean.engName=Eng Name
+ThesisBaseInfoBean.updateDate=Update Date
+ThesisBaseInfoBean.enabled=Enabled
+
+ThesisRank=Thesis Rank
