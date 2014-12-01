@@ -67,7 +67,7 @@
                         <tr height="50px" valign="bottom">
                             [@gradeInfoHTML url="#" onclick="gradeInfo(document.actionForm2)" tdStyle1="vertical-align:middle;" tdStyle2="vertical-align:middle;" caption="查看" iconSize="25px" width1="" width2="40px"/]
                             [#if !((gaGradeTypeState.confirmed)!false)]
-                              [#if gradeInputSwitch.open]
+                              [#if gradeInputSwitch.open || true]
                             [@inputHTML url="#" tdStyle1="vertical-align:middle" tdStyle2="vertical-align:middle;text-align:left" onclick="gaInput()" caption="录入" iconSize="25px" width1="" width2="40px"/]
                             [@removeGradeHTML url="#" onclick="gaRemove()" tdStyle="vertical-align:middle" caption="删除成绩" iconSize="25px" width1="" width2="60px"/]
                               [#else]<td width="80px" style="vertical-align:middle;"><a>未开放录入</a></td>
@@ -109,10 +109,9 @@
         }
         [#if !gradeState.confirmed]
         bg.form.addInput(form2, "markStyleId", document.getElementById("markStyleId").value, "hidden");
-        bg.form.addInput(form2, "precision", document.getElementById("precision").value, "hidden");
         [/#if]
         form2.target = "_self";
-        bg.form.submit("actionForm2","${b.url('end-ga!input')}");
+        bg.form.submit("actionForm2","${b.url('end-ga!input?lesson.id=${lesson.id}')}");
     }
        
     function gaRemove() {

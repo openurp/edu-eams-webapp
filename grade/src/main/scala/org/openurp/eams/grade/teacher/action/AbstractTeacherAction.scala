@@ -112,7 +112,10 @@ class AbstractTeacherAction extends ActionSupport {
     val gis = getGradeInputSwitch(lesson)
     put("gradeInputSwitch", gis)
     if (!gis.opened) {
-      throw new IllegalArgumentException("gradeInputSwitch is closed")
+      /**
+       * Fix me
+       * */
+      //throw new IllegalArgumentException("gradeInputSwitch is closed")
     }
     val gradeState = getOrCreateState(lesson)
     put("gradeState", gradeState)
