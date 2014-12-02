@@ -53,7 +53,7 @@
 	                            [#if ((gradeTypeState.confirmed)!false) || ((gaGradeTypeState.confirmed)!false)]
 	                            <td style="border-bottom-width:1px;border-bottom-color:black;border-bottom-style:solid;text-align:center" width="150px">${(gradeTypeState.percent)?default(0) * 100}<input type="hidden" name="examGradeState${gradeType.id}.percent" value="${(gradeTypeState.percent)?default(0) * 100}"/></td>
 	                            [#else]
-	                            <td><input type="text" name="examGradeState${gradeType.id}.percent" value="${(gradeTypeState.percent)?default(0) * 100}" style="width:150px;text-align:right" maxlength="3"/></td>
+	                            <td><input type="text" name="examGradeState${gradeType.id}.percent" value="${(gradeTypeState.percent)?default(0)}" style="width:150px;text-align:right" maxlength="3"/></td>
 	                            [/#if]
 	                            <td>％</td>
 	                            <td style="color:blue">
