@@ -28,7 +28,7 @@ function GradeTable() {
     this.calcGa = calcGaScore;
     this.hasGa=false;
     this.hasGradeSelect = false;
-    this.isSecond = false
+    this.isSecond = false;
     this.setHasGradeSelect=setHasGradeSelect;
     this.setIsSecond=setIsSecond;
 }
@@ -106,15 +106,15 @@ function addCourseGrade(index, stdId, courseTakeTypeId, gradeTable) {
 function calcGaScore(index) {
     if(!this.hasGa)return;
     var gradeContents = "grade.courseTakeType.id=" + document.getElementById("courseTakeType_" + index).value;
-    gradeContents += "&grade.project.id=" + document.getElementById("courseTake_project_" + index).value;
+//    gradeContents += "&grade.project.id=" + document.getElementById("courseTake_project_" + index).value;
     var myExamStatus=normalExamStatusId;
     for(var i=0 ;i<this.gradeState.length;i++){
-        state=this.gradeState[i];
+        var state=this.gradeState[i];
         if(!state.inputable) continue;
-        var statePrefix= state.name + "_";
-        examScore=(null == document.getElementById(statePrefix + index) || "" == document.getElementById(statePrefix + index).value ? "" : document.getElementById(statePrefix + index).value);
-        examScorePercent=(null == document.getElementById("personPercent_"+statePrefix + index) || "" == document.getElementById("personPercent_"+statePrefix + index).value ? "" : document.getElementById("personPercent_"+statePrefix + index).value);
-        examStatus=normalExamStatusId;
+        var statePrefix= state.id + "_";
+        var examScore=(null == document.getElementById(statePrefix + index) || "" == document.getElementById(statePrefix + index).value ? "" : document.getElementById(statePrefix + index).value);
+        var examScorePercent=(null == document.getElementById("personPercent_"+statePrefix + index) || "" == document.getElementById("personPercent_"+statePrefix + index).value ? "" : document.getElementById("personPercent_"+statePrefix + index).value);
+        var examStatus=normalExamStatusId;
         if(null!=document.getElementById("examStatus_" + statePrefix + index) && !document.getElementById("examStatus_" + statePrefix + index).disabled){
            examStatus = document.getElementById("examStatus_"+ statePrefix + index).value;
         }
@@ -131,10 +131,17 @@ function calcGaScore(index) {
         }
     }
     var gaTd=document.getElementById("GA_" + index);
-    gradeContents += "&state.precision=" + this.precision;
-    gradeCalcualtor.calcGa(this.gradeStateId,gradeContents, function(data){
-        fillGaScore(gaTd,data);
-    });
+//    gradeContents += "&state.precision=" + this.precision;
+//    gradeCalcualtor.calcGa(this.gradeStateId,gradeContents, function(data){
+//        fillGaScore(gaTd,data);
+//    });
+    $.post(beangle.contextPath + '/eams/grade/teacher/end-ga/calcGa', 
+		{'gradeStateId':this.gradeStateId, 'gradeContent': gradeContents}, 
+		function (data){
+			console.log(data);
+			fillGaScore(gaTd, data);
+		}
+	);
 }
 
 function fillGaScore(gaTd,data) {
@@ -158,14 +165,13 @@ function alterErrorScore(input, msg) {
 function checkScore(index, input) {
     var score = input.value;
     var error = false;
-    scoreInt = parseInt(score,10);
+    var scoreInt = parseInt(score,10);
 	var maxScore=100;
    	var minScore=0;
     if(input.name.indexOf("MAKEUP")>-1) maxScore=60;
     if (scoreInt > maxScore) error = alterErrorScore(input, "输入成绩不能超过"+ maxScore +"分");
     if (scoreInt < minScore) error = alterErrorScore(input, "输入成绩不能小于"+ minScore +"分");
     if (!error) {
-        input.style.backgroundColor= "white";
         if (gradeTable.isSecond) {
             gradeTable.change(input);
         }
@@ -298,7 +304,7 @@ function refreshTime() {
     }
     timeElapse++;
 }
-var timer = setInterval('refreshTime()',1000);
+//var timer = setInterval('refreshTime()',1000);
 
 /**
  * 改变考试状态对分数进行清空和隐藏
@@ -314,4 +320,8 @@ function changeExamStatus(scoreId,obj){
 	}else{
 		jQuery("#"+scoreId).show();
 	}
+}
+
+function isEmpty(str){
+	return /^\s*$/.test(str);
 }

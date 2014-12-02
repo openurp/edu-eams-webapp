@@ -16,12 +16,12 @@ class CourseGradeSettingsImpl extends CourseGradeSettings {
    * @return
    */
   def getSetting(project: Project): CourseGradeSetting = {
-    val courseGradeSetting = new CourseGradeSetting
-    val endGaElements = new mutable.HashSet[GradeType]
-    endGaElements += new GradeTypeBean(3, "0003", "平时成绩", "Component Score")
-    endGaElements += new GradeTypeBean(2, "0002", "期末成绩", "Final Exam Score")
-    endGaElements += new GradeTypeBean(7, "0007", "总评成绩", "")
-    courseGradeSetting.endGaElements = endGaElements
+    val courseGradeSetting = new CourseGradeSetting(project)
+    //    val endGaElements = new mutable.HashSet[GradeType]
+    //    endGaElements += new GradeTypeBean(3, "0003", "平时成绩", "Component Score")
+    //    endGaElements += new GradeTypeBean(2, "0002", "期末成绩", "Final Exam Score")
+    //    endGaElements += new GradeTypeBean(7, "0007", "总评成绩", "")
+    //    courseGradeSetting.endGaElements = endGaElements
     courseGradeSetting
   }
 }

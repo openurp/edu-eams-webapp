@@ -100,21 +100,18 @@ class AbstractTeacherAction extends ActionSupport {
 
   @ignore
   protected def checkState() = {
-    val lessonId = getInt("lessonId").get
+    val lessonId = getInt("lesson.id").get
     val lesson = entityDao.get(classOf[Lesson], new Integer(lessonId))
     if (null == lesson) {
       throw new IllegalArgumentException("lession is null")
     }
-    val msg = checkLessonPermission(lesson)
-    if (null != msg) {
-      throw new IllegalArgumentException(msg)
-    }
+    checkLessonPermission(lesson)
     val gis = getGradeInputSwitch(lesson)
     put("gradeInputSwitch", gis)
     if (!gis.opened) {
       /**
        * Fix me
-       * */
+       */
       //throw new IllegalArgumentException("gradeInputSwitch is closed")
     }
     val gradeState = getOrCreateState(lesson)
@@ -127,7 +124,7 @@ class AbstractTeacherAction extends ActionSupport {
       throw new IllegalArgumentException("error.grade.modifyPublished")
     }
   }
-  protected def checkLessonPermission(lesson: Lesson): String = {
+  protected def checkLessonPermission(lesson: Lesson) = {
     val teachers = entityDao.findBy(classOf[Teacher], "code", List("FIXME"))
     //    if (teachers.isEmpty) {
     //      return "只有教师才可以录入成绩"
@@ -135,7 +132,6 @@ class AbstractTeacherAction extends ActionSupport {
     //    if (!lesson.teachers.contains(teachers.head)) {
     //      return "没有权限"
     //    }
-    null
   }
   /**
    * 查找和创建指定类型的成绩状态
@@ -158,6 +154,8 @@ class AbstractTeacherAction extends ActionSupport {
         gradeState.examStates += gradeTypeState
         gradeTypeState.gradeType = gradeType
         gradeTypeState.gradeState = getGradeState
+        //FIXME change default
+        gradeTypeState.scoreMarkStyle = new ScoreMarkStyleBean(ScoreMarkStyle.Percent)
         gradeTypeState
       }
       state.status = Grade.Status.New
@@ -237,7 +235,6 @@ class AbstractTeacherAction extends ActionSupport {
   //    putSemester(getProject)
   //    forward()
   //  }
-
 
   /**
    * 组装一些前台需要的参数
@@ -434,16 +431,10 @@ class AbstractTeacherAction extends ActionSupport {
    * 保存成绩
    */
   def save(): View = {
-    val result = checkState()
-    if (null != result) {
-      //      return result
-    }
-    val submit = !getBoolean("justSave").getOrElse(false)
-    val lesson = entityDao.get(classOf[Lesson], new Integer(getInt("lessonId").get))
-    val msg = checkLessonPermission(lesson)
-    if (null != msg) {
-      throw new IllegalArgumentException(msg)
-    }
+    checkState()
+    val submit = !getBoolean("justSave").getOrElse(true)
+    val lesson = entityDao.get(classOf[Lesson], new Integer(getInt("lesson.id").get))
+    checkLessonPermission(lesson)
     val existGradeMap = getExistGradeMap(lesson)
     val setting = settings.getSetting(getProject)
     val isPublish = setting.submitIsPublish
@@ -471,7 +462,7 @@ class AbstractTeacherAction extends ActionSupport {
     val status = if (submit) Grade.Status.Confirmed else Grade.Status.New
     val takes = getCourseTakes(lesson)
     for (take <- takes) {
-      val grade = buildCourseGrade(existGradeMap(take.std), take, status, inputedAt)
+      val grade = buildCourseGrade(existGradeMap.get(take.std).orNull, take, status, inputedAt)
       //      if (null != lesson.examMode) {
       //        grade.setExamMode(lesson.getExamMode)
       //      }
@@ -485,11 +476,11 @@ class AbstractTeacherAction extends ActionSupport {
     val gradeState = getGradeState
     val operator = getUsername
     gradeState.operator = operator
-    val params = new StringBuilder("&lessonId=" + lesson.id)
+    val params = new StringBuilder("&lesson.id=" + lesson.id)
     params.append("&gradeTypeIds=")
     val inputableGradeTypes = getGradeTypes(gradeState)
     for (gradeType <- inputableGradeTypes) {
-      getState(gradeType).asInstanceOf[CourseGradeStateBean].operator = operator
+      getState(gradeType).asInstanceOf[AbstractGradeState].operator = operator
       params.append(gradeType.id + ",")
     }
     entityDao.saveOrUpdate(grades, gradeState)
@@ -612,7 +603,8 @@ class AbstractTeacherAction extends ActionSupport {
     grade.operator = operator
     grade.updatedAt = inputedAt
     for (gradeType <- gradeTypes) {
-      buildExamGrade(grade, gradeType, take, status, inputedAt, operator)
+      if (!gradeType.isGa)
+        buildExamGrade(grade, gradeType, take, status, inputedAt, operator)
     }
     if (grade.examGrades.isEmpty) {
       return null
@@ -634,29 +626,32 @@ class AbstractTeacherAction extends ActionSupport {
     val scoreInputName = gradeType.id + "_" + take.std.id
     val examScoreStr = get(scoreInputName)
     val examStatusId = getInt("examStatus_" + scoreInputName).getOrElse(ExamStatus.Normal)
-    if (null == examScoreStr && gradeType.id != GradeType.EndGa) {
+    if (examScoreStr.isDefined && Strings.isBlank(examScoreStr.get) && gradeType.id != GradeType.EndGa) {
       return
     }
-    val examScore = getFloat(scoreInputName)
-    var examStatus: ExamStatus = entityDao.get(classOf[ExamStatus], new Integer(examStatusId))
+    val examScore = get(scoreInputName, classOf[java.lang.Float]).orNull
+    val examStatus: ExamStatus = entityDao.get(classOf[ExamStatus], new Integer(examStatusId))
     val markStyle = getState(gradeType).scoreMarkStyle
-    var examGrade = grade.getGrade(gradeType).asInstanceOf[ExamGradeBean]
-    if (null == examGrade) {
-      examGrade = new ExamGradeBean()
+    val examGrade = Option(grade.getGrade(gradeType).asInstanceOf[ExamGradeBean]).getOrElse({
+      val examGrade = new ExamGradeBean()
       examGrade.gradeType = gradeType
       examGrade.examStatus = examStatus
-      examGrade.score = examScore.getOrElse(null).asInstanceOf[java.lang.Float]
+      examGrade.score = examScore
       examGrade.updatedAt = inputedAt
+      examGrade.courseGrade = grade
       grade.examGrades += examGrade
-    }
+      examGrade
+    })
     grade.updatedAt = inputedAt
-    val personPercent = getInt("personPercent_" + gradeType.id + "_" + take.std.id)
-    examGrade.percent = personPercent.getOrElse(null).asInstanceOf[java.lang.Short]
+    val personPercent = get("personPercent_" + gradeType.id + "_" + take.std.id, classOf[java.lang.Short]).orNull
+    if(personPercent != null){
+      examGrade.percent = personPercent
+    }
     examGrade.markStyle = markStyle
     examGrade.examStatus = examStatus
     examGrade.updatedAt = inputedAt
     examGrade.operator = operator
-    examGrade.score = examScore.getOrElse(null).asInstanceOf[java.lang.Float]
+    examGrade.score = examScore
     examGrade.status = status
   }
 
@@ -692,12 +687,9 @@ class AbstractTeacherAction extends ActionSupport {
    */
   def removeGrade(): View = {
     checkState()
-    val lessonId = getInt("lessonId").get
+    val lessonId = getInt("lesson.id").get
     val lesson = entityDao.get(classOf[Lesson], new Integer(lessonId))
-    var msg = checkLessonPermission(lesson)
-    if (null != msg) {
-      throw new IllegalArgumentException(msg)
-    }
+    checkLessonPermission(lesson)
     val state = courseGradeService.getState(lesson)
     get("gradeTypeIds") foreach { gradeTypeIdSeq =>
       val gradeTypeIds = Strings.splitToInt(gradeTypeIdSeq)
@@ -710,55 +702,55 @@ class AbstractTeacherAction extends ActionSupport {
         }
       }
     }
-    msg = courseGradeHelper.removeLessonGrade(getUserId)
+    val msg = courseGradeHelper.removeLessonGrade(getUserId)
     if (Strings.isEmpty(msg)) {
       info("delete grade")
-      redirect("inputTask", "&lessonId=" + lesson.id, "info.delete.success")
+      redirect("inputTask", "&lesson.id=" + lesson.id, "info.delete.success")
     } else {
       throw new IllegalArgumentException(msg)
     }
   }
 
-    /**
-     * 打印教学班成绩
-     */
-    def report(): String = {
-      null
-//      var lessonIdSeq = get("lessonIds")
-//      if (Strings.isEmpty(lessonIdSeq)) lessonIdSeq = get("lessonId")
-//      if (Strings.isEmpty(lessonIdSeq)) {
-//        return forwardError("error.parameters.needed")
-//      }
-//      val lessons = entityDao.get(classOf[Lesson], Strings.splitToLong(lessonIdSeq))
-//      val gradeTypeIdSeq = getIntIds("gradeType")
-//      val gradeTypeIds = CollectUtils.newHashSet()
-//      if (null != gradeTypeIdSeq) gradeTypeIds.addAll(CollectUtils.newHashSet(gradeTypeIdSeq))
-//      if (gradeTypeIds.contains(GradeTypeConstants.MAKEUP_ID)) gradeTypeIds.add(GradeTypeConstants.DELAY_ID)
-//      teachClassGradeHelper.report(lessons, gradeTypeIds.toArray(Array.ofDim[Integer](gradeTypeIds.size)))
-//      val query = OqlBuilder.from(classOf[GradeRateConfig], "config")
-//        .where("config.project=:project", getProject)
-//      val gradeConfigMap = CollectUtils.newHashMap()
-//      for (config <- entityDao.search(query)) {
-//        gradeConfigMap.put(String.valueOf(config.getScoreMarkStyle.getId), config)
-//      }
-//      put("gradeConfigMap", gradeConfigMap)
-//      put("GA_ID", GradeTypeConstants.GA_ID)
-//      if (gradeTypeIds.contains(GradeTypeConstants.MAKEUP_ID)) forward("../../../../lesson/web/action/report/reportMakeup") else forward("../../../../lesson/web/action/report/reportGa")
-    }
+  /**
+   * 打印教学班成绩
+   */
+  def report(): String = {
+    null
+    //      var lessonIdSeq = get("lessonIds")
+    //      if (Strings.isEmpty(lessonIdSeq)) lessonIdSeq = get("lessonId")
+    //      if (Strings.isEmpty(lessonIdSeq)) {
+    //        return forwardError("error.parameters.needed")
+    //      }
+    //      val lessons = entityDao.get(classOf[Lesson], Strings.splitToLong(lessonIdSeq))
+    //      val gradeTypeIdSeq = getIntIds("gradeType")
+    //      val gradeTypeIds = CollectUtils.newHashSet()
+    //      if (null != gradeTypeIdSeq) gradeTypeIds.addAll(CollectUtils.newHashSet(gradeTypeIdSeq))
+    //      if (gradeTypeIds.contains(GradeTypeConstants.MAKEUP_ID)) gradeTypeIds.add(GradeTypeConstants.DELAY_ID)
+    //      teachClassGradeHelper.report(lessons, gradeTypeIds.toArray(Array.ofDim[Integer](gradeTypeIds.size)))
+    //      val query = OqlBuilder.from(classOf[GradeRateConfig], "config")
+    //        .where("config.project=:project", getProject)
+    //      val gradeConfigMap = CollectUtils.newHashMap()
+    //      for (config <- entityDao.search(query)) {
+    //        gradeConfigMap.put(String.valueOf(config.getScoreMarkStyle.getId), config)
+    //      }
+    //      put("gradeConfigMap", gradeConfigMap)
+    //      put("GA_ID", GradeTypeConstants.GA_ID)
+    //      if (gradeTypeIds.contains(GradeTypeConstants.MAKEUP_ID)) forward("../../../../lesson/web/action/report/reportMakeup") else forward("../../../../lesson/web/action/report/reportGa")
+  }
 
   //  /**
   //   * 查看单个教学任务所有成绩信息
   //   */
-//    def info(): String = {
-//      null
-  //    val lesson = entityDao.get(classOf[Lesson], getLong("lessonId"))
+  //    def info(): String = {
+  //      null
+  //    val lesson = entityDao.get(classOf[Lesson], getLong("lesson.id"))
   //    val msg = checkLessonPermission(lesson)
   //    if (null != msg) {
   //      return forwardError(msg)
   //    }
   //    teachClassGradeHelper.info(lesson)
   //    forward()
-//    }
+  //    }
 
   //  /**
   //   * 跳转到编辑打印内容页面
@@ -832,8 +824,8 @@ class AbstractTeacherAction extends ActionSupport {
 
   def getUserCategoryId = 1
 
-  def getUsername = "Name"
-  
+  def getUsername = "Teacher Name"
+
   def getUserId = 13006
 
 }
