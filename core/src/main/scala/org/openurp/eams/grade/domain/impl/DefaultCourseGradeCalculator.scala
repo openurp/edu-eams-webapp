@@ -174,8 +174,8 @@ class DefaultCourseGradeCalculator extends CourseGradeCalculator {
     var gaExamStatusId = ExamStatus.Normal
     for (gradeType <- elementTypes) {
       val examGrade = grade.getGrade(gradeType).asInstanceOf[ExamGrade]
-      var myPercent = examGrade.percent
-      if (null != myPercent && myPercent > 0 && null != examGrade) {
+      if (null != examGrade && null != examGrade.percent && examGrade.percent > 0) {
+        var myPercent = examGrade.percent
         if (null != examGrade.examStatus) {
           if (examGrade.examStatus.id == ExamStatus.Violation ||
             examGrade.examStatus.id == ExamStatus.Cheat) {

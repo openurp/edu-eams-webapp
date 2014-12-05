@@ -1,22 +1,20 @@
 package org.openurp.eams.grade.teacher.action
 
-import org.openurp.teach.core.model.ProjectBean
-import org.openurp.teach.core.Project
-import org.openurp.teach.code.ExamStatus
-import org.openurp.teach.code.CourseTakeType
-import org.openurp.eams.grade.model.ExamGradeStateBean
-import java.lang.{ Short => JShort }
-import org.openurp.teach.code.ScoreMarkStyle
-import org.openurp.eams.grade.ExamGradeState
-import org.openurp.teach.code.model.ScoreMarkStyleBean
-import java.util.HashSet
 import scala.collection.mutable.ListBuffer
-import collection.mutable
-import org.openurp.teach.code.GradeType
-import org.openurp.teach.code.model.GradeTypeBean
+import org.beangle.data.model.annotation.code
+import org.beangle.webmvc.api.annotation.ignore
 import org.openurp.eams.grade.CourseGradeState
 import org.openurp.eams.grade.GradeInputSwitch
-import org.beangle.webmvc.api.view.View
+import org.openurp.eams.grade.model.ExamGradeStateBean
+import org.openurp.teach.code.CourseTakeType
+import org.openurp.teach.code.ExamStatus
+import org.openurp.teach.code.GradeType
+import org.openurp.teach.code.model.ScoreMarkStyleBean
+import org.beangle.commons.lang.Strings
+import org.openurp.teach.grade.model.CourseGradeBean
+import org.beangle.webmvc.entity.helper.PopulateHelper
+import org.openurp.teach.grade.model.ExamGradeBean
+import org.openurp.teach.code.model.GradeTypeBean
 
 /**
  * 期末总评录入
@@ -35,7 +33,7 @@ class EndGaAction extends AbstractTeacherAction {
         //          if (null != gis && gis.getTypes.contains(gradeType)) gradeTypes.add(gradeType)
         gradeTypes.append(`type`)
       }
-//      gradeTypes.append(entityDao.get(classOf[GradeType], GradeType.EndGa))
+      gradeTypes.append(entityDao.get(classOf[GradeType], GradeType.EndGa))
       gradeTypes.toList
     })
     put("gradeTypes", gradeTypes)
@@ -48,30 +46,24 @@ class EndGaAction extends AbstractTeacherAction {
    * @return
    */
   def input(): String = {
-    val result = checkState()
-    if (null != result) {
-//      return result
-    }
+    checkState()
     val gradeState = getGradeState
+    checkLessonPermission(gradeState.lesson)
     val project = getProject
     val gradeTypes = settings.getSetting(project).endGaElements
     var updatePercent = false
     for (gradeType <- gradeTypes) {
+      val egs = getState(gradeType).asInstanceOf[ExamGradeStateBean]
       val prefix = "examGradeState" + gradeType.id
       val percent = getInt(prefix + ".percent")
-      val egs = entityDao.get(classOf[ExamGradeStateBean], new java.lang.Long(1))
       if (percent.isDefined &&
-        (null == egs.percent || percent.get * 1 == egs.percent)) {
+        (null == egs.percent || percent.get * 1 != egs.percent)) {
         egs.percent = percent.get.shortValue
         updatePercent = true
       }
       val examMarkStyleId = getInt(prefix + ".scoreMarkStyle.id")
       if (examMarkStyleId.isDefined)
         egs.scoreMarkStyle = entityDao.get(classOf[ScoreMarkStyleBean], new Integer(examMarkStyleId.get))
-    }
-    val msg = checkLessonPermission(gradeState.lesson)
-    if (null != msg) {
-      return forward("", msg)
     }
     entityDao.saveOrUpdate(gradeState)
     if (updatePercent) courseGradeService.recalculate(getGradeState)
@@ -101,11 +93,49 @@ class EndGaAction extends AbstractTeacherAction {
     forward()
   }
 
-  override def save(): View = {
-    null
-  }
-
   def personPercent(): String = null
 
   def inputTask(): String = null
+
+  def calcGa(): String = {
+    val gradeStateId = getLong("gradeStateId")
+    val gradeContent = get("gradeContent")
+    if (gradeContent.isEmpty || Strings.isBlank(gradeContent.get)) {
+      return null
+    }
+    val grade = new CourseGradeBean
+    val paramMaps = getParams(Strings.split(gradeContent.get, "&"))
+    PopulateHelper.populate(grade, paramMaps.get("grade").get)
+    paramMaps.remove("grade")
+    paramMaps.remove("state")
+    for (key <- paramMaps.keys) {
+      val examGrade = new ExamGradeBean
+      PopulateHelper.populate(examGrade, paramMaps.get(key).get)
+      grade.examGrades += examGrade
+    }
+    val state = entityDao.get(classOf[CourseGradeState], new java.lang.Long(gradeStateId.get))
+    val ga = calculator.calcEndGa(grade)
+    val gaState = state.getState(new GradeTypeBean(GradeType.EndGa))
+    val gaStyle = Option(gaState).getOrElse(state).scoreMarkStyle
+    val passed = gradeRateService.isPassed(ga, gaStyle, grade.project)
+    val result = gradeRateService.convert(ga, gaStyle, grade.project) + "," + (if (passed) 1 else 0)
+    put("result", result)
+    forward()
+  }
+
+  private def getParams(contents: Array[String]): collection.mutable.HashMap[String, collection.mutable.HashMap[String, Object]] = {
+    val paramMaps = new collection.mutable.HashMap[String, collection.mutable.HashMap[String, Object]]
+    for (content <- contents) {
+      val prefix = Strings.substringBefore(content, ".")
+      val params = paramMaps.get(prefix).getOrElse({
+        val params = new collection.mutable.HashMap[String, Object]
+        paramMaps.put(prefix, params)
+        params
+      }).asInstanceOf[collection.mutable.HashMap[String, Object]]
+      params.put(Strings.substringBetween(content, prefix + ".", "="),
+        Strings.substringAfter(content, "="))
+    }
+    paramMaps
+  }
+
 }

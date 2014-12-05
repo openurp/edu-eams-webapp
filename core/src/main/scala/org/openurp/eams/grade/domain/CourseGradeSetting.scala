@@ -49,9 +49,9 @@ class CourseGradeSetting extends ProjectBasedObject[Long] {
 
   def this(project: Project) {
     this()
-    endGaElements += new GradeTypeBean(GradeType.Usual)
-    endGaElements += new GradeTypeBean(GradeType.Middle)
-    endGaElements += new GradeTypeBean(GradeType.End)
+    endGaElements += new GradeTypeBean(GradeType.Usual, "0003", "平时成绩", "Component Score")
+//    endGaElements += new GradeTypeBean(GradeType.Middle, "0001", "期中成绩", "Middle Score")
+    endGaElements += new GradeTypeBean(GradeType.End, "0002", "期末成绩", "Final Exam Score")
 
     delayGaElements += new GradeTypeBean(GradeType.Usual)
     delayGaElements += new GradeTypeBean(GradeType.Middle)

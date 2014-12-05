@@ -85,8 +85,10 @@ class CourseGradeServiceImpl extends CourseGradeService {
         val gradeType = state.gradeType
         val examGrade = grade.getGrade(gradeType).asInstanceOf[ExamGradeBean]
         val examState = gradeState.getState(gradeType).asInstanceOf[ExamGradeState]
-        examGrade.percent = examState.percent
-        updateGradeState(examGrade, examState)
+        if (examGrade != null && examState != null) {
+          examGrade.percent = examState.percent
+          updateGradeState(examGrade, examState)
+        }
       }
       for (state <- gradeState.gaStates) {
         val gradeType = state.gradeType

@@ -30,7 +30,6 @@ class IndexAction extends AbstractTeacherAction {
     builder.join("ls.teachers", "t")
     builder.where("t.id=:teacherId", teacher.id)
     val lessons = entityDao.search(builder)
-    println("lessons", lessons, lessons.size)
     put("lessons", lessons)
     forward()
   }
@@ -71,10 +70,7 @@ class IndexAction extends AbstractTeacherAction {
    */
   def inputTask(): String = {
     val lesson = entityDao.get(classOf[Lesson], get("lesson.id",classOf[Integer]).get)
-    val msg = checkLessonPermission(lesson)
-    if (null != msg) {
-      throw new IllegalArgumentException(msg)
-    }
+    checkLessonPermission(lesson)
     val gradeInputSwitch = getGradeInputSwitch(lesson)
     put("gradeInputSwitch", gradeInputSwitch)
     put("gradeState", getOrCreateState (lesson))

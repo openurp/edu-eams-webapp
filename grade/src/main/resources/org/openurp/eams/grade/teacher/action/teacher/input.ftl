@@ -30,9 +30,10 @@
 		<input type="hidden" value="${unNormalExamStatus.id}" name="examStatus_${(gradeType.id)!}_${courseTake.std.id}" id="examStatus_${(gradeType.id)!}_${index + 1}"/>
 		${unNormalExamStatus.name}
 	[#else]
-	[#if (grade.getExamGrade(gradeType))??] [#local examGrade=grade.getExamGrade(gradeType)/][/#if]
+	    [#if (grade.getGrade(gradeType))??] [#local examGrade=grade.getGrade(gradeType)/][/#if]
 	    [#if currentScoreMarkStyle.numStyle]
 	        <input type="text" class="text score_ipt"
+              onblur="checkScore(${index + 1}, this);"
 	            tabIndex="${index+1}"
 	            id="${(gradeType.id)!}_${index + 1}" name="${(gradeType.id)!}_${courseTake.std.id}"
 	    		value="[#if grade?string != "null"]${(examGrade.score)!}[/#if]" style="width:40px" maxlength="4" role="gradeInput"/>
@@ -68,7 +69,7 @@
     	[#list gradeTypes?sort_by('code') as gradeType]
     		 [#if gradeType.id!=GA.id]
 	    		 <input type="hidden" id="personPercent_${(gradeType.id)!}_${index + 1}" 
-	    		   name="personPercent_${(gradeType.id)!}_${courseTake.std.id}" value="${(grade.getExamGrade(gradeType).percent)!}"/>
+	    		   name="personPercent_${(gradeType.id)!}_${courseTake.std.id}" value="${(grade.getGrade(gradeType).percent)!}"/>
 	    		 [#assign gradeTypeIdSeq = gradeTypeIdSeq + gradeType.id/]
 	    		 [#if gradeType_has_next]
 	    		 	[#assign gradeTypeIdSeq = gradeTypeIdSeq + ","/]
@@ -117,7 +118,7 @@ ${lesson.semester.schoolYear!}学年${(lesson.semester.name)?if_exists?replace('
     <br/>
     [/#if]
     [@b.form name="gradeForm" action="!save"]
-    <input name="lessonId" value="${lesson.id}" type="hidden"/>
+    <input name="lesson.id" value="${lesson.id}" type="hidden"/>
     <table align="center" border="0" style="font-size:13px;border-collapse: collapse;border:solid;border-width:1px;border-color:Wheat;width:98%;">
         <tr style="background-color: #FFFFBB">
             <td width="33%">${b.text("attr.courseNo")}:${lesson.course.code}</td>
@@ -136,7 +137,7 @@ ${lesson.semester.schoolYear!}学年${(lesson.semester.name)?if_exists?replace('
             </td>
         </tr>
        	<tr style="background-color: #FFFFBB">
-            <td>所录成绩:[#list gradeTypes as gradeType][@i18nName gradeType/]&nbsp;[#if (gradeState.getPercent(gradeType)?string.percent)??](${gradeState.getPercent(gradeType)?string.percent})[/#if][/#list]</td>
+            <td>所录成绩:[#list gradeTypes as gradeType][@i18nName gradeType/]&nbsp;[#if (gradeState.getPercent(gradeType))??](${gradeState.getPercent(gradeType)})[/#if][/#list]</td>
             <td>成绩精确度:[#if gradeState.precision!0=0]${b.text('grade.precision0')}[/#if][#if gradeState.precision!0=1]${b.text('grade.precision1')}[/#if]</td>
             <td id="timeElapse"></td>
         </tr>
@@ -216,12 +217,12 @@ ${lesson.semester.schoolYear!}学年${(lesson.semester.name)?if_exists?replace('
 <script language="JavaScript">
   $(function (){
     $(".score_ipt").keyup(function (){
-      checkScore(this);
+      icheckScore(this);
     }).blur(function (){
-      checkScore(this);
+      icheckScore(this);
     });
   });
-  function checkScore(ipt){
+  function icheckScore(ipt){
     var color = /^\d{1,3}$/.test(ipt.value) ? '' : 'red';
     $(ipt).css('background-color', color);
   }
