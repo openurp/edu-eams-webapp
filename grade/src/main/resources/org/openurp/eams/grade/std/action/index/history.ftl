@@ -5,5 +5,5 @@
 [/@]
 	[#include "stdGradeStat.ftl"/]
 	[@b.div style="margin-top:10px;text-align:center;font-weight:bold;"]${b.text("grade.resultsList")}[/@]
-	[#include "../../../../components/studentGrades.ftl"]
+	[#include "../../../components/studentGrades.ftl"]
 [@b.foot/]

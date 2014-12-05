@@ -1,8 +1,8 @@
 [#ftl/]
 [#include "/template/macros.ftl"/]
 [@b.div style="margin-top:10px;text-align:center;"]
-	${b.text("attr.stdNo")}:${(stdGpa.std.code)!}
-	${b.text("attr.personName")}:[@i18nName stdGpa.std/]
+	${b.text("学号")}:${(stdGpa.std.code)!}
+	${b.text("姓名")}:[@i18nName stdGpa.std.person/]
 	${b.text("entity.department")}:[@i18nName stdGpa.std.department?if_exists/]
 	${b.text("entity.major")}:[@i18nName stdGpa.std.major?if_exists/]
 	${b.text("entity.direction")}:[#if stdGpa.std.direction?exists][@i18nName stdGpa.std.direction/][#else]${b.text("grade.nothing")}[/#if]
@@ -11,7 +11,7 @@
 <table class="gridtable">
 	<thead class="gridhead">
 		<tr>
-			<th>${b.text("attr.year2year")}</th>
+			<th>${b.text("学年")}</th>
 			<th>${b.text("attr.term")}</th>
 			<th>${b.text("std.grade.courseNumber")}</th>
 			<th>${b.text("std.totalCredit")}</th>

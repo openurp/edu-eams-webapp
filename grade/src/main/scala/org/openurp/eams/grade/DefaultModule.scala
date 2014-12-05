@@ -1,11 +1,9 @@
 package org.openurp.eams.grade
 
 import org.beangle.commons.inject.bind.AbstractBindModule
-import org.openurp.eams.grade.teacher.action.{EndGaAction, MakeupGaAction}
-import org.openurp.eams.grade.teacher.action.IndexAction
-import org.openurp.eams.grade.setting.action.RateAction
-import org.openurp.eams.grade.teacher.action.ReportAction
 import org.openurp.eams.grade.service.internal.GradeInputSwitchServiceImpl
+import org.openurp.eams.grade.setting.action.RateAction
+import org.openurp.eams.grade.teacher.action.{EndGaAction, IndexAction, MakeupGaAction, ReportAction}
 class DefaultModule extends AbstractBindModule {
 
   protected override def binding() {
