@@ -1,7 +1,6 @@
 package org.openurp.eams.grade
 
 import org.beangle.commons.inject.bind.AbstractBindModule
-import org.openurp.eams.grade.service.internal.GradeInputSwitchServiceImpl
 import org.openurp.eams.grade.setting.action.RateAction
 import org.openurp.eams.grade.teacher.action.{EndGaAction, IndexAction, MakeupGaAction, ReportAction}
 import org.openurp.eams.grade.service.SimpleGradeCourseTypeProviderImpl
@@ -14,6 +13,5 @@ class DefaultModule extends AbstractBindModule {
     bind(classOf[ReportAction])
         //FIXME move to teach-core
     bind(classOf[SimpleGradeCourseTypeProviderImpl])
-    bind(classOf[GradeInputSwitchServiceImpl])
   }
 }

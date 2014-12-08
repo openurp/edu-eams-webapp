@@ -8,7 +8,6 @@ import org.openurp.teach.grade.service.GradeRateService
 import org.beangle.data.model.dao.EntityDao
 import org.openurp.teach.grade.model.CourseGradeState
 import org.openurp.teach.code.service.BaseCodeService
-import java.util.HashSet
 import org.openurp.teach.grade.domain.CourseGradeCalculator
 import org.openurp.teach.grade.service.CourseGradeService
 import org.openurp.teach.grade.service.GradeRateService
@@ -19,6 +18,8 @@ import org.openurp.teach.grade.service.GradeRateService
 import org.openurp.teach.grade.model.CourseGradeState
 import org.openurp.teach.grade.service.CourseGradeService
 import org.openurp.teach.grade.domain.CourseGradeCalculator
+import org.beangle.webmvc.api.context.Params
+import scala.collection.mutable.HashSet
 
 /**
  * 成绩查询管理辅助类
@@ -197,7 +198,7 @@ class CourseGradeHelper {
     var state: CourseGradeState = courseGradeService.getState(lesson)
     // 在必要时生成新的成绩状态
     if (null == state) {
-      state = new CourseGradeStateBean(lesson)
+      state = new CourseGradeState(lesson)
       entityDao.saveOrUpdate(state)
     }
     val gradeTypeIds = new HashSet[Integer]

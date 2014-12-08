@@ -3,9 +3,9 @@ package org.openurp.eams.grade.teacher.action
 import scala.collection.mutable.ListBuffer
 import org.beangle.data.model.annotation.code
 import org.beangle.webmvc.api.annotation.ignore
-import org.openurp.eams.grade.CourseGradeState
-import org.openurp.eams.grade.GradeInputSwitch
-import org.openurp.eams.grade.model.ExamGradeStateBean
+import org.openurp.teach.grade.model.CourseGradeState
+import org.openurp.teach.grade.model.GradeInputSwitch
+import org.openurp.teach.grade.model.ExamGradeState
 import org.openurp.teach.code.CourseTakeType
 import org.openurp.teach.code.ExamStatus
 import org.openurp.teach.code.GradeType
@@ -53,7 +53,7 @@ class EndGaAction extends AbstractTeacherAction {
     val gradeTypes = settings.getSetting(project).endGaElements
     var updatePercent = false
     for (gradeType <- gradeTypes) {
-      val egs = getState(gradeType).asInstanceOf[ExamGradeStateBean]
+      val egs = getState(gradeType).asInstanceOf[ExamGradeState]
       val prefix = "examGradeState" + gradeType.id
       val percent = getInt(prefix + ".percent")
       if (percent.isDefined &&

@@ -2,7 +2,7 @@ package org.openurp.eams.grade.setting.action
 
 import org.beangle.webmvc.api.action.ActionSupport
 import org.beangle.webmvc.entity.action.RestfulAction
-import org.openurp.eams.grade.model.GradeRateConfig
+import org.openurp.teach.grade.model.GradeRateConfig
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.teach.code.ScoreMarkStyle
 import org.openurp.teach.core.Project
@@ -10,9 +10,9 @@ import org.openurp.teach.core.model.ProjectBean
 import org.beangle.commons.collection.Order
 import org.beangle.webmvc.api.view.View
 import org.beangle.commons.lang.Strings
-import org.openurp.eams.grade.model.GradeRateItem
+import org.openurp.teach.grade.model.GradeRateItem
 import java.util.HashMap
-import org.openurp.eams.grade.model.GradeRateItem
+import org.openurp.teach.grade.model.GradeRateItem
 import java.util.ArrayList
 import scala.collection.mutable.ListBuffer
 import scala.collection.Seq

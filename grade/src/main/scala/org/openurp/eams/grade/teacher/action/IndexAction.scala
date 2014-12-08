@@ -8,16 +8,14 @@ import org.beangle.data.model.dao.EntityDao
 import org.beangle.webmvc.api.action.ActionSupport
 import org.beangle.webmvc.api.annotation.mapping
 import org.beangle.webmvc.api.annotation.param
-import org.openurp.eams.grade.CourseGradeState
-import org.openurp.eams.grade.model.CourseGradeStateBean
+import org.openurp.teach.grade.model.CourseGradeState
 import scala.collection.mutable.ListBuffer
 import org.openurp.teach.code.GradeType
 import org.openurp.base.Teacher
-import org.openurp.eams.grade.GradeInputSwitch
+import org.openurp.teach.grade.model.GradeInputSwitch
 import org.openurp.teach.core.Project
-import org.openurp.eams.grade.model.GradeInputSwitchBean
 import org.openurp.base.Semester
-import org.openurp.eams.grade.service.GradeInputSwitchService
+import org.openurp.teach.grade.service.GradeInputSwitchService
 import scala.collection.mutable.HashSet
 
 class IndexAction extends AbstractTeacherAction {
@@ -51,7 +49,7 @@ class IndexAction extends AbstractTeacherAction {
     //    query2.where("courseGradeState.lesson=:lesson", lesson)
     //entityDao.search(query2)
     //gradeState.get(0)之后再put
-    val gradeState = new CourseGradeStateBean
+    val gradeState = new CourseGradeState
 
     //put("gradeState", gradeState)
     val gradeTypes = new ListBuffer[GradeType]

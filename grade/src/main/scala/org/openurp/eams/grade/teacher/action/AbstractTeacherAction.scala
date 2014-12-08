@@ -1,63 +1,31 @@
 package org.openurp.eams.grade.teacher.action
 
-import org.openurp.eams.grade.model.GradeRateConfig
-import org.openurp.base.Semester
-import org.openurp.teach.exam.ExamTake
-import org.beangle.webmvc.api.action.ActionSupport
-import org.openurp.teach.grade.model.ExamGradeBean
-import org.openurp.eams.grade.service.CourseGradeSettings
-import org.openurp.eams.grade.domain.CourseGradeCalculator
-import org.openurp.eams.grade.ExamGradeState
-import org.openurp.eams.grade.model.CourseGradeStateBean
-import org.springframework.beans.support.PropertyComparator
-import org.openurp.eams.grade.service.CourseGradeService
-import org.openurp.teach.lesson.CourseTake
-import org.openurp.teach.grade.Grade
-import org.beangle.commons.lang.Strings
-import org.openurp.teach.grade.model.CourseGradeBean
-import org.openurp.teach.grade.domain.CourseGradeSubmitEvent
-import org.openurp.teach.core.Project
-import org.openurp.eams.grade.service.GradeRateService
-import org.beangle.data.jpa.dao.OqlBuilder
-import org.openurp.eams.grade.CourseGradeState
-import org.openurp.teach.lesson.Lesson
-import org.openurp.teach.grade.domain.GradeCourseTypeProvider
-import org.openurp.teach.grade.CourseGrade
-import org.openurp.teach.code.ExamType
-import org.openurp.teach.core.Student
-import org.openurp.teach.code.ScoreMarkStyle
-import org.openurp.teach.code.CourseTakeType
-import java.util.Collections
-import org.openurp.teach.code.GradeType
-import org.beangle.commons.lang.SystemInfo.User
 import java.util.Date
-import org.openurp.teach.code.ExamStatus
-import org.openurp.eams.grade.domain.GradeTypePolicy
-import java.awt.Desktop.Action
-import org.openurp.eams.grade.domain.MarkStyleStrategy
+
+import scala.collection.mutable.{ HashMap, HashSet, ListBuffer }
+
 import org.beangle.commons.bean.orderings.PropertyOrdering
-import org.openurp.eams.grade.GradeInputSwitch
-import org.openurp.eams.grade.model.GradeInputSwitchBean
-import org.openurp.base.Teacher
+import org.beangle.commons.lang.Strings
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.beangle.data.model.annotation.config
 import org.beangle.data.model.dao.EntityDao
-import org.openurp.eams.grade.service.GradeInputSwitchService
-import org.openurp.teach.code.service.BaseCodeService
-import scala.collection.mutable.HashMap
-import scala.collection.mutable.ListBuffer
-import org.openurp.eams.grade.model.ExamGradeStateBean
-import org.openurp.teach.code.model.ScoreMarkStyleBean
-import org.openurp.eams.grade.model.GaGradeStateBean
-import org.openurp.eams.grade.GradeState
-import org.openurp.teach.code.model.GradeTypeBean
-import scala.collection.mutable.HashSet
-import org.beangle.webmvc.api.annotation.view
-import org.beangle.webmvc.api.view.View
-import org.openurp.eams.grade.domain.CourseGradeHelper
-import org.openurp.teach.lesson.model.LessonBean
-import org.openurp.teach.grade.ExamGrade
-import org.openurp.eams.grade.domain.AbstractGradeState
-import org.openurp.teach.core.model.ProjectBean
+import org.beangle.webmvc.api.action.ActionSupport
 import org.beangle.webmvc.api.annotation.ignore
+import org.beangle.webmvc.api.view.View
+import org.openurp.base.{ Semester, Teacher }
+import org.openurp.eams.grade.domain.GradeTypePolicy
+import org.openurp.eams.grade.helper.CourseGradeHelper
+import org.openurp.teach.code.{ ExamStatus, ExamType, GradeType, ScoreMarkStyle }
+import org.openurp.teach.code.model.{ GradeTypeBean, ScoreMarkStyleBean }
+import org.openurp.teach.code.service.BaseCodeService
+import org.openurp.teach.core.{ Project, Student }
+import org.openurp.teach.core.model.ProjectBean
+import org.openurp.teach.exam.ExamTake
+import org.openurp.teach.grade.{ CourseGrade, Grade }
+import org.openurp.teach.grade.domain.{ CourseGradeCalculator, GradeCourseTypeProvider, MarkStyleStrategy }
+import org.openurp.teach.grade.model.{ AbstractGradeState, CourseGradeBean, CourseGradeState, ExamGradeBean, ExamGradeState, GaGradeState, GradeInputSwitch, GradeRateConfig, GradeState }
+import org.openurp.teach.grade.service.{ CourseGradeService, CourseGradeSettings, GradeInputSwitchService, GradeRateService }
+import org.openurp.teach.lesson.{ CourseTake, Lesson }
 
 /**
  * 教师管理成绩响应类
@@ -143,14 +111,14 @@ class AbstractTeacherAction extends ActionSupport {
     val gradeState = getGradeState
     val gradeTypeState = Option(gradeState.getState(gradeType)).getOrElse({
       val state = if (gradeType.isGa) {
-        val gradeTypeState = new GaGradeStateBean
+        val gradeTypeState = new GaGradeState
         gradeState.gaStates += gradeTypeState
         gradeTypeState.gradeType = gradeType
         gradeTypeState.gradeState = getGradeState
         gradeTypeState.scoreMarkStyle = new ScoreMarkStyleBean(gradeState.scoreMarkStyle.id)
         gradeTypeState
       } else {
-        val gradeTypeState = new ExamGradeStateBean
+        val gradeTypeState = new ExamGradeState
         gradeState.examStates += gradeTypeState
         gradeTypeState.gradeType = gradeType
         gradeTypeState.gradeState = getGradeState
@@ -644,7 +612,7 @@ class AbstractTeacherAction extends ActionSupport {
     })
     grade.updatedAt = inputedAt
     val personPercent = get("personPercent_" + gradeType.id + "_" + take.std.id, classOf[java.lang.Short]).orNull
-    if(personPercent != null){
+    if (personPercent != null) {
       examGrade.percent = personPercent
     }
     examGrade.markStyle = markStyle
@@ -758,12 +726,12 @@ class AbstractTeacherAction extends ActionSupport {
   //  def editReport(): String = forward()
 
   def getGradeInputSwitch(project: Project, semester: Semester): GradeInputSwitch = {
-    var gradeInputSwitch: GradeInputSwitchBean = null
+    var gradeInputSwitch: GradeInputSwitch = null
     if (gradeInputSwitchService != null) {
-      gradeInputSwitch = gradeInputSwitchService.getSwitch(project, semester).asInstanceOf[GradeInputSwitchBean]
+      gradeInputSwitch = gradeInputSwitchService.getSwitch(project, semester).asInstanceOf[GradeInputSwitch]
     }
     if (null == gradeInputSwitch) {
-      gradeInputSwitch = new GradeInputSwitchBean
+      gradeInputSwitch = new GradeInputSwitch
       gradeInputSwitch.project = project
       gradeInputSwitch.semester = semester
       gradeInputSwitch.types = new collection.mutable.HashSet[GradeType]
@@ -790,7 +758,7 @@ class AbstractTeacherAction extends ActionSupport {
       case Some(markStyleId) => entityDao.get(classOf[ScoreMarkStyle], Integer.valueOf(markStyleId))
       case _ => null.asInstanceOf[ScoreMarkStyle]
     }
-    if (null == state) state = new CourseGradeStateBean(lesson)
+    if (null == state) state = new CourseGradeState(lesson)
     if (null != markStyleStrategy) markStyleStrategy.configMarkStyle(state, getGradeTypes(state))
     val es = state.getState(new GradeTypeBean(GradeType.EndGa))
     if (null != markStyle) {
@@ -814,8 +782,8 @@ class AbstractTeacherAction extends ActionSupport {
   //    forward(new Action("", "reportForExam"))
   //  }
 
-  protected def getGradeState(): CourseGradeStateBean = {
-    getAttribute("gradeState").asInstanceOf[CourseGradeStateBean]
+  protected def getGradeState(): CourseGradeState = {
+    getAttribute("gradeState").asInstanceOf[CourseGradeState]
   }
 
   protected def getProject() = {
