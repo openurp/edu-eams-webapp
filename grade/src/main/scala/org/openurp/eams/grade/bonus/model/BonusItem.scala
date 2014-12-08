@@ -1,4 +1,4 @@
-package org.openurp.eams
+package org.openurp.eams.grade.bonus.model
 
 import scala.collection.mutable.ListBuffer
 import org.beangle.data.model.bean.{ CodedBean, IntIdBean, NamedBean }

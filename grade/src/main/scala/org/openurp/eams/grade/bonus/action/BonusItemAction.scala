@@ -1,15 +1,14 @@
-package org.openurp.eams.action
+package org.openurp.eams.grade.bonus.action
 
 import scala.collection.mutable.ListBuffer
-
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.data.model.Entity
 import org.beangle.webmvc.api.view.View
 import org.beangle.webmvc.entity.action.RestfulAction
 import org.openurp.base.Semester
-import org.openurp.eams.BonusItem
 import org.openurp.teach.code.StdLabel
 import org.openurp.teach.core.Course
+import org.openurp.eams.grade.bonus.model.BonusItem
 
 class BonusItemAction extends RestfulAction[BonusItem] {
 
