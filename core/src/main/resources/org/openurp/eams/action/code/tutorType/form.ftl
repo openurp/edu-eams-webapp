@@ -1,0 +1,18 @@
+[#ftl]
+[@b.head/]
+[@b.toolbar title="修改导师类型"]bar.addBack();[/@]
+[@b.tabs]
+  [@b.form action="!update?id=${tutorType.id}" theme="list"]
+    [@b.textfield name="tutorType.code" label="代码" value="${tutorType.code!}" required="true" maxlength="20"/]
+    [@b.textfield name="tutorType.name" label="名称" value="${tutorType.name!}" required="true" maxlength="20"/]
+    [@b.textfield name="tutorType.enName" label="英文名" value="${tutorType.enName!}" maxlength="100"/]
+    [@b.startend label="生效失效时间" 
+      name="tutorType.beginOn,tutorType.endOn" required="false,false" 
+      start=tutorType.beginOn end=tutorType.endOn format="date"/]
+    [@b.textfield name="tutorType.remark" label="备注" value="${tutorType.remark!}" maxlength="3"/]
+    [@b.formfoot]
+      [@b.reset/]&nbsp;&nbsp;[@b.submit value="action.submit"/]
+    [/@]
+  [/@]
+[/@]
+[@b.foot/]

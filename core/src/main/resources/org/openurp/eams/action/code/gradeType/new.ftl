@@ -1,0 +1,18 @@
+[#ftl]
+[@b.head/]
+[@b.toolbar title="新建学位"]bar.addBack();[/@]
+[@b.tabs]
+  [@b.form action="!save" theme="list"]
+    [@b.textfield name="gradeType.code" label="代码" value="${gradeType.code!}" required="true" maxlength="20"/]
+    [@b.textfield name="gradeType.name" label="名称" value="${gradeType.name!}" required="true" maxlength="20"/]
+    [@b.textfield name="gradeType.enName" label="英文名" value="${gradeType.enName!}" maxlength="100"/]
+    [@b.startend label="生效失效日期" 
+      name="gradeType.beginOn,gradeType.endOn" required="false,false" 
+      start=gradeType.beginOn end=gradeType.endOn format="date"/]
+    [@b.textfield name="gradeType.remark" label="备注" value="${gradeType.remark!}" maxlength="30"/]
+    [@b.formfoot]
+      [@b.reset/]&nbsp;&nbsp;[@b.submit value="action.submit"/]
+    [/@]
+  [/@]
+[/@]
+[@b.foot/]

@@ -1,0 +1,20 @@
+[#ftl]
+[@b.head/]
+[@b.toolbar title="新建专业方向"]bar.addBack();[/@]
+[@b.tabs]
+  [@b.form action="!save" theme="list"]
+    [@b.textfield name="direction.code" label="代码" value="${direction.code!}" required="true" maxlength="20"/]
+    [@b.textfield name="direction.name" label="名称" value="${direction.name!}" required="true" maxlength="20"/]
+    [@b.textfield name="direction.engName" label="英文名" value="${direction.engName!}" maxlength="100"/]
+    [@b.startend label="生效失效日期" 
+      name="direction.beginOn,direction.endOn" required="false,false" 
+      start=direction.beginOn end=direction.endOn format="date"/]
+    [@b.textfield name="direction.remark" label="备注" value="${direction.remark!}" maxlength="30"/]
+    [@b.select name="direction.major.id" label="专业" value="${(direction.major.id)!}" required="true" 
+               style="width:200px;" items=majors option="id,name" empty="..."/]
+    [@b.formfoot]
+      [@b.reset/]&nbsp;&nbsp;[@b.submit value="action.submit"/]
+    [/@]
+  [/@]
+[/@]
+[@b.foot/]

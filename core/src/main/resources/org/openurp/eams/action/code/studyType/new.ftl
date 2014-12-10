@@ -1,0 +1,18 @@
+[#ftl]
+[@b.head/]
+[@b.toolbar title="新建学习形式"]bar.addBack();[/@]
+[@b.tabs]
+  [@b.form action="!save" theme="list"]
+    [@b.textfield name="studyType.code" label="代码" value="${studyType.code!}" required="true" maxlength="20"/]
+    [@b.textfield name="studyType.name" label="名称" value="${studyType.name!}" required="true" maxlength="20"/]
+    [@b.textfield name="studyType.enName" label="英文名" value="${studyType.enName!}" maxlength="100"/]
+    [@b.startend label="生效失效时间" 
+      name="studyType.beginOn,studyType.endOn" required="false,false" 
+      start=studyType.beginOn end=studyType.endOn format="date"/]
+    [@b.textfield name="studyType.remark" label="备注" value="${studyType.remark!}" maxlength="30"/]
+    [@b.formfoot]
+      [@b.reset/]&nbsp;&nbsp;[@b.submit value="action.submit"/]
+    [/@]
+  [/@]
+[/@]
+[@b.foot/]

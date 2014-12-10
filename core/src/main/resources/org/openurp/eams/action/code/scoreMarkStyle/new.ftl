@@ -1,0 +1,18 @@
+[#ftl]
+[@b.head/]
+[@b.toolbar title="新建学位"]bar.addBack();[/@]
+[@b.tabs]
+  [@b.form action="!save" theme="list"]
+    [@b.textfield name="scoreMarkStyle.code" label="代码" value="${scoreMarkStyle.code!}" required="true" maxlength="20"/]
+    [@b.textfield name="scoreMarkStyle.name" label="名称" value="${scoreMarkStyle.name!}" required="true" maxlength="20"/]
+    [@b.textfield name="scoreMarkStyle.enName" label="英文名" value="${scoreMarkStyle.enName!}" maxlength="100"/]
+    [@b.startend label="生效失效日期" 
+      name="scoreMarkStyle.beginOn,scoreMarkStyle.endOn" required="false,false" 
+      start=scoreMarkStyle.beginOn end=scoreMarkStyle.endOn format="date"/]
+    [@b.textfield name="scoreMarkStyle.remark" label="备注" value="${scoreMarkStyle.remark!}" maxlength="30"/]
+    [@b.formfoot]
+      [@b.reset/]&nbsp;&nbsp;[@b.submit value="action.submit"/]
+    [/@]
+  [/@]
+[/@]
+[@b.foot/]

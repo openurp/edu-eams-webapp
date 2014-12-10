@@ -1,0 +1,18 @@
+[#ftl]
+[@b.head/]
+[@b.toolbar title="修改教师职称等级"]bar.addBack();[/@]
+[@b.tabs]
+  [@b.form action="!update?id=${teacherTitleLevel.id}" theme="list"]
+    [@b.textfield name="teacherTitleLevel.code" label="代码" value="${teacherTitleLevel.code!}" required="true" maxlength="20"/]
+    [@b.textfield name="teacherTitleLevel.name" label="名称" value="${teacherTitleLevel.name!}" required="true" maxlength="20"/]
+    [@b.textfield name="teacherTitleLevel.enName" label="英文名" value="${teacherTitleLevel.enName!}" maxlength="100"/]
+    [@b.startend label="生效失效时间" 
+      name="teacherTitleLevel.beginOn,teacherTitleLevel.endOn" required="false,false" 
+      start=teacherTitleLevel.beginOn end=teacherTitleLevel.endOn format="date"/]
+    [@b.textfield name="teacherTitleLevel.remark" label="备注" value="${teacherTitleLevel.remark!}" maxlength="3"/]
+    [@b.formfoot]
+      [@b.reset/]&nbsp;&nbsp;[@b.submit value="action.submit"/]
+    [/@]
+  [/@]
+[/@]
+[@b.foot/]

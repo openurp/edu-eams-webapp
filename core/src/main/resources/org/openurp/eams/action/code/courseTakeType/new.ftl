@@ -1,0 +1,18 @@
+[#ftl]
+[@b.head/]
+[@b.toolbar title="新建学位"]bar.addBack();[/@]
+[@b.tabs]
+  [@b.form action="!save" theme="list"]
+    [@b.textfield name="courseTakeType.code" label="代码" value="${courseTakeType.code!}" required="true" maxlength="20"/]
+    [@b.textfield name="courseTakeType.name" label="名称" value="${courseTakeType.name!}" required="true" maxlength="20"/]
+    [@b.textfield name="courseTakeType.enName" label="英文名" value="${courseTakeType.enName!}" maxlength="100"/]
+    [@b.startend label="生效失效日期" 
+      name="courseTakeType.beginOn,courseTakeType.endOn" required="false,false" 
+      start=courseTakeType.beginOn end=courseTakeType.endOn format="date"/]
+    [@b.textfield name="courseTakeType.remark" label="备注" value="${courseTakeType.remark!}" maxlength="30"/]
+    [@b.formfoot]
+      [@b.reset/]&nbsp;&nbsp;[@b.submit value="action.submit"/]
+    [/@]
+  [/@]
+[/@]
+[@b.foot/]

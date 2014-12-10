@@ -1,0 +1,30 @@
+[#ftl]
+[@b.head/]
+[@b.grid items=projects var="project"]
+  [@b.gridbar]
+    bar.addItem("${b.text("action.new")}",action.add());
+    bar.addItem("${b.text("action.modify")}",action.edit());
+    bar.addItem("${b.text("action.delete")}",action.remove("确认删除?"));
+  [/@]
+  [@b.row]
+    [@b.boxcol /]
+    [@b.col width="15%" property="name" title="名称"][@b.a href="!info?id=${project.id}"]${project.name}[/@][/@]
+    [@b.col width="10%" property="school" title="适用学校"]${project.school.name}[/@]
+    [@b.col width="5%" property="minor" title="是否辅修"]${(project.minor?string("是","否"))!}[/@]
+    [@b.col width="20%" property="departments" title="部门列表"]
+    [#list project.departments as department]
+        ${department.name!}
+        [#if department_has_next]<br>[/#if]
+      [/#list]
+      [/@]
+    [@b.col width="20%" property="types" title="学生类别"]
+      [#list project.types as type]
+        ${type.name!}
+        [#if type_has_next]<br>[/#if]
+      [/#list]
+      [/@]
+    [@b.col width="10%" property="beginOn" title="生效时间"]${project.beginOn!}[/@]
+    [@b.col width="10%" property="endOn" title="失效时间"]${project.endOn!}[/@]
+  [/@]
+[/@]
+[@b.foot/]

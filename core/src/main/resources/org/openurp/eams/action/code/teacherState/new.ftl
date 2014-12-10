@@ -1,0 +1,18 @@
+[#ftl]
+[@b.head/]
+[@b.toolbar title="新建教师在职状态"]bar.addBack();[/@]
+[@b.tabs]
+  [@b.form action="!save" theme="list"]
+    [@b.textfield name="teacherState.code" label="代码" value="${teacherState.code!}" required="true" maxlength="20"/]
+    [@b.textfield name="teacherState.name" label="名称" value="${teacherState.name!}" required="true" maxlength="20"/]
+    [@b.textfield name="teacherState.enName" label="英文名" value="${teacherState.enName!}" maxlength="100"/]
+    [@b.startend label="生效失效时间" 
+      name="teacherState.beginOn,teacherState.endOn" required="false,false" 
+      start=teacherState.beginOn end=teacherState.endOn format="date"/]
+    [@b.textfield name="teacherState.remark" label="备注" value="${teacherState.remark!}" maxlength="30"/]
+    [@b.formfoot]
+      [@b.reset/]&nbsp;&nbsp;[@b.submit value="action.submit"/]
+    [/@]
+  [/@]
+[/@]
+[@b.foot/]

@@ -1,0 +1,18 @@
+[#ftl]
+[@b.head/]
+[@b.toolbar title="修改学位"]bar.addBack();[/@]
+[@b.tabs]
+  [@b.form action="!update?id=${courseHourType.id}" theme="list"]
+    [@b.textfield name="courseHourType.code" label="代码" value="${courseHourType.code!}" required="true" maxlength="20"/]
+    [@b.textfield name="courseHourType.name" label="名称" value="${courseHourType.name!}" required="true" maxlength="20"/]
+    [@b.textfield name="courseHourType.enName" label="英文名" value="${courseHourType.enName!}" maxlength="100"/]
+    [@b.startend label="生效失效时间" 
+      name="courseHourType.beginOn,courseHourType.endOn" required="false,false" 
+      start=courseHourType.beginOn end=courseHourType.endOn format="date"/]
+    [@b.textfield name="courseHourType.remark" label="备注" value="${courseHourType.remark!}" maxlength="3"/]
+    [@b.formfoot]
+      [@b.reset/]&nbsp;&nbsp;[@b.submit value="action.submit"/]
+    [/@]
+  [/@]
+[/@]
+[@b.foot/]

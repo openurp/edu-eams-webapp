@@ -1,0 +1,18 @@
+[#ftl]
+[@b.head/]
+[@b.toolbar title="新建学科目录"]bar.addBack();[/@]
+[@b.tabs]
+  [@b.form action="!save" theme="list"]
+    [@b.textfield name="disciplineCatalog.code" label="代码" value="${disciplineCatalog.code!}" required="true" maxlength="20"/]
+    [@b.textfield name="disciplineCatalog.name" label="名称" value="${disciplineCatalog.name!}" required="true" maxlength="20"/]
+    [@b.textfield name="disciplineCatalog.enName" label="英文名" value="${disciplineCatalog.enName!}" maxlength="100"/]
+    [@b.startend label="生效失效时间" 
+      name="disciplineCatalog.beginOn,disciplineCatalog.endOn" required="false,false" 
+      start=disciplineCatalog.beginOn end=disciplineCatalog.endOn format="date"/]
+    [@b.textfield name="disciplineCatalog.remark" label="备注" value="${disciplineCatalog.remark!}" maxlength="30"/]
+    [@b.formfoot]
+      [@b.reset/]&nbsp;&nbsp;[@b.submit value="action.submit"/]
+    [/@]
+  [/@]
+[/@]
+[@b.foot/]

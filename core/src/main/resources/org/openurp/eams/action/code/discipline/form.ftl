@@ -1,0 +1,18 @@
+[#ftl]
+[@b.head/]
+[@b.toolbar title="修改学科"]bar.addBack();[/@]
+[@b.tabs]
+  [@b.form action="!update?id=${discipline.id}" theme="list"]
+    [@b.textfield name="discipline.code" label="代码" value="${discipline.code!}" required="true" maxlength="20"/]
+    [@b.textfield name="discipline.name" label="名称" value="${discipline.name!}" required="true" maxlength="20"/]
+    [@b.textfield name="discipline.enName" label="英文名" value="${discipline.enName!}" maxlength="100"/]
+    [@b.startend label="生效失效时间" 
+      name="discipline.beginOn,discipline.endOn" required="false,false" 
+      start=discipline.beginOn end=discipline.endOn format="date"/]
+    [@b.textfield name="discipline.remark" label="备注" value="${discipline.remark!}" maxlength="3"/]
+    [@b.formfoot]
+      [@b.reset/]&nbsp;&nbsp;[@b.submit value="action.submit"/]
+    [/@]
+  [/@]
+[/@]
+[@b.foot/]

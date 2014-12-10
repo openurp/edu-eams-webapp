@@ -1,0 +1,18 @@
+[#ftl]
+[@b.head/]
+[@b.toolbar title="修改学位"]bar.addBack();[/@]
+[@b.tabs]
+  [@b.form action="!update?id=${examMode.id}" theme="list"]
+    [@b.textfield name="examMode.code" label="代码" value="${examMode.code!}" required="true" maxlength="20"/]
+    [@b.textfield name="examMode.name" label="名称" value="${examMode.name!}" required="true" maxlength="20"/]
+    [@b.textfield name="examMode.enName" label="英文名" value="${examMode.enName!}" maxlength="100"/]
+    [@b.startend label="生效失效时间" 
+      name="examMode.beginOn,examMode.endOn" required="false,false" 
+      start=examMode.beginOn end=examMode.endOn format="date"/]
+    [@b.textfield name="examMode.remark" label="备注" value="${examMode.remark!}" maxlength="3"/]
+    [@b.formfoot]
+      [@b.reset/]&nbsp;&nbsp;[@b.submit value="action.submit"/]
+    [/@]
+  [/@]
+[/@]
+[@b.foot/]
