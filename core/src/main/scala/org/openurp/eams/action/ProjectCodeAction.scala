@@ -4,8 +4,8 @@ import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.data.model.Entity
 import org.beangle.webmvc.entity.action.RestfulAction
 import org.openurp.base.model.code.CodeMeta
-import org.openurp.teach.core.Project
-import org.openurp.teach.core.model.ProjectCodeBean
+import org.openurp.edu.base.Project
+import org.openurp.edu.base.model.ProjectCodeBean
 
 class ProjectCodeAction extends RestfulAction[ProjectCodeBean] {
   override def editSetting(entity: ProjectCodeBean) = {

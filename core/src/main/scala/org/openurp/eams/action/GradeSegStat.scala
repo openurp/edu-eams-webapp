@@ -1,11 +1,11 @@
 package org.openurp.eams.action
 
-import org.openurp.teach.code.GradeType
-import org.openurp.teach.grade.CourseGrade
+import org.openurp.edu.teach.grade.CourseGrade
 import scala.collection.mutable.ListBuffer
 import java.util.Collections
-import org.openurp.teach.grade.Grade
+import org.openurp.edu.teach.grade.Grade
 import scala.collection.JavaConversions._
+import org.openurp.edu.teach.code.GradeType
 
 class GradeSegStat {
 

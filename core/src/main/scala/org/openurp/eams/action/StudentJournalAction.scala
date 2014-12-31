@@ -4,8 +4,8 @@ import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.data.model.Entity
 import org.beangle.webmvc.entity.action.RestfulAction
 import org.openurp.base.Department
-import org.openurp.teach.code.StdStatus
-import org.openurp.teach.core.{ Adminclass, Direction, Major, StudentJournal }
+import org.openurp.edu.base.code.StdStatus
+import org.openurp.edu.base.{ Adminclass, Direction, Major, StudentJournal }
 
 class StudentJournalAction extends RestfulAction[StudentJournal] {
   override def editSetting(entity: StudentJournal) = {

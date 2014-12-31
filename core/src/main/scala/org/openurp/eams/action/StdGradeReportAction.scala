@@ -5,8 +5,8 @@ import org.beangle.webmvc.api.view.View
 import org.beangle.webmvc.entity.action.RestfulAction
 import javax.swing.AbstractAction
 import org.beangle.webmvc.entity.action.AbstractEntityAction
-import org.openurp.teach.core.Student
-import org.openurp.teach.grade.CourseGrade
+import org.openurp.edu.base.Student
+import org.openurp.edu.teach.grade.CourseGrade
 import org.beangle.webmvc.api.context.ContextHolder
 
 class StdGradeReportAction extends AbstractEntityAction {

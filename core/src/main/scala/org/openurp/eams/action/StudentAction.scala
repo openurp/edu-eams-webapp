@@ -4,11 +4,10 @@ import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.data.model.Entity
 import org.beangle.webmvc.api.view.View
 import org.beangle.webmvc.entity.action.RestfulAction
-import org.openurp.base.{ Campus, Department, Teacher }
 import org.openurp.base.code.{ Education, Gender }
-import org.openurp.teach.code.{ StdLabel, StdType, StudyType }
-import org.openurp.teach.core.{ Adminclass, Direction, Major, Student }
-import org.openurp.teach.core.model.StudentBean
+import org.openurp.edu.base.code.{ StdLabel, StdType, StudyType }
+import org.openurp.edu.base.{ Adminclass, Direction, Major, Student }
+import org.openurp.edu.base.model.StudentBean
 import org.openurp.base.Person
 import org.beangle.webmvc.api.annotation.mapping
 import scala.collection.mutable.Buffer
@@ -18,6 +17,9 @@ import org.openurp.base.code.Nation
 import org.beangle.webmvc.api.context.Params
 import org.beangle.data.model.meta.EntityType
 import java.{ util => ju, io => jo }
+import org.openurp.base.Campus
+import org.openurp.base.Department
+import org.openurp.edu.base.Teacher
 
 class StudentAction extends RestfulAction[Student] {
 

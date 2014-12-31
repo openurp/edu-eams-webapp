@@ -11,12 +11,12 @@ import org.beangle.webmvc.api.annotation.param
 import org.openurp.teach.grade.model.CourseGradeState
 import scala.collection.mutable.ListBuffer
 import org.openurp.teach.code.GradeType
-import org.openurp.base.Teacher
 import org.openurp.teach.grade.model.GradeInputSwitch
 import org.openurp.teach.core.Project
 import org.openurp.base.Semester
 import org.openurp.teach.grade.service.GradeInputSwitchService
 import scala.collection.mutable.HashSet
+import org.openurp.edu.base.Teacher
 
 class IndexAction extends AbstractTeacherAction {
   /**

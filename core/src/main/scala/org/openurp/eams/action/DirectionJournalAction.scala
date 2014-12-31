@@ -5,7 +5,7 @@ import org.beangle.data.model.Entity
 import org.beangle.webmvc.entity.action.RestfulAction
 import org.openurp.base.Department
 import org.openurp.base.code.Education
-import org.openurp.teach.core.{ Direction, DirectionJournal }
+import org.openurp.edu.base.{ Direction, DirectionJournal }
 
 class DirectionJournalAction extends RestfulAction[DirectionJournal] {
   override def editSetting(entity: DirectionJournal) = {

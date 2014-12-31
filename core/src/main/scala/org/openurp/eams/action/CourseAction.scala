@@ -6,9 +6,13 @@ import org.beangle.webmvc.api.view.View
 import org.beangle.webmvc.entity.action.RestfulAction
 import org.openurp.base.Department
 import org.openurp.base.code.Education
-import org.openurp.teach.code.{ CourseCategory, CourseType, ExamMode, ScoreMarkStyle }
-import org.openurp.teach.core.{ Course, Major }
-import org.openurp.teach.core.model.CourseBean
+import org.openurp.edu.teach.code.ScoreMarkStyle
+import org.openurp.edu.teach.model.CourseBean
+import org.openurp.edu.teach.code.CourseType
+import org.openurp.edu.teach.code.CourseCategory
+import org.openurp.edu.base.Major
+import org.openurp.edu.teach.code.ExamMode
+import org.openurp.edu.teach.Course
 
 class CourseAction extends RestfulAction[Course] {
   override def editSetting(entity: Course) = {

@@ -4,7 +4,7 @@ import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.data.model.Entity
 import org.beangle.webmvc.entity.action.RestfulAction
 import org.openurp.base.code.DisciplineCategory
-import org.openurp.teach.core.{ Major, Project }
+import org.openurp.edu.base.{ Major, Project }
 
 class MajorAction extends RestfulAction[Major] {
   override def editSetting(entity: Major) = {

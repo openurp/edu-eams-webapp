@@ -1,6 +1,6 @@
 package org.openurp.eams.action
 
-import org.openurp.teach.grade.CourseGrade
+import org.openurp.edu.teach.grade.CourseGrade
 import org.beangle.commons.lang.Objects
 import scala.collection.mutable.ListBuffer
 

@@ -1,19 +1,19 @@
 package org.openurp.eams.action
 
-import org.openurp.teach.code.GradeType
-import org.openurp.teach.grade.CourseGrade
+import org.openurp.edu.teach.grade.CourseGrade
 import scala.collection.mutable.ListBuffer
 import scala.collection.JavaConversions._
 import java.util.Collections
-import org.openurp.teach.grade.CourseGrade
-import org.openurp.teach.code.ExamStatus
-import org.openurp.teach.grade.CourseGrade
-import org.openurp.teach.code.model.ExamStatusBean
-import org.openurp.teach.grade.ExamGrade
+import org.openurp.edu.teach.grade.CourseGrade
+import org.openurp.edu.teach.grade.CourseGrade
+import org.openurp.edu.teach.grade.ExamGrade
 import org.springframework.ui.Model
-import org.openurp.teach.grade.Grade
-import org.openurp.teach.code.model.GradeTypeBean
-import org.openurp.teach.lesson.Lesson
+import org.openurp.edu.teach.grade.Grade
+import org.openurp.edu.teach.lesson.Lesson
+import org.openurp.edu.teach.code.GradeType
+import org.openurp.edu.teach.code.ExamStatus
+import org.openurp.edu.teach.code.model.GradeTypeBean
+import org.openurp.edu.teach.code.model.ExamStatusBean
 
 object GradeSegStats {
   val COURSE = "course"

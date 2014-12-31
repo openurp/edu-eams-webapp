@@ -19,13 +19,18 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.openurp.teach</groupId>
-      <artifactId>openurp-teach-core</artifactId>
+      <groupId>org.openurp.base</groupId>
+      <artifactId>openurp-base-core</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.openurp.base</groupId>
-      <artifactId>openurp-base-core</artifactId>
+      <groupId>org.openurp.edu.base</groupId>
+      <artifactId>openurp-edu-base-model</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openurp.edu.teach</groupId>
+      <artifactId>openurp-edu-teach-model</artifactId>
       <version>${project.version}</version>
     </dependency>
   </dependencies>

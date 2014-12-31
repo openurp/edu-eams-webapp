@@ -3,7 +3,7 @@ package org.openurp.eams.action
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.data.model.Entity
 import org.beangle.webmvc.entity.action.RestfulAction
-import org.openurp.teach.core.{Direction, Major}
+import org.openurp.edu.base.{Direction, Major}
 
 class DirectionAction extends RestfulAction[Direction] {
   override def editSetting(entity: Direction) = {

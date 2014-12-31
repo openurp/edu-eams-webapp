@@ -4,9 +4,12 @@ import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.data.model.Entity
 import org.beangle.webmvc.entity.action.RestfulAction
 import org.openurp.base.Semester
-import org.openurp.teach.code.{ CourseType, ExamMode, ScoreMarkStyle }
-import org.openurp.teach.core.{ Course, Student }
-import org.openurp.teach.grade.CourseGrade
+import org.openurp.edu.teach.grade.CourseGrade
+import org.openurp.edu.teach.code.ScoreMarkStyle
+import org.openurp.edu.teach.code.CourseType
+import org.openurp.edu.teach.code.ExamMode
+import org.openurp.edu.teach.Course
+import org.openurp.edu.base.Student
 
 class CourseGradeAction extends RestfulAction[CourseGrade] {
   override def editSetting(entity: CourseGrade) = {

@@ -3,13 +3,13 @@ package org.openurp.eams.action.code
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.data.model.annotation.code
 import org.beangle.webmvc.entity.action.RestfulAction
-import org.openurp.teach.code.CourseAbilityRate
-import org.openurp.teach.code.CourseCategory
-import org.openurp.teach.code.CourseHourType
-import org.openurp.teach.code.CourseTakeType
-import org.openurp.teach.code.CourseType
-import org.openurp.teach.code.GradeType
-import org.openurp.teach.code.ScoreMarkStyle
+import org.openurp.edu.teach.code.ScoreMarkStyle
+import org.openurp.edu.teach.code.CourseHourType
+import org.openurp.edu.teach.code.CourseType
+import org.openurp.edu.teach.code.CourseCategory
+import org.openurp.edu.teach.code.CourseTakeType
+import org.openurp.edu.teach.code.GradeType
+import org.openurp.edu.teach.code.CourseAbilityRate
 
 
 

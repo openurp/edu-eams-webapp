@@ -5,7 +5,7 @@ import org.beangle.data.model.Entity
 import org.beangle.webmvc.entity.action.RestfulAction
 import org.openurp.base.Department
 import org.openurp.base.code.{ DisciplineCategory, Education }
-import org.openurp.teach.core.{ Major, MajorJournal }
+import org.openurp.edu.base.{ Major, MajorJournal }
 
 class MajorJournalAction extends RestfulAction[MajorJournal] {
   override def editSetting(entity: MajorJournal) = {

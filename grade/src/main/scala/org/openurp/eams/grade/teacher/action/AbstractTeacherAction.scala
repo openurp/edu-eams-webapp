@@ -1,9 +1,7 @@
 package org.openurp.eams.grade.teacher.action
 
 import java.util.Date
-
 import scala.collection.mutable.{ HashMap, HashSet, ListBuffer }
-
 import org.beangle.commons.bean.orderings.PropertyOrdering
 import org.beangle.commons.lang.Strings
 import org.beangle.data.jpa.dao.OqlBuilder
@@ -12,7 +10,6 @@ import org.beangle.data.model.dao.EntityDao
 import org.beangle.webmvc.api.action.ActionSupport
 import org.beangle.webmvc.api.annotation.ignore
 import org.beangle.webmvc.api.view.View
-import org.openurp.base.{ Semester, Teacher }
 import org.openurp.eams.grade.domain.GradeTypePolicy
 import org.openurp.eams.grade.helper.CourseGradeHelper
 import org.openurp.teach.code.{ ExamStatus, ExamType, GradeType, ScoreMarkStyle }
@@ -26,6 +23,8 @@ import org.openurp.teach.grade.domain.{ CourseGradeCalculator, GradeCourseTypePr
 import org.openurp.teach.grade.model.{ AbstractGradeState, CourseGradeBean, CourseGradeState, ExamGradeBean, ExamGradeState, GaGradeState, GradeInputSwitch, GradeRateConfig, GradeState }
 import org.openurp.teach.grade.service.{ CourseGradeService, CourseGradeSettings, GradeInputSwitchService, GradeRateService }
 import org.openurp.teach.lesson.{ CourseTake, Lesson }
+import org.openurp.edu.base.Teacher
+import org.openurp.base.Semester
 
 /**
  * 教师管理成绩响应类

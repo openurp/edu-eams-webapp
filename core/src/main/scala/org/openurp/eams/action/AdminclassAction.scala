@@ -5,12 +5,12 @@ import org.beangle.data.model.Entity
 import org.beangle.webmvc.api.view.View
 import org.beangle.webmvc.entity.action.RestfulAction
 import org.openurp.base.Department
-import org.openurp.teach.core.Adminclass
-import org.openurp.teach.core.Major
-import org.openurp.base.Teacher
-import org.openurp.teach.core.model.AdminclassBean
-import org.openurp.teach.core.Direction
-import org.openurp.teach.code.StdType
+import org.openurp.edu.base.Adminclass
+import org.openurp.edu.base.Major
+import org.openurp.edu.base.model.AdminclassBean
+import org.openurp.edu.base.Direction
+import org.openurp.edu.base.Teacher
+import org.openurp.edu.base.code.StdType
 
 class AdminclassAction extends RestfulAction[Adminclass] {
   override def editSetting(entity: Adminclass) = {
