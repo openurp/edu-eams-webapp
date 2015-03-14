@@ -1,33 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
-  <parent>
-    <groupId>org.openurp</groupId>
-    <artifactId>openurp-webapp-parent</artifactId>
-    <version>0.0.2</version>
-  </parent>
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.openurp.eams</groupId>
-  <artifactId>openurp-eams-core</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <packaging>war</packaging>
-  <name>Openurp EAMS Core</name>
+	<parent>
+		<groupId>org.openurp.edu.eams</groupId>
+		<artifactId>openurp-edu-eams-parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.openurp.edu.eams</groupId>
+	<artifactId>openurp-edu-eams-core</artifactId>
+	<packaging>war</packaging>
+	<name>Openurp Education EAMS Core</name>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.openurp.platform</groupId>
-      <artifactId>openurp-platform-web</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.openurp.teach</groupId>
-      <artifactId>openurp-teach-core</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.openurp.base</groupId>
-      <artifactId>openurp-base-core</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-  </dependencies>
+	<properties>
+		<openurp.edu.version>0.0.1-SNAPSHOT</openurp.edu.version>
+		<openurp.base.version>0.0.1-SNAPSHOT</openurp.base.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.openurp.edu.teach</groupId>
+			<artifactId>openurp-edu-teach-model</artifactId>
+			<version>${openurp.edu.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openurp.base</groupId>
+			<artifactId>openurp-base-model</artifactId>
+			<version>${openurp.base.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+			<version>2.3</version>
+		</dependency>
+	</dependencies>
 </project>
 

@@ -6,32 +6,24 @@
     <artifactId>openurp-parent</artifactId>
     <version>0.0.2</version>
   </parent>
-  <groupId>org.openurp.eams</groupId>
-  <artifactId>openurp-eams-aggregate</artifactId>
+  <groupId>org.openurp.edu.eams</groupId>
+  <artifactId>openurp-edu-eams-parent</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>OpenURP EAMS Aggregate</name>
+  <name>OpenURP EAMS Parent</name>
   
   <properties>
-    <bundle.symbolicName>org.openurp.eams</bundle.symbolicName>
-    <bundle.namespace>org.openurp.eams</bundle.namespace>
+    <bundle.symbolicName>org.openurp.edu.eams</bundle.symbolicName>
+    <bundle.namespace>org.openurp.edu.eams</bundle.namespace>
   </properties>
   
   <modules>
     <module>core</module>
+    <module>web</module>
+    <module>schedule</module>
+    <module>election</module>
     <module>grade</module>
+    <module>plan</module>
   </modules>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 
 </project>

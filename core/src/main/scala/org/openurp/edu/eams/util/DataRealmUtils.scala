@@ -1,0 +1,111 @@
+package org.openurp.edu.eams.util
+
+import java.util.ArrayList
+import java.util.Collections
+import java.util.List
+import org.beangle.commons.dao.query.builder.Condition
+import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.commons.lang.Strings
+import org.openurp.base.Department
+import org.openurp.edu.base.code.StdType
+import org.openurp.edu.eams.system.security.DataRealm
+
+import scala.collection.JavaConversions._
+
+object DataRealmUtils {
+
+  def addDataRealm(query: OqlBuilder[_], attrs: Array[String], dataRealm: DataRealm) {
+    addDataRealms(query, attrs, Collections.singletonList(dataRealm))
+  }
+
+  def inDataRealms(query: OqlBuilder, attrs: Array[String], dataRealms: List[_]) {
+    if (dataRealms == null || dataRealms.isEmpty) return
+    val conditions = new ArrayList()
+    val datas = new ArrayList()
+    for (i <- 0 until dataRealms.size) {
+      val dataRealm = dataRealms.get(i).asInstanceOf[DataRealm]
+      val buffer = new StringBuffer("")
+      if (attrs.length > 0) {
+        if (Strings.isNotEmpty(dataRealm.getStudentTypeIdSeq) && Strings.isNotEmpty(attrs(0))) {
+          buffer.append(attrs(0) + " in (:mytypeIds" + randomInt() + ")")
+          datas.add(Strings.transformToLong(Strings.split(dataRealm.getStudentTypeIdSeq)))
+        }
+      }
+      if (attrs.length > 1) {
+        if (Strings.isNotEmpty(dataRealm.departmentIdSeq) && Strings.isNotEmpty(attrs(1))) {
+          if (buffer.length > 0) {
+            buffer.append(" and ")
+          }
+          buffer.append(attrs(1) + " in (:myDepartIds" + randomInt() + ")")
+          datas.add(Strings.transformToLong(Strings.split(dataRealm.departmentIdSeq)))
+        }
+      }
+      if (buffer.length > 0) {
+        conditions.add(new Condition(buffer.toString))
+      }
+    }
+    val buffer = new StringBuffer("(")
+    for (i <- 0 until conditions.size) {
+      val condition = conditions.get(i).asInstanceOf[Condition]
+      if (i != 0) {
+        buffer.append(" or ")
+      }
+      buffer.append(condition.getContent)
+    }
+    buffer.append(")")
+    val con = new Condition(buffer.toString)
+    con.params(datas)
+    query.where(con)
+  }
+
+  def addDataRealms(query: OqlBuilder, attrs: Array[String], dataRealms: List[_]) {
+    if (dataRealms == null || dataRealms.isEmpty) return
+    val conditions = new ArrayList()
+    val datas = new ArrayList()
+    for (i <- 0 until dataRealms.size) {
+      val dataRealm = dataRealms.get(i).asInstanceOf[DataRealm]
+      val buffer = new StringBuffer("")
+      if (attrs.length > 0) {
+        if (Strings.isNotEmpty(dataRealm.getStudentTypeIdSeq) && Strings.isNotEmpty(attrs(0))) {
+          buffer.append(" exists (from " + classOf[StdType].getName + " mytype where mytype.id =" + 
+            attrs(0))
+          buffer.append(" and mytype.id in(:mytypeIds" + randomInt() + "))")
+          datas.add(Strings.transformToLong(Strings.split(dataRealm.getStudentTypeIdSeq)))
+        }
+      }
+      if (attrs.length > 1) {
+        if (Strings.isNotEmpty(dataRealm.departmentIdSeq) && Strings.isNotEmpty(attrs(1))) {
+          if (buffer.length > 0) {
+            buffer.append(" and ")
+          }
+          buffer.append(" exists (from " + classOf[Department].getName + " mydepart where mydepart.id =" + 
+            attrs(1))
+          buffer.append(" and mydepart.id in(:myDepartIds" + randomInt() + "))")
+          datas.add(Strings.transformToLong(Strings.split(dataRealm.departmentIdSeq)))
+        }
+      }
+      if (buffer.length > 0) {
+        conditions.add(new Condition((buffer.toString)))
+      }
+    }
+    val buffer = new StringBuffer("(")
+    for (i <- 0 until conditions.size) {
+      val condition = conditions.get(i).asInstanceOf[Condition]
+      if (i != 0) {
+        buffer.append(" or ")
+      }
+      buffer.append(condition.getContent)
+    }
+    buffer.append(")")
+    val con = new Condition(buffer.toString)
+    con.params(datas)
+    query.where(con)
+  }
+
+  private def randomInt(): String = {
+    var d = String.valueOf(Math.random())
+    d = Strings.replace(d, ".", "")
+    d = d.substring(0, 8)
+    d
+  }
+}

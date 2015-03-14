@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+	<parent>
+		<groupId>org.openurp.edu.eams</groupId>
+		<artifactId>openurp-edu-eams-parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.openurp.edu.eams</groupId>
+	<artifactId>openurp-edu-eams-grade</artifactId>
+	<packaging>war</packaging>
+	<name>Openurp Education EAMS Grade</name>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.openurp.edu.eams</groupId>
+			<artifactId>openurp-edu-eams-web</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	</dependencies>
+</project>
+

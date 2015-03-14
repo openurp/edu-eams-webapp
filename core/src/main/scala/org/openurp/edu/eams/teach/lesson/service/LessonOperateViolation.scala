@@ -1,0 +1,17 @@
+package org.openurp.edu.eams.teach.lesson.service
+
+
+import scala.collection.JavaConversions._
+
+object LessonOperateViolation extends Enumeration {
+
+  val NO_VIOLATION = new LessonOperateViolation()
+
+  val LESSON_VIOLATION = new LessonOperateViolation()
+
+  val PERMIT_VIOLATION = new LessonOperateViolation()
+
+  class LessonOperateViolation extends Val
+
+  implicit def convertValue(v: Value): LessonOperateViolation = v.asInstanceOf[LessonOperateViolation]
+}

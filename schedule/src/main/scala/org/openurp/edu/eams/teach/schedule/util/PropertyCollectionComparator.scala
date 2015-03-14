@@ -1,0 +1,82 @@
+package org.openurp.edu.eams.teach.schedule.util
+
+import java.util.Comparator
+import java.util.List
+import org.apache.commons.beanutils.PropertyUtils
+import org.openurp.edu.teach.lesson.Lesson
+import org.openurp.edu.eams.util.PinyinComparator
+import PropertyCollectionComparator._
+import scala.reflect.{BeanProperty, BooleanBeanProperty}
+
+import scala.collection.JavaConversions._
+
+object PropertyCollectionComparator {
+
+  object ArrangeOrder extends Enumeration {
+
+    val TEACHER = new ArrangeOrder("按教师排序")
+
+    val LESSONNO = new ArrangeOrder("按课程序号排序")
+
+    val COURSE = new ArrangeOrder("按课程名称排序")
+
+    class ArrangeOrder private () extends Val {
+
+      @BeanProperty
+      var fullName: String = _
+
+      private def this(fullName: String) {
+        this()
+        this.fullName = fullName
+      }
+
+      def getEngName(): String = this.name()
+    }
+
+    implicit def convertValue(v: Value): ArrangeOrder = v.asInstanceOf[ArrangeOrder]
+  }
+}
+
+class PropertyCollectionComparator[T] extends Comparator[T]() {
+
+  @BooleanBeanProperty
+  var asc: Boolean = true
+
+  @BeanProperty
+  var arrangeOrder: ArrangeOrder = ArrangeOrder.TEACHER
+
+  @BeanProperty
+  var pinyinComparator: PinyinComparator = new PinyinComparator(asc)
+
+  private def genStr(lessonProperties: List[_]): String = {
+    var cmpStr = ""
+    try {
+      if (!lessonProperties.isEmpty) {
+        cmpStr += PropertyUtils.getProperty(lessonProperties.get(0), "name")
+      }
+    } catch {
+      case e: Exception => return null
+    }
+    cmpStr
+  }
+
+  def this(arrangeOrder: ArrangeOrder, asc: Boolean) {
+    this()
+    this.asc = asc
+    this.arrangeOrder = arrangeOrder
+  }
+
+  def compare(arg0: AnyRef, arg1: AnyRef): Int = {
+    var what0: String = null
+    var what1: String = null
+    val lesson0 = arg0.asInstanceOf[Lesson]
+    val lesson1 = arg1.asInstanceOf[Lesson]
+    this.arrangeOrder match {
+      case TEACHER => 
+        what0 = genStr(lesson0.getTeachers)
+        what1 = genStr(lesson1.getTeachers)
+
+    }
+    (if (asc) 1 else -1) * (pinyinComparator.compare(what0, what1))
+  }
+}

@@ -1,0 +1,237 @@
+package org.openurp.edu.eams.teach.election.service.context
+
+import java.io.Serializable
+import java.util.Collections
+import java.util.Iterator
+import java.util.List
+import java.util.Map
+import java.util.Set
+import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.dao.EntityDao
+import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.openurp.edu.eams.base.Semester
+import org.openurp.edu.eams.classroom.TimeUnit
+import org.openurp.edu.base.Student
+import org.openurp.edu.teach.code.CourseType
+import org.openurp.edu.eams.teach.election.ElectionProfile
+import org.openurp.edu.eams.teach.election.model.constraint.AbstractCreditConstraint
+import org.openurp.edu.eams.teach.election.model.constraint.StdCourseCountConstraint
+import org.openurp.edu.eams.teach.election.model.constraint.StdCreditConstraint
+import org.openurp.edu.teach.lesson.Lesson
+import org.openurp.edu.eams.teach.program.StudentProgram
+import ElectState._
+import scala.reflect.{BeanProperty, BooleanBeanProperty}
+
+import scala.collection.JavaConversions._
+
+object ElectState {
+
+  def createState(std: Student, profile: ElectionProfile, entityDao: EntityDao): ElectState = {
+    val it2 = entityDao.get(classOf[StdCreditConstraint], Array("semester", "std"), profile.getSemester, 
+      std)
+      .iterator()
+    val constraint = if (it2.hasNext) it2.next() else null
+    val query = OqlBuilder.from(classOf[StudentProgram], "sp")
+    query.where("sp.std=:std", std)
+    val stdProgram = entityDao.uniqueResult(query)
+    val state = new ElectState(std, stdProgram, profile, constraint)
+    state
+  }
+}
+
+@SerialVersionUID(1L)
+class ElectState extends Serializable() {
+
+  @BeanProperty
+  var std: SimpleStd = _
+
+  @BeanProperty
+  var coursePlan: ElectCoursePlan = _
+
+  @BeanProperty
+  var profileId: java.lang.Long = _
+
+  @BeanProperty
+  var semesterId: java.lang.Integer = _
+
+  @BeanProperty
+  var courseSubstitutions: List[ElectCourseSubstitution] = CollectUtils.newArrayList()
+
+  @BeanProperty
+  var hisCourses: Map[Long, Boolean] = CollectUtils.newHashMap()
+
+  @BeanProperty
+  var electedCredit: Float = _
+
+  @BeanProperty
+  val electedCourseIds = CollectUtils.newHashMap()
+
+  @BeanProperty
+  val electableLessonIds = CollectUtils.newArrayList()
+
+  @BeanProperty
+  var table: TimeUnit = _
+
+  @BeanProperty
+  var compulsoryCourseIds: Set[Long] = CollectUtils.newHashSet()
+
+  @BooleanBeanProperty
+  var checkTimeConflict: Boolean = _
+
+  @BooleanBeanProperty
+  var checkMaxLimitCount: Boolean = _
+
+  @BooleanBeanProperty
+  var checkTeachClass: Boolean = _
+
+  @BooleanBeanProperty
+  var checkMinLimitCount: Boolean = _
+
+  @BeanProperty
+  val params = CollectUtils.newHashMap()
+
+  @BeanProperty
+  var unElectableLessonIds: Set[Long] = CollectUtils.newHashSet()
+
+  @BeanProperty
+  var unWithdrawableLessonIds: Map[Long, String] = CollectUtils.newHashMap()
+
+  @BeanProperty
+  var creditConstraint: ElectConstraintWrapper[Float] = _
+
+  @BeanProperty
+  var totalCreditConstraint: ElectConstraintWrapper[Float] = _
+
+  @BeanProperty
+  var courseCountConstraint: ElectConstraintWrapper[Integer] = _
+
+  private var courseTypeCourseCountConstraints: Map[CourseType, ElectConstraintWrapper[Integer]] = CollectUtils.newHashMap()
+
+  def electSuccess(lesson: Lesson) {
+    if (coursePlan != null) {
+      val group = coursePlan.getOrCreateGroup(lesson.getCourse, lesson.getCourseType)
+      group.addElectCourse(lesson.getCourse)
+    }
+    electedCourseIds.put(lesson.getCourse.getId, lesson.getId)
+    if (null != creditConstraint) {
+      creditConstraint.addElectedItem(lesson.getCourse.getCredits)
+    }
+    if (null != totalCreditConstraint) {
+      totalCreditConstraint.addElectedItem(lesson.getCourse.getCredits)
+    }
+    if (null != courseCountConstraint) {
+      courseCountConstraint.addElectedItem(1)
+    }
+    if (null != 
+      courseTypeCourseCountConstraints.get(lesson.getCourse.getCourseType)) {
+      courseTypeCourseCountConstraints.get(lesson.getCourse.getCourseType)
+        .addElectedItem(1)
+    } else if (null != 
+      courseTypeCourseCountConstraints.get(lesson.getCourseType)) {
+      courseTypeCourseCountConstraints.get(lesson.getCourseType)
+        .addElectedItem(1)
+    }
+  }
+
+  def withdrawSuccess(lesson: Lesson) {
+    if (coursePlan != null) {
+      val group = coursePlan.getGroup(lesson.getCourse, lesson.getCourseType)
+      group.removeElectCourse(lesson.getCourse)
+    }
+    electedCourseIds.remove(lesson.getCourse.getId)
+    if (null != creditConstraint) {
+      creditConstraint.subElectedItem(lesson.getCourse.getCredits)
+    }
+    if (null != totalCreditConstraint) {
+      totalCreditConstraint.subElectedItem(lesson.getCourse.getCredits)
+    }
+    if (null != courseCountConstraint) {
+      courseCountConstraint.subElectedItem(1)
+    }
+    if (null != 
+      courseTypeCourseCountConstraints.get(lesson.getCourse.getCourseType)) {
+      courseTypeCourseCountConstraints.get(lesson.getCourse.getCourseType)
+        .subElectedItem(1)
+    } else if (null != 
+      courseTypeCourseCountConstraints.get(lesson.getCourseType)) {
+      courseTypeCourseCountConstraints.get(lesson.getCourseType)
+        .subElectedItem(1)
+    }
+  }
+
+  def this(student: Student, 
+      stdProgram: StudentProgram, 
+      profile: ElectionProfile, 
+      constraint: StdCreditConstraint) {
+    this()
+    std = new SimpleStd(student, stdProgram)
+    this.profileId = profile.getId
+    this.semesterId = profile.getSemester.getId
+  }
+
+  def getUnPassedCourseIds(): Set[Long] = {
+    if (null == hisCourses) {
+      Collections.EMPTY_SET
+    } else {
+      val unPassedCourseIds = CollectUtils.newHashSet()
+      val courseSet = hisCourses.keySet
+      for (courseId <- courseSet) {
+        val rs = hisCourses.get(courseId)
+        if (false == rs) {
+          unPassedCourseIds.add(courseId)
+        }
+      }
+      unPassedCourseIds
+    }
+  }
+
+  def isRetakeCourse(courseId: Long): Boolean = {
+    if (hisCourses.containsKey(courseId)) {
+      return true
+    }
+    for (courseSubstitution <- courseSubstitutions if courseSubstitution.getSubstitutes.contains(courseId); 
+         originCourseId <- courseSubstitution.getOrigins if hisCourses.containsKey(originCourseId)) {
+      return true
+    }
+    false
+  }
+
+  def getOriginCourseId(courseId: Long): java.lang.Long = {
+    for (courseSubstitution <- courseSubstitutions if courseSubstitution.getSubstitutes.contains(courseId); 
+         originCourseId <- courseSubstitution.getOrigins if hisCourses.containsKey(originCourseId)) {
+      return originCourseId
+    }
+    courseId
+  }
+
+  def isCoursePass(courseId: java.lang.Long): Boolean = true == hisCourses.get(courseId)
+
+  def getSemester(entityDao: EntityDao): Semester = {
+    entityDao.get(classOf[Semester], this.semesterId)
+  }
+
+  def getProfile(entityDao: EntityDao): ElectionProfile = {
+    entityDao.get(classOf[ElectionProfile], profileId)
+  }
+
+  def setCreditConstraint(creditConstraint: AbstractCreditConstraint, electedCredits: java.lang.Float) {
+    this.creditConstraint = new CreditConstraintWrapper(creditConstraint, electedCredits)
+  }
+
+  def setTotalCreditConstraint(totalCreditConstraint: AbstractCreditConstraint, electedCredits: java.lang.Float) {
+    this.totalCreditConstraint = new CreditConstraintWrapper(totalCreditConstraint, electedCredits)
+  }
+
+  def setCourseCountConstraint(stdCourseCountConstraint: StdCourseCountConstraint, electedCount: java.lang.Integer, courseTypeCourseCountConstraints: Map[CourseType, ElectConstraintWrapper[Integer]]) {
+    this.courseCountConstraint = new CourseCountConstraintWrapper(stdCourseCountConstraint, electedCount)
+    this.courseTypeCourseCountConstraints = courseTypeCourseCountConstraints
+  }
+
+  def getCourseCountConstraint(courseType: CourseType): ElectConstraintWrapper[Integer] = {
+    courseTypeCourseCountConstraints.get(courseType)
+  }
+
+  def addCourseSubsititution(courseSubstitution: ElectCourseSubstitution) {
+    courseSubstitutions.add(courseSubstitution)
+  }
+}
