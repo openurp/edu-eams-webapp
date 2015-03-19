@@ -1,14 +1,14 @@
 package org.openurp.edu.eams.teach.schedule.log
 
-import java.util.HashMap
-import java.util.Iterator
-import java.util.Map
+
+
+
 import org.beangle.commons.lang.Strings
 import org.openurp.edu.base.Teacher
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.teach.lesson.util.CourseActivityDigestor
 
-import scala.collection.JavaConversions._
+
 
 object ScheduleLogBuilder {
 
@@ -50,7 +50,7 @@ object ScheduleLogBuilder {
     for (i <- 0 until LOG_FIELDS.length) {
       empty.put(LOG_FIELDS(i), "")
     }
-    empty.put(LESSON_ID, String.valueOf(lesson.getId))
+    empty.put(LESSON_ID, String.valueOf(lesson.id))
     empty.put(LESSON_PROJECT, String.valueOf(lesson.getProject.getName))
     empty.put(LESSON_SEMESTER, lesson.getSemester.getSchoolYear + "学年" + lesson.getSemester.getName + 
       "学期")

@@ -1,30 +1,30 @@
 package org.openurp.edu.eams.teach.grade.course.service.impl
 
-import java.util.Collection
-import java.util.List
-import java.util.Map
+
+
+
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.Operation
 import org.beangle.commons.dao.impl.BaseServiceImpl
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.edu.base.Student
-import org.openurp.edu.eams.teach.code.industry.ExamStatus
+import org.openurp.edu.teach.code.ExamStatus
 import org.openurp.edu.eams.teach.code.industry.ExamType
-import org.openurp.edu.eams.teach.code.industry.GradeType
+import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.eams.teach.grade.model.CourseGradeSetting
 import org.openurp.edu.eams.teach.grade.service.CourseGradePublishListener
 import org.openurp.edu.eams.teach.grade.service.CourseGradeSettings
 import org.openurp.edu.teach.grade.CourseGrade
-import org.openurp.edu.teach.grade.CourseGradeState
-import org.openurp.edu.eams.teach.lesson.ExamGrade
-import org.openurp.edu.eams.teach.lesson.ExamTake
+import org.openurp.edu.teach.grade.model.CourseGradeState
+import org.openurp.edu.teach.grade.ExamGrade
+import org.openurp.edu.teach.exam.ExamTake
 import org.openurp.edu.eams.teach.lesson.GradeTypeConstants
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.teach.lesson.model.ExamTakeBean
 import ExamTakeGeneratePublishListener._
 
-import scala.collection.JavaConversions._
+
 
 object ExamTakeGeneratePublishListener {
 
@@ -43,10 +43,10 @@ class ExamTakeGeneratePublishListener extends BaseServiceImpl with CourseGradePu
 
   private var forbiddenCourseTakeTypeNames: Array[String] = new Array[String](0)
 
-  def onPublish(grades: Collection[CourseGrade], gradeState: CourseGradeState, gradeTypes: Array[GradeType]): List[Operation] = {
+  def onPublish(grades: Iterable[CourseGrade], gradeState: CourseGradeState, gradeTypes: Array[GradeType]): List[Operation] = {
     val operations = CollectUtils.newArrayList()
     var hasGa = false
-    for (gradeType <- gradeTypes if gradeType.getId == GradeTypeConstants.GA_ID) {
+    for (gradeType <- gradeTypes if gradeType.id == GradeTypeConstants.GA_ID) {
       hasGa = true
       //break
     }
@@ -61,7 +61,7 @@ class ExamTakeGeneratePublishListener extends BaseServiceImpl with CourseGradePu
   def onPublish(grade: CourseGrade, gradeTypes: Array[GradeType]): List[Operation] = {
     val operations = CollectUtils.newArrayList()
     var hasGa = false
-    for (gradeType <- gradeTypes if gradeType.getId == GradeTypeConstants.GA_ID) {
+    for (gradeType <- gradeTypes if gradeType.id == GradeTypeConstants.GA_ID) {
       hasGa = true
       //break
     }
@@ -91,7 +91,7 @@ class ExamTakeGeneratePublishListener extends BaseServiceImpl with CourseGradePu
   protected def getMakeupOrDelayExamTypeId(setting: CourseGradeSetting, examGrade: ExamGrade): java.lang.Integer = {
     if (isCourseTakeTypeForbidden(examGrade.getCourseGrade)) return null
     val examStatus = examGrade.getExamStatus
-    if (examStatus.getId == ExamStatus.DELAY) {
+    if (examStatus.id == ExamStatus.DELAY) {
       ExamType.DELAY
     } else {
       if (setting.getAllowExamStatuses.contains(examStatus)) ExamType.MAKEUP else {

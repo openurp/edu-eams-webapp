@@ -1,17 +1,17 @@
 package org.openurp.edu.eams.teach.program.major.service
 
-import java.util.Collection
-import java.util.List
+
+
 import org.openurp.edu.base.Adminclass
-import org.openurp.edu.teach.Course
+import org.openurp.edu.base.Course
 import org.openurp.edu.teach.code.CourseType
 import org.openurp.edu.teach.plan.CoursePlan
-import org.openurp.edu.eams.teach.program.PlanCourse
+import org.openurp.edu.teach.plan.PlanCourse
 import org.openurp.edu.teach.plan.MajorPlan
 import org.openurp.edu.teach.plan.MajorPlanCourse
-import org.openurp.edu.teach.plan.MajorPlanCourseGroup
+import org.openurp.edu.teach.plan.MajorCourseGroup
 
-import scala.collection.JavaConversions._
+
 
 trait MajorPlanService {
 
@@ -25,7 +25,7 @@ trait MajorPlanService {
 
   def genMajorPlan(sourcePlan: MajorPlan, genParameter: MajorPlanGenParameter): CoursePlan
 
-  def genMajorPlans(sourcePlans: Collection[MajorPlan], partialParams: MajorPlanGenParameter): List[MajorPlan]
+  def genMajorPlans(sourcePlans: Iterable[MajorPlan], partialParams: MajorPlanGenParameter): List[MajorPlan]
 
   def getUnusedCourseTypes(plan: MajorPlan): List[CourseType]
 
@@ -33,7 +33,7 @@ trait MajorPlanService {
 
   def statPlanCredits(plan: MajorPlan): Float
 
-  def hasCourse(cgroup: MajorPlanCourseGroup, course: Course): Boolean
+  def hasCourse(cgroup: MajorCourseGroup, course: Course): Boolean
 
-  def hasCourse(cgroup: MajorPlanCourseGroup, course: Course, planCourse: PlanCourse): Boolean
+  def hasCourse(cgroup: MajorCourseGroup, course: Course, planCourse: PlanCourse): Boolean
 }

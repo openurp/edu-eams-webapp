@@ -1,25 +1,23 @@
 package org.openurp.edu.eams.teach.program.common.service.impl
 
-import java.util.ArrayList
-import java.util.Collection
-import java.util.Collections
-import java.util.HashMap
-import java.util.HashSet
-import java.util.List
-import java.util.Map
+
+
+
+
+
 import org.apache.commons.collections.CollectionUtils
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import com.ekingstar.eams.teach.code.school.CourseType
-import org.openurp.edu.eams.teach.program.CourseGroup
+import org.openurp.edu.teach.plan.CourseGroup
 import org.openurp.edu.eams.teach.program.CoursePlan
-import org.openurp.edu.eams.teach.program.PlanCourse
+import org.openurp.edu.teach.plan.PlanCourse
 import org.openurp.edu.eams.teach.program.common.service.PlanCompareService
 import org.openurp.edu.eams.teach.program.common.service.helper.CourseTypeWrapper
 import org.openurp.edu.eams.teach.program.common.service.helper.MajorPlanCourseWrapper
 import org.openurp.edu.teach.plan.MajorPlanCourse
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class PlanCompareServiceImpl extends BaseServiceImpl with PlanCompareService {
 
@@ -80,19 +78,19 @@ class PlanCompareServiceImpl extends BaseServiceImpl with PlanCompareService {
     result
   }
 
-  private def wrapPlanCourses(planCourses: Collection[_ <: PlanCourse]): Collection[MajorPlanCourseWrapper] = {
+  private def wrapPlanCourses(planCourses: Iterable[_ <: PlanCourse]): Iterable[MajorPlanCourseWrapper] = {
     CollectUtils.collect(planCourses, MajorPlanCourseWrapper.WRAPPER)
   }
 
-  private def unWrapPlanCourses(planCourseWrappers: Collection[MajorPlanCourseWrapper]): Collection[PlanCourse] = {
+  private def unWrapPlanCourses(planCourseWrappers: Iterable[MajorPlanCourseWrapper]): Iterable[PlanCourse] = {
     CollectUtils.collect(planCourseWrappers, MajorPlanCourseWrapper.UNWRAPPER)
   }
 
-  private def wrapCourseTypes(courseTypes: Collection[CourseType]): Collection[CourseTypeWrapper] = {
+  private def wrapCourseTypes(courseTypes: Iterable[CourseType]): Iterable[CourseTypeWrapper] = {
     CollectUtils.collect(courseTypes, CourseTypeWrapper.WRAPPER)
   }
 
-  private def unWrapCourseTypes(courseTypeWrappers: Collection[CourseTypeWrapper]): Collection[CourseType] = {
+  private def unWrapCourseTypes(courseTypeWrappers: Iterable[CourseTypeWrapper]): Iterable[CourseType] = {
     CollectUtils.collect(courseTypeWrappers, CourseTypeWrapper.UNWRAPPER)
   }
 }

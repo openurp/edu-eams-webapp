@@ -1,18 +1,18 @@
 package org.openurp.edu.eams.teach.program.helper
 
-import java.util.ArrayList
+
 import java.util.Arrays
 import java.util.Comparator
-import java.util.Iterator
-import java.util.List
+
+
 import org.beangle.commons.dao.EntityDao
 import org.beangle.commons.lang.Strings
-import org.openurp.edu.eams.teach.program.CourseGroup
+import org.openurp.edu.teach.plan.CourseGroup
 import org.openurp.edu.eams.teach.program.CoursePlan
-import org.openurp.edu.eams.teach.program.PlanCourse
-import org.openurp.edu.teach.plan.MajorPlanCourseGroup
+import org.openurp.edu.teach.plan.PlanCourse
+import org.openurp.edu.teach.plan.MajorCourseGroup
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 object PlanTermCreditTool {
 
@@ -108,7 +108,7 @@ object PlanTermCreditTool {
       entityDao: EntityDao) {
     var it = plan.getGroups.iterator()
     while (it.hasNext) {
-      val group = it.next().asInstanceOf[MajorPlanCourseGroup]
+      val group = it.next().asInstanceOf[MajorCourseGroup]
       val newCreditPerTerms = PlanTermCreditTool.buildCourseGroupTermCredits(transformToFloat(group.getTermCredits), 
         oldTermsCount, newTermsCount)
       group.setTermCredits(newCreditPerTerms)

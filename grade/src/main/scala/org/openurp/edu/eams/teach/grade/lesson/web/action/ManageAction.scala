@@ -1,18 +1,18 @@
 package org.openurp.edu.eams.teach.grade.lesson.web.action
 
-import java.util.ArrayList
-import java.util.List
+
+
 import org.beangle.commons.transfer.TransferListener
 import org.beangle.commons.transfer.importer.listener.ImporterForeignerListener
 import org.beangle.commons.transfer.importer.listener.ItemImporterListener
-import org.openurp.edu.eams.teach.code.industry.GradeType
+import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.eams.teach.grade.course.service.CourseGradeImportListener
 import org.openurp.edu.teach.grade.CourseGrade
 import org.openurp.edu.eams.teach.lesson.GradeTypeConstants
 import org.openurp.edu.eams.web.util.DownloadHelper
 import com.opensymphony.xwork2.util.ClassLoaderUtil
 
-import scala.collection.JavaConversions._
+
 
 class ManageAction extends AuditAction {
 

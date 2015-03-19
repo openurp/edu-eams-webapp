@@ -6,7 +6,7 @@ import org.openurp.edu.eams.teach.election.service.rule.AbstractElectRuleExecuto
 import org.openurp.edu.eams.teach.election.service.rule.ElectRulePrepare
 import RetakeCheckByCoursePrepare._
 
-import scala.collection.JavaConversions._
+
 
 object RetakeCheckByCoursePrepare {
 

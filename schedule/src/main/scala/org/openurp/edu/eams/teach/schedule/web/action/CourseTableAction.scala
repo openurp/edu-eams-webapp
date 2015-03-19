@@ -1,14 +1,12 @@
 package org.openurp.edu.eams.teach.schedule.web.action
 
-import java.util.ArrayList
+
 import java.util.Arrays
-import java.util.Collection
-import java.util.Collections
 import java.util.Date
-import java.util.HashMap
-import java.util.List
-import java.util.Map
-import java.util.Set
+
+
+
+
 import org.apache.commons.collections.CollectionUtils
 import org.apache.commons.collections.Transformer
 import org.apache.commons.lang3.ArrayUtils
@@ -18,19 +16,19 @@ import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
 import org.beangle.commons.conversion.impl.DefaultConversion
 import org.beangle.commons.dao.query.builder.Condition
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.beangle.commons.entity.Entity
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.beangle.data.model.Entity
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.lang.Strings
 import org.beangle.struts2.helper.Params
 import org.beangle.struts2.helper.QueryHelper
 import org.openurp.edu.eams.base.Building
-import org.openurp.edu.eams.base.Campus
+import org.openurp.base.Campus
 import org.openurp.base.Room
 import org.openurp.base.Department
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.code.person.Gender
-import org.openurp.edu.eams.base.code.school.ClassroomType
+import org.openurp.edu.eams.base.code.school.RoomType
 import org.openurp.edu.eams.base.util.WeekDays
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.base.Project
@@ -40,11 +38,11 @@ import org.openurp.code.edu.Education
 import org.openurp.edu.base.code.StdType
 import org.openurp.edu.eams.core.service.StudentService
 import org.openurp.edu.eams.core.service.TimeSettingService
-import org.openurp.edu.teach.Course
+import org.openurp.edu.base.Course
 import org.openurp.edu.eams.teach.Textbook
 import org.openurp.edu.eams.teach.code.school.CourseHourType
 import org.openurp.edu.teach.code.CourseType
-import org.openurp.edu.eams.teach.lesson.CourseActivity
+import org.openurp.edu.teach.schedule.CourseActivity
 import org.openurp.edu.teach.lesson.CourseLimitMeta.Operator
 import org.openurp.edu.eams.teach.lesson.CourseMaterial
 import org.openurp.edu.teach.lesson.CourseTake
@@ -58,8 +56,8 @@ import org.openurp.edu.eams.teach.lesson.service.LessonFilterStrategy
 import org.openurp.edu.eams.teach.lesson.service.LessonFilterStrategyFactory
 import org.openurp.edu.eams.teach.lesson.service.LessonService
 import org.openurp.edu.eams.teach.lesson.util.CourseActivityDigestor
-import org.openurp.edu.eams.teach.lesson.util.TimeUnitUtil
-import org.openurp.edu.eams.teach.program.CourseGroup
+import org.openurp.edu.eams.teach.lesson.util.YearWeekTimeUtil
+import org.openurp.edu.teach.plan.CourseGroup
 import org.openurp.edu.base.Program
 import org.openurp.edu.teach.plan.MajorPlan
 import org.openurp.edu.eams.teach.program.major.service.MajorPlanService
@@ -72,7 +70,7 @@ import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 import org.openurp.edu.eams.web.helper.BaseInfoSearchHelper
 import org.openurp.edu.eams.web.helper.StdSearchHelper
 
-import scala.collection.JavaConversions._
+
 
 class CourseTableAction extends SemesterSupportAction {
 
@@ -98,7 +96,7 @@ class CourseTableAction extends SemesterSupportAction {
 
   override def index(): String = {
     setSemesterDataRealm(hasStdTypeCollege)
-    put("classroomConfigTypeList", baseCodeService.getCodes(classOf[ClassroomType]))
+    put("classroomConfigTypeList", baseCodeService.getCodes(classOf[RoomType]))
     addBaseInfo("campusList", classOf[Campus])
     addBaseInfo("buildings", classOf[Building])
     val project = getProject
@@ -122,7 +120,7 @@ class CourseTableAction extends SemesterSupportAction {
     val courseTakes = lesson.getTeachClass.getCourseTakes
     val targetCourseTakes = CollectUtils.newArrayList()
     if (null != adminclassId) {
-      for (courseTake <- courseTakes if courseTake.getStd.getAdminclass.getId == adminclassId) {
+      for (courseTake <- courseTakes if courseTake.getStd.getAdminclass.id == adminclassId) {
         targetCourseTakes.add(courseTake)
       }
       put("courseTakes", targetCourseTakes)
@@ -136,7 +134,7 @@ class CourseTableAction extends SemesterSupportAction {
     put("departmentList", departmentService.getColleges)
     put("stdTypeList", baseCodeService.getCodes(classOf[StdType]))
     putSemester(null)
-    put("classroomConfigTypeList", baseCodeService.getCodes(classOf[ClassroomType]))
+    put("classroomConfigTypeList", baseCodeService.getCodes(classOf[RoomType]))
     put("districtList", baseInfoService.getBaseInfos(classOf[Campus]))
     put("teacherDeparts", this.entityDao.getAll(classOf[Department]))
     forward("index")
@@ -169,7 +167,7 @@ class CourseTableAction extends SemesterSupportAction {
     val time = new CourseTime()
     for (adminclass <- adminclasses) {
       val courseActivities = teachResourceService.getAdminclassActivities(adminclass, time, semester)
-      courseTables.put(adminclass.getId.toString, courseActivities)
+      courseTables.put(adminclass.id.toString, courseActivities)
       putActivityId2ArrangeWeek(semester, courseActivities)
       if (null == adminclass.major) adminclassForNoMajors.add(adminclass)
     }
@@ -197,7 +195,7 @@ class CourseTableAction extends SemesterSupportAction {
     val time = new CourseTime()
     for (teacher <- teachers) {
       val courseActivities = teachResourceService.getTeacherActivities(teacher, time, semester)
-      courseTables.put(teacher.getId.toString, courseActivities)
+      courseTables.put(teacher.id.toString, courseActivities)
       putActivityId2ArrangeWeek(semester, courseActivities)
     }
     put("timeSetting", timeSettingService.getClosestTimeSetting(getProject, semester, null))
@@ -209,19 +207,19 @@ class CourseTableAction extends SemesterSupportAction {
     forward()
   }
 
-  def courseTableOfClassroom(): String = {
+  def courseTableOfRoom(): String = {
     val roomIds = Strings.splitToInt(get("roomIds"))
     val semesterId = getInt("semester.id")
     val semester = semesterService.getSemester(semesterId)
     val courseTables = CollectUtils.newHashMap()
     var classrooms = CollectUtils.newArrayList()
     if (ArrayUtils.isNotEmpty(roomIds)) {
-      classrooms = entityDao.get(classOf[Classroom], roomIds)
+      classrooms = entityDao.get(classOf[Room], roomIds)
     }
     val time = new CourseTime()
     for (classroom <- classrooms) {
       val courseActivities = teachResourceService.getRoomActivities(classroom, time, semester)
-      courseTables.put(classroom.getId.toString, courseActivities)
+      courseTables.put(classroom.id.toString, courseActivities)
       putActivityId2ArrangeWeek(semester, courseActivities)
     }
     put("timeSetting", timeSettingService.getClosestTimeSetting(getProject, semester, null))
@@ -233,11 +231,11 @@ class CourseTableAction extends SemesterSupportAction {
     forward()
   }
 
-  private def putActivityId2ArrangeWeek(semester: Semester, courseActivities: Collection[CourseActivity]) {
+  private def putActivityId2ArrangeWeek(semester: Semester, courseActivities: Iterable[CourseActivity]) {
     val activityId2ArrangeWeek = CollectUtils.newHashMap()
     val digestor = CourseActivityDigestor.getInstance
     for (courseActivity <- courseActivities) {
-      activityId2ArrangeWeek.put(courseActivity.getId, digestor.digest(getTextResource, Collections.singleton(courseActivity), 
+      activityId2ArrangeWeek.put(courseActivity.id, digestor.digest(getTextResource, Collections.singleton(courseActivity), 
         CourseActivityDigestor.weeks))
     }
     put("activityId2ArrangeWeek", activityId2ArrangeWeek)
@@ -292,7 +290,7 @@ class CourseTableAction extends SemesterSupportAction {
       put("students", entityDao.search(buildStdQuery().where("std.project = :project", project)))
       forward("stdList")
     } else if (CourseTable.ROOM == kind) {
-      put("classrooms", entityDao.search(baseInfoSearchHelper.buildClassroomQuery()))
+      put("classrooms", entityDao.search(baseInfoSearchHelper.buildRoomQuery()))
       forward("classroomList")
     } else if (CourseTable.TEACHER == kind) {
       val teachers = entityDao.search(baseInfoSearchHelper.buildTeacherQuery())
@@ -351,7 +349,7 @@ class CourseTableAction extends SemesterSupportAction {
       return forward("prompt")
     }
     val clazz = CourseTable.getResourceClass(setting.getKind)
-    val idClazz = Model.getType(clazz).getIdType
+    val idClazz = Model.getType(clazz).idType
     val rsList = CollectUtils.newArrayList()
     for (a <- Strings.split(ids)) {
       rsList.add(DefaultConversion.Instance.convert(a, idClazz))
@@ -434,7 +432,7 @@ class CourseTableAction extends SemesterSupportAction {
     val weekIds = getDistinctWeekdays(peCourseCodes, semester)
     val unitRanges = getDistinctUnitRanges(peCourseCodes, semester)
     val arrangeQuery = new StringBuilder()
-    arrangeQuery.append("select distinct \n").append("    activity.time.weekday,\n")
+    arrangeQuery.append("select distinct \n").append("    activity.time.day,\n")
       .append("    activity.time.startUnit,\n")
       .append("    activity.time.endUnit,\n")
       .append("    lesson.course.code, \n")
@@ -475,10 +473,10 @@ class CourseTableAction extends SemesterSupportAction {
 
   private def getDistinctWeekdays(courseCodes: Array[String], semester: Semester): List[Integer] = {
     val weekDayQuery = OqlBuilder.from(classOf[CourseActivity], "activity")
-      .select("select distinct activity.time.weekday")
+      .select("select distinct activity.time.day")
       .where("activity.lesson.course.code in (:peCourseCodes)", courseCodes)
       .where("activity.lesson.semester=:semester", semester)
-      .orderBy("activity.time.weekday")
+      .orderBy("activity.time.day")
     entityDao.search(weekDayQuery).asInstanceOf[List[Integer]]
   }
 
@@ -563,8 +561,8 @@ class CourseTableAction extends SemesterSupportAction {
       if (setting.getIgnoreTask) {
         return table
       }
-      taskList = if (setting.getForSemester) lessonService.getLessonByCategory(resource.getId, lessonFilterStrategyFactory.getLessonFilterCategory(LessonFilterStrategy.TEACHER), 
-        setting.getSemester) else lessonService.getLessonByCategory(resource.getId, lessonFilterStrategyFactory.getLessonFilterCategory(LessonFilterStrategy.TEACHER), 
+      taskList = if (setting.getForSemester) lessonService.getLessonByCategory(resource.id, lessonFilterStrategyFactory.getLessonFilterCategory(LessonFilterStrategy.TEACHER), 
+        setting.getSemester) else lessonService.getLessonByCategory(resource.id, lessonFilterStrategyFactory.getLessonFilterCategory(LessonFilterStrategy.TEACHER), 
         semesterService.getSemestersOfOverlapped(setting.getSemester))
     } else if (CourseTable.STD == setting.getKind) {
       if (getLoginStudent != null) {
@@ -584,11 +582,11 @@ class CourseTableAction extends SemesterSupportAction {
       if (setting.getIgnoreTask) {
         return table
       }
-      taskList = if (setting.getForSemester) lessonService.getLessonByCategory(resource.getId, lessonFilterStrategyFactory.getLessonFilterCategory(LessonFilterStrategy.STD), 
-        setting.getSemester) else lessonService.getLessonByCategory(resource.getId, lessonFilterStrategyFactory.getLessonFilterCategory(LessonFilterStrategy.STD), 
+      taskList = if (setting.getForSemester) lessonService.getLessonByCategory(resource.id, lessonFilterStrategyFactory.getLessonFilterCategory(LessonFilterStrategy.STD), 
+        setting.getSemester) else lessonService.getLessonByCategory(resource.id, lessonFilterStrategyFactory.getLessonFilterCategory(LessonFilterStrategy.STD), 
         semesterService.getSemestersOfOverlapped(setting.getSemester))
     } else if (CourseTable.ROOM == setting.getKind) {
-      val classroom = resource.asInstanceOf[Classroom]
+      val classroom = resource.asInstanceOf[Room]
       val notShowAll = getBool("notShowAll")
       for (j <- 0 until setting.getTimes.length) {
         if (notShowAll) {
@@ -629,7 +627,7 @@ class CourseTableAction extends SemesterSupportAction {
     if (endWeek.intValue() > semester.getWeeks) endWeek = new java.lang.Integer(semester.getWeeks)
     put("startWeek", startWeek)
     put("endWeek", endWeek)
-    val courseTime = TimeUnitUtil.buildTimeUnits(2, startWeek.intValue(), endWeek.intValue(), CourseTime.CONTINUELY)
+    val courseTime = YearWeekTimeUtil.buildYearWeekTimes(2, startWeek.intValue(), endWeek.intValue(), CourseTime.CONTINUELY)
     Array(courseTime)
   }
 

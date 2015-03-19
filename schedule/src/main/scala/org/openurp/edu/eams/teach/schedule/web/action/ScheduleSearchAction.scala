@@ -1,18 +1,18 @@
 package org.openurp.edu.eams.teach.schedule.web.action
 
-import java.util.Collection
-import java.util.Map
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.BitStrings
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.transfer.exporter.PropertyExtractor
 import org.beangle.struts2.helper.ContextHelper
 import org.beangle.struts2.helper.Params
 import org.openurp.edu.eams.base.Building
-import org.openurp.edu.eams.base.Semester
-import org.openurp.edu.eams.base.TimeSetting
+import org.openurp.base.Semester
+import org.openurp.base.TimeSetting
 import org.openurp.edu.eams.base.util.WeekDays
 import org.openurp.edu.base.Project
 import org.openurp.edu.base.Student
@@ -25,7 +25,7 @@ import org.openurp.edu.eams.teach.lesson.util.CourseActivityDigestor
 import org.openurp.edu.eams.teach.schedule.service.propertyExtractor.SchedulePropertyExtractor
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class ScheduleSearchAction extends SemesterSupportAction {
 
@@ -52,7 +52,7 @@ class ScheduleSearchAction extends SemesterSupportAction {
       timeSettingService.getClosestTimeSetting(project, getAttribute("semester").asInstanceOf[Semester], 
       null)) {
       val timeSetting = timeSettingService.getClosestTimeSetting(project, getAttribute("semester").asInstanceOf[Semester], 
-        null).asInstanceOf[org.openurp.edu.eams.base.TimeSetting]
+        null).asInstanceOf[org.openurp.base.TimeSetting]
       if (null != timeSetting && null != timeSetting.getDefaultUnits) {
         num = timeSetting.getDefaultUnits.size
       }
@@ -68,7 +68,7 @@ class ScheduleSearchAction extends SemesterSupportAction {
     val digestor = CourseActivityDigestor.getInstance.setDelimeter("<br>")
     val arrangeInfo = CollectUtils.newHashMap()
     for (oneTask <- lessons) {
-      arrangeInfo.put(oneTask.getId.toString, digestor.digest(getTextResource, oneTask, ":day :units :weeks :room"))
+      arrangeInfo.put(oneTask.id.toString, digestor.digest(getTextResource, oneTask, ":day :units :weeks :room"))
     }
     put("arrangeInfo", arrangeInfo)
     forward()
@@ -87,7 +87,7 @@ class ScheduleSearchAction extends SemesterSupportAction {
   }
 
   protected def getPropertyExtractor(): PropertyExtractor = {
-    val weekday = Params.getInt("fake.time.weekday")
+    val weekday = Params.getInt("fake.time.day")
     var courseUnit = Params.getInt("courseActivity.time.startUnit")
     var activityWeekStart = Params.getInt("fake.time.weekstart")
     var activityWeekEnd = Params.getInt("fake.time.weekend")

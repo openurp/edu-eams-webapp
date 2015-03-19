@@ -1,10 +1,10 @@
 package org.openurp.edu.eams.system.message.web.action
 
 import java.util.Date
-import java.util.List
+
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.beangle.commons.entity.Entity
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.beangle.data.model.Entity
 import org.beangle.commons.lang.Strings
 import org.beangle.security.blueprint.User
 import org.openurp.edu.eams.system.msg.MessageContent
@@ -16,7 +16,7 @@ import org.openurp.edu.eams.system.msg.service.SystemMessageService
 import org.openurp.edu.eams.system.security.EamsUserCategory
 import org.openurp.edu.eams.web.action.common.AbstractStudentProjectSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class SystemMessageForStdAction extends AbstractStudentProjectSupportAction {
 
@@ -36,7 +36,7 @@ class SystemMessageForStdAction extends AbstractStudentProjectSupportAction {
     val username = getUsername
     put("newlyCount", systemMessageService.countNewly(username))
     put("draftCount", systemMessageService.countDraft(username))
-    put("isOpened", systemMessageConfigService.isOpened(getUserId, getProject.getId))
+    put("isOpened", systemMessageConfigService.isOpened(getUserId, getProject.id))
     indexSetting()
     forward()
   }
@@ -98,7 +98,7 @@ class SystemMessageForStdAction extends AbstractStudentProjectSupportAction {
   }
 
   def reply(): String = {
-    if (!systemMessageConfigService.isOpened(getUserId, getProject.getId)) {
+    if (!systemMessageConfigService.isOpened(getUserId, getProject.id)) {
       return forwardError("当前不开放")
     }
     val user = entityDao.get(classOf[User], getUserId)
@@ -127,7 +127,7 @@ class SystemMessageForStdAction extends AbstractStudentProjectSupportAction {
   }
 
   def sendReply(): String = {
-    if (!systemMessageConfigService.isOpened(getUserId, getProject.getId)) {
+    if (!systemMessageConfigService.isOpened(getUserId, getProject.id)) {
       return forwardError("当前不开放")
     }
     val user = entityDao.get(classOf[User], getUserId)
@@ -184,7 +184,7 @@ class SystemMessageForStdAction extends AbstractStudentProjectSupportAction {
     }
     put("systemMessage", message)
     put("type", get("type"))
-    put("isOpened", systemMessageConfigService.isOpened(getUserId, getProject.getId))
+    put("isOpened", systemMessageConfigService.isOpened(getUserId, getProject.id))
     putMessageType(SystemMessageType.INBOX)
     forward()
   }
@@ -243,7 +243,7 @@ class SystemMessageForStdAction extends AbstractStudentProjectSupportAction {
   }
 
   def saveDraft(): String = {
-    if (!systemMessageConfigService.isOpened(getUserId, getProject.getId)) {
+    if (!systemMessageConfigService.isOpened(getUserId, getProject.id)) {
       return forwardError("当前不开放")
     }
     val id = getLongId(getShortName)

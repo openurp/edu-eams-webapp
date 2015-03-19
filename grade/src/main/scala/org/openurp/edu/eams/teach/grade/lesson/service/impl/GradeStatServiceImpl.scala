@@ -1,16 +1,16 @@
 package org.openurp.edu.eams.teach.grade.lesson.service.impl
 
-import java.util.Collection
-import java.util.Iterator
-import java.util.List
+
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.impl.BaseServiceImpl
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Teacher
-import org.openurp.edu.teach.Course
-import org.openurp.edu.eams.teach.code.industry.GradeType
+import org.openurp.edu.base.Course
+import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.eams.teach.grade.lesson.service.CourseSegStat
 import org.openurp.edu.eams.teach.grade.lesson.service.GradeStatService
 import org.openurp.edu.eams.teach.grade.lesson.service.LessonSegStat
@@ -18,7 +18,7 @@ import org.openurp.edu.teach.grade.CourseGrade
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.util.stat.FloatSegment
 
-import scala.collection.JavaConversions._
+
 
 class GradeStatServiceImpl extends BaseServiceImpl with GradeStatService {
 

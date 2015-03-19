@@ -1,6 +1,6 @@
 package org.openurp.edu.eams.teach.program.majorapply.model
 
-import java.util.Map
+
 import javax.persistence.FetchType
 import javax.persistence.ManyToOne
 import javax.persistence.MappedSuperclass
@@ -12,13 +12,13 @@ import org.beangle.commons.lang.Throwables
 import com.ekingstar.eams.base.Department
 import com.ekingstar.eams.teach.Course
 import com.ekingstar.eams.teach.code.school.CourseHourType
-import org.openurp.edu.eams.teach.program.PlanCourse
+import org.openurp.edu.teach.plan.PlanCourse
 import org.openurp.edu.teach.plan.MajorPlanCourse
-import org.openurp.edu.teach.plan.MajorPlanCourseGroup
+import org.openurp.edu.teach.plan.MajorCourseGroup
 import org.openurp.edu.eams.teach.program.major.model.MajorPlanCourseBean
 import org.openurp.edu.eams.teach.program.majorapply.model.component.FakeCourseGroup
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 @SerialVersionUID(5552733977609925991L)
 @MappedSuperclass
@@ -45,9 +45,9 @@ abstract class MajorPlanCourseModifyDetailBean extends LongIdObject with Compara
     val rhs = `object`.asInstanceOf[MajorPlanCourse]
     Objects.equalsBuilder().add(getTerms, rhs.getTerms)
       .add(getRemark, rhs.getRemark)
-      .add(getDepartment.getId, rhs.getDepartment.getId)
-      .add(getCourse.getId, rhs.getCourse.getId)
-      .add(getId, rhs.getId)
+      .add(getDepartment.id, rhs.getDepartment.id)
+      .add(getCourse.id, rhs.getCourse.id)
+      .add(id, rhs.id)
       .isEquals
   }
 
@@ -87,11 +87,11 @@ abstract class MajorPlanCourseModifyDetailBean extends LongIdObject with Compara
     this.fakeCourseGroup = fakeCourseGroup
   }
 
-  def setFakeCourseGroupByReal(courseGroup: MajorPlanCourseGroup) {
+  def setFakeCourseGroupByReal(courseGroup: MajorCourseGroup) {
     if (this.fakeCourseGroup == null) {
       this.fakeCourseGroup = new FakeCourseGroup()
     }
-    this.fakeCourseGroup.setId(courseGroup.getId)
+    this.fakeCourseGroup.setId(courseGroup.id)
     this.fakeCourseGroup.setCourseType(courseGroup.getCourseType)
   }
 
@@ -111,7 +111,7 @@ abstract class MajorPlanCourseModifyDetailBean extends LongIdObject with Compara
 
   def setCourseHours(courseHours: Map[Integer, Integer]): Unit
 
-  def getCourseHour(`type`: CourseHourType): java.lang.Integer = getCourseHours.get(`type`.getId)
+  def getCourseHour(`type`: CourseHourType): java.lang.Integer = getCourseHours.get(`type`.id)
 
   def getDepartment(): Department = department
 

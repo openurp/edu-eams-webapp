@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.util.stat
 
 
-import scala.collection.JavaConversions._
+
 
 class CountItem(var count: Number, var what: AnyRef) extends Comparable[_] {
 

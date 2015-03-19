@@ -1,12 +1,12 @@
 package org.openurp.edu.eams.util.stat
 
-import java.util.ArrayList
-import java.util.Iterator
-import java.util.List
+
+
+
 import org.beangle.commons.lang.Objects
 import FloatSegment._
 
-import scala.collection.JavaConversions._
+
 
 object FloatSegment {
 

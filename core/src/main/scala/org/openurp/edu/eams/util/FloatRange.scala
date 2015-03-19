@@ -2,9 +2,9 @@ package org.openurp.edu.eams.util
 
 import org.beangle.commons.entity.Component
 import FloatRange._
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConversions._
+
+
 
 object FloatRange {
 
@@ -24,16 +24,16 @@ object FloatRange {
 
 class FloatRange extends Component {
 
-  @BeanProperty
+  
   var min: Float = 0f
 
-  @BooleanBeanProperty
+  
   var minInclusive: Boolean = true
 
-  @BeanProperty
+  
   var max: Float = 0f
 
-  @BooleanBeanProperty
+  
   var maxInclusive: Boolean = true
 
   def this(number: Float) {

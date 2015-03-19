@@ -1,14 +1,14 @@
 package org.openurp.edu.eams.teach.schedule.web.action
 
 import java.sql.Timestamp
-import java.util.Collection
+
 import java.util.Date
-import java.util.List
-import java.util.Map
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
 import org.beangle.commons.dao.query.builder.Condition
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.beangle.struts2.helper.Params
 import org.beangle.struts2.helper.QueryHelper
@@ -16,14 +16,14 @@ import org.openurp.base.Department
 import org.openurp.edu.eams.base.util.WeekStates
 import org.openurp.edu.base.Teacher
 import org.openurp.edu.eams.teach.code.industry.ExamType
-import org.openurp.edu.eams.teach.lesson.CourseActivity
+import org.openurp.edu.teach.schedule.CourseActivity
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.teach.lesson.LessonTag
 import org.openurp.edu.eams.teach.lesson.model.CourseScheduleBean.CourseStatusEnum
 import org.openurp.edu.eams.teach.lesson.util.CourseActivityDigestor
 import org.openurp.edu.eams.teach.schedule.model.LessonForDepart
 
-import scala.collection.JavaConversions._
+
 
 class ManualArrangeForDepartAction extends ManualArrangeAction {
 
@@ -81,7 +81,7 @@ class ManualArrangeForDepartAction extends ManualArrangeAction {
     val digestor = CourseActivityDigestor.getInstance.setDelimeter("<br>")
     val arrangeInfo = CollectUtils.newHashMap()
     for (oneTask <- lessons) {
-      arrangeInfo.put(oneTask.getId.toString, digestor.digest(getTextResource, oneTask, ":teacher+ :day :units :weeks :room"))
+      arrangeInfo.put(oneTask.id.toString, digestor.digest(getTextResource, oneTask, ":teacher+ :day :units :weeks :room"))
     }
     put("arrangeInfo", arrangeInfo)
     put("weekStates", new WeekStates())
@@ -184,9 +184,9 @@ class ManualArrangeForDepartAction extends ManualArrangeAction {
     }
     val guapai = Params.getBoolean("fake.guapai")
     if (true == guapai) {
-      query.where("exists (select tag.id from lesson.tags tag where tag.id=:guaPai)", LessonTag.PredefinedTags.GUAPAI.getId)
+      query.where("exists (select tag.id from lesson.tags tag where tag.id=:guaPai)", LessonTag.PredefinedTags.GUAPAI.id)
     } else if (false == guapai) {
-      query.where("not exists (select tag.id from lesson.tags tag where tag.id=:guaPai)", LessonTag.PredefinedTags.GUAPAI.getId)
+      query.where("not exists (select tag.id from lesson.tags tag where tag.id=:guaPai)", LessonTag.PredefinedTags.GUAPAI.id)
     }
     val compare = Params.getInt("electInfo.electCountCompare")
     if (null != compare) {
@@ -194,9 +194,9 @@ class ManualArrangeForDepartAction extends ManualArrangeAction {
       op = if (compare.intValue() == 0) "=" else if (compare.intValue() < 0) "<" else ">"
       query.where("lesson.teachClass.stdCount " + op + " lesson.teachClass.maxStdCount")
     }
-    val weekday = Params.getInt("fake.time.weekday")
+    val weekday = Params.getInt("fake.time.day")
     if (null != weekday) {
-      query.where("exists (select activity.id from lesson.courseSchedule.activities activity where activity.time.weekday=:weekday)", 
+      query.where("exists (select activity.id from lesson.courseSchedule.activities activity where activity.time.day=:weekday)", 
         weekday)
     }
     val unit = Params.getInt("fake.time.unit")
@@ -210,11 +210,11 @@ class ManualArrangeForDepartAction extends ManualArrangeAction {
     }
     val examTypeId = Params.getInt("examType.id")
     if (examTypeId != null && examTypeId == ExamType.MAKEUP) {
-      query.where("lesson.id in(select distinct take.lesson.id from org.openurp.edu.eams.teach.lesson.ExamTake take where take.examType.id = :examTypeId)", 
+      query.where("lesson.id in(select distinct take.lesson.id from org.openurp.edu.teach.exam.ExamTake take where take.examType.id = :examTypeId)", 
         ExamType.MAKEUP)
     }
     if (isExamArrangeComplete == 1) {
-      var activitySubQuery = "exists( from org.openurp.edu.eams.teach.lesson.ExamActivity examActivity left join examActivity.lessons activityLesson" + 
+      var activitySubQuery = "exists( from org.openurp.edu.teach.exam.ExamActivity examActivity left join examActivity.lessons activityLesson" + 
         " where activityLesson=lesson and examActivity.examType.id=:examTypeId"
       val activityParams = CollectUtils.newArrayList()
       activityParams.add(examTypeId)
@@ -245,7 +245,7 @@ class ManualArrangeForDepartAction extends ManualArrangeAction {
       activityCondition.params(activityParams)
       query.where(activityCondition)
     } else if (isExamArrangeComplete == 0) {
-      query.where("not exists (from org.openurp.edu.eams.teach.lesson.ExamActivity exam " + 
+      query.where("not exists (from org.openurp.edu.teach.exam.ExamActivity exam " + 
         "left join exam.lessons e_lesson where e_lesson=lesson and exam.examType.id=:examTypeId)", examTypeId)
     }
     val queryGrouped = Params.getBoolean("arrangeInfo.examGrouped")

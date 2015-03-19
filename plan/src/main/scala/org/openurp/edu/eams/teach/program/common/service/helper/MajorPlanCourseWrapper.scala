@@ -5,9 +5,9 @@ import org.beangle.commons.lang.Objects
 import org.beangle.commons.lang.functor.Transformer
 import org.openurp.edu.teach.plan.MajorPlanCourse
 import MajorPlanCourseWrapper._
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
+
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 object MajorPlanCourseWrapper {
 
@@ -43,7 +43,7 @@ object MajorPlanCourseWrapper {
       Objects.compareBuilder().add(left.getCourse.getCode, right.getCourse.getCode)
         .add(left.getCourse.getName, right.getCourse.getName)
         .add(left.getCourse.getCredits, right.getCourse.getCredits)
-        .add(left.getDepartment.getId, right.getDepartment.getId)
+        .add(left.getDepartment.id, right.getDepartment.id)
         .add(left.getTerms, right.getTerms)
         .add(left.isCompulsory, right.isCompulsory)
         .toComparison()
@@ -53,7 +53,7 @@ object MajorPlanCourseWrapper {
 
 class MajorPlanCourseWrapper(`object`: MajorPlanCourse) extends Comparable[_] {
 
-  @BeanProperty
+  
   var majorPlanCourse: MajorPlanCourse = `object`
 
   override def hashCode(): Int = {

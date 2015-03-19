@@ -1,22 +1,20 @@
 package org.openurp.edu.eams.teach.grade.search.web.action
 
-import java.util.Collection
-import java.util.Collections
 import java.util.Date
-import java.util.Iterator
-import java.util.List
-import java.util.Map
-import java.util.Set
+
+
+
+
 import javax.servlet.http.HttpServletRequest
 import org.beangle.commons.lang.Strings
 import org.apache.struts2.ServletActionContext
 import org.beangle.commons.bean.comparators.PropertyComparator
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.lang.Strings
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Project
 import org.openurp.edu.base.Student
 import org.openurp.edu.eams.teach.grade.lesson.service.LessonGradeService
@@ -30,7 +28,7 @@ import org.openurp.edu.teach.grade.CourseGrade
 import org.openurp.edu.eams.web.helper.StdSearchHelper
 import com.opensymphony.xwork2.ActionContext
 
-import scala.collection.JavaConversions._
+
 
 class GpaAction extends GpaStatAction {
 
@@ -87,7 +85,7 @@ class GpaAction extends GpaStatAction {
     }
   }
 
-  protected override def getExportDatas(): Collection[_] = {
+  protected override def getExportDatas(): Iterable[_] = {
     val stdGpaIds = Strings.transformToLong(Strings.split(get("stdGpaIds")))
     val requset = ServletActionContext.getRequest
     var builder = requset.getSession.getAttribute("gpasBuilder").asInstanceOf[OqlBuilder[StdGpa]]
@@ -189,7 +187,7 @@ class GpaAction extends GpaStatAction {
           ") and instr('," + 
           semesterIds + 
           ",',','||semester.id||',')>0 and markStyle.id=" + 
-          config.getScoreMarkStyle.getId
+          config.getScoreMarkStyle.id
         entityDao.executeUpdate(hql, null.asInstanceOf[Array[Any]])
       }
     }

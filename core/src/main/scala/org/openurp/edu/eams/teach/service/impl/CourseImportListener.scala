@@ -1,13 +1,13 @@
 package org.openurp.edu.eams.teach.service.impl
 
 import java.util.Date
-import java.util.List
-import java.util.Map
+
+
 import javax.validation.ConstraintViolation
 import javax.validation.ConstraintViolationException
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.EntityDao
-import org.beangle.commons.entity.Entity
+import org.beangle.data.model.Entity
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.entity.util.ValidEntityKeyPredicate
 import org.beangle.commons.lang.Strings
@@ -17,9 +17,9 @@ import org.beangle.commons.transfer.importer.listener.ItemImporterListener
 import org.openurp.base.Department
 import org.openurp.edu.base.Project
 import org.openurp.code.edu.Education
-import org.openurp.edu.teach.Course
-import org.openurp.edu.teach.CourseExtInfo
-import org.openurp.edu.teach.CourseHour
+import org.openurp.edu.base.Course
+import org.openurp.edu.base.CourseExtInfo
+import org.openurp.edu.base.CourseHour
 import org.openurp.edu.eams.teach.code.industry.ExamMode
 import org.openurp.edu.eams.teach.code.school.CourseCategory
 import org.openurp.edu.eams.teach.code.school.CourseHourType
@@ -27,7 +27,7 @@ import org.openurp.edu.teach.code.CourseType
 import org.openurp.edu.teach.model.CourseBean
 import org.openurp.edu.eams.teach.service.CourseService
 
-import scala.collection.JavaConversions._
+
 
 class CourseImportListener(protected var courseService: CourseService, 
     private var primaryKey: String, 
@@ -162,7 +162,7 @@ class CourseImportListener(protected var courseService: CourseService,
     var extInfo: CourseExtInfo = null
     val params = importer.getCurData
     if (course.isPersisted) {
-      extInfo = courseService.getCourseExtInfo(course.getId)
+      extInfo = courseService.getCourseExtInfo(course.id)
     }
     if (null == extInfo) {
       extInfo = Model.newInstance(classOf[CourseExtInfo])

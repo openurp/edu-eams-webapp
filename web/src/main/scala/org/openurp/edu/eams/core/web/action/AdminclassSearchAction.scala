@@ -1,17 +1,17 @@
 package org.openurp.edu.eams.core.web.action
 
-import java.util.ArrayList
+
 import java.util.Arrays
-import java.util.Collection
+
 import java.util.Date
-import java.util.HashMap
-import java.util.Iterator
-import java.util.List
-import java.util.Map
+
+
+
+
 import org.apache.commons.beanutils.BeanComparator
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.openurp.edu.eams.base.web.action.BaseInfoAction
 import org.openurp.edu.base.Adminclass
@@ -19,7 +19,7 @@ import org.openurp.edu.base.Student
 import org.openurp.edu.base.StudentJournal
 import org.openurp.edu.eams.core.service.AdminclassService
 
-import scala.collection.JavaConversions._
+
 
 class AdminclassSearchAction extends BaseInfoAction {
 
@@ -63,7 +63,7 @@ class AdminclassSearchAction extends BaseInfoAction {
     builder
   }
 
-  protected def getExportDatas(): Collection[_] = {
+  protected def getExportDatas(): Iterable[_] = {
     entityDao.search(getQueryBuilder.limit(null))
   }
 
@@ -115,12 +115,12 @@ class AdminclassSearchAction extends BaseInfoAction {
     var iter = adminClassList.iterator()
     while (iter.hasNext) {
       val admin = iter.next().asInstanceOf[Adminclass]
-      var selectStds: Collection[_] = null
+      var selectStds: Iterable[_] = null
       selectStds = new ArrayList(admin.getStudents)
       val stds = Array.ofDim[Student](selectStds.size)
       selectStds.toArray(stds)
       Arrays.sort(stds, new BeanComparator("code"))
-      stdMap.put(admin.getId.toString, stds)
+      stdMap.put(admin.id.toString, stds)
     }
     put("status", status)
     put("stdMap", stdMap)

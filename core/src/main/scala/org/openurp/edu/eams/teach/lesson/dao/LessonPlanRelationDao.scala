@@ -1,12 +1,10 @@
 package org.openurp.edu.eams.teach.lesson.dao
 
-import java.util.List
+
 import org.openurp.base.Semester
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.teach.lesson.LessonPlanRelation
 import org.openurp.edu.teach.plan.MajorPlan
-
-import scala.collection.JavaConversions._
 
 trait LessonPlanRelationDao {
 

@@ -1,14 +1,13 @@
 package org.openurp.edu.eams.teach.lesson.util
 
-import java.util.Collection
+
 import org.openurp.edu.teach.lesson.CourseLimitGroup
 import org.openurp.edu.teach.lesson.CourseLimitItem
 import org.openurp.edu.teach.lesson.CourseTake
-import org.openurp.edu.eams.teach.lesson.ExamTake
+import org.openurp.edu.teach.exam.ExamTake
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.teach.lesson.TeachClass
 
-import scala.collection.JavaConversions._
 
 object LessonElectionUtil {
 
@@ -34,7 +33,7 @@ object LessonElectionUtil {
     teachClass.setStdCount(teachClass.getCourseTakes.size)
   }
 
-  def addCourseTakes(teachClass: TeachClass, takes: Collection[CourseTake]) {
+  def addCourseTakes(teachClass: TeachClass, takes: Iterable[CourseTake]) {
     for (take <- takes) {
       addCourseTake(teachClass, take)
     }

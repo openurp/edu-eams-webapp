@@ -6,7 +6,7 @@ import org.beangle.commons.lang.tuple.Pair
 import org.beangle.struts2.convention.route.Action
 import com.ekingstar.eams.base.Department
 import com.ekingstar.eams.teach.Course
-import org.openurp.edu.eams.teach.program.CourseGroup
+import org.openurp.edu.teach.plan.CourseGroup
 import org.openurp.edu.eams.teach.program.common.dao.PlanCommonDao
 import org.openurp.edu.eams.teach.program.helper.PlanTermCreditTool
 import org.openurp.edu.eams.teach.program.personal.PersonalPlan
@@ -16,7 +16,7 @@ import org.openurp.edu.eams.teach.program.personal.model.PersonalPlanCourseBean
 import org.openurp.edu.eams.teach.program.personal.service.PersonalPlanCourseService
 import com.ekingstar.eams.web.action.BaseAction
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class PersonalPlanCourseAction extends BaseAction {
 
@@ -31,7 +31,7 @@ class PersonalPlanCourseAction extends BaseAction {
     val planCourse = populateEntity(classOf[PersonalPlanCourse], "planCourse")
     val terms = get("planCourse.terms")
     planCourse.setTerms(PlanTermCreditTool.normalizeTerms(terms))
-    val extra = "&courseGroup.id=" + group.getId + "&planId=" + plan.getId
+    val extra = "&courseGroup.id=" + group.id + "&planId=" + plan.id
     if (planCourse.isPersisted) {
       personalPlanCourseService.updatePlanCourse(planCourse, plan)
     } else {
@@ -51,7 +51,7 @@ class PersonalPlanCourseAction extends BaseAction {
     val o = extractPlanAndGroup()
     val plan = o.getLeft
     val group = o.getRight
-    val extra = "&courseGroup.id=" + group.getId + "&planId=" + plan.getId
+    val extra = "&courseGroup.id=" + group.id + "&planId=" + plan.id
     val msg = new StringBuffer()
     var errorNum = 0
     for (courseId <- courseIds) {
@@ -87,7 +87,7 @@ class PersonalPlanCourseAction extends BaseAction {
     val o = extractPlanAndGroup()
     val plan = o.getLeft
     val group = o.getRight
-    val extra = "&courseGroup.id=" + group.getId + "&planId=" + plan.getId
+    val extra = "&courseGroup.id=" + group.id + "&planId=" + plan.id
     for (planCourseId <- planCourseIds) {
       val planCourse = entityDao.get(classOf[PersonalPlanCourse], planCourseId)
       planCourse.setTerms(PlanTermCreditTool.normalizeTerms(get("planCourse_." + planCourseId + ".terms")))
@@ -109,7 +109,7 @@ class PersonalPlanCourseAction extends BaseAction {
       personalPlanCourseService.removePlanCourse(planCourse, plan)
     }
     getFlash.put("params", get("params"))
-    val extra = "&courseGroup.id=" + group.getId + "&planId=" + plan.getId
+    val extra = "&courseGroup.id=" + group.id + "&planId=" + plan.id
     redirect(new Action(classOf[PersonalPlanCourseGroupAction], "arrangeGroupCourses", extra), "info.delete.success")
   }
 

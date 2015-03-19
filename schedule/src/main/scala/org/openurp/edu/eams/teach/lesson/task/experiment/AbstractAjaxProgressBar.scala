@@ -1,22 +1,22 @@
 package org.openurp.edu.eams.teach.lesson.task.experiment
 
-import java.util.HashMap
-import java.util.Map
+
+
 import java.util.Timer
 import java.util.TimerTask
 import java.util.concurrent.BlockingQueue
 import java.util.concurrent.LinkedBlockingQueue
 import org.beangle.commons.lang.tuple.Pair
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConversions._
+
+
 
 abstract class AbstractAjaxProgressBar extends AjaxProgressBar {
 
-  @BeanProperty
+  
   val id = System.currentTimeMillis()
 
-  @BeanProperty
+  
   val messagePool = new LinkedBlockingQueue[String]()
 
   def finish() {

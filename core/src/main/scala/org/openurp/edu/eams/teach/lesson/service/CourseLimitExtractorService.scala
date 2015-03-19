@@ -1,6 +1,6 @@
 package org.openurp.edu.eams.teach.lesson.service
 
-import java.util.List
+
 import org.beangle.commons.lang.tuple.Pair
 import org.openurp.base.Department
 import org.openurp.code.person.Gender
@@ -13,7 +13,7 @@ import org.openurp.edu.teach.lesson.CourseLimitGroup
 import org.openurp.edu.teach.lesson.CourseLimitMeta.Operator
 import org.openurp.edu.base.Program
 
-import scala.collection.JavaConversions._
+
 
 trait CourseLimitExtractorService {
 

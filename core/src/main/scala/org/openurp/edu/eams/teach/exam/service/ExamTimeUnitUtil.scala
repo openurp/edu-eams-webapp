@@ -5,45 +5,44 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.GregorianCalendar
-import java.util.Map
 import org.beangle.commons.lang.Strings
 import org.openurp.base.Semester
 import org.openurp.edu.eams.base.util.WeekDays
 import org.openurp.edu.eams.base.util.WeekStates
-import org.openurp.edu.eams.classroom.TimeUnit
+import org.beangle.commons.lang.time.YearWeekTime
 import org.openurp.edu.eams.date.EamsDateUtil
-import org.openurp.edu.eams.teach.lesson.ExamActivity
-import org.openurp.edu.eams.teach.lesson.ExamRoom
-import org.openurp.edu.eams.weekstate.WeekStateDirection
-import org.openurp.edu.eams.weekstate.YearWeekState
-import org.openurp.edu.eams.weekstate.YearWeekStateBuilder
+import org.openurp.edu.teach.exam.ExamActivity
+import org.openurp.edu.teach.exam.ExamRoom
+import org.beangle.commons.lang.time.YearWeekTimeBuilder
+import org.beangle.commons.lang.time.WeekDays
+import org.openurp.base.Semester
 
-import scala.collection.JavaConversions._
 
-object ExamTimeUnitUtil {
 
-  def getTimeUnitFromActivity(activity: ExamActivity): TimeUnit = {
+object ExamYearWeekTimeUtil {
+
+  def getYearWeekTimeFromActivity(activity: ExamActivity): YearWeekTime = {
     val f = new SimpleDateFormat("HH:mm")
-    val unit = new TimeUnit()
+    val unit = new YearWeekTime()
     unit.setStartTime(getTimeNumber(f.format(activity.getStartAt)))
     unit.setEndTime(getTimeNumber(f.format(activity.getEndAt)))
     val date = activity.getStartAt
-    val state = YearWeekStateBuilder.build(date, WeekStateDirection.LTR)
-    unit.setYear(state.getYear)
-    unit.setWeekday(state.getWeekday.getIndex)
+    val state = YearWeekTimeBuilder.build(date, WeekStateDirection.LTR)
+    unit.setYear(state.year)
+    unit.setWeekday(state.day.getIndex)
     unit.newWeekState(state.getString)
     unit
   }
 
-  def getTimeUnitFromActivity(examRoom: ExamRoom): TimeUnit = {
+  def getYearWeekTimeFromActivity(examRoom: ExamRoom): YearWeekTime = {
     val f = new SimpleDateFormat("HH:mm")
-    val unit = new TimeUnit()
+    val unit = new YearWeekTime()
     unit.setStartTime(getTimeNumber(f.format(examRoom.getStartAt)))
     unit.setEndTime(getTimeNumber(f.format(examRoom.getEndAt)))
     val date = examRoom.getStartAt
-    val state = YearWeekStateBuilder.build(date, WeekStateDirection.LTR)
-    unit.setYear(state.getYear)
-    unit.setWeekday(state.getWeekday.getIndex)
+    val state = YearWeekTimeBuilder.build(date, WeekStateDirection.LTR)
+    unit.setYear(state.year)
+    unit.setWeekday(state.day.getIndex)
     unit.newWeekState(state.getString)
     unit
   }
@@ -89,7 +88,7 @@ object ExamTimeUnitUtil {
     weekState.toString
   }
 
-  def getWeekDayByDate(date: Date): java.lang.Integer = EamsDateUtil.getWeekday(date).getIndex
+  def getWeekDayByDate(date: Date): java.lang.Integer = EamsDateUtil.day(date).getIndex
 
   def getWeekOfYear(date: Date): Int = {
     val gc = new GregorianCalendar()
@@ -140,8 +139,8 @@ object ExamTimeUnitUtil {
   @Deprecated
   def getTeachWeekOfYear(fromDate: Date, nowDate: Date): Int = {
     var week = 0
-    val fromYear = fromDate.getYear + 1900
-    val nowYear = nowDate.getYear + 1900
+    val fromYear = fromDate.year + 1900
+    val nowYear = nowDate.year + 1900
     val sdf = new SimpleDateFormat("yyyy-MM-dd")
     try {
       val firstDay = sdf.parse(nowYear + "-01-01")

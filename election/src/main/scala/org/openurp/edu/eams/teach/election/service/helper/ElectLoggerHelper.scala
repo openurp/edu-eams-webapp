@@ -6,7 +6,7 @@ import org.beangle.security.core.context.SecurityContextHolder
 import org.beangle.security.web.auth.WebAuthenticationDetails
 import org.openurp.edu.eams.teach.election.ElectLogger
 
-import scala.collection.JavaConversions._
+
 
 object ElectLoggerHelper {
 

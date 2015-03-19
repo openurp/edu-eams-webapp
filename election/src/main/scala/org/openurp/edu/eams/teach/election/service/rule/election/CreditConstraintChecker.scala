@@ -15,7 +15,7 @@ import org.openurp.edu.eams.teach.election.service.rule.ElectRulePrepare
 import org.openurp.edu.teach.lesson.CourseTake
 import org.openurp.edu.teach.lesson.Lesson
 
-import scala.collection.JavaConversions._
+
 
 class CreditConstraintChecker extends AbstractElectRuleExecutor with ElectRulePrepare {
 

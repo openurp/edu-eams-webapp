@@ -1,29 +1,27 @@
 package org.openurp.edu.eams.classroom.util
 
 import java.util.Date
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.openurp.base.Classroom
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.openurp.base.Room
 import org.openurp.edu.eams.classroom.RoomUsageCapacity
-import org.openurp.edu.eams.classroom.TimeUnit
-import org.openurp.edu.eams.classroom.code.industry.RoomUsage
-
-import scala.collection.JavaConversions._
+import 
+import org.openurp.base.code.RoomUsage
 
 object OccupancyUtils {
 
-  def getFreeRoomsOfConditions(units: Array[TimeUnit]): OqlBuilder[Classroom] = {
+  def getFreeRoomsOfConditions(units: Array[YearWeekTime]): OqlBuilder[Room] = {
     val hql = new StringBuilder(" from org.openurp.edu.eams.classroom.Occupancy occupancy where occupancy.room = classroom")
     var ocuupy = ""
     for (i <- 0 until units.length) {
-      ocuupy = "(bitand(occupancy.time.weekStateNum," + new java.lang.Long(units(i).getWeekStateNum) + 
-        ")>0 and occupancy.time.weekday = " + 
-        new java.lang.Integer(units(i).getWeekday) + 
+      ocuupy = "(bitand(occupancy.time.state," + units(i).state + 
+        ")>0 and occupancy.time.day = " + 
+        units(i).day.id + 
         " and occupancy.time.year = " + 
-        new java.lang.Integer(units(i).getYear) + 
-        " and occupancy.time.startTime < " + 
-        new java.lang.Integer(units(i).getEndTime) + 
-        " and occupancy.time.endTime > " + 
-        new java.lang.Integer(units(i).getStartTime) + 
+        new java.lang.Integer(units(i).year) + 
+        " and occupancy.time.start < " + 
+        units(i).end.value + 
+        " and occupancy.time.end > " + 
+        units(i).start.value + 
         ")"
       if (i > 0) {
         hql.append(" or ")
@@ -33,25 +31,25 @@ object OccupancyUtils {
       hql.append(ocuupy)
     }
     hql.append(")")
-    val query = OqlBuilder.from(classOf[Classroom], "classroom").where("classroom.effectiveAt <= :now and (classroom.invalidAt is null or classroom.invalidAt >= :now)", 
+    val query = OqlBuilder.from(classOf[Room], "classroom").where("classroom.effectiveAt <= :now and (classroom.invalidAt is null or classroom.invalidAt >= :now)", 
       new Date())
       .where("not exists (" + hql.toString + ")")
     query
   }
 
-  def buildFreeroomQuery(usage: RoomUsage, units: Array[TimeUnit]): OqlBuilder[RoomUsageCapacity] = {
+  def buildFreeroomQuery(usage: RoomUsage, units: Array[YearWeekTime]): OqlBuilder[RoomUsageCapacity] = {
     val hql = new StringBuilder(" from org.openurp.edu.eams.classroom.Occupancy occupancy where occupancy.room = classroom")
     var ocuupy = ""
     for (i <- 0 until units.length) {
-      ocuupy = "(bitand(occupancy.time.weekStateNum," + new java.lang.Long(units(i).getWeekStateNum) + 
-        ")>0 and occupancy.time.weekday = " + 
-        new java.lang.Integer(units(i).getWeekday) + 
+      ocuupy = "(bitand(occupancy.time.state," +units(i).state + 
+        ")>0 and occupancy.time.day = " + 
+        units(i).day.id + 
         " and occupancy.time.year = " + 
-        new java.lang.Integer(units(i).getYear) + 
-        " and occupancy.time.startTime < " + 
-        new java.lang.Integer(units(i).getEndTime) + 
-        " and occupancy.time.endTime > " + 
-        new java.lang.Integer(units(i).getStartTime) + 
+        units(i).year + 
+        " and occupancy.time.start < " + 
+       units(i).end.value + 
+        " and occupancy.time.end > " + 
+       units(i).start.value + 
         ")"
       if (i > 0) {
         hql.append(" or ")

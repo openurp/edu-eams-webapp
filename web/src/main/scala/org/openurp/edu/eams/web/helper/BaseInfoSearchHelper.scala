@@ -1,13 +1,13 @@
 package org.openurp.edu.eams.web.helper
 
 import java.util.Arrays
-import java.util.Collection
-import java.util.List
+
+
 import org.apache.commons.collections.CollectionUtils
 import org.beangle.commons.bean.transformers.PropertyTransformer
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.util.ValidEntityKeyPredicate
 import org.beangle.commons.lang.Strings
 import org.beangle.security.blueprint.Resource
@@ -20,17 +20,17 @@ import org.openurp.edu.base.Direction
 import org.openurp.edu.base.Major
 import org.openurp.edu.base.Teacher
 
-import scala.collection.JavaConversions._
+
 
 class BaseInfoSearchHelper extends SearchHelper {
 
-  def searchAdminclass(): Collection[Adminclass] = {
+  def searchAdminclass(): Iterable[Adminclass] = {
     entityDao.search(buildAdminclassQuery())
   }
 
-  def searchTeacher(): Collection[Teacher] = entityDao.search(buildTeacherQuery())
+  def searchTeacher(): Iterable[Teacher] = entityDao.search(buildTeacherQuery())
 
-  def searchClassroom(): Collection[Classroom] = entityDao.search(buildClassroomQuery())
+  def searchRoom(): Iterable[Room] = entityDao.search(buildRoomQuery())
 
   def buildAdminclassQuery(): OqlBuilder[Adminclass] = {
     val builder = OqlBuilder.from(classOf[Adminclass], "adminclass")
@@ -80,8 +80,8 @@ class BaseInfoSearchHelper extends SearchHelper {
     builder
   }
 
-  def buildClassroomQuery(): OqlBuilder[Classroom] = {
-    val builder = OqlBuilder.from(classOf[Classroom], "classroom")
+  def buildRoomQuery(): OqlBuilder[Room] = {
+    val builder = OqlBuilder.from(classOf[Room], "classroom")
     QueryHelper.populateConditions(builder)
     val departIdSeq = Params.get("roomDepartId")
     val resourceName = getResourceName

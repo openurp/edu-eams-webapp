@@ -1,17 +1,17 @@
 package org.openurp.edu.eams.base.web.action
 
-import java.util.Collection
+
 import java.util.Date
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.beangle.struts2.helper.Params
 import org.springframework.dao.DataIntegrityViolationException
-import org.openurp.edu.eams.base.Campus
+import org.openurp.base.Campus
 import org.openurp.edu.eams.base.model.CampusBean
 
-import scala.collection.JavaConversions._
+
 
 class CampusAction extends BaseInfoAction {
 
@@ -49,7 +49,7 @@ class CampusAction extends BaseInfoAction {
     val campus = populateEntity(classOf[CampusBean], "campus")
     val query = OqlBuilder.from(classOf[Campus], "campus")
     query.where("campus.code = :code", campus.getCode)
-    if (null != campus.getId) {
+    if (null != campus.id) {
       query.where("campus != :campus", campus)
     }
     if (CollectUtils.isNotEmpty(entityDao.search(query))) {
@@ -57,7 +57,7 @@ class CampusAction extends BaseInfoAction {
       addError(getText("error.code.existed"))
       return "edit"
     }
-    if (null == campus.getId) {
+    if (null == campus.id) {
       campus.setCreatedAt(new Date())
       campus.setUpdatedAt(campus.getCreatedAt)
     } else {
@@ -65,7 +65,7 @@ class CampusAction extends BaseInfoAction {
     }
     if (null == campus.getSchool) campus.setSchool(getSchool)
     entityDao.saveOrUpdate(campus)
-    logHelper.info((if (null == campus.getId) "Create" else "Update") + " a campus with name: " + 
+    logHelper.info((if (null == campus.id) "Create" else "Update") + " a campus with name: " + 
       campus.getName)
     redirect("search", "info.save.success")
   }
@@ -89,7 +89,7 @@ class CampusAction extends BaseInfoAction {
     forward()
   }
 
-  protected def getExportDatas(): Collection[Campus] = entityDao.search(buildOqlBuilder())
+  protected def getExportDatas(): Iterable[Campus] = entityDao.search(buildOqlBuilder())
 
   def getEntityName(): String = classOf[Campus].getName
 }

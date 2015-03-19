@@ -1,10 +1,10 @@
 package org.openurp.edu.eams.teach.grade.course.web.action
 
-import java.util.List
+
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.openurp.base.Department
 import org.openurp.edu.base.Project
@@ -12,7 +12,7 @@ import org.openurp.edu.base.Student
 import org.openurp.edu.eams.teach.grade.course.model.GradeViewScope
 import org.openurp.edu.eams.web.action.common.RestrictionSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class GradeViewScopeAction extends RestrictionSupportAction {
 

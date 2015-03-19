@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.election.model.Enum
 
 
-import scala.collection.JavaConversions._
+
 
 object StdApplyType extends Enumeration {
 

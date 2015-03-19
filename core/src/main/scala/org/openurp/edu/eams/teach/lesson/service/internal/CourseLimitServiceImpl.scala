@@ -1,15 +1,15 @@
 package org.openurp.edu.eams.teach.lesson.service.internal
 
-import java.util.ArrayList
+
 import java.util.Arrays
 import java.util.Comparator
-import java.util.HashSet
-import java.util.List
-import java.util.Set
+
+
+
 import java.util.TreeSet
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.impl.BaseServiceImpl
-import org.beangle.commons.entity.Entity
+import org.beangle.data.model.Entity
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.lang.tuple.Pair
@@ -41,7 +41,7 @@ import org.openurp.edu.eams.teach.lesson.service.TeachClassNameStrategy
 import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnum
 import org.openurp.edu.base.Program
 
-import scala.collection.JavaConversions._
+
 
 class CourseLimitServiceImpl extends BaseServiceImpl with CourseLimitService {
 
@@ -305,7 +305,7 @@ class CourseLimitServiceImpl extends BaseServiceImpl with CourseLimitService {
       if (!group.isForClass) {
         //continue
       }
-      for (item <- group.getItems if CourseLimitMetaEnum.GENDER.getMetaId == item.getMeta.getId && 
+      for (item <- group.getItems if CourseLimitMetaEnum.GENDER.getMetaId == item.getMeta.id && 
         (Operator.IN == item.getOperator || Operator.EQUAL == item.getOperator)) {
         return entityDao.get(classOf[Gender], Strings.splitToInt(item.getContent))
           .get(0)
@@ -318,7 +318,7 @@ class CourseLimitServiceImpl extends BaseServiceImpl with CourseLimitService {
     if (group == null) {
       return null
     }
-    for (item <- group.getItems if CourseLimitMetaEnum.GENDER.getMetaId == item.getMeta.getId && 
+    for (item <- group.getItems if CourseLimitMetaEnum.GENDER.getMetaId == item.getMeta.id && 
       (Operator.IN == item.getOperator || Operator.EQUAL == item.getOperator)) {
       return entityDao.get(classOf[Gender], Strings.splitToInt(item.getContent))
         .get(0)
@@ -451,56 +451,56 @@ class CourseLimitServiceImpl extends BaseServiceImpl with CourseLimitService {
     }
     for (item <- group.getItems) {
       if (CourseLimitMetaEnum.EDUCATION.getMetaId == limitMetaId) {
-        if (CourseLimitMetaEnum.EDUCATION.getMetaId == item.getMeta.getId) {
+        if (CourseLimitMetaEnum.EDUCATION.getMetaId == item.getMeta.id) {
           return new Pair[CourseLimitMeta.Operator, List[_]](item.getOperator, entityDao.get(classOf[Education], 
             Strings.splitToInt(item.getContent)))
         }
       } else if (CourseLimitMetaEnum.ADMINCLASS.getMetaId == limitMetaId) {
-        if (CourseLimitMetaEnum.ADMINCLASS.getMetaId == item.getMeta.getId) {
+        if (CourseLimitMetaEnum.ADMINCLASS.getMetaId == item.getMeta.id) {
           return new Pair[CourseLimitMeta.Operator, List[_]](item.getOperator, entityDao.get(classOf[Adminclass], 
             Strings.splitToInt(item.getContent)))
         }
       } else if (CourseLimitMetaEnum.DEPARTMENT.getMetaId == limitMetaId) {
-        if (CourseLimitMetaEnum.DEPARTMENT.getMetaId == item.getMeta.getId) {
+        if (CourseLimitMetaEnum.DEPARTMENT.getMetaId == item.getMeta.id) {
           return new Pair[CourseLimitMeta.Operator, List[_]](item.getOperator, entityDao.get(classOf[Department], 
             Strings.splitToInt(item.getContent)))
         }
       } else if (CourseLimitMetaEnum.MAJOR.getMetaId == limitMetaId) {
-        if (CourseLimitMetaEnum.MAJOR.getMetaId == item.getMeta.getId) {
+        if (CourseLimitMetaEnum.MAJOR.getMetaId == item.getMeta.id) {
           return new Pair[CourseLimitMeta.Operator, List[_]](item.getOperator, entityDao.get(classOf[Major], 
             Strings.splitToInt(item.getContent)))
         }
       } else if (CourseLimitMetaEnum.DIRECTION.getMetaId == limitMetaId) {
-        if (CourseLimitMetaEnum.DIRECTION.getMetaId == item.getMeta.getId) {
+        if (CourseLimitMetaEnum.DIRECTION.getMetaId == item.getMeta.id) {
           return new Pair[CourseLimitMeta.Operator, List[_]](item.getOperator, entityDao.get(classOf[Direction], 
             Strings.splitToInt(item.getContent)))
         }
       } else if (CourseLimitMetaEnum.PROGRAM.getMetaId == limitMetaId) {
-        if (CourseLimitMetaEnum.PROGRAM.getMetaId == item.getMeta.getId) {
+        if (CourseLimitMetaEnum.PROGRAM.getMetaId == item.getMeta.id) {
           return new Pair[CourseLimitMeta.Operator, List[_]](item.getOperator, entityDao.get(classOf[Program], 
             Strings.splitToLong(item.getContent)))
         }
       } else if (CourseLimitMetaEnum.STDTYPE.getMetaId == limitMetaId) {
-        if (CourseLimitMetaEnum.STDTYPE.getMetaId == item.getMeta.getId) {
+        if (CourseLimitMetaEnum.STDTYPE.getMetaId == item.getMeta.id) {
           return new Pair[CourseLimitMeta.Operator, List[_]](item.getOperator, entityDao.get(classOf[StdType], 
             Strings.splitToInt(item.getContent)))
         }
       } else if (CourseLimitMetaEnum.NORMALCLASS.getMetaId == limitMetaId) {
-        if (CourseLimitMetaEnum.NORMALCLASS.getMetaId == item.getMeta.getId) {
+        if (CourseLimitMetaEnum.NORMALCLASS.getMetaId == item.getMeta.id) {
           return new Pair[CourseLimitMeta.Operator, List[_]](item.getOperator, entityDao.get(classOf[NormalClassBean], 
             Strings.splitToLong(item.getContent)))
         }
       } else if (CourseLimitMetaEnum.STDLABEL.getMetaId == limitMetaId) {
-        if (CourseLimitMetaEnum.STDLABEL.getMetaId == item.getMeta.getId) {
+        if (CourseLimitMetaEnum.STDLABEL.getMetaId == item.getMeta.id) {
           return new Pair[CourseLimitMeta.Operator, List[_]](item.getOperator, entityDao.get(classOf[StdLabel], 
             Strings.splitToInt(item.getContent)))
         }
       } else if (CourseLimitMetaEnum.GRADE.getMetaId == limitMetaId) {
-        if (CourseLimitMetaEnum.GRADE.getMetaId == item.getMeta.getId) {
+        if (CourseLimitMetaEnum.GRADE.getMetaId == item.getMeta.id) {
           return new Pair[CourseLimitMeta.Operator, List[_]](item.getOperator, Arrays.asList(Strings.split(item.getContent):_*))
         }
       } else if (CourseLimitMetaEnum.GENDER.getMetaId == limitMetaId) {
-        if (CourseLimitMetaEnum.GENDER.getMetaId == item.getMeta.getId) {
+        if (CourseLimitMetaEnum.GENDER.getMetaId == item.getMeta.id) {
           return new Pair[CourseLimitMeta.Operator, List[_]](item.getOperator, entityDao.get(classOf[Gender], 
             Strings.splitToInt(item.getContent)))
         }
@@ -592,7 +592,7 @@ class CourseLimitServiceImpl extends BaseServiceImpl with CourseLimitService {
   }
 
   def xtractGradeLimit(group: CourseLimitGroup): Pair[Operator, List[String]] = {
-    group.getItems.find(CourseLimitMetaEnum.GRADE.getMetaId == _.getMeta.getId)
+    group.getItems.find(CourseLimitMetaEnum.GRADE.getMetaId == _.getMeta.id)
       .map(item => new Pair[Operator, List[String]](item.getOperator, CollectUtils.newArrayList(item.getContent)))
       .getOrElse(new Pair[Operator, List[String]](null, new ArrayList[String]()))
   }
@@ -619,7 +619,7 @@ class CourseLimitServiceImpl extends BaseServiceImpl with CourseLimitService {
 
   def isAutoName(lesson: Lesson): Boolean = {
     var isAutoName = true
-    if (lesson.getId != null) {
+    if (lesson.id != null) {
       val teachClassName = lesson.getTeachClass.getName
       val autoName = teachClassNameStrategy.genFullname(lesson.getTeachClass)
       if (teachClassName != null && teachClassName != autoName) {

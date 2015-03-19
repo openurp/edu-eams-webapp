@@ -1,9 +1,9 @@
 package org.openurp.edu.eams.teach.service
 
-import java.util.List
-import java.util.Map
 
-import scala.collection.JavaConversions._
+
+
+
 
 trait SqlDao {
 

@@ -3,7 +3,7 @@ package org.openurp.edu.eams.teach.schedule.service
 import org.openurp.edu.eams.teach.schedule.model.CourseArrangeAlteration
 import org.openurp.edu.eams.teach.schedule.model.CourseMailSetting
 
-import scala.collection.JavaConversions._
+
 
 trait CourseTableMailService {
 

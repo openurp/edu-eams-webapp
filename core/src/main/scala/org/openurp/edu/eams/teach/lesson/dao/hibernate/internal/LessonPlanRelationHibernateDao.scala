@@ -1,12 +1,12 @@
 package org.openurp.edu.eams.teach.lesson.dao.hibernate.internal
 
-import java.util.ArrayList
+
 import java.util.Date
-import java.util.List
+
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
-import org.beangle.orm.hibernate.HibernateEntityDao
+import org.beangle.data.jpa.hibernate.HibernateEntityDao
 import org.openurp.base.Semester
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.base.Direction
@@ -21,7 +21,7 @@ import org.openurp.edu.base.Program
 import org.openurp.edu.teach.plan.MajorPlan
 import org.openurp.edu.eams.teach.util.MajorPlanQueryBuilder
 
-import scala.collection.JavaConversions._
+
 
 class LessonPlanRelationHibernateDao extends HibernateEntityDao with LessonPlanRelationDao {
 

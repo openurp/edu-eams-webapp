@@ -1,12 +1,12 @@
 package org.openurp.edu.eams.teach.program.major.guard.impl
 
-import java.util.Map
+
 import com.ekingstar.eams.core.CommonAuditState
 import org.openurp.edu.eams.teach.program.Program
 import org.openurp.edu.eams.teach.program.major.exception.MajorProgramGuardException
 import org.openurp.edu.eams.teach.program.major.guard.MajorProgramOperateType
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class MajorProgramCUDGuard extends AbstractMajorProgramGuard {
 

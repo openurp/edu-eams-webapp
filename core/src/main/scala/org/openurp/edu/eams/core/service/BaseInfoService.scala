@@ -1,9 +1,9 @@
 package org.openurp.edu.eams.core.service
 
-import java.util.List
+
 import org.openurp.edu.eams.base.BaseInfo
 
-import scala.collection.JavaConversions._
+
 
 trait BaseInfoService {
 

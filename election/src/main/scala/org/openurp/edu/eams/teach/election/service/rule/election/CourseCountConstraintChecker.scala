@@ -1,10 +1,10 @@
 package org.openurp.edu.eams.teach.election.service.rule.election
 
-import java.util.List
-import java.util.Map
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.ems.rule.Context
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Student
 import org.openurp.edu.teach.code.CourseType
 import org.openurp.edu.eams.teach.election.model.Enum.ElectRuleType
@@ -22,10 +22,10 @@ import org.openurp.edu.eams.teach.election.service.rule.AbstractElectRuleExecuto
 import org.openurp.edu.eams.teach.election.service.rule.ElectRulePrepare
 import org.openurp.edu.teach.lesson.CourseTake
 import org.openurp.edu.teach.lesson.Lesson
-import org.openurp.edu.eams.teach.program.CourseGroup
+import org.openurp.edu.teach.plan.CourseGroup
 import org.openurp.edu.teach.plan.CoursePlan
 
-import scala.collection.JavaConversions._
+
 
 class CourseCountConstraintChecker extends AbstractElectRuleExecutor with ElectRulePrepare {
 

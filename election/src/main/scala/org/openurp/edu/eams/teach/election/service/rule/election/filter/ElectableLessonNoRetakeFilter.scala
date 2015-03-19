@@ -10,7 +10,7 @@ import org.openurp.edu.eams.teach.election.service.rule.election.CourseGradePrep
 import org.openurp.edu.teach.lesson.Lesson
 import ElectableLessonNoRetakeFilter._
 
-import scala.collection.JavaConversions._
+
 
 object ElectableLessonNoRetakeFilter {
 
@@ -22,7 +22,7 @@ class ElectableLessonNoRetakeFilter extends AbstractElectableLessonFilter with E
   protected var courseGradePrepare: CourseGradePrepare = _
 
   def isElectable(lesson: Lesson, state: ElectState): Boolean = {
-    !state.isRetakeCourse(lesson.getCourse.getId)
+    !state.isRetakeCourse(lesson.getCourse.id)
   }
 
   protected override def onExecuteRuleReturn(result: Boolean, context: ElectionCourseContext): Boolean = {

@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.system.firstlogin.impl
 
-import java.util.Map
-import java.util.Set
+
+
 import org.beangle.commons.bean.Initializing
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.security.blueprint.User
@@ -11,7 +11,7 @@ import org.springframework.context.ApplicationContextAware
 import org.openurp.edu.eams.system.firstlogin.FirstLoginCheckService
 import org.openurp.edu.eams.system.firstlogin.FirstLoginChecker
 
-import scala.collection.JavaConversions._
+
 
 class DefaultFirstLoginCheckService extends FirstLoginCheckService with ApplicationContextAware with Initializing {
 

@@ -1,6 +1,6 @@
 package org.openurp.edu.eams.teach.lesson.service.internal
 
-import org.beangle.commons.entity.Entity
+import org.beangle.data.model.Entity
 import org.beangle.commons.lang.Strings
 import org.openurp.base.Department
 import org.openurp.code.person.Gender
@@ -21,7 +21,7 @@ import org.openurp.edu.eams.teach.lesson.service.CourseLimitGroupBuilder
 import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnum
 import org.openurp.edu.base.Program
 
-import scala.collection.JavaConversions._
+
 
 class DefaultCourseLimitGroupBuilder(val group: CourseLimitGroup) extends CourseLimitGroupBuilder() {
 
@@ -45,7 +45,7 @@ class DefaultCourseLimitGroupBuilder(val group: CourseLimitGroup) extends Course
     if (entities.length > 0 && entities(0) != null) {
       val first = entities(0)
       val item = getItem(first)
-      addValues(item, true, getIds(entities))
+      addValues(item, true, ids(entities))
     }
     if (entities.length > 0 && entities(0).isInstanceOf[Adminclass]) {
       clear(new CourseLimitMetaBean(CourseLimitMetaEnum.GRADE.getMetaId))
@@ -83,7 +83,7 @@ class DefaultCourseLimitGroupBuilder(val group: CourseLimitGroup) extends Course
     if (entities.length >= 0 && entities(0) != null) {
       val first = entities(0)
       val item = getItem(first)
-      addValues(item, false, getIds(entities))
+      addValues(item, false, ids(entities))
     }
     this
   }
@@ -101,13 +101,13 @@ class DefaultCourseLimitGroupBuilder(val group: CourseLimitGroup) extends Course
 
   def build(): CourseLimitGroup = group
 
-  private def getIds(entities: Entity[_]*): Array[String] = {
+  private def ids(entities: Entity[_]*): Array[String] = {
     val ids = Array.ofDim[String](entities.length)
     for (i <- 0 until entities.length) {
       if (entities(i) == null) {
         //continue
       }
-      ids(i) = String.valueOf(entities(i).getId)
+      ids(i) = String.valueOf(entities(i).id)
     }
     ids
   }
@@ -137,7 +137,7 @@ class DefaultCourseLimitGroupBuilder(val group: CourseLimitGroup) extends Course
   }
 
   private def getOrCreateItem(metaId: java.lang.Long): CourseLimitItem = {
-    for (item <- group.getItems if item.getMeta.getId == metaId) {
+    for (item <- group.getItems if item.getMeta.id == metaId) {
       return item
     }
     val item = new CourseLimitItemBean()

@@ -1,10 +1,10 @@
 package org.openurp.edu.eams.teach.election
 
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Project
 import org.openurp.edu.eams.fee.FeeConfig
 
-import scala.collection.JavaConversions._
+
 
 trait RetakeFeeConfig extends FeeConfig {
 

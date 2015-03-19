@@ -1,10 +1,10 @@
 package org.openurp.edu.eams.teach.lesson.task.web.action
 
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Project
 import org.openurp.edu.base.Student
 
-import scala.collection.JavaConversions._
+
 
 class TeachTaskStdSearchAction extends TeachTaskSearchAction {
 

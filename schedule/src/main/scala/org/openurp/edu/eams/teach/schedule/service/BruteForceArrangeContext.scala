@@ -1,26 +1,26 @@
 package org.openurp.edu.eams.teach.schedule.service
 
-import java.util.Collection
+
 import java.util.LinkedHashMap
-import java.util.Map
-import java.util.Set
+
+
 import org.apache.commons.collections.MapUtils
 import org.beangle.commons.collection.CollectUtils
 import org.openurp.base.Room
 import org.openurp.edu.base.Teacher
-import org.openurp.edu.eams.teach.lesson.CourseActivity
+import org.openurp.edu.teach.schedule.CourseActivity
 import org.openurp.edu.teach.lesson.CourseTake
 import org.openurp.edu.teach.lesson.Lesson
 import BruteForceArrangeContext._
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConversions._
+
+
 
 object BruteForceArrangeContext {
 
   class CommonConflictInfo[T] {
 
-    @BeanProperty
+    
     var object2conflictInfo: Map[T, String] = new LinkedHashMap[T, String]()
 
     def this(`object`: T, conflictInfo: String) {
@@ -28,7 +28,7 @@ object BruteForceArrangeContext {
       addConflictInfo(`object`, conflictInfo)
     }
 
-    def this(objects: Collection[T], conflictInfo: String) {
+    def this(objects: Iterable[T], conflictInfo: String) {
       super()
       addConflictInfo(objects, conflictInfo)
     }
@@ -41,7 +41,7 @@ object BruteForceArrangeContext {
       object2conflictInfo.put(`object`, conflictInfo)
     }
 
-    def addConflictInfo(objects: Collection[T], conflictInfo: String) {
+    def addConflictInfo(objects: Iterable[T], conflictInfo: String) {
       for (`object` <- objects) {
         addConflictInfo(`object`, conflictInfo)
       }
@@ -49,33 +49,33 @@ object BruteForceArrangeContext {
   }
 }
 
-class BruteForceArrangeContext(@BeanProperty var lesson: Lesson, transientActivities: Collection[CourseActivity])
+class BruteForceArrangeContext( var lesson: Lesson, transientActivities: Iterable[CourseActivity])
     {
 
-  @BeanProperty
-  var lessonOccupiedRooms: Set[Classroom] = CollectUtils.newHashSet()
+  
+  var lessonOccupiedRooms: Set[Room] = CollectUtils.newHashSet()
 
-  private var activities: Collection[CourseActivity] = transientActivities
+  private var activities: Iterable[CourseActivity] = transientActivities
 
-  @BooleanBeanProperty
+  
   var detectTake: Boolean = true
 
-  @BooleanBeanProperty
+  
   var detectTeacher: Boolean = true
 
-  @BooleanBeanProperty
+  
   var detectRoom: Boolean = true
 
-  @BeanProperty
+  
   var takeConflictInfo: CommonConflictInfo[CourseTake] = new CommonConflictInfo[CourseTake]()
 
-  @BeanProperty
+  
   var teacherConflictInfo: CommonConflictInfo[Teacher] = new CommonConflictInfo[Teacher]()
 
-  @BooleanBeanProperty
+  
   var success: Boolean = _
 
-  @BooleanBeanProperty
+  
   var noSuitableRoom: Boolean = false
 
   for (activity <- lesson.getCourseSchedule.getActivities; classroom <- activity.getRooms) {
@@ -116,9 +116,9 @@ class BruteForceArrangeContext(@BeanProperty var lesson: Lesson, transientActivi
     this
   }
 
-  def getTransientActivities(): Collection[CourseActivity] = activities
+  def getTransientActivities(): Iterable[CourseActivity] = activities
 
-  def buildRoomsConflictInfo(): CommonConflictInfo[Classroom] = new CommonConflictInfo[Classroom]()
+  def buildRoomsConflictInfo(): CommonConflictInfo[Room] = new CommonConflictInfo[Room]()
 
   def noSuitableRoom() {
     failed()

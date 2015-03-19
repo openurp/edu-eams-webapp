@@ -1,12 +1,12 @@
 package org.openurp.edu.eams.teach.program.major.guard.impl
 
-import java.util.List
-import java.util.Map
+
+
 import org.openurp.edu.eams.teach.program.Program
 import org.openurp.edu.eams.teach.program.major.guard.MajorProgramOperateGuard
 import org.openurp.edu.eams.teach.program.major.guard.MajorProgramOperateType
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 abstract class AbstractMajorProgramGuard extends MajorProgramOperateGuard {
 

@@ -1,9 +1,9 @@
 package org.openurp.edu.eams.teach.program.log
 
-import java.util.Map
+
 import ResultChain._
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 object ResultChain {
 

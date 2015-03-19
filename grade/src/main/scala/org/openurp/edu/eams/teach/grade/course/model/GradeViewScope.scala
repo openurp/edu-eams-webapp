@@ -1,6 +1,6 @@
 package org.openurp.edu.eams.teach.grade.course.model
 
-import java.util.Set
+
 import javax.persistence.Entity
 import javax.persistence.ManyToMany
 import org.beangle.commons.collection.CollectUtils
@@ -10,30 +10,30 @@ import org.openurp.edu.base.Project
 import org.openurp.code.edu.Education
 import org.openurp.edu.base.code.StdType
 import org.openurp.edu.eams.core.model.ProjectBean
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConversions._
+
+
 
 @SerialVersionUID(-5774562389434565471L)
 @Entity(name = "org.openurp.edu.eams.teach.grade.course.model.GradeViewScope")
 class GradeViewScope extends LongIdObject {
 
   @ManyToMany
-  @BeanProperty
+  
   var projects: Set[Project] = _
 
   @ManyToMany
-  @BeanProperty
+  
   var educations: Set[Education] = _
 
   @ManyToMany
-  @BeanProperty
+  
   var stdTypes: Set[StdType] = _
 
-  @BeanProperty
+  
   var enrollYears: String = _
 
-  @BooleanBeanProperty
+  
   var checkEvaluation: Boolean = false
 
   def addProjects(project: Project) {

@@ -1,12 +1,12 @@
 package org.openurp.edu.eams.teach.lesson.service.limit.impl
 
-import java.util.Map
-import org.beangle.commons.dao.query.builder.OqlBuilder
+
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnum
 
-import scala.collection.JavaConversions._
+
 
 class CourseLimitAdminclassProvider extends AbstractCourseLimitNamedEntityProvider[Adminclass, Integer] {
 

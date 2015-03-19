@@ -1,21 +1,21 @@
 package org.openurp.edu.eams.teach.schedule.web.action
 
 import java.util.Arrays
-import java.util.List
-import java.util.Set
+
+
 import org.apache.commons.collections.CollectionUtils
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.beangle.commons.entity.Entity
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.beangle.data.model.Entity
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.lang.functor.Predicate
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.eams.base.util.WeekDays
 import org.openurp.edu.base.Project
 import org.openurp.edu.base.Teacher
 import org.openurp.edu.eams.core.service.TimeSettingService
 import org.openurp.edu.eams.teach.code.school.CourseHourType
-import org.openurp.edu.eams.teach.lesson.CourseActivity
+import org.openurp.edu.teach.schedule.CourseActivity
 import org.openurp.edu.teach.lesson.CourseTake
 import org.openurp.edu.eams.teach.lesson.CourseTime
 import org.openurp.edu.teach.lesson.Lesson
@@ -24,7 +24,7 @@ import org.openurp.edu.eams.teach.lesson.service.LessonFilterStrategy
 import org.openurp.edu.eams.teach.lesson.service.LessonFilterStrategyFactory
 import org.openurp.edu.eams.teach.lesson.service.LessonService
 import org.openurp.edu.eams.teach.lesson.util.CourseActivityDigestor
-import org.openurp.edu.eams.teach.lesson.util.TimeUnitUtil
+import org.openurp.edu.eams.teach.lesson.util.YearWeekTimeUtil
 import org.openurp.edu.eams.teach.program.major.service.MajorPlanService
 import org.openurp.edu.eams.teach.schedule.model.CourseArrangeSwitch
 import org.openurp.edu.eams.teach.schedule.model.CourseTableSetting
@@ -32,7 +32,7 @@ import org.openurp.edu.eams.teach.schedule.util.CourseTable
 import org.openurp.edu.eams.teach.service.TeachResourceService
 import org.openurp.edu.eams.teach.web.action.AbstractTeacherLessonAction
 
-import scala.collection.JavaConversions._
+
 
 class CourseTableForTeacherAction extends AbstractTeacherLessonAction {
 
@@ -158,14 +158,14 @@ class CourseTableForTeacherAction extends AbstractTeacherLessonAction {
         return table
       }
       if (setting.getForSemester) {
-        taskList = lessonService.getLessonByCategory(resource.getId, lessonFilterStrategyFactory.getLessonFilterCategory(LessonFilterStrategy.TEACHER), 
+        taskList = lessonService.getLessonByCategory(resource.id, lessonFilterStrategyFactory.getLessonFilterCategory(LessonFilterStrategy.TEACHER), 
           setting.getSemester)
         CollectUtils.filter(taskList, new Predicate[Lesson]() {
 
           def apply(input: Lesson): java.lang.Boolean = return input.getProject == project
         })
       } else {
-        taskList = lessonService.getLessonByCategory(resource.getId, lessonFilterStrategyFactory.getLessonFilterCategory(LessonFilterStrategy.TEACHER), 
+        taskList = lessonService.getLessonByCategory(resource.id, lessonFilterStrategyFactory.getLessonFilterCategory(LessonFilterStrategy.TEACHER), 
           semesterService.getSemestersOfOverlapped(setting.getSemester))
       }
     }
@@ -192,7 +192,7 @@ class CourseTableForTeacherAction extends AbstractTeacherLessonAction {
     if (endWeek.intValue() > semester.getWeeks) endWeek = new java.lang.Integer(semester.getWeeks)
     put("startWeek", startWeek)
     put("endWeek", endWeek)
-    Array(TimeUnitUtil.buildTimeUnits(2, startWeek.intValue(), endWeek.intValue(), CourseTime.CONTINUELY))
+    Array(YearWeekTimeUtil.buildYearWeekTimes(2, startWeek.intValue(), endWeek.intValue(), CourseTime.CONTINUELY))
   }
 
   def printForm(): String = {
@@ -275,10 +275,10 @@ class CourseTableForTeacherAction extends AbstractTeacherLessonAction {
     builder.where("take.lesson <> :lesson", lesson)
     builder.where("take.lesson.semester = :semester", lesson.getSemester)
     builder.where("exists(from " + classOf[CourseActivity].getName + " activity where activity.lesson = :lesson" + 
-      " and bitand(activity.time.weekStateNum, activity2.time.weekStateNum) > 0" + 
-      " and activity.time.weekday = activity2.time.weekday" + 
-      " and activity.time.startTime <= activity2.time.endTime" + 
-      " and activity2.time.startTime <= activity.time.endTime)", lesson)
+      " and bitand(activity.time.state, activity2.time.state) > 0" + 
+      " and activity.time.day = activity2.time.day" + 
+      " and activity.time.start <= activity2.time.end" + 
+      " and activity2.time.start <= activity.time.end)", lesson)
     builder.select("select take.std.id")
     taskStdCollision.addAll(entityDao.search(builder).asInstanceOf[List[Long]])
     put("lesson", lesson)

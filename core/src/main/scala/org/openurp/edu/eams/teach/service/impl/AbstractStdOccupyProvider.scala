@@ -1,9 +1,9 @@
 package org.openurp.edu.eams.teach.service.impl
 
-import java.util.HashMap
-import java.util.Iterator
-import java.util.List
-import java.util.Map
+
+
+
+
 import org.beangle.commons.dao.EntityDao
 import org.beangle.commons.dao.query.QueryBuilder
 import org.beangle.commons.lang.BitStrings
@@ -15,7 +15,7 @@ import org.openurp.edu.eams.base.util.WeekDay
 import org.openurp.edu.eams.teach.service.OccupyProcessor
 import org.openurp.edu.eams.teach.service.StdOccupyProvider
 import org.openurp.edu.eams.teach.service.wrapper.TimeZone
-import scala.collection.JavaConversions._
+
 import org.beangle.data.model.dao.EntityDao
 import org.beangle.data.model.dao.QueryBuilder
 
@@ -50,9 +50,9 @@ abstract class AbstractStdOccupyProvider extends StdOccupyProvider {
       while (iter2.hasNext) {
         val unit = iter2.next().asInstanceOf[CourseUnit]
         for (weekState <- zone.getWeekStates) {
-          params.put("weekId", new java.lang.Integer(week.getId.intValue()))
-          params.put("startTime", unit.getStartTime)
-          params.put("endTime", unit.getEndTime)
+          params.put("weekId", new java.lang.Integer(week.id.intValue()))
+          params.put("startTime", unit.start)
+          params.put("endTime", unit.end)
           params.put("weekState", BitStrings.binValueOf(weekState))
           query.params(params)
           val datas = entityDao.search(query)

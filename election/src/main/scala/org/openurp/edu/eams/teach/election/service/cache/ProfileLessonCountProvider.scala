@@ -1,16 +1,16 @@
 package org.openurp.edu.eams.teach.election.service.cache
 
-import java.util.List
-import java.util.Map
-import java.util.Set
+
+
+
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Throwables
 import org.openurp.edu.eams.teach.election.ElectionProfile
 import org.openurp.edu.teach.lesson.Lesson
 import ProfileLessonCountProvider._
 
-import scala.collection.JavaConversions._
+
 
 object ProfileLessonCountProvider {
 

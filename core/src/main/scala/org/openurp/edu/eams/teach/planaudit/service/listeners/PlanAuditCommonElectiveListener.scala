@@ -1,26 +1,24 @@
 package org.openurp.edu.eams.teach.planaudit.service.listeners
 
-import java.util.Collection
-import java.util.List
-import java.util.Set
+
+
+
 import org.beangle.commons.collection.CollectUtils
-import org.openurp.edu.teach.Course
-import org.openurp.edu.teach.code.CourseType
+import org.openurp.edu.base.Course
+import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.teach.grade.CourseGrade
-import org.openurp.edu.eams.teach.planaudit.CourseAuditResult
-import org.openurp.edu.eams.teach.planaudit.GroupAuditResult
-import org.openurp.edu.eams.teach.planaudit.PlanAuditResult
-import org.openurp.edu.eams.teach.planaudit.model.CourseAuditResultBean
-import org.openurp.edu.eams.teach.planaudit.model.GroupAuditResultBean
+import org.openurp.edu.teach.planaudit.CourseAuditResult
+import org.openurp.edu.teach.planaudit.GroupAuditResult
+import org.openurp.edu.teach.planaudit.PlanAuditResult
+import org.openurp.edu.teach.planaudit.model.CourseAuditResultBean
+import org.openurp.edu.teach.planaudit.model.GroupAuditResultBean
 import org.openurp.edu.eams.teach.planaudit.service.PlanAuditContext
 import org.openurp.edu.eams.teach.planaudit.service.PlanAuditListener
 import org.openurp.edu.eams.teach.planaudit.service.StdGrade
-import org.openurp.edu.eams.teach.program.CourseGroup
-import org.openurp.edu.eams.teach.program.GroupRelation
-import org.openurp.edu.eams.teach.program.PlanCourse
-import org.openurp.edu.eams.teach.program.model.ExpressionGroupRelation
+import org.openurp.edu.teach.plan.CourseGroup
+import org.openurp.edu.teach.plan.PlanCourse
 
-import scala.collection.JavaConversions._
+
 
 class PlanAuditCommonElectiveListener extends PlanAuditListener {
 
@@ -34,9 +32,7 @@ class PlanAuditCommonElectiveListener extends PlanAuditListener {
       val groupRs = new GroupAuditResultBean()
       groupRs.setCourseType(electiveType)
       groupRs.setName(electiveType.getName)
-      val groupRelation = new ExpressionGroupRelation()
-      groupRelation.setRelation(ExpressionGroupRelation.AND)
-      groupRs.setRelation(groupRelation)
+      groupRs.groupNum = -1
       groupResult = groupRs
       result.addGroupResult(groupResult)
     }
@@ -46,7 +42,7 @@ class PlanAuditCommonElectiveListener extends PlanAuditListener {
       courseResult.setCourse(course)
       val grades = stdGrade.useGrades(course)
       if (!grades.isEmpty && 
-        grades.get(0).getCourseType.getId != electiveType.getId) {
+        grades.get(0).getCourseType.id != electiveType.id) {
         courseResult.setRemark("计划外")
       }
       courseResult.checkPassed(grades)

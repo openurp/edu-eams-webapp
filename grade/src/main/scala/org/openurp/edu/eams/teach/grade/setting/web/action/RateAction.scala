@@ -1,10 +1,10 @@
 package org.openurp.edu.eams.teach.grade.setting.web.action
 
-import java.util.List
-import java.util.Map
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.openurp.edu.base.Project
 import org.openurp.edu.eams.teach.code.industry.ScoreMarkStyle
@@ -12,7 +12,7 @@ import org.openurp.edu.eams.teach.grade.model.GradeRateConfig
 import org.openurp.edu.eams.teach.grade.model.GradeRateItem
 import org.openurp.edu.eams.web.action.common.ProjectSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class RateAction extends ProjectSupportAction {
 
@@ -79,13 +79,13 @@ class RateAction extends ProjectSupportAction {
       try {
         entityDao.saveOrUpdate(gradeRateConfig)
       } catch {
-        case e: Exception => return redirect("setting", "info.action.failure", "&gradeRateConfig.id=" + gradeRateConfig.getId)
+        case e: Exception => return redirect("setting", "info.action.failure", "&gradeRateConfig.id=" + gradeRateConfig.id)
       }
-      redirect("setting", "info.action.success", "&gradeRateConfig.id=" + gradeRateConfig.getId)
+      redirect("setting", "info.action.success", "&gradeRateConfig.id=" + gradeRateConfig.id)
     } else {
       val itemMap = CollectUtils.newHashMap()
       for (configItem <- gradeRateConfig.getItems) {
-        itemMap.put(configItem.getId, configItem)
+        itemMap.put(configItem.id, configItem)
       }
       for (i <- 0 until configItemIds.length) {
         val configItem = itemMap.get(configItemIds(i))

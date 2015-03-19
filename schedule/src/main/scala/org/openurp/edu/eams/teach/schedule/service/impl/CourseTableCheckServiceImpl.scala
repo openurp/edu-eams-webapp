@@ -1,11 +1,11 @@
 package org.openurp.edu.eams.teach.schedule.service.impl
 
-import java.util.Collection
-import java.util.List
+
+
 import org.beangle.commons.dao.impl.BaseServiceImpl
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.base.Department
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Project
 import org.openurp.edu.base.code.StdType
 import org.openurp.edu.eams.system.security.DataRealm
@@ -15,7 +15,7 @@ import org.openurp.edu.eams.util.DataRealmUtils
 import org.openurp.edu.eams.util.stat.StatGroup
 import org.openurp.edu.eams.util.stat.StatHelper
 
-import scala.collection.JavaConversions._
+
 
 class CourseTableCheckServiceImpl extends BaseServiceImpl with CourseTableCheckService {
 

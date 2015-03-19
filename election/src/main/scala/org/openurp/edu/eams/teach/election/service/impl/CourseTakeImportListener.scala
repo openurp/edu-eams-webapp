@@ -1,19 +1,19 @@
 package org.openurp.edu.eams.teach.election.service.impl
 
 import java.text.MessageFormat
-import java.util.List
-import java.util.Map
+
+
 import javax.validation.ConstraintViolation
 import javax.validation.ConstraintViolationException
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.EntityDao
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.transfer.TransferMessage
 import org.beangle.commons.transfer.TransferResult
 import org.beangle.commons.transfer.importer.listener.ItemImporterListener
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Project
 import org.openurp.edu.base.Student
 import org.openurp.edu.teach.code.CourseTakeType
@@ -24,7 +24,7 @@ import org.openurp.edu.teach.lesson.CourseLimitGroup
 import org.openurp.edu.teach.lesson.CourseTake
 import org.openurp.edu.teach.lesson.Lesson
 
-import scala.collection.JavaConversions._
+
 
 class CourseTakeImportListener(private var electionDao: ElectionDao, private var semester: Semester, private var project: Project)
     extends ItemImporterListener() {

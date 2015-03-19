@@ -1,13 +1,13 @@
 package org.openurp.edu.eams.teach.grade.lesson.service
 
-import java.util.List
+
 import org.openurp.edu.base.Student
-import org.openurp.edu.eams.teach.code.industry.GradeType
-import org.openurp.edu.teach.grade.CourseGradeState
-import org.openurp.edu.eams.teach.lesson.ExamGradeState
+import org.openurp.edu.teach.code.GradeType
+import org.openurp.edu.teach.grade.model.CourseGradeState
+import org.openurp.edu.teach.grade.model.ExamGradeState
 import org.openurp.edu.teach.lesson.Lesson
 
-import scala.collection.JavaConversions._
+
 
 trait LessonGradeService {
 

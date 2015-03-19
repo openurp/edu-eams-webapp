@@ -1,17 +1,15 @@
 package org.openurp.edu.eams.teach.lesson.task.web.action
 
-import java.util.Collections
-import java.util.List
 import org.beangle.commons.collection.Order
 import org.beangle.commons.lang.Strings
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Project
 import org.openurp.edu.eams.teach.lesson.task.service.LessonStatService
 import org.openurp.edu.eams.util.stat.StatGroup
 import org.openurp.edu.eams.util.stat.StatItemComparator
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class LessonMultiDimensionStatAction extends SemesterSupportAction {
 

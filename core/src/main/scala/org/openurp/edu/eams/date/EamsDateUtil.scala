@@ -8,7 +8,7 @@ import org.joda.time.Instant
 import org.joda.time.Weeks
 import org.openurp.base.Semester
 import org.openurp.edu.eams.base.util.WeekStates
-import org.openurp.edu.eams.date.EamsWeekday._
+import org.beangle.commons.lang.time.WeekDays._
 
 object EamsDateUtil {
 
@@ -17,15 +17,15 @@ object EamsDateUtil {
   val MONDAY_FIRST = new EamsDateUtil(false)
 
   def isSundayFirst(semester: Semester): Boolean = {
-    WeekStates.jdkWeekIdex(semester.firstWeekday) == EamsWeekday.SUNDAY
+    semester.firstWeekday  == Sun
   }
 
-  def getWeekday(date: Date): EamsWeekday = {
-    EamsWeekday.getDay(new DateTime(date).getDayOfWeek)
+  def getWeekday(date: Date): WeekDay = {
+    WeekDay.getDay(new DateTime(date).getDayOfWeek)
   }
 
   def getYear(date: Date): Int = {
-    new DateTime(date).getYear
+    new DateTime(date).year.get
   }
 
   def getDatesOfThatWeek(date: Date, firstDayOnSunday: Boolean): List[Date] = {
@@ -68,7 +68,7 @@ object EamsDateUtil {
     dates.toList
   }
 
-  def getLastWeekdayOfYear(year: Int): EamsWeekday = {
+  def getLastWeekdayOfYear(year: Int): WeekDay = {
     getWeekday(java.sql.Date.valueOf("" + year + "-12-31"))
   }
 
@@ -94,36 +94,36 @@ object EamsDateUtil {
 import EamsDateUtil._
 class EamsDateUtil (var firstDayOnSunday: Boolean) {
 
-  def isBefore(weekday1: EamsWeekday, weekday2: EamsWeekday): Boolean = {
+  def isBefore(weekday1: WeekDay, weekday2: WeekDay): Boolean = {
     isBefore(weekday1, weekday2, firstDayOnSunday)
   }
 
-  private def isBefore(weekday1: EamsWeekday, weekday2: EamsWeekday, firstDayOnSunday: Boolean): Boolean = {
+  private def isBefore(weekday1: WeekDay, weekday2: WeekDay, firstDayOnSunday: Boolean): Boolean = {
     if (weekday1 == null || weekday2 == null) {
       return false
     }
-    var w1 = weekday1.index
-    var w2 = weekday2.index
+    var w1 = weekday1.id
+    var w2 = weekday2.id
     if (firstDayOnSunday) {
-      w1 = weekday1.getJdkIndex
-      w2 = weekday2.getJdkIndex
+      w1 = weekday1.index
+      w2 = weekday2.index
     }
     w1 - w2 < 0
   }
 
-  def isAfter(weekday1: EamsWeekday, weekday2: EamsWeekday): Boolean = {
+  def isAfter(weekday1: WeekDay, weekday2: WeekDay): Boolean = {
     isAfter(weekday1, weekday2, firstDayOnSunday)
   }
 
-  private def isAfter(weekday1: EamsWeekday, weekday2: EamsWeekday, firstDayOnSunday: Boolean): Boolean = {
+  private def isAfter(weekday1: WeekDay, weekday2: WeekDay, firstDayOnSunday: Boolean): Boolean = {
     if (weekday1 == null || weekday2 == null) {
       return false
     }
-    var w1 = weekday1.index
-    var w2 = weekday2.index
+    var w1 = weekday1.id
+    var w2 = weekday2.id
     if (firstDayOnSunday) {
-      w1 = weekday1.getJdkIndex
-      w2 = weekday2.getJdkIndex
+      w1 = weekday1.index
+      w2 = weekday2.index
     }
     w1 - w2 > 0
   }
@@ -137,15 +137,15 @@ class EamsDateUtil (var firstDayOnSunday: Boolean) {
       0).toDate(), firstDayOnSunday)
   }
 
-  def getDate(year: Int, weekOfYear: Int, weekday: EamsWeekday): java.util.Date = {
+  def getDate(year: Int, weekOfYear: Int, weekday: WeekDay): java.util.Date = {
     getDate(year, weekOfYear, weekday, firstDayOnSunday)
   }
 
-  private def getDate(year: Int, weekOfYear: Int, weekday: EamsWeekday, firstDayOnSunday: Boolean): java.util.Date = {
+  private def getDate(year: Int, weekOfYear: Int, weekday: WeekDay, firstDayOnSunday: Boolean): java.util.Date = {
     val calendar = buildCalendar(firstDayOnSunday)
     calendar.set(Calendar.YEAR, year)
     calendar.set(Calendar.WEEK_OF_YEAR, 1)
-    calendar.set(Calendar.DAY_OF_WEEK, weekday.getJdkIndex)
+    calendar.set(Calendar.DAY_OF_WEEK, weekday.index)
     calendar.set(Calendar.MINUTE, 0)
     calendar.set(Calendar.SECOND, 0)
     calendar.set(Calendar.MILLISECOND, 0)
@@ -204,18 +204,18 @@ class EamsDateUtil (var firstDayOnSunday: Boolean) {
 
   private def isLastDayOfYearAlsoLastDayOfWeek(year: Int, firstDayOnSunday: Boolean): Boolean = {
     if (firstDayOnSunday) {
-      getLastWeekdayOfYear(year) == EamsWeekday.SATURDAY
+      getLastWeekdayOfYear(year) == Sat
     } else {
-      getLastWeekdayOfYear(year) == EamsWeekday.SUNDAY
+      getLastWeekdayOfYear(year) == Sun
     }
   }
 
-  def getWeekdayArray(): Array[EamsWeekday] = {
-    EamsWeekday.getWeekdayArray(firstDayOnSunday)
+  def getWeekdayArray(): Array[WeekDay] = {
+    WeekDay.dayArray(firstDayOnSunday)
   }
 
-  def getWeekdayList(): List[EamsWeekday] = {
-    EamsWeekday.getWeekdayList(firstDayOnSunday)
+  def getWeekdayList(): List[WeekDay] = {
+    WeekDay.dayList(firstDayOnSunday)
   }
 
   override def toString(): String = {

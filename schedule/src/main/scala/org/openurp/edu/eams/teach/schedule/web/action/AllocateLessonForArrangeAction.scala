@@ -1,16 +1,14 @@
 package org.openurp.edu.eams.teach.schedule.web.action
 
 import java.util.Arrays
-import java.util.Collections
-import java.util.List
-import java.util.Map
-import java.util.Set
+
+
 import org.apache.commons.lang3.ArrayUtils
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model
 import org.openurp.base.Department
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Project
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.teach.lesson.helper.LessonSearchHelper
@@ -19,7 +17,7 @@ import org.openurp.edu.eams.teach.lesson.service.LessonService
 import org.openurp.edu.eams.teach.schedule.model.LessonForDepart
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class AllocateLessonForArrangeAction extends SemesterSupportAction {
 
@@ -193,7 +191,7 @@ class AllocateLessonForArrangeAction extends SemesterSupportAction {
       if (i > 0) {
         lessonForDepartIds += ","
       }
-      lessonForDepartIds += lessonForDeparts.get(i).getId
+      lessonForDepartIds += lessonForDeparts.get(i).id
     }
     put("lessonForDeparts", lessonForDeparts)
     put("semester", semester)
@@ -205,8 +203,8 @@ class AllocateLessonForArrangeAction extends SemesterSupportAction {
     val lessonForDepartIds = getLongIds("lessonForDepart")
     val lessonForDeparts = entityDao.get(classOf[LessonForDepart], lessonForDepartIds)
     for (lessonForDepart <- lessonForDeparts) {
-      lessonForDepart.setBeginAt(getDateTime("lessonForDepart" + lessonForDepart.getId + ".beginAt"))
-      lessonForDepart.setEndAt(getDateTime("lessonForDepart" + lessonForDepart.getId + ".endAt"))
+      lessonForDepart.setBeginAt(getDateTime("lessonForDepart" + lessonForDepart.id + ".beginAt"))
+      lessonForDepart.setEndAt(getDateTime("lessonForDepart" + lessonForDepart.id + ".endAt"))
     }
     try {
       entityDao.saveOrUpdate(lessonForDeparts)
@@ -309,7 +307,7 @@ class AllocateLessonForArrangeAction extends SemesterSupportAction {
     val departments = lessonForDepartMap.keySet
     for (lesson <- lessons) {
       val department = lesson.getTeachDepart
-      val lessonId = lesson.getId
+      val lessonId = lesson.id
       var lessonForDepart: LessonForDepart = null
       if (departments.contains(department)) {
         lessonForDepart = lessonForDepartMap.get(department)

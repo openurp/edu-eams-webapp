@@ -4,7 +4,7 @@ import org.beangle.commons.event.BusinessEvent
 import org.openurp.edu.teach.lesson.CourseTake
 import ElectCourseEvent._
 
-import scala.collection.JavaConversions._
+
 
 object ElectCourseEvent {
 

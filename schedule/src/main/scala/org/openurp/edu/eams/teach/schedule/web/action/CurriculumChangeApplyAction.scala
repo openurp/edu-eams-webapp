@@ -1,27 +1,25 @@
 package org.openurp.edu.eams.teach.schedule.web.action
-
-import java.util.Collections
 import java.util.Date
-import java.util.HashMap
-import java.util.List
-import java.util.Map
+
+
+
 import org.apache.commons.collections.CollectionUtils
 import org.apache.commons.lang3.ArrayUtils
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.openurp.base.Room
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Teacher
-import org.openurp.edu.eams.teach.lesson.CourseActivity
+import org.openurp.edu.teach.schedule.CourseActivity
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.teach.lesson.service.LessonService
 import org.openurp.edu.eams.teach.schedule.model.CourseArrangeAlteration
 import org.openurp.edu.eams.teach.schedule.model.CurriculumChangeApplication
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class CurriculumChangeApplyAction extends SemesterSupportAction {
 
@@ -54,7 +52,7 @@ class CurriculumChangeApplyAction extends SemesterSupportAction {
     val lessons = entityDao.search(builder)
     val lessonMap = CollectUtils.newHashMap()
     for (lesson <- lessons) {
-      lessonMap.put(lesson.getId, lesson.getCourse.getName + "[" + lesson.getNo + "]")
+      lessonMap.put(lesson.id, lesson.getCourse.getName + "[" + lesson.getNo + "]")
     }
     put("lessons", lessonMap)
     forward()
@@ -121,7 +119,7 @@ class CurriculumChangeApplyAction extends SemesterSupportAction {
       .join("activity.rooms", "room")
       .select("room")
       .limit(1, 3)
-    val classrooms = entityDao.search(builder1).asInstanceOf[List[Classroom]]
+    val classrooms = entityDao.search(builder1).asInstanceOf[List[Room]]
     var teacherExists = false
     var roomExists = false
     val alterationMap = new HashMap[CourseArrangeAlteration, String]()

@@ -11,7 +11,7 @@ import org.openurp.edu.eams.teach.grade.transcript.service.impl.TranscriptStdGra
 import org.openurp.edu.eams.teach.grade.transcript.service.impl.TranscriptThesisProvider
 import org.openurp.edu.eams.teach.grade.transcript.web.action.FinalAction
 
-import scala.collection.JavaConversions._
+
 
 class TranscriptModule extends AbstractBindModule {
 

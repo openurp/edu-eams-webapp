@@ -1,26 +1,24 @@
 package org.openurp.edu.eams.teach.election.service.impl
 
-import java.util.ArrayList
+
 import java.util.Arrays
-import java.util.Collection
-import java.util.Collections
 import java.util.Date
-import java.util.List
-import java.util.Map
-import java.util.Set
+
+
+
 import org.apache.commons.lang3.ArrayUtils
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.beangle.commons.dao.query.builder.Condition
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.beangle.commons.entity.Entity
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.beangle.data.model.Entity
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.lang.Throwables
 import org.beangle.commons.text.i18n.Message
 import org.beangle.ems.dictionary.service.BaseCodeService
 import org.beangle.security.blueprint.User
 import org.openurp.edu.eams.base.CourseUnit
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.code.person.Gender
 import org.openurp.edu.eams.base.util.WeekDays
 import org.openurp.edu.base.Adminclass
@@ -44,7 +42,7 @@ import org.openurp.edu.eams.teach.election.service.context.CourseTakeStat
 import org.openurp.edu.eams.teach.election.service.event.ElectCourseEvent
 import org.openurp.edu.eams.teach.election.service.helper.CourseLimitGroupHelper
 import org.openurp.edu.eams.teach.election.service.helper.FreeMarkerHelper
-import org.openurp.edu.eams.teach.lesson.CourseActivity
+import org.openurp.edu.teach.schedule.CourseActivity
 import org.openurp.edu.teach.lesson.CourseLimitGroup
 import org.openurp.edu.teach.lesson.CourseTake
 import org.openurp.edu.eams.teach.lesson.CourseTime
@@ -54,13 +52,13 @@ import org.openurp.edu.eams.teach.lesson.service.CourseLimitService
 import org.openurp.edu.eams.web.helper.AdminclassSearchHelper
 import org.openurp.edu.eams.web.util.OutputObserver
 import org.openurp.edu.eams.web.util.OutputProcessObserver
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConversions._
+
+
 
 class CourseTakeServiceImpl extends BaseServiceImpl with CourseTakeService {
 
-  @BeanProperty
+  
   var electLoggerService: ElectLoggerService = _
 
   private var courseLimitService: CourseLimitService = _
@@ -71,7 +69,7 @@ class CourseTakeServiceImpl extends BaseServiceImpl with CourseTakeService {
 
   protected var electionDao: ElectionDao = _
 
-  @BeanProperty
+  
   var systemMessageService: SystemMessageService = _
 
   private var baseCodeService: BaseCodeService = _
@@ -79,8 +77,8 @@ class CourseTakeServiceImpl extends BaseServiceImpl with CourseTakeService {
   protected var courseTakeFilterStrategy: CourseTakeFilterStrategy = _
 
   def election(student: Student, 
-      existedTakes: Collection[CourseTake], 
-      lessonCollection: Collection[Lesson], 
+      existedTakes: Iterable[CourseTake], 
+      lessonCollection: Iterable[Lesson], 
       unCheckTimeConflict: Boolean): List[Message] = {
     synchronized {
       val date = new Date()
@@ -122,12 +120,12 @@ class CourseTakeServiceImpl extends BaseServiceImpl with CourseTakeService {
               val time = courseActivity.getTime
               for (courseActivity2 <- activities2) {
                 val time2 = courseActivity2.getTime
-                if ((time.getWeekStateNum & time2.getWeekStateNum) > 0 && time.getWeekday == time2.getWeekday && 
+                if ((time.state & time2.state) > 0 && time.day == time2.day && 
                   time.getStartUnit <= time2.getEndUnit && 
                   time.getEndUnit >= time2.getStartUnit) {
                   val sb = new StringBuilder()
-                  if (time.getWeekday == time2.getWeekday) {
-                    sb.append(WeekDays.get(time.getWeekday).getName)
+                  if (time.day == time2.day) {
+                    sb.append(WeekDays.get(time.day).getName)
                   }
                   if (time.getStartUnit <= time2.getEndUnit && time.getEndUnit >= time2.getStartUnit) {
                     sb.append("第").append(Math.max(time.getStartUnit, time2.getStartUnit))
@@ -201,8 +199,8 @@ class CourseTakeServiceImpl extends BaseServiceImpl with CourseTakeService {
     courseTake
   }
 
-  def election(students: Collection[Student], 
-      electedCourseTakes: Collection[CourseTake], 
+  def election(students: Iterable[Student], 
+      electedCourseTakes: Iterable[CourseTake], 
       lesson: Lesson, 
       unCheckTimeConflict: Boolean): List[Message] = {
     synchronized {
@@ -253,12 +251,12 @@ class CourseTakeServiceImpl extends BaseServiceImpl with CourseTakeService {
               val time = courseActivity.getTime
               for (courseActivity2 <- activities2) {
                 val time2 = courseActivity2.getTime
-                if ((time.getWeekStateNum & time2.getWeekStateNum) > 0 && time.getWeekday == time2.getWeekday && 
+                if ((time.state & time2.state) > 0 && time.day == time2.day && 
                   time.getStartUnit <= time2.getEndUnit && 
                   time.getEndUnit >= time2.getStartUnit) {
                   val sb = new StringBuilder()
-                  if (time.getWeekday == time2.getWeekday) {
-                    sb.append(WeekDays.get(time.getWeekday).getName)
+                  if (time.day == time2.day) {
+                    sb.append(WeekDays.get(time.day).getName)
                   }
                   if (time.getStartUnit <= time2.getEndUnit && time.getEndUnit >= time2.getStartUnit) {
                     sb.append("第").append(Math.max(time.getStartUnit, time2.getStartUnit))
@@ -318,10 +316,10 @@ class CourseTakeServiceImpl extends BaseServiceImpl with CourseTakeService {
     val toBeRemoved = courseTakeFilterStrategy.getToBeRemoved(amount, takes, params)
     val stdId2Messages = CollectUtils.newHashMap()
     for (courseTake <- toBeRemoved) {
-      var messages = stdId2Messages.get(courseTake.getStd.getId)
+      var messages = stdId2Messages.get(courseTake.getStd.id)
       if (null == messages) {
         messages = CollectUtils.newArrayList()
-        stdId2Messages.put(courseTake.getStd.getId, messages)
+        stdId2Messages.put(courseTake.getStd.id, messages)
       }
       val std = courseTake.getStd
       val lesson = courseTake.getLesson
@@ -361,10 +359,10 @@ class CourseTakeServiceImpl extends BaseServiceImpl with CourseTakeService {
       val template = if (null == sender) null else entityDao.get(classOf[ElectMailTemplate], ElectMailTemplate.WITHDRAW)
       val stdId2Messages = CollectUtils.newHashMap()
       for (courseTake <- courseTakes) {
-        var messages = stdId2Messages.get(courseTake.getStd.getId)
+        var messages = stdId2Messages.get(courseTake.getStd.id)
         if (null == messages) {
           messages = CollectUtils.newArrayList()
-          stdId2Messages.put(courseTake.getStd.getId, messages)
+          stdId2Messages.put(courseTake.getStd.id, messages)
         }
         val std = courseTake.getStd
         val lesson = courseTake.getLesson
@@ -414,7 +412,7 @@ class CourseTakeServiceImpl extends BaseServiceImpl with CourseTakeService {
     }
   }
 
-  def getCourseTakes(students: Collection[Student], semester: Semester): Map[Student, List[CourseTake]] = {
+  def getCourseTakes(students: Iterable[Student], semester: Semester): Map[Student, List[CourseTake]] = {
     var courseTakes = CollectUtils.newArrayList()
     val result = CollectUtils.newHashMap()
     for (student <- students) {
@@ -474,10 +472,10 @@ class CourseTakeServiceImpl extends BaseServiceImpl with CourseTakeService {
       var i = courseActivity.getTime.getStartUnit - 1
       while (i <= courseActivity.getTime.getEndUnit - 1) {
         if (null == 
-          courseTable(i)(courseActivity.getTime.getWeekday - 1)) {
-          courseTable(i)(courseActivity.getTime.getWeekday - 1) = CollectUtils.newArrayList()
+          courseTable(i)(courseActivity.getTime.day - 1)) {
+          courseTable(i)(courseActivity.getTime.day - 1) = CollectUtils.newArrayList()
         }
-        courseTable(i)(courseActivity.getTime.getWeekday - 1)
+        courseTable(i)(courseActivity.getTime.day - 1)
           .add(courseTake)
         i += 1
       }
@@ -493,11 +491,11 @@ class CourseTakeServiceImpl extends BaseServiceImpl with CourseTakeService {
     getCourseTable(courseTakes, units)
   }
 
-  def assignStds(tasks: Collection[Lesson], semester: Semester, observer: OutputObserver) {
+  def assignStds(tasks: Iterable[Lesson], semester: Semester, observer: OutputObserver) {
     assignStds(tasks, AssignStdType.ALL, semester, observer)
   }
 
-  def assignStds(lessons: Collection[Lesson], 
+  def assignStds(lessons: Iterable[Lesson], 
       `type`: AssignStdType, 
       semester: Semester, 
       observer: OutputObserver) {
@@ -508,7 +506,7 @@ class CourseTakeServiceImpl extends BaseServiceImpl with CourseTakeService {
         ")", lessons.size, null)
       val lessonIds = CollectUtils.newHashSet()
       for (lesson <- lessons) {
-        lessonIds.add(lesson.getId)
+        lessonIds.add(lesson.id)
         try {
           val count = assignStds(lesson, `type`)
           if (null != outPutObserver) {
@@ -587,7 +585,7 @@ class CourseTakeServiceImpl extends BaseServiceImpl with CourseTakeService {
     val removeEntities = CollectUtils.newArrayList()
     val otherCourseTakeTypeCourseTakes = CollectUtils.newHashMap()
     for (courseTake <- courseTakes) {
-      if (courseTake.getCourseTakeType.getId == CourseTakeType.NORMAL) {
+      if (courseTake.getCourseTakeType.id == CourseTakeType.NORMAL) {
         removeEntities.add(courseTake)
       } else {
         otherCourseTakeTypeCourseTakes.put(courseTake.getStd, courseTake)
@@ -649,7 +647,7 @@ class CourseTakeServiceImpl extends BaseServiceImpl with CourseTakeService {
   def getCourseTakesByAdminclass(semester: Semester, 
       weekCondition: Condition, 
       project: Project, 
-      adminclasses: Collection[Adminclass]): List[CourseTake] = {
+      adminclasses: Iterable[Adminclass]): List[CourseTake] = {
     if (CollectUtils.isNotEmpty(adminclasses)) {
       val builder = OqlBuilder.from(classOf[CourseTake], "courseTake")
       builder.where("courseTake.std.adminclass in(:adminclasses)", adminclasses)

@@ -1,16 +1,16 @@
 package org.openurp.edu.eams.base.web.action
 
-import java.util.Collection
-import java.util.List
+
+
 import org.beangle.commons.collection.Order
 import org.beangle.commons.collection.page.Page
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.beangle.struts2.helper.Params
 import org.beangle.struts2.helper.QueryHelper
 import org.openurp.base.Department
 
-import scala.collection.JavaConversions._
+
 
 class DepartmentSearchAction extends BaseInfoAction {
 
@@ -42,7 +42,7 @@ class DepartmentSearchAction extends BaseInfoAction {
     query
   }
 
-  protected def getExportDatas(): Collection[Department] = {
+  protected def getExportDatas(): Iterable[Department] = {
     val query = buildDepartmentQuery()
     query.limit(null)
     entityDao.search(query)

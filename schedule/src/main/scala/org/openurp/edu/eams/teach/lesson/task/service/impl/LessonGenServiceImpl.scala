@@ -1,14 +1,14 @@
 package org.openurp.edu.eams.teach.lesson.task.service.impl
 
-import java.util.List
-import java.util.Map
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.openurp.edu.eams.teach.lesson.task.service.LessonGenService
 import org.openurp.edu.eams.teach.lesson.task.service.TaskGenObserver
 import org.openurp.edu.eams.teach.lesson.task.service.genstrategy.LessonGenStrategy
 
-import scala.collection.JavaConversions._
+
 
 class LessonGenServiceImpl extends BaseServiceImpl with LessonGenService {
 

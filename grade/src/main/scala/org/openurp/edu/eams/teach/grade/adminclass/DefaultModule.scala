@@ -6,7 +6,7 @@ import org.openurp.edu.eams.teach.grade.adminclass.web.action.AllAction
 import org.openurp.edu.eams.teach.grade.adminclass.web.action.IndexAction
 import org.openurp.edu.eams.teach.grade.adminclass.web.action.TermAction
 
-import scala.collection.JavaConversions._
+
 
 class DefaultModule extends AbstractBindModule {
 

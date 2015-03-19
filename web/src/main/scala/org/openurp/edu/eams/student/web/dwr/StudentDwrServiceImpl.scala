@@ -1,13 +1,13 @@
 package org.openurp.edu.eams.student.web.dwr
 
 import java.util.Date
-import java.util.HashMap
-import java.util.Iterator
-import java.util.List
-import java.util.Map
-import java.util.Set
+
+
+
+
+
 import org.beangle.commons.dao.impl.BaseServiceImpl
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model
 import org.openurp.base.Department
 import org.openurp.edu.base.Direction
@@ -15,7 +15,7 @@ import org.openurp.edu.base.Major
 import org.openurp.edu.base.Student
 import org.openurp.edu.base.StudentJournal
 
-import scala.collection.JavaConversions._
+
 
 class StudentDwrServiceImpl extends BaseServiceImpl {
 
@@ -44,7 +44,7 @@ class StudentDwrServiceImpl extends BaseServiceImpl {
       } catch {
         case e: Exception => 
       }
-      newOne.setId(std.getId)
+      newOne.setId(std.id)
       newOne.setCode(std.getCode)
       newOne.setName(std.getName)
       newOne.setGrade(std.grade)
@@ -73,8 +73,8 @@ class StudentDwrServiceImpl extends BaseServiceImpl {
           isInSchool = journal.isInschool
         }
       }
-      stdMap.put("id", std.getId)
-      stdMap.put("stdId", std.getId)
+      stdMap.put("id", std.id)
+      stdMap.put("stdId", std.id)
       stdMap.put("name", std.getName)
       stdMap.put("adminclass", if ((null != std.getAdminclass)) std.getAdminclass.getName else "")
       stdMap.put("major", if ((null != std.major)) std.major.getName else "")

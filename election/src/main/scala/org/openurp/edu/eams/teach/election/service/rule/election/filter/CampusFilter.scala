@@ -7,7 +7,7 @@ import org.openurp.edu.eams.teach.election.service.context.ElectionCourseContext
 import org.openurp.edu.eams.teach.election.service.rule.AbstractElectRuleExecutor
 import org.openurp.edu.teach.lesson.Lesson
 
-import scala.collection.JavaConversions._
+
 
 class CampusFilter extends AbstractElectableLessonFilter {
 
@@ -17,7 +17,7 @@ class CampusFilter extends AbstractElectableLessonFilter {
     if (null == lesson.getCampus) {
       true
     } else {
-      if (lesson.getCampus.getId == state.getStd.getCampusId) {
+      if (lesson.getCampus.id == state.getStd.getCampusId) {
         return true
       }
       false

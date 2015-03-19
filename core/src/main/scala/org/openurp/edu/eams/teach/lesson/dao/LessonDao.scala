@@ -1,19 +1,19 @@
 package org.openurp.edu.eams.teach.lesson.dao
 
 import java.io.Serializable
-import java.util.Collection
-import java.util.List
+
+
 import org.beangle.commons.collection.page.Page
 import org.openurp.base.Semester
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.teach.lesson.service.LessonFilterStrategy
 import org.openurp.edu.teach.plan.MajorPlan
 
-import scala.collection.JavaConversions._
+
 
 trait LessonDao {
 
-  def getLessonsByCategory(id: Serializable, strategy: LessonFilterStrategy, semesters: Collection[Semester]): List[Lesson]
+  def getLessonsByCategory(id: Serializable, strategy: LessonFilterStrategy, semesters: Iterable[Semester]): List[Lesson]
 
   def getLessonsByCategory(id: Serializable, 
       strategy: LessonFilterStrategy, 

@@ -1,20 +1,20 @@
 package org.openurp.edu.eams.teach.election.web.action
 
-import java.util.ArrayList
-import java.util.HashMap
-import java.util.List
-import java.util.Map
+
+
+
+
 import org.apache.commons.collections.CollectionUtils
 import org.apache.commons.collections.Predicate
 import org.apache.commons.lang3.ArrayUtils
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.lang.Strings
-import org.openurp.edu.eams.base.Campus
+import org.openurp.base.Campus
 import org.openurp.base.Room
 import org.openurp.base.Department
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.eams.base.util.WeekDays
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.eams.core.CommonAuditState
@@ -25,7 +25,7 @@ import org.openurp.edu.base.code.StdType
 import org.openurp.edu.eams.teach.code.industry.ExamMode
 import org.openurp.edu.teach.code.CourseType
 import org.openurp.edu.eams.teach.election.ElectionProfile
-import org.openurp.edu.eams.teach.lesson.CourseActivity
+import org.openurp.edu.teach.schedule.CourseActivity
 import org.openurp.edu.teach.lesson.CourseLimitGroup
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.teach.lesson.LessonTag
@@ -36,7 +36,7 @@ import org.openurp.edu.eams.teach.lesson.service.CourseLimitService
 import org.openurp.edu.eams.teach.lesson.task.util.ProjectUtils
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class ElectScopeAction extends SemesterSupportAction {
 
@@ -78,7 +78,7 @@ class ElectScopeAction extends SemesterSupportAction {
         "where electableLesson.id=lesson.id and electionProfile.semester=lesson.semester)")
     }
     put("lessons", entityDao.search(builder))
-    put("guaPaiTag", Model.newInstance(classOf[LessonTag], LessonTag.PredefinedTags.GUAPAI.getId))
+    put("guaPaiTag", Model.newInstance(classOf[LessonTag], LessonTag.PredefinedTags.GUAPAI.id))
     forward()
   }
 
@@ -281,7 +281,7 @@ class ElectScopeAction extends SemesterSupportAction {
         put("warnings", warnings)
       } else {
         val query = OqlBuilder.from(classOf[Major], "major")
-        query.where("major.project.id = :projectId", getProject.getId)
+        query.where("major.project.id = :projectId", getProject.id)
           .where("exists(from major.educations e where e.id in (:educationIds))", educationIds)
           .where("exists(from major.journals md where md.depart.id in (:departIds))", attendDepartIds)
           .orderBy("major.code, major.name")
@@ -296,7 +296,7 @@ class ElectScopeAction extends SemesterSupportAction {
         put("warnings", warnings)
       } else {
         val query = OqlBuilder.from(classOf[Direction], "direction")
-        query.where("direction.major.project.id = :projectId", getProject.getId)
+        query.where("direction.major.project.id = :projectId", getProject.id)
           .where("direction.major.id in (:majorIds)", majorIds)
           .orderBy("direction.code, direction.name")
         if (ArrayUtils.isNotEmpty(attendDepartIds)) {
@@ -316,7 +316,7 @@ class ElectScopeAction extends SemesterSupportAction {
         put("warnings", warnings)
       } else {
         val query = OqlBuilder.from(classOf[Adminclass], "adminclass")
-        query.where("adminclass.major.project.id = :projectId", getProject.getId)
+        query.where("adminclass.major.project.id = :projectId", getProject.id)
           .where("adminclass.department.id in (:departIds)", attendDepartIds)
           .where("adminclass.major.id in (:majorIds)", majorIds)
         if (ArrayUtils.isNotEmpty(grades)) {

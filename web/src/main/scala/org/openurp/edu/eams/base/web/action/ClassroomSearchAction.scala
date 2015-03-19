@@ -1,25 +1,25 @@
 package org.openurp.edu.eams.base.web.action
 
-import java.util.Collection
+
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.beangle.struts2.helper.Params
 import org.openurp.edu.eams.base.Building
-import org.openurp.edu.eams.base.Campus
+import org.openurp.base.Campus
 import org.openurp.base.Room
 import org.openurp.base.Department
-import org.openurp.edu.eams.base.code.school.ClassroomType
-import org.openurp.edu.eams.classroom.code.industry.RoomUsage
-import org.openurp.edu.eams.core.service.ClassroomService
+import org.openurp.edu.eams.base.code.school.RoomType
+import org.openurp.base.code.RoomUsage
+import org.openurp.edu.eams.core.service.RoomService
 
-import scala.collection.JavaConversions._
 
-class ClassroomSearchAction extends BaseInfoAction {
 
-  def getEntityName(): String = classOf[Classroom].getName
+class RoomSearchAction extends BaseInfoAction {
 
-  protected var classroomService: ClassroomService = _
+  def getEntityName(): String = classOf[Room].getName
+
+  protected var classroomService: RoomService = _
 
   def index(): String = {
     prepare()
@@ -27,7 +27,7 @@ class ClassroomSearchAction extends BaseInfoAction {
   }
 
   protected def prepare() {
-    put("classroomTypes", baseCodeService.getCodes(classOf[ClassroomType]))
+    put("classroomTypes", baseCodeService.getCodes(classOf[RoomType]))
     put("buildings", baseInfoService.getBaseInfos(classOf[Building]))
     put("campuses", baseInfoService.getBaseInfos(classOf[Campus]))
     put("departments", baseInfoService.getBaseInfos(classOf[Department]))
@@ -41,8 +41,8 @@ class ClassroomSearchAction extends BaseInfoAction {
     forward()
   }
 
-  protected def buildOqlBuilder(): OqlBuilder[Classroom] = {
-    val query = OqlBuilder.from(classOf[Classroom], "classroom")
+  protected def buildOqlBuilder(): OqlBuilder[Room] = {
+    val query = OqlBuilder.from(classOf[Room], "classroom")
     populateConditions(query)
     query.join("left outer", "classroom.building", "building")
     var orderBy = Params.get("orderBy")
@@ -58,20 +58,20 @@ class ClassroomSearchAction extends BaseInfoAction {
   }
 
   def info(): String = {
-    put("classroom", entityDao.get(classOf[Classroom], getIntId("classroom")))
+    put("classroom", entityDao.get(classOf[Room], getIntId("classroom")))
     forward()
   }
 
-  protected def getExportDatas(): Collection[Classroom] = {
+  protected def getExportDatas(): Iterable[Room] = {
     val classroomIds = getIntIds(getShortName)
     if (classroomIds.length == 0) {
       entityDao.search(buildOqlBuilder())
     } else {
-      entityDao.get(classOf[Classroom], classroomIds)
+      entityDao.get(classOf[Room], classroomIds)
     }
   }
 
-  def setClassroomService(classroomService: ClassroomService) {
+  def setRoomService(classroomService: RoomService) {
     this.classroomService = classroomService
   }
 }

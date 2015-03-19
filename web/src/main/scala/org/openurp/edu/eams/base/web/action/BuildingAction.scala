@@ -1,19 +1,19 @@
 package org.openurp.edu.eams.base.web.action
 
-import java.util.Collection
+
 import java.util.Date
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.beangle.struts2.helper.Params
 import org.springframework.dao.DataIntegrityViolationException
 import org.openurp.edu.eams.base.Building
-import org.openurp.edu.eams.base.Campus
+import org.openurp.base.Campus
 import org.openurp.base.Department
 import org.openurp.edu.eams.base.model.BuildingBean
 
-import scala.collection.JavaConversions._
+
 
 class BuildingAction extends BaseInfoAction {
 
@@ -66,7 +66,7 @@ class BuildingAction extends BaseInfoAction {
     val building = populateEntity(classOf[BuildingBean], "building")
     val query = OqlBuilder.from(classOf[Building], "building")
     query.where("building.code = :code", building.getCode)
-    if (null != building.getId) {
+    if (null != building.id) {
       query.where("building != :building", building)
     }
     if (CollectUtils.isNotEmpty(entityDao.search(query))) {
@@ -75,7 +75,7 @@ class BuildingAction extends BaseInfoAction {
       addError("error.code.existed")
       return "edit"
     }
-    if (null == building.getId) {
+    if (null == building.id) {
       building.setCreatedAt(new Date())
       building.setUpdatedAt(building.getCreatedAt)
     } else {
@@ -83,7 +83,7 @@ class BuildingAction extends BaseInfoAction {
     }
     if (null == building.getSchool) building.setSchool(getSchool)
     entityDao.saveOrUpdate(building)
-    logHelper.info((if (null == building.getId) "Create" else "Update") + 
+    logHelper.info((if (null == building.id) "Create" else "Update") + 
       " a building with name: " + 
       building.getName)
     redirect("search", "info.save.success")
@@ -108,7 +108,7 @@ class BuildingAction extends BaseInfoAction {
     forward()
   }
 
-  protected def getExportDatas(): Collection[Building] = entityDao.search(buildOqlBuilder())
+  protected def getExportDatas(): Iterable[Building] = entityDao.search(buildOqlBuilder())
 
   def getEntityName(): String = classOf[Building].getName
 }

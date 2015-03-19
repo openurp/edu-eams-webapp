@@ -1,11 +1,11 @@
 package org.openurp.edu.eams.teach.lesson.task.service.genstrategy
 
-import java.util.Map
+
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.openurp.edu.eams.teach.lesson.service.TeachClassNameStrategy
 import org.openurp.edu.eams.teach.lesson.task.service.TaskGenObserver
 
-import scala.collection.JavaConversions._
+
 
 abstract class AbstractLessonGenStrategy extends BaseServiceImpl with LessonGenStrategy {
 

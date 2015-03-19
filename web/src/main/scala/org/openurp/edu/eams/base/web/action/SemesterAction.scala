@@ -4,14 +4,14 @@ import java.util.Date
 import org.apache.commons.lang.time.DateUtils
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.struts2.convention.route.Action
 import org.openurp.edu.eams.base.Calendar
-import org.openurp.edu.eams.base.Semester
-import org.openurp.edu.eams.base.model.SemesterBean
+import org.openurp.base.Semester
+import org.openurp.base.model.SemesterBean
 import org.openurp.edu.eams.web.action.common.RestrictionSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class SemesterAction extends RestrictionSupportAction {
 
@@ -68,8 +68,8 @@ class SemesterAction extends RestrictionSupportAction {
     val calendar = populateEntity(classOf[Calendar], "calendar")
     val query = OqlBuilder.from(classOf[Calendar], "calendar")
     query.where("calendar.name =:calendarName", calendar.getName)
-    if (calendar.getId != null) {
-      query.where("calendar.id <> :calendarId", calendar.getId)
+    if (calendar.id != null) {
+      query.where("calendar.id <> :calendarId", calendar.id)
     }
     if (CollectUtils.isNotEmpty(entityDao.search(query))) {
       return redirect("index", "名称重复,保存失败")
@@ -105,9 +105,9 @@ class SemesterAction extends RestrictionSupportAction {
     try {
       semesterService.removeSemester(semester)
     } catch {
-      case e: Exception => return redirect("semesterList", "error.semester.deletedFailure", "&calendar.id=" + semester.getCalendar.getId)
+      case e: Exception => return redirect("semesterList", "error.semester.deletedFailure", "&calendar.id=" + semester.getCalendar.id)
     }
-    redirect("semesterList", "info.delete.success", "&calendar.id=" + semester.getCalendar.getId)
+    redirect("semesterList", "info.delete.success", "&calendar.id=" + semester.getCalendar.id)
   }
 
   def semesterInfo(): String = {

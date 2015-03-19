@@ -2,20 +2,18 @@ package org.openurp.edu.eams.teach.election.web.action.courseTake
 
 import java.io.IOException
 import java.io.PrintWriter
-import java.util.Calendar
-import java.util.Collections
-import java.util.Date
-import java.util.HashMap
-import java.util.List
-import java.util.Map
-import java.util.Set
+import java.util.Calendarimport java.util.Date
+
+
+
+
 import javax.servlet.http.HttpServletResponse
 import org.apache.commons.lang3.ArrayUtils
 import org.apache.commons.lang3.time.DateUtils
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.beangle.commons.entity.Entity
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.beangle.data.model.Entity
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.entity.util.EntityUtils
 import org.beangle.commons.lang.Strings
@@ -24,9 +22,9 @@ import org.beangle.commons.text.i18n.Message
 import org.beangle.security.blueprint.User
 import org.beangle.security.blueprint.service.UserService
 import org.beangle.struts2.convention.route.Action
-import org.openurp.edu.eams.base.Campus
+import org.openurp.base.Campus
 import org.openurp.base.Department
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.code.person.Gender
 import org.openurp.edu.eams.base.util.WeekDays
 import org.openurp.edu.eams.classroom.Occupancy
@@ -63,7 +61,7 @@ import org.openurp.edu.eams.web.helper.StdSearchHelper
 import org.openurp.edu.eams.web.util.OutputProcessObserver
 import org.openurp.edu.eams.web.util.OutputWebObserver
 
-import scala.collection.JavaConversions._
+
 
 class CourseTakeForTaskAction extends SemesterSupportAction {
 
@@ -135,11 +133,11 @@ class CourseTakeForTaskAction extends SemesterSupportAction {
     val digestor = CourseActivityDigestor.getInstance.setDelimeter("<br>")
     val arrangeInfo = new HashMap[String, String]()
     for (oneTask <- lessons) {
-      arrangeInfo.put(oneTask.getId.toString, digestor.digest(getTextResource, oneTask))
+      arrangeInfo.put(oneTask.id.toString, digestor.digest(getTextResource, oneTask))
     }
     put("arrangeInfo", arrangeInfo)
     put("lessons", lessons)
-    put("guaPaiTag", Model.newInstance(classOf[LessonTag], LessonTag.PredefinedTags.GUAPAI.getId))
+    put("guaPaiTag", Model.newInstance(classOf[LessonTag], LessonTag.PredefinedTags.GUAPAI.id))
     forward()
   }
 
@@ -216,7 +214,7 @@ class CourseTakeForTaskAction extends SemesterSupportAction {
         .append("where take.lesson.id=lesson.id \n")
         .append(")\n")
         .append("where lesson.id = ?1")
-      entityDao.executeUpdate(sb.toString, lesson.getId)
+      entityDao.executeUpdate(sb.toString, lesson.id)
     }
     put("successCount", successCount)
     forward()
@@ -396,10 +394,10 @@ class CourseTakeForTaskAction extends SemesterSupportAction {
     if (ArrayUtils.isNotEmpty(ids)) {
       val hql = hqlBuilder.append("and lesson.id=?2").toString
       for (id <- ids) {
-        entityDao.executeUpdate(hql.toString, semester.getId, id)
+        entityDao.executeUpdate(hql.toString, semester.id, id)
       }
     } else {
-      entityDao.executeUpdate(hqlBuilder.toString, semester.getId)
+      entityDao.executeUpdate(hqlBuilder.toString, semester.id)
     }
     redirect("index", "info.stat.success")
   }
@@ -477,11 +475,11 @@ class CourseTakeForTaskAction extends SemesterSupportAction {
     val lessonMap = CollectUtils.newHashMap()
     val removeLessonIds = CollectUtils.newHashSet()
     for (lesson <- lessons) {
-      lessonMap.put(lesson.getId, lesson)
+      lessonMap.put(lesson.id, lesson)
     }
     val stats = CollectUtils.newHashMap()
     for (courseTakeStat <- courseTakeStats) {
-      val lessonId = courseTakeStat.getId
+      val lessonId = courseTakeStat.id
       val lesson = lessonMap.get(lessonId)
       removeLessonIds.add(lessonId)
       courseTakeStat.setLesson(lesson)
@@ -497,8 +495,8 @@ class CourseTakeForTaskAction extends SemesterSupportAction {
       }
       genderCountMap.put(courseTakeStat.getStatBy, count += courseTakeStat.getCount)
     }
-    for (lesson <- lessonMap.values if !removeLessonIds.contains(lesson.getId); gender <- genders) {
-      val courseTakeStat = new CourseTakeStat[String](lesson.getId, 0, gender.getName)
+    for (lesson <- lessonMap.values if !removeLessonIds.contains(lesson.id); gender <- genders) {
+      val courseTakeStat = new CourseTakeStat[String](lesson.id, 0, gender.getName)
       courseTakeStat.setLesson(lesson)
       var lessonStats = stats.get(lesson)
       if (null == lessonStats) {

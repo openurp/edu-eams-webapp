@@ -1,9 +1,7 @@
 package org.openurp.edu.eams.base.web.action
 
-import java.util.Collections
-import java.util.Iterator
-import java.util.List
-import org.beangle.commons.entity.Entity
+
+import org.beangle.data.model.Entity
 import org.beangle.commons.lang.Strings
 import org.beangle.ems.dictionary.service.CodeFixture
 import org.beangle.ems.dictionary.service.CodeGenerator
@@ -11,7 +9,7 @@ import org.beangle.struts2.convention.route.Action
 import org.openurp.edu.eams.base.BaseInfo
 import org.openurp.edu.eams.web.helper.BaseInfoSearchHelper
 
-import scala.collection.JavaConversions._
+
 
 abstract class BaseInfoAction extends BaseInfoSearchAction {
 

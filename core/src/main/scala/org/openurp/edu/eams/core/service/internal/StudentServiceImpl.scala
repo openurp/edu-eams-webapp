@@ -1,16 +1,15 @@
 package org.openurp.edu.eams.core.service.internal
 
 import java.util.Date
-import java.util.List
+
 import org.beangle.commons.dao.impl.BaseServiceImpl
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.edu.eams.core.StdPerson
 import org.openurp.edu.base.Student
 import org.openurp.edu.base.StudentJournal
 import org.openurp.edu.eams.core.code.industry.StdStatus
 import org.openurp.edu.eams.core.service.StudentService
 
-import scala.collection.JavaConversions._
 
 class StudentServiceImpl extends BaseServiceImpl with StudentService {
 
@@ -19,11 +18,11 @@ class StudentServiceImpl extends BaseServiceImpl with StudentService {
   }
 
   def getStudent(code: String): Student = {
-    val list = entityDao.get(classOf[Student], "code", code)
+    val list = entityDao.findBy(classOf[Student], "code", List(code))
     if (list.isEmpty) {
       null
     } else {
-      list.get(0)
+      list.head
     }
   }
 

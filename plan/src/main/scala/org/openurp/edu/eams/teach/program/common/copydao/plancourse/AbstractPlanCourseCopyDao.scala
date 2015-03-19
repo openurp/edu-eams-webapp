@@ -1,15 +1,15 @@
 package org.openurp.edu.eams.teach.program.common.copydao.plancourse
 
-import java.util.ArrayList
-import java.util.List
+
+
 import org.apache.commons.beanutils.PropertyUtils
 import org.beangle.commons.lang.Throwables
-import org.beangle.orm.hibernate.HibernateEntityDao
-import org.openurp.edu.eams.teach.program.CourseGroup
-import org.openurp.edu.eams.teach.program.PlanCourse
+import org.beangle.data.jpa.hibernate.HibernateEntityDao
+import org.openurp.edu.teach.plan.CourseGroup
+import org.openurp.edu.teach.plan.PlanCourse
 import org.openurp.edu.eams.teach.program.helper.PlanTermCreditTool
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 abstract class AbstractPlanCourseCopyDao extends HibernateEntityDao with IPlanCourseCopyDao {
 

@@ -4,7 +4,7 @@ import java.util.concurrent.BlockingQueue
 import org.beangle.commons.lang.tuple.Pair
 import AjaxProgressBar._
 
-import scala.collection.JavaConversions._
+
 
 object AjaxProgressBar {
 
@@ -28,7 +28,7 @@ object AjaxProgressBar {
 
 trait AjaxProgressBar {
 
-  def getId(): Long
+  def id(): Long
 
   def getMessagePool(): BlockingQueue[String]
 

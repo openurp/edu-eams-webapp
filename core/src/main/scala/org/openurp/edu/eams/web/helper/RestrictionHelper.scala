@@ -1,9 +1,9 @@
 package org.openurp.edu.eams.web.helper
 
-import java.util.List
+
 import javax.servlet.http.HttpSession
 import org.beangle.commons.dao.EntityDao
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.security.blueprint.Profile
 import org.beangle.security.blueprint.User
 import org.beangle.security.blueprint.data.service.DataPermissionService
@@ -14,7 +14,7 @@ import org.openurp.edu.eams.core.service.DepartmentService
 import org.openurp.edu.eams.system.security.DataRealm
 import RestrictionHelper._
 
-import scala.collection.JavaConversions._
+
 
 object RestrictionHelper {
 

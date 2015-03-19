@@ -5,30 +5,30 @@ import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Arrays
 import java.util.Calendar
-import java.util.Collections
+
 import java.util.Comparator
 import java.util.Date
 import java.util.GregorianCalendar
-import java.util.List
+
 import java.util.Vector
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.text.i18n.TextResource
 import org.openurp.base.Semester
-import org.openurp.edu.eams.base.model.SemesterBean
+import org.openurp.base.model.SemesterBean
 import org.openurp.edu.eams.base.util.WeekUnit
-import org.openurp.edu.eams.classroom.TimeUnit
+import 
 import org.openurp.edu.eams.date.EamsDateUtil
 import org.openurp.edu.eams.number.NumberSequence
-import org.openurp.edu.eams.teach.lesson.CourseActivity
+import org.openurp.edu.teach.schedule.CourseActivity
 import org.openurp.edu.eams.teach.lesson.CourseTime
 import org.openurp.edu.teach.lesson.Lesson
-import org.openurp.edu.eams.weekstate.SemesterWeekState
-import org.openurp.edu.eams.weekstate.SemesterWeekStateBuilder
+import org.openurp.edu.eams.weekstate.SemesterWeekTime
+import org.openurp.edu.eams.weekstate.SemesterWeekTimeBuilder
 
-import scala.collection.JavaConversions._
 
-object TimeUnitUtil {
+
+object YearWeekTimeUtil {
 
   def digests(weekOccupyStr: String, 
       from: Int, 
@@ -126,7 +126,7 @@ object TimeUnitUtil {
       endWeek: Int, 
       resourses: TextResource, 
       format: String): String = {
-    val weekUnitVector = TimeUnitUtil.digests(weekOccupyStr, from, startWeek, endWeek)
+    val weekUnitVector = YearWeekTimeUtil.digests(weekOccupyStr, from, startWeek, endWeek)
     var needI18N = false
     val weekRegular = Array("", "", "单", "双", "")
     val weekRegularKeys = Array("", "week.continuely", "week.odd", "week.even", "week.random")
@@ -169,10 +169,10 @@ object TimeUnitUtil {
     digest(weekOccupyStr, from, startWeek, endWeek, resourse, "[-] ")
   }
 
-  def convertToTimeUnits(semester: Semester, courseTimes: CourseTime*): Array[TimeUnit] = {
+  def convertToYearWeekTimes(semester: Semester, courseTimes: CourseTime*): Array[YearWeekTime] = {
     if (org.beangle.commons.lang.Arrays.isEmpty(courseTimes) || 
       semester == null) {
-      return Array.ofDim[TimeUnit](0)
+      return Array.ofDim[YearWeekTime](0)
     }
     val year = SemesterUtil.getStartYear(semester)
     val LastDay = year + "-12-31"
@@ -193,34 +193,34 @@ object TimeUnitUtil {
       }
       if (sb.substring(0, Semester.OVERALLWEEKS).indexOf("1") != 
         -1) {
-        val unit = new TimeUnit()
+        val unit = new YearWeekTime()
         unit.setYear(year)
-        unit.setWeekday(courseTime.getWeekday)
-        unit.setEndTime(courseTime.getEndTime)
-        unit.setStartTime(courseTime.getStartTime)
+        unit.setWeekday(courseTime.day)
+        unit.setEndTime(courseTime.end)
+        unit.setStartTime(courseTime.start)
         unit.newWeekState(sb.substring(0, Semester.OVERALLWEEKS))
         unitList.add(unit)
       }
       if (sb.substring(Semester.OVERALLWEEKS, 2 * Semester.OVERALLWEEKS)
         .indexOf("1") != 
         -1) {
-        val unit = new TimeUnit()
+        val unit = new YearWeekTime()
         unit.setYear(year + 1)
-        unit.setWeekday(courseTime.getWeekday)
-        unit.setStartTime(courseTime.getStartTime)
-        unit.setEndTime(courseTime.getEndTime)
+        unit.setWeekday(courseTime.day)
+        unit.setStartTime(courseTime.start)
+        unit.setEndTime(courseTime.end)
         unit.newWeekState(sb.substring(Semester.OVERALLWEEKS, 2 * Semester.OVERALLWEEKS))
         unitList.add(unit)
       }
     }
-    unitList.toArray(Array.ofDim[TimeUnit](unitList.size))
+    unitList.toArray(Array.ofDim[YearWeekTime](unitList.size))
   }
 
-  def convertToTimeUnits(lesson: Lesson, courseTimes: CourseTime*): Array[TimeUnit] = {
-    convertToTimeUnits(lesson.getSemester, courseTimes)
+  def convertToYearWeekTimes(lesson: Lesson, courseTimes: CourseTime*): Array[YearWeekTime] = {
+    convertToYearWeekTimes(lesson.getSemester, courseTimes)
   }
 
-  def buildTimeUnits(from: Int, 
+  def buildYearWeekTimes(from: Int, 
       startWeek: Int, 
       endWeek: Int, 
       cycle: Int): CourseTime = {
@@ -259,7 +259,7 @@ object TimeUnitUtil {
           val time1 = activity1.getTime
           val time2 = activity2.getTime
           if (time1.getWeekState.indexOf("1") == time2.getWeekState.indexOf("1")) {
-            return time2.getWeekday - time1.getWeekday
+            return time2.day - time1.day
           } else {
             return if (time1.getWeekState.indexOf("1") < time2.getWeekState.indexOf("1")) 1 else -1
           }
@@ -269,13 +269,13 @@ object TimeUnitUtil {
       return null
     }
     val activity = activities.get(0)
-    val units = convertToTimeUnits(lesson, activity.getTime)
+    val units = convertToYearWeekTimes(lesson, activity.getTime)
     if (null != units && units.length > 0) {
       val unit = units(0)
       val calendar = new GregorianCalendar()
       calendar.set(Calendar.YEAR, unit.year)
-      calendar.set(Calendar.WEEK_OF_YEAR, (unit.weekState.indexOf("1") + 1) - (CourseTime.FIRST_WEEK_FROM - 1))
-      val weekday = if (unit.getWeekday == 7) unit.getWeekday - 6 else unit.getWeekday + 1
+      calendar.set(Calendar.WEEK_OF_YEAR, (unit.state.indexOf("1") + 1) - (CourseTime.FIRST_WEEK_FROM - 1))
+      val weekday = if (unit.day == 7) unit.day - 6 else unit.day + 1
       calendar.set(Calendar.DAY_OF_WEEK, weekday)
       return calendar.getTime
     }
@@ -287,7 +287,7 @@ object TimeUnitUtil {
     val time = new CourseTime()
     time.setStartTime(getTimeNumber(f.format(startAt)))
     time.setEndTime(getTimeNumber(f.format(endAt)))
-    time.setWeekday(EamsDateUtil.getWeekday(startAt).getIndex)
+    time.setWeekday(EamsDateUtil.day(startAt).getIndex)
     time.newWeekState(getWeekState(startAt, semester))
     time
   }
@@ -348,13 +348,13 @@ object TimeUnitUtil {
     val sb = new SemesterBean("2012-2013", "1", new java.sql.Date(format.parse("2012-09-03").getTime), 
       new java.sql.Date(format.parse("2012-2-1").getTime))
     sb.setFirstWeekday(2)
-    val t = TimeUnitUtil.buildTimeUnits(1, 3, 20, 1)
+    val t = YearWeekTimeUtil.buildYearWeekTimes(1, 3, 20, 1)
     println(sb.getStartWeek)
     println(t.getWeekState)
     t.setWeekday(1)
     t.setEndTime(1900)
     t.setStartTime(1800)
-    println(convertToTimeUnits(sb, t)(0))
-    println(convertToTimeUnits(sb, t)(1))
+    println(convertToYearWeekTimes(sb, t)(0))
+    println(convertToYearWeekTimes(sb, t)(1))
   }
 }

@@ -1,16 +1,14 @@
 package org.openurp.edu.eams.teach.election.service.context
 
 import java.io.Serializable
-import java.util.Collections
-import java.util.Iterator
-import java.util.List
-import java.util.Map
-import java.util.Set
+
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.EntityDao
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.openurp.edu.eams.base.Semester
-import org.openurp.edu.eams.classroom.TimeUnit
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.openurp.base.Semester
+import 
 import org.openurp.edu.base.Student
 import org.openurp.edu.teach.code.CourseType
 import org.openurp.edu.eams.teach.election.ElectionProfile
@@ -20,9 +18,9 @@ import org.openurp.edu.eams.teach.election.model.constraint.StdCreditConstraint
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.teach.program.StudentProgram
 import ElectState._
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConversions._
+
+
 
 object ElectState {
 
@@ -42,67 +40,67 @@ object ElectState {
 @SerialVersionUID(1L)
 class ElectState extends Serializable() {
 
-  @BeanProperty
+  
   var std: SimpleStd = _
 
-  @BeanProperty
+  
   var coursePlan: ElectCoursePlan = _
 
-  @BeanProperty
+  
   var profileId: java.lang.Long = _
 
-  @BeanProperty
+  
   var semesterId: java.lang.Integer = _
 
-  @BeanProperty
+  
   var courseSubstitutions: List[ElectCourseSubstitution] = CollectUtils.newArrayList()
 
-  @BeanProperty
+  
   var hisCourses: Map[Long, Boolean] = CollectUtils.newHashMap()
 
-  @BeanProperty
+  
   var electedCredit: Float = _
 
-  @BeanProperty
+  
   val electedCourseIds = CollectUtils.newHashMap()
 
-  @BeanProperty
+  
   val electableLessonIds = CollectUtils.newArrayList()
 
-  @BeanProperty
-  var table: TimeUnit = _
+  
+  var table: YearWeekTime = _
 
-  @BeanProperty
+  
   var compulsoryCourseIds: Set[Long] = CollectUtils.newHashSet()
 
-  @BooleanBeanProperty
+  
   var checkTimeConflict: Boolean = _
 
-  @BooleanBeanProperty
+  
   var checkMaxLimitCount: Boolean = _
 
-  @BooleanBeanProperty
+  
   var checkTeachClass: Boolean = _
 
-  @BooleanBeanProperty
+  
   var checkMinLimitCount: Boolean = _
 
-  @BeanProperty
+  
   val params = CollectUtils.newHashMap()
 
-  @BeanProperty
+  
   var unElectableLessonIds: Set[Long] = CollectUtils.newHashSet()
 
-  @BeanProperty
+  
   var unWithdrawableLessonIds: Map[Long, String] = CollectUtils.newHashMap()
 
-  @BeanProperty
+  
   var creditConstraint: ElectConstraintWrapper[Float] = _
 
-  @BeanProperty
+  
   var totalCreditConstraint: ElectConstraintWrapper[Float] = _
 
-  @BeanProperty
+  
   var courseCountConstraint: ElectConstraintWrapper[Integer] = _
 
   private var courseTypeCourseCountConstraints: Map[CourseType, ElectConstraintWrapper[Integer]] = CollectUtils.newHashMap()
@@ -112,7 +110,7 @@ class ElectState extends Serializable() {
       val group = coursePlan.getOrCreateGroup(lesson.getCourse, lesson.getCourseType)
       group.addElectCourse(lesson.getCourse)
     }
-    electedCourseIds.put(lesson.getCourse.getId, lesson.getId)
+    electedCourseIds.put(lesson.getCourse.id, lesson.id)
     if (null != creditConstraint) {
       creditConstraint.addElectedItem(lesson.getCourse.getCredits)
     }
@@ -138,7 +136,7 @@ class ElectState extends Serializable() {
       val group = coursePlan.getGroup(lesson.getCourse, lesson.getCourseType)
       group.removeElectCourse(lesson.getCourse)
     }
-    electedCourseIds.remove(lesson.getCourse.getId)
+    electedCourseIds.remove(lesson.getCourse.id)
     if (null != creditConstraint) {
       creditConstraint.subElectedItem(lesson.getCourse.getCredits)
     }
@@ -165,8 +163,8 @@ class ElectState extends Serializable() {
       constraint: StdCreditConstraint) {
     this()
     std = new SimpleStd(student, stdProgram)
-    this.profileId = profile.getId
-    this.semesterId = profile.getSemester.getId
+    this.profileId = profile.id
+    this.semesterId = profile.getSemester.id
   }
 
   def getUnPassedCourseIds(): Set[Long] = {

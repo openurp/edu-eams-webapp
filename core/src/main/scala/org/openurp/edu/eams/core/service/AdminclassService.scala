@@ -26,5 +26,5 @@ trait AdminclassService {
 
   def batchAddStudentClass(students: List[_], adminclasses: List[_]): Unit
 
-  def updateStudentAdminclass(std: Student, adminclasses: Collection[_], project: Project): Unit
+  def updateStudentAdminclass(std: Student, adminclasses: Iterable[_], project: Project): Unit
 }

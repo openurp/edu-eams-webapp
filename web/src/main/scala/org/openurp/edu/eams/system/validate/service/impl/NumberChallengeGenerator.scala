@@ -6,13 +6,13 @@ import java.util.Random
 import org.beangle.commons.lang.Strings
 import org.openurp.edu.eams.system.validate.model.Challenge
 import org.openurp.edu.eams.system.validate.service.ChallengeGenerator
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConversions._
+
+
 
 class NumberChallengeGenerator extends ChallengeGenerator {
 
-  @BeanProperty
+  
   var timeToLiveMinutes: Int = 15
 
   def gen(): Challenge = {

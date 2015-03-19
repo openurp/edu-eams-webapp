@@ -1,19 +1,19 @@
 package org.openurp.edu.eams.teach.grade.transfer.web.action
 
-import java.util.Collection
-import java.util.List
-import java.util.Map
+
+
+
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Project
 import org.openurp.edu.base.Student
 import org.openurp.edu.eams.teach.grade.course.web.action.StdGradeSearchAction
 import org.openurp.edu.teach.grade.CourseGrade
 
-import scala.collection.JavaConversions._
+
 
 class AuditAction extends StdGradeSearchAction {
 

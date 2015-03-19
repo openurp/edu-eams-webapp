@@ -1,12 +1,12 @@
 package org.openurp.edu.eams.teach.program.majorapply.service
 
-import java.util.List
+
 import org.openurp.edu.teach.plan.MajorPlanCourse
 import org.openurp.edu.eams.teach.program.majorapply.model.MajorPlanCourseModifyBean
 import org.openurp.edu.eams.teach.program.majorapply.model.MajorPlanCourseModifyDetailAfterBean
 import org.openurp.edu.eams.teach.program.majorapply.model.MajorPlanCourseModifyDetailBeforeBean
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 trait MajorPlanCourseModifyApplyService {
 

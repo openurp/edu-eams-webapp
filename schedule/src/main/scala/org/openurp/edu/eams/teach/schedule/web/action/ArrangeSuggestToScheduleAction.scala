@@ -1,22 +1,20 @@
 package org.openurp.edu.eams.teach.schedule.web.action
 
-import java.util.Collection
-import java.util.Collections
-import java.util.List
-import java.util.Map
-import java.util.Set
+
+
+
 import org.apache.commons.lang3.ArrayUtils
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.base.Room
 import org.openurp.base.Department
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.eams.base.util.WeekDays
 import org.openurp.edu.base.Project
 import org.openurp.edu.eams.teach.code.industry.TeachLangType
 import org.openurp.edu.eams.teach.code.school.CourseCategory
 import org.openurp.edu.eams.teach.lesson.ArrangeSuggest
-import org.openurp.edu.eams.teach.lesson.CourseActivity
+import org.openurp.edu.teach.schedule.CourseActivity
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.teach.lesson.LessonTag
 import org.openurp.edu.eams.teach.lesson.SuggestActivity
@@ -36,7 +34,7 @@ import org.openurp.edu.eams.web.action.common.ProjectSupportAction
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 
-import scala.collection.JavaConversions._
+
 
 class ArrangeSuggestToScheduleAction extends ProjectSupportAction {
 
@@ -98,7 +96,7 @@ class ArrangeSuggestToScheduleAction extends ProjectSupportAction {
     val departments = getDeparts
     var optionalRooms = Collections.emptyList()
     if (CollectUtils.isNotEmpty(departments)) {
-      optionalRooms = entityDao.search(OqlBuilder.from(classOf[Classroom], "room").where("exists(from room.departments department where department in (:departments))", 
+      optionalRooms = entityDao.search(OqlBuilder.from(classOf[Room], "room").where("exists(from room.departments department where department in (:departments))", 
         departments)
         .where("room.effectiveAt <= current_time() and (room.invalidAt is null or room.invalidAt >= current_time())")
         .where("exists(from " + classOf[Lesson].getName + 
@@ -115,25 +113,25 @@ class ArrangeSuggestToScheduleAction extends ProjectSupportAction {
     forward()
   }
 
-  private def lessonId2SuggestRoomsJSON(suggests: Collection[ArrangeSuggest]): Map[String, String] = {
+  private def lessonId2SuggestRoomsJSON(suggests: Iterable[ArrangeSuggest]): Map[String, String] = {
     val lessonId2SuggestRoomsJSON = CollectUtils.newHashMap()
     val gson = ArrangeSuggestGsonBuilder.build()
     for (suggest <- suggests) {
-      lessonId2SuggestRoomsJSON.put(suggest.getLesson.getId.toString, gson.toJson(suggest.getRooms))
+      lessonId2SuggestRoomsJSON.put(suggest.getLesson.id.toString, gson.toJson(suggest.getRooms))
     }
     lessonId2SuggestRoomsJSON
   }
 
-  private def makeArrangeDigest(lessons: Collection[Lesson]): Map[String, String] = {
+  private def makeArrangeDigest(lessons: Iterable[Lesson]): Map[String, String] = {
     val arrangeInfo = CollectUtils.newHashMap()
     val digestor = CourseActivityDigestor.getInstance
     for (oneTask <- lessons) {
-      arrangeInfo.put(oneTask.getId.toString, digestor.digest(getTextResource, oneTask, ":teacher+ :day :units :weeks :room"))
+      arrangeInfo.put(oneTask.id.toString, digestor.digest(getTextResource, oneTask, ":teacher+ :day :units :weeks :room"))
     }
     arrangeInfo
   }
 
-  private def makeSuggestDigest(lessons: Collection[Lesson]): Map[String, String] = {
+  private def makeSuggestDigest(lessons: Iterable[Lesson]): Map[String, String] = {
     val arrangeInfo = CollectUtils.newHashMap()
     val digestor = SuggestActivityDigestor.getInstance
     if (CollectUtils.isNotEmpty(lessons)) {
@@ -142,7 +140,7 @@ class ArrangeSuggestToScheduleAction extends ProjectSupportAction {
       val suggests = entityDao.search(suggestQuery)
       for (suggest <- suggests) {
         val oneTask = suggest.getLesson
-        arrangeInfo.put(oneTask.getId.toString, digestor.digest(getTextResource, suggest, ":teacher+ :day :units :weeks")
+        arrangeInfo.put(oneTask.id.toString, digestor.digest(getTextResource, suggest, ":teacher+ :day :units :weeks")
           .replaceAll(",", "<br>"))
       }
     }
@@ -177,7 +175,7 @@ class ArrangeSuggestToScheduleAction extends ProjectSupportAction {
       }
       val mergedCourseActivities = CourseActivityBean.mergeActivites(courseActivities)
       val lesson = suggest.getLesson
-      val canUseRooms = entityDao.get(classOf[Classroom], lessonId2roomIdArray.get(lesson.getId))
+      val canUseRooms = entityDao.get(classOf[Room], lessonId2roomIdArray.get(lesson.id))
       val context = new BruteForceArrangeContext(lesson, mergedCourseActivities)
       bruteForceArrangeService.bruteForceArrange(context, canUseRooms)
       if (context.isFailed) {
@@ -187,7 +185,7 @@ class ArrangeSuggestToScheduleAction extends ProjectSupportAction {
     if (CollectUtils.isNotEmpty(failedContexts)) {
       val failedLessonIds = CollectUtils.newHashSet()
       for (context <- failedContexts) {
-        failedLessonIds.add(context.getLesson.getId)
+        failedLessonIds.add(context.getLesson.id)
       }
       put("failedContexts", failedContexts)
       put("lessonId2Digests", makeSuggestDigest(entityDao.get(classOf[Lesson], failedLessonIds)))

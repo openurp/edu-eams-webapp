@@ -6,7 +6,7 @@ import java.util.Date
 import org.beangle.commons.lang.Objects
 import org.beangle.commons.lang.Strings
 import org.openurp.base.Semester
-import EamsWeekday._
+import WeekDay._
 import RelativeDateUtil._
 
 object RelativeDateUtil {
@@ -34,21 +34,21 @@ class RelativeDateUtil private () {
 
   private var dateUtil: EamsDateUtil = _
 
-  def getDate(relativeWeekIndex2: Int, weekday: EamsWeekday): Date = {
+  def getDate(relativeWeekIndex2: Int, weekday: WeekDay): Date = {
     val weekOfYear = dateUtil.getWeekOfYear(startOn)
     val relativeWeekIndex = if (relativeWeekIndex2 == 0) 1 else relativeWeekIndex2
 
     if (relativeWeekIndex < 0) {
       if (Math.abs(relativeWeekIndex) >= weekOfYear) {
-        return dateUtil.getDate(EamsDateUtil.getYear(startOn), weekOfYear + relativeWeekIndex - 1, weekday)
+        return dateUtil.getDate(EamsDateUtil.year(startOn), weekOfYear + relativeWeekIndex - 1, weekday)
       }
-      dateUtil.getDate(EamsDateUtil.getYear(startOn), weekOfYear + relativeWeekIndex, weekday)
+      dateUtil.getDate(EamsDateUtil.year(startOn), weekOfYear + relativeWeekIndex, weekday)
     } else {
-      dateUtil.getDate(EamsDateUtil.getYear(startOn), weekOfYear + relativeWeekIndex - 1, weekday)
+      dateUtil.getDate(EamsDateUtil.year(startOn), weekOfYear + relativeWeekIndex - 1, weekday)
     }
   }
 
-  def getDates(relativeWeekIndecies: Array[Int], weekday: EamsWeekday): Array[Date] = {
+  def getDates(relativeWeekIndecies: Array[Int], weekday: WeekDay): Array[Date] = {
     val dates = Array.ofDim[Date](relativeWeekIndecies.length)
     for (i <- 0 until relativeWeekIndecies.length) {
       dates(i) = getDate(relativeWeekIndecies(i), weekday)
@@ -56,7 +56,7 @@ class RelativeDateUtil private () {
     dates
   }
 
-  def getDates(relativeWeekIndexString: String, weekday: EamsWeekday): Array[Date] = {
+  def getDates(relativeWeekIndexString: String, weekday: WeekDay): Array[Date] = {
     getDates(Strings.splitToInt(relativeWeekIndexString), weekday)
   }
 

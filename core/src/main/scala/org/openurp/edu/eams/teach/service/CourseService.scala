@@ -1,10 +1,10 @@
 package org.openurp.edu.eams.teach.service
 
-import java.util.List
-import org.openurp.edu.teach.Course
-import org.openurp.edu.teach.CourseExtInfo
 
-import scala.collection.JavaConversions._
+import org.openurp.edu.base.Course
+import org.openurp.edu.base.CourseExtInfo
+
+
 
 trait CourseService {
 

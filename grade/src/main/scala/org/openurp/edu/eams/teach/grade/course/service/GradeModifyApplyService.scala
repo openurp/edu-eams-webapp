@@ -2,9 +2,9 @@ package org.openurp.edu.eams.teach.grade.course.service
 
 import org.openurp.edu.eams.teach.grade.course.GradeModifyApply
 import org.openurp.edu.teach.grade.CourseGrade
-import org.openurp.edu.eams.teach.lesson.ExamGrade
+import org.openurp.edu.teach.grade.ExamGrade
 
-import scala.collection.JavaConversions._
+
 
 trait GradeModifyApplyService {
 

@@ -1,15 +1,13 @@
 package org.openurp.edu.eams.baseinfo.web.dwr
 
-import java.util.ArrayList
-import java.util.Collections
-import java.util.List
+
 import org.beangle.commons.dao.impl.BaseServiceImpl
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.base.Department
 import org.openurp.edu.base.Major
 import org.openurp.code.edu.Education
 
-import scala.collection.JavaConversions._
+
 
 class DepartmentDwrServiceImpl extends BaseServiceImpl {
 

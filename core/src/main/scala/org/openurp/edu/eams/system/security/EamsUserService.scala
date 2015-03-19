@@ -5,7 +5,7 @@ import org.beangle.security.blueprint.service.UserService
 import org.openurp.edu.base.Student
 import org.openurp.edu.base.Teacher
 
-import scala.collection.JavaConversions._
+
 
 trait EamsUserService extends UserService {
 

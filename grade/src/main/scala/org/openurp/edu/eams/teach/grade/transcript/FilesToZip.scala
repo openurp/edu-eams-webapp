@@ -7,13 +7,13 @@ import java.io.FileOutputStream
 import java.io.IOException
 import org.apache.tools.zip.ZipEntry
 import org.apache.tools.zip.ZipOutputStream
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConversions._
+
+
 
 class FilesToZip(zipFileName: String) {
 
-  @BeanProperty
+  
   var zipOut: ZipOutputStream = _
 
   val file = new File(zipFileName)

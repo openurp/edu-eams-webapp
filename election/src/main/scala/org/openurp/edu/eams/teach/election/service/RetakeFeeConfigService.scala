@@ -1,15 +1,15 @@
 package org.openurp.edu.eams.teach.election.service
 
-import java.util.List
-import org.beangle.commons.dao.query.builder.OqlBuilder
+
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.ems.dictionary.service.BaseCodeService
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Project
 import org.openurp.edu.base.Student
 import org.openurp.edu.eams.teach.election.RetakeFeeConfig
 import org.openurp.edu.teach.lesson.CourseTake
 
-import scala.collection.JavaConversions._
+
 
 trait RetakeFeeConfigService extends BaseCodeService {
 

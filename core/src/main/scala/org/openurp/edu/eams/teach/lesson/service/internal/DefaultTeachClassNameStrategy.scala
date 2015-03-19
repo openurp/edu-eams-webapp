@@ -1,10 +1,10 @@
 package org.openurp.edu.eams.teach.lesson.service.internal
 
 import java.util.LinkedHashSet
-import java.util.List
-import java.util.Map
-import java.util.Map.Entry
-import java.util.Set
+
+
+.Entry
+
 import javax.validation.constraints.Size
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.entity.metadata.Model
@@ -24,7 +24,7 @@ import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitItemContentPro
 import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnum
 import DefaultTeachClassNameStrategy._
 
-import scala.collection.JavaConversions._
+
 
 object DefaultTeachClassNameStrategy {
 
@@ -79,22 +79,22 @@ class DefaultTeachClassNameStrategy extends TeachClassNameStrategy {
       for (item <- courseLimitGroup.getItems) {
         val op = item.getOperator
         val meta = item.getMeta
-        var provider = providers.get(meta.getId)
+        var provider = providers.get(meta.id)
         if (null == provider) {
           provider = courseLimitItemContentProviderFactory.getProvider(meta)
-          providers.put(meta.getId, provider)
+          providers.put(meta.id, provider)
         }
         val contentIdTitles = provider.getContentIdTitleMap(item.getContent)
         val contentTitles = new LinkedHashSet[String](contentIdTitles.values)
         if (Operator.NOT_EQUAL == op || Operator.NOT_IN == op) {
-          var oneMetaExcludeContents = excludeContents.get(meta.getId)
+          var oneMetaExcludeContents = excludeContents.get(meta.id)
           if (null == oneMetaExcludeContents) {
             oneMetaExcludeContents = CollectUtils.newArrayList()
-            excludeContents.put(meta.getId, oneMetaExcludeContents)
+            excludeContents.put(meta.id, oneMetaExcludeContents)
           }
           oneMetaExcludeContents.add(contentTitles)
         }
-        metaContentTitles.put(meta.getId, new Pair[CourseLimitMeta.Operator, Set[String]](op, contentTitles))
+        metaContentTitles.put(meta.id, new Pair[CourseLimitMeta.Operator, Set[String]](op, contentTitles))
       }
       groupContentTitles.add(metaContentTitles)
     }

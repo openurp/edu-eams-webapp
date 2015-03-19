@@ -1,8 +1,8 @@
 package org.openurp.edu.eams.teach.election.service
 
-import java.util.Collection
-import java.util.List
-import java.util.Map
+
+
+
 import org.beangle.commons.text.i18n.Message
 import org.openurp.edu.base.Student
 import org.openurp.edu.eams.teach.election.ElectionProfile
@@ -13,7 +13,7 @@ import org.openurp.edu.eams.teach.election.service.context.PrepareContext
 import org.openurp.edu.teach.lesson.Lesson
 import StdElectionService._
 
-import scala.collection.JavaConversions._
+
 
 object StdElectionService {
 
@@ -76,7 +76,7 @@ trait StdElectionService {
 
   def isElectable(lesson: Lesson, state: ElectState): Boolean
 
-  def batchOperator(contexts: Map[ElectRuleType, List[ElectionCourseContext]]): Collection[List[Message]]
+  def batchOperator(contexts: Map[ElectRuleType, List[ElectionCourseContext]]): Iterable[List[Message]]
 
   def generalCheck(profile: ElectionProfile, context: ElectionCourseContext): List[Message]
 

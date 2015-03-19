@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.program.major.guard.impl
 
-import java.util.List
-import java.util.Map
+
+
 import org.beangle.commons.collection.CollectUtils
 import com.ekingstar.eams.base.Department
 import com.ekingstar.eams.core.Project
@@ -12,7 +12,7 @@ import org.openurp.edu.eams.teach.program.Program
 import org.openurp.edu.eams.teach.program.major.exception.MajorProgramGuardException
 import org.openurp.edu.eams.teach.program.major.guard.MajorProgramOperateType
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class MajorProgramBasicGuard extends AbstractMajorProgramGuard {
 

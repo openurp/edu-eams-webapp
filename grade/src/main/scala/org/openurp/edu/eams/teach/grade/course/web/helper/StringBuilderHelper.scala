@@ -1,9 +1,9 @@
 package org.openurp.edu.eams.teach.grade.course.web.helper
 
-import java.util.Iterator
-import java.util.Map
 
-import scala.collection.JavaConversions._
+
+
+
 
 class StringBuilderHelper {
 

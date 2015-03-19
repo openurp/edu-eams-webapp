@@ -1,9 +1,9 @@
 package org.openurp.edu.eams.teach.textbook.service
 
-import java.util.Collection
-import java.util.List
-import java.util.Map
-import java.util.Set
+
+
+
+
 import org.openurp.base.Semester
 import org.openurp.edu.base.Student
 import org.openurp.edu.eams.teach.Textbook
@@ -11,17 +11,17 @@ import org.openurp.edu.teach.lesson.CourseTake
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.teach.textbook.TextbookOrderLine
 
-import scala.collection.JavaConversions._
+
 
 trait TextbookOrderLineService {
 
-  def getLessonsHasTextbook(lessons: Collection[Lesson]): Set[Long]
+  def getLessonsHasTextbook(lessons: Iterable[Lesson]): Set[Long]
 
   def getTextbooksForLesson(lesson: Lesson): List[Textbook]
 
-  def getTextBookMapByLessons(lessons: Collection[Lesson]): Map[Long, List[Textbook]]
+  def getTextBookMapByLessons(lessons: Iterable[Lesson]): Map[Long, List[Textbook]]
 
-  def getLessonsHasOrderTextBook(lessons: Collection[Lesson]): Set[Long]
+  def getLessonsHasOrderTextBook(lessons: Iterable[Lesson]): Set[Long]
 
   def getTextbookOrderLinesByLesson(lessonId: Lesson, std: Student): List[TextbookOrderLine]
 

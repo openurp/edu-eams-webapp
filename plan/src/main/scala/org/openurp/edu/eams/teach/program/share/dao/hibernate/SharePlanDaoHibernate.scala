@@ -1,11 +1,11 @@
 package org.openurp.edu.eams.teach.program.share.dao.hibernate
 
-import java.util.List
-import org.beangle.orm.hibernate.HibernateEntityDao
+
+import org.beangle.data.jpa.hibernate.HibernateEntityDao
 import org.openurp.edu.eams.teach.program.share.SharePlan
 import org.openurp.edu.eams.teach.program.share.dao.SharePlanDao
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class SharePlanDaoHibernate extends HibernateEntityDao with SharePlanDao {
 

@@ -1,20 +1,20 @@
 package org.openurp.edu.eams.teach.lesson.task.splitter
 
-import java.util.ArrayList
-import java.util.Collection
+
+
 import java.util.Comparator
-import java.util.HashMap
-import java.util.HashSet
-import java.util.Iterator
-import java.util.List
-import java.util.Map
-import java.util.Set
+
+
+
+
+
+
 import java.util.TreeSet
 import org.apache.commons.collections.CollectionUtils
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.teach.lesson.CourseLimitMeta.Operator
 import org.openurp.edu.teach.lesson.CourseTake
-import org.openurp.edu.eams.teach.lesson.ExamTake
+import org.openurp.edu.teach.exam.ExamTake
 import org.openurp.edu.teach.lesson.TeachClass
 import org.openurp.edu.eams.teach.lesson.service.CourseLimitService
 import org.openurp.edu.eams.teach.lesson.service.TeachClassNameStrategy
@@ -22,7 +22,7 @@ import org.openurp.edu.eams.teach.lesson.task.service.helper.CourseTakeOfClassPr
 import org.openurp.edu.eams.teach.lesson.util.LessonElectionUtil
 import AbstractTeachClassSplitter._
 
-import scala.collection.JavaConversions._
+
 
 object AbstractTeachClassSplitter {
 
@@ -76,7 +76,7 @@ abstract class AbstractTeachClassSplitter {
 
   def splitClass(target: TeachClass, num: Int): Array[TeachClass]
 
-  protected def splitTakes(takes: Collection[CourseTake], num: Int): Array[Set[CourseTake]] = {
+  protected def splitTakes(takes: Iterable[CourseTake], num: Int): Array[Set[CourseTake]] = {
     val results = Array.ofDim[TreeSet](num)
     val totalCount = CollectionUtils.size(takes)
     val avgLimitCount = Math.ceil(totalCount.toDouble / num.toDouble).toInt

@@ -1,38 +1,36 @@
 package org.openurp.edu.eams.teach.grade.course.web.action
 
-import java.util.Collection
-import java.util.Collections
-import java.util.Iterator
-import java.util.List
-import java.util.Map
+
+
+
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.bean.comparators.PropertyComparator
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
 import org.beangle.commons.dao.query.builder.Condition
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.lang.Strings
 import org.beangle.struts2.helper.QueryHelper
 import org.openurp.base.Department
 import org.openurp.edu.base.Project
-import org.openurp.edu.teach.Course
+import org.openurp.edu.base.Course
 import org.openurp.edu.eams.teach.code.industry.ExamMode
 import org.openurp.edu.eams.teach.code.industry.ExamType
-import org.openurp.edu.eams.teach.code.industry.GradeType
+import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.eams.teach.code.industry.ScoreMarkStyle
 import org.openurp.edu.eams.teach.grade.lesson.service.LessonGradeService
 import org.openurp.edu.eams.teach.grade.service.CourseGradeService
 import org.openurp.edu.eams.teach.grade.service.GradeRateService
 import org.openurp.edu.teach.grade.CourseGrade
-import org.openurp.edu.teach.grade.CourseGradeState
-import org.openurp.edu.eams.teach.lesson.ExamGradeState
+import org.openurp.edu.teach.grade.model.CourseGradeState
+import org.openurp.edu.teach.grade.model.ExamGradeState
 import org.openurp.edu.eams.teach.lesson.GradeState
 import org.openurp.edu.eams.teach.lesson.GradeTypeConstants
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class StateAction extends SemesterSupportAction {
 
@@ -68,7 +66,7 @@ class StateAction extends SemesterSupportAction {
     var it = grades.iterator()
     while (it.hasNext) {
       val grade = it.next().asInstanceOf[CourseGrade]
-      val obj = courseMap.get(grade.getCourse.getId.toString)
+      val obj = courseMap.get(grade.getCourse.id.toString)
       if (null == obj) {
         //continue
       }
@@ -90,7 +88,7 @@ class StateAction extends SemesterSupportAction {
     query.where(QueryHelper.extractConditions(classOf[Course], "course", null))
     query.where("lesson.project in (:projects)", projects)
     query.where("lesson.teachDepart in (:departs)", departments)
-    var hql = "exists (from org.openurp.edu.teach.grade.CourseGradeState courseGradeState where courseGradeState.lesson = lesson and "
+    var hql = "exists (from org.openurp.edu.teach.grade.model.CourseGradeState courseGradeState where courseGradeState.lesson = lesson and "
     if (false == getBoolean("isPercentSetting")) {
       hql += "not "
     }
@@ -143,11 +141,11 @@ class StateAction extends SemesterSupportAction {
       var it2 = canInputGradeTypes.iterator()
       while (it2.hasNext) {
         val gradeType = it2.next()
-        val percent = getFloat("percent" + gradeType.getId).floatValue() / 100
+        val percent = getFloat("percent" + gradeType.id).floatValue() / 100
         if (percent == 0.0) {
           //continue
         }
-        val markStyleId = getInt("markStyle" + gradeType.getId)
+        val markStyleId = getInt("markStyle" + gradeType.id)
         val gradeTypeState = Model.newInstance(classOf[ExamGradeState]).asInstanceOf[ExamGradeState]
         gradeTypeState.setGradeState(gradeState)
         gradeTypeState.setScoreMarkStyle(new ScoreMarkStyle(markStyleId))
@@ -176,7 +174,7 @@ class StateAction extends SemesterSupportAction {
         query.where("gradeState.lesson.project = :project", getProject)
         query.where("gradeState.lesson.teachDepart in (:departments)", departments)
       }
-      if (gradeType.getId == GradeTypeConstants.FINAL_ID) {
+      if (gradeType.id == GradeTypeConstants.FINAL_ID) {
         //continue
       }
       query.join("gradeState.states", "examGradeState")
@@ -216,7 +214,7 @@ class StateAction extends SemesterSupportAction {
         query.where("gradeState.lesson.project in (:project)", getProjects)
         query.where("gradeState.lesson.teachDepart in (:departments)", getDeparts)
       }
-      if (null != gradeType && gradeType.getId == GradeTypeConstants.FINAL_ID) {
+      if (null != gradeType && gradeType.id == GradeTypeConstants.FINAL_ID) {
         query.where(new Condition("gradeState.confirmed=true"))
         query.groupBy("gradeState.published")
         query.orderBy(Order.parse("gradeState.published"))
@@ -245,7 +243,7 @@ class StateAction extends SemesterSupportAction {
     val gradeTypes = lessonGradeService.getCanInputGradeTypes(true)
     val gradeTypeMap = CollectUtils.newHashMap()
     for (gradeType <- gradeTypes) {
-      gradeTypeMap.put(gradeType.getId, gradeType)
+      gradeTypeMap.put(gradeType.id, gradeType)
     }
     val lessons = entityDao.get(classOf[Lesson], "semester.id", getInt("semester.id"))
     val results = CollectUtils.newHashMap()
@@ -290,7 +288,7 @@ class StateAction extends SemesterSupportAction {
     entityDao.get(classOf[GradeType], gradeTypeId)
   }
 
-  protected def getCourseOfLessons(lessons: Collection[Lesson]): Map[String, Array[Any]] = {
+  protected def getCourseOfLessons(lessons: Iterable[Lesson]): Map[String, Array[Any]] = {
     val isPercentSetting = getBoolean("isPercentSetting")
     val courseMap = CollectUtils.newHashMap()
     val gradeStateMap = CollectUtils.newHashMap()
@@ -300,7 +298,7 @@ class StateAction extends SemesterSupportAction {
       if (CollectUtils.isNotEmpty(courseGradeStates)) {
         gradeState = courseGradeStates.get(0)
       }
-      val courseKey = lesson.getCourse.getId.toString
+      val courseKey = lesson.getCourse.id.toString
       if (!courseMap.containsKey(courseKey)) {
         courseMap.put(courseKey, Array(CollectUtils.newArrayList(), CollectUtils.newArrayList(), null))
       }
@@ -317,7 +315,7 @@ class StateAction extends SemesterSupportAction {
           var it2 = states.iterator()
           while (it2.hasNext) {
             val gradeTypeState = it2.next().asInstanceOf[ExamGradeState]
-            gradeStateKey.append(gradeTypeState.gradeType.getId)
+            gradeStateKey.append(gradeTypeState.gradeType.id)
             gradeStateKey.append("_")
             gradeStateKey.append(gradeTypeState.getPercent)
             if (it2.hasNext) {
@@ -336,7 +334,7 @@ class StateAction extends SemesterSupportAction {
         val key = it.next()
         val keys = Strings.split(key, ":")
         val obj = courseMap.get(keys(0)).asInstanceOf[Array[Any]]
-        val gradeStates = obj(1).asInstanceOf[Collection[GradeState]]
+        val gradeStates = obj(1).asInstanceOf[Iterable[GradeState]]
         gradeStates.add(gradeStateMap.get(key))
       }
     }

@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletResponse
 import org.beangle.struts2.view.tag.AbstractTagLibrary
 import com.opensymphony.xwork2.util.ValueStack
 
-import scala.collection.JavaConversions._
+
 
 class WebTagLibrary extends AbstractTagLibrary {
 

@@ -2,7 +2,7 @@ package org.openurp.edu.eams.base.web.action.code
 
 import org.apache.commons.lang3.ClassUtils
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.pojo.BaseCode
 import org.beangle.commons.lang.Strings
 import org.beangle.ems.dictionary.model.CodeCategory
@@ -11,7 +11,7 @@ import org.beangle.ems.dictionary.service.CodeGenerator
 import org.openurp.edu.eams.web.action.BaseAction
 import SearchAction._
 
-import scala.collection.JavaConversions._
+
 
 object SearchAction {
 

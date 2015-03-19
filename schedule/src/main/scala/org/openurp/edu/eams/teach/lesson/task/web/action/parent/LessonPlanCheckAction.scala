@@ -1,13 +1,13 @@
 package org.openurp.edu.eams.teach.lesson.task.web.action.parent
 
-import java.util.ArrayList
-import java.util.HashMap
-import java.util.List
-import java.util.Map
+
+
+
+
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.eams.core.CommonAuditState
 import org.openurp.edu.base.Project
 import org.openurp.edu.teach.lesson.Lesson
@@ -20,7 +20,7 @@ import org.openurp.edu.eams.teach.major.helper.MajorPlanSearchHelper
 import org.openurp.edu.teach.plan.MajorPlan
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class LessonPlanCheckAction extends SemesterSupportAction {
 
@@ -76,7 +76,7 @@ class LessonPlanCheckAction extends SemesterSupportAction {
     for (relation <- relations) {
       val plan = relation.getPlan
       val lesson = relation.getLesson
-      lessonSubmitStatus.put(plan.getId + "," + lesson.getId, lesson.getAuditStatus)
+      lessonSubmitStatus.put(plan.id + "," + lesson.id, lesson.getAuditStatus)
     }
     put("lessonSubmitStatus", lessonSubmitStatus)
     val planPackages = lessonPlanCheckService.makePackages(relations)
@@ -84,7 +84,7 @@ class LessonPlanCheckAction extends SemesterSupportAction {
     val idsOfPlanWithoutLesson = new ArrayList[Long]()
     for (planId <- planIds) {
       var has = false
-      for (planPackage <- planPackages if planId == planPackage.getPlan.getId) {
+      for (planPackage <- planPackages if planId == planPackage.getPlan.id) {
         has = true
         //break
       }

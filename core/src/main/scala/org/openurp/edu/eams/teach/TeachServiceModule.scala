@@ -52,7 +52,7 @@ import org.openurp.edu.eams.teach.service.internal.TeachResourceServiceImpl
 import org.openurp.edu.eams.teach.textbook.service.internal.DefaultTextbookOrderLineCodeGenerator
 import org.openurp.edu.eams.teach.textbook.service.internal.TextbookOrderLineServiceImpl
 
-import scala.collection.JavaConversions._
+
 
 class TeachServiceModule extends AbstractBindModule {
 

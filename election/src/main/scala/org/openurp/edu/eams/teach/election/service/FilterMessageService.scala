@@ -2,11 +2,11 @@ package org.openurp.edu.eams.teach.election.service
 
 import java.util.Date
 import org.beangle.security.blueprint.User
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Project
 import org.openurp.edu.eams.teach.election.ElectionProfile
 
-import scala.collection.JavaConversions._
+
 
 trait FilterMessageService {
 

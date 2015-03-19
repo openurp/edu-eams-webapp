@@ -1,12 +1,12 @@
 package org.openurp.edu.eams
 
 import org.beangle.commons.inject.bind.AbstractBindModule
-import org.openurp.edu.teach.Course.web.action.CourseAction
-import org.openurp.edu.teach.Course.web.action.CourseSearchAction
+import org.openurp.edu.base.Course.web.action.CourseAction
+import org.openurp.edu.base.Course.web.action.CourseSearchAction
 import org.openurp.edu.eams.teach.lesson.helper.LessonSearchHelper
 import org.openurp.edu.eams.teach.web.action.code.ManageAction
 
-import scala.collection.JavaConversions._
+
 
 class TeachWebModule extends AbstractBindModule {
 

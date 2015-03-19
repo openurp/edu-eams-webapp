@@ -1,23 +1,23 @@
 package org.openurp.edu.eams.teach.lesson.task.service.impl
 
 import java.text.MessageFormat
-import java.util.ArrayList
-import java.util.Collection
-import java.util.HashMap
-import java.util.HashSet
-import java.util.Iterator
+
+
+
+
+
 import java.util.LinkedList
-import java.util.List
-import java.util.Map
-import java.util.Set
+
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.impl.BaseServiceImpl
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.beangle.commons.entity.Entity
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.beangle.data.model.Entity
 import org.beangle.commons.lang.Strings
 import org.openurp.base.Department
-import org.openurp.edu.eams.base.Semester
-import org.openurp.edu.eams.base.code.school.ClassroomType
+import org.openurp.base.Semester
+import org.openurp.edu.eams.base.code.school.RoomType
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.eams.core.CommonAuditState
 import org.openurp.edu.base.Project
@@ -27,7 +27,7 @@ import org.openurp.edu.base.code.StdType
 import org.openurp.edu.eams.core.service.SemesterService
 import org.openurp.edu.eams.system.security.DataRealm
 import org.openurp.edu.teach.code.CourseType
-import org.openurp.edu.eams.teach.lesson.CourseActivity
+import org.openurp.edu.teach.schedule.CourseActivity
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.teach.lesson.LessonTag
 import org.openurp.edu.eams.teach.lesson.service.CourseLimitService
@@ -35,7 +35,7 @@ import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnum
 import org.openurp.edu.eams.teach.lesson.task.dao.LessonStatDao
 import org.openurp.edu.eams.teach.lesson.task.service.LessonStatService
 import org.openurp.edu.eams.teach.lesson.task.util.TaskOfCourseType
-import org.openurp.edu.eams.teach.program.CourseGroup
+import org.openurp.edu.teach.plan.CourseGroup
 import org.openurp.edu.teach.plan.MajorPlan
 import org.openurp.edu.eams.teach.program.major.service.MajorPlanService
 import org.openurp.edu.eams.teach.program.util.PlanUtils
@@ -45,7 +45,7 @@ import org.openurp.edu.eams.util.stat.StatGroup
 import org.openurp.edu.eams.util.stat.StatHelper
 import org.openurp.edu.eams.util.stat.StatItem
 
-import scala.collection.JavaConversions._
+
 
 class LessonStatServiceImpl extends BaseServiceImpl with LessonStatService {
 
@@ -59,7 +59,7 @@ class LessonStatServiceImpl extends BaseServiceImpl with LessonStatService {
       .join("lgroup.items", "litem")
       .where("litem.meta.id = :metaId", CourseLimitMetaEnum.ADMINCLASS.getMetaId)
       .where("litem.content like '_%'")
-      .where("not exists (select tag.id from lesson.tags tag where tag.id=:guaPai)", LessonTag.PredefinedTags.GUAPAI.getId)
+      .where("not exists (select tag.id from lesson.tags tag where tag.id=:guaPai)", LessonTag.PredefinedTags.GUAPAI.id)
       .where("lesson.semester = :semester", semester)
       .where("lesson.project = :project", project)
       .where("lesson.teachDepart.id in (:departIds)", Strings.splitToInt(dataRealm.departmentIdSeq))
@@ -68,10 +68,10 @@ class LessonStatServiceImpl extends BaseServiceImpl with LessonStatService {
     for (lesson <- commonLessons) {
       val adminclasses = courseLimitService.extractAdminclasses(lesson.getTeachClass)
       for (adminclass <- adminclasses) {
-        var item = tmpMap.get(adminclass.getId)
+        var item = tmpMap.get(adminclass.id)
         if (item == null) {
-          item = new StatItem(adminclass.getId, 0, 0f, 0f, 0f)
-          tmpMap.put(adminclass.getId, item)
+          item = new StatItem(adminclass.id, 0, 0f, 0f, 0f)
+          tmpMap.put(adminclass.id, item)
         }
         val countors = item.getCountors
         countors(0) = countors(0).asInstanceOf[java.lang.Integer] + 1
@@ -86,7 +86,7 @@ class LessonStatServiceImpl extends BaseServiceImpl with LessonStatService {
       .join("lgroup.items", "litem")
       .where("litem.meta.id = :metaId", CourseLimitMetaEnum.ADMINCLASS.getMetaId)
       .where("litem.content like '_%'")
-      .where("exists (select tag.id from lesson.tags tag where tag.id=:guaPai)", LessonTag.PredefinedTags.GUAPAI.getId)
+      .where("exists (select tag.id from lesson.tags tag where tag.id=:guaPai)", LessonTag.PredefinedTags.GUAPAI.id)
       .where("lesson.semester = :semester", semester)
       .where("lesson.project = :project", project)
       .where("lesson.teachDepart.id in (:departIds)", Strings.splitToInt(dataRealm.departmentIdSeq))
@@ -95,10 +95,10 @@ class LessonStatServiceImpl extends BaseServiceImpl with LessonStatService {
     for (lesson <- commonLessons) {
       val adminclasses = courseLimitService.extractAdminclasses(lesson.getTeachClass)
       for (adminclass <- adminclasses) {
-        var item = tmpMap.get(adminclass.getId)
+        var item = tmpMap.get(adminclass.id)
         if (item == null) {
-          item = new StatItem(adminclass.getId, 0, 0f, 0f, 0f)
-          tmpMap.put(adminclass.getId, item)
+          item = new StatItem(adminclass.id, 0, 0f, 0f, 0f)
+          tmpMap.put(adminclass.id, item)
         }
         val countors = item.getCountors
         countors(0) = countors(0).asInstanceOf[java.lang.Integer] + 1
@@ -135,7 +135,7 @@ class LessonStatServiceImpl extends BaseServiceImpl with LessonStatService {
     }
     val adminClasses = entityDao.get(classOf[Adminclass], "id", statMap.keySet)
     for (adminClass <- adminClasses) {
-      val stat = statMap.get(adminClass.getId).asInstanceOf[StatItem]
+      val stat = statMap.get(adminClass.id).asInstanceOf[StatItem]
       stat.setWhat(adminClass)
     }
     new ArrayList(statMap.values)
@@ -282,7 +282,7 @@ class LessonStatServiceImpl extends BaseServiceImpl with LessonStatService {
     setStatEntities(statMap, entityClass)
   }
 
-  private def buildStatMap(stats: Collection[_]): Map[_,_] = {
+  private def buildStatMap(stats: Iterable[_]): Map[_,_] = {
     val statMap = new HashMap()
     var iter = stats.iterator()
     while (iter.hasNext) {
@@ -296,14 +296,14 @@ class LessonStatServiceImpl extends BaseServiceImpl with LessonStatService {
     val entities = entityDao.get(entityClass, "id", statMap.keySet)
     var iter = entities.iterator()
     while (iter.hasNext) {
-      val entity = iter.next().asInstanceOf[Entity]
-      val stat = statMap.get(entity.getId).asInstanceOf[StatItem]
+      val entity = iter.next().asInstanceOf[Entity[_]]
+      val stat = statMap.get(entity.id).asInstanceOf[StatItem]
       stat.setWhat(entity)
     }
     new ArrayList(statMap.values)
   }
 
-  private def setStatEntities(stats: Collection[_], entityClass: Class[_]): List[_] = {
+  private def setStatEntities(stats: Iterable[_], entityClass: Class[_]): List[_] = {
     val statMap = buildStatMap(stats)
     setStatEntities(statMap, entityClass)
   }
@@ -346,7 +346,7 @@ class LessonStatServiceImpl extends BaseServiceImpl with LessonStatService {
   def getTaskOfCourseTypes(project: Project, 
       semester: Semester, 
       dataRealm: DataRealm, 
-      courseTypes: Collection[_]): List[TaskOfCourseType] = {
+      courseTypes: Iterable[_]): List[TaskOfCourseType] = {
     val courseTypeSet = new HashSet(courseTypes)
     var plans = CollectUtils.newArrayList()
     if (!Strings.isEmpty(dataRealm.getStudentTypeIdSeq) && !Strings.isEmpty(dataRealm.departmentIdSeq)) {

@@ -2,8 +2,8 @@ package org.openurp.edu.eams.teach.schedule.web.action
 
 import org.beangle.commons.collection.Order
 import org.beangle.commons.dao.query.builder.Condition
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.openurp.edu.eams.base.Semester
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.openurp.base.Semester
 import org.openurp.edu.base.Project
 import org.openurp.edu.eams.system.security.DataRealm
 import org.openurp.edu.eams.teach.schedule.model.CourseTableCheck
@@ -12,7 +12,7 @@ import org.openurp.edu.eams.teach.schedule.service.StdStatService
 import org.openurp.edu.eams.util.DataRealmUtils
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class CourseTableCheckAction extends SemesterSupportAction {
 

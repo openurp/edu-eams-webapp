@@ -1,12 +1,12 @@
 package org.openurp.edu.eams.teach.grade.course
 
-import org.beangle.commons.entity.Entity
-import org.openurp.edu.eams.base.Semester
+import org.beangle.data.model.Entity
+import org.openurp.base.Semester
 import org.openurp.edu.base.Project
 import org.openurp.edu.base.Teacher
 import org.openurp.edu.teach.lesson.Lesson
 
-import scala.collection.JavaConversions._
+
 
 trait TeachQuality extends Entity[Long] {
 

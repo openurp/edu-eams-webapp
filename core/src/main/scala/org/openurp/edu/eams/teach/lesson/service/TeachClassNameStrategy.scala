@@ -1,10 +1,10 @@
 package org.openurp.edu.eams.teach.lesson.service
 
-import java.util.List
+
 import org.openurp.edu.teach.lesson.CourseLimitGroup
 import org.openurp.edu.teach.lesson.TeachClass
 
-import scala.collection.JavaConversions._
+
 
 trait TeachClassNameStrategy {
 

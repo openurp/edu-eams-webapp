@@ -1,14 +1,14 @@
 package org.openurp.edu.eams.teach.lesson.service.limit.impl
 
-import java.util.ArrayList
-import java.util.List
+
+
 import org.beangle.commons.lang.tuple.Pair
 import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnum
 import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnumFilter
 import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnumProvider
 import DefaultCourseLimitMetaEnumProvider._
 
-import scala.collection.JavaConversions._
+
 
 object DefaultCourseLimitMetaEnumProvider {
 

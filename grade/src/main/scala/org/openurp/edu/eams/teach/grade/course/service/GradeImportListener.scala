@@ -1,35 +1,35 @@
 package org.openurp.edu.eams.teach.grade.course.service
 
 import java.util.Date
-import java.util.Iterator
-import java.util.List
-import java.util.Set
+
+
+
 import javax.validation.ConstraintViolation
 import javax.validation.ConstraintViolationException
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.EntityDao
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.beangle.commons.entity.Entity
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.beangle.data.model.Entity
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.transfer.TransferResult
 import org.beangle.commons.transfer.importer.listener.ItemImporterListener
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Project
 import org.openurp.edu.base.Student
-import org.openurp.edu.teach.Course
+import org.openurp.edu.base.Course
 import org.openurp.edu.eams.teach.Grade
 import org.openurp.edu.teach.code.CourseTakeType
-import org.openurp.edu.eams.teach.code.industry.ExamStatus
-import org.openurp.edu.eams.teach.code.industry.GradeType
+import org.openurp.edu.teach.code.ExamStatus
+import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.eams.teach.code.industry.ScoreMarkStyle
 import org.openurp.edu.eams.teach.grade.service.CourseGradeCalculator
 import org.openurp.edu.teach.grade.CourseGrade
-import org.openurp.edu.eams.teach.lesson.ExamGrade
+import org.openurp.edu.teach.grade.ExamGrade
 import org.openurp.edu.eams.teach.lesson.GradeTypeConstants
 import org.openurp.edu.teach.lesson.Lesson
 
-import scala.collection.JavaConversions._
+
 
 class GradeImportListener(private var entityDao: EntityDao, private var project: Project, private var calculator: CourseGradeCalculator)
     extends ItemImporterListener {
@@ -144,7 +144,7 @@ class GradeImportListener(private var entityDao: EntityDao, private var project:
       examGrade.setExamStatus(examStatus)
       examGrade.setCourseGrade(courseGrade)
       examGrade.setMarkStyle(scoreMarkStyle)
-      if (gradeType.getId == GradeTypeConstants.GA_ID) {
+      if (gradeType.id == GradeTypeConstants.GA_ID) {
         examGrade.setStatus(Grade.Status.PUBLISHED)
       }
     }

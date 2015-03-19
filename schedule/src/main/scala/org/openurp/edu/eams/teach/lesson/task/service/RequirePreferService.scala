@@ -1,12 +1,12 @@
 package org.openurp.edu.eams.teach.lesson.task.service
 
-import java.util.Collection
+
 import org.openurp.edu.base.Teacher
-import org.openurp.edu.teach.Course
+import org.openurp.edu.base.Course
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.teach.lesson.task.model.RequirePrefer
 
-import scala.collection.JavaConversions._
+
 
 trait RequirePreferService {
 
@@ -22,5 +22,5 @@ trait RequirePreferService {
 
   def setPreferenceFor(taskIdSeq: String): Unit
 
-  def setPreferenceFor(tasks: Collection[_]): Unit
+  def setPreferenceFor(tasks: Iterable[_]): Unit
 }

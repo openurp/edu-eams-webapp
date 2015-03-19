@@ -1,18 +1,16 @@
 package org.openurp.edu.eams.teach.grade.course.web.action
 
-import java.util.ArrayList
-import java.util.Collections
 import java.util.Date
-import java.util.List
-import java.util.Map
+
+
 import org.beangle.commons.bean.comparators.PropertyComparator
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Student
-import org.openurp.edu.eams.teach.code.industry.GradeType
+import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.eams.teach.grade.course.model.NotPassCreditStats
 import org.openurp.edu.eams.teach.grade.model.StdGpa
 import org.openurp.edu.eams.teach.grade.service.CourseGradeProvider
@@ -28,7 +26,7 @@ import org.openurp.edu.eams.teach.lesson.GradeTypeConstants
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 import org.openurp.edu.eams.web.helper.StdSearchHelper
 
-import scala.collection.JavaConversions._
+
 
 class TermReportAction extends SemesterSupportAction {
 
@@ -87,7 +85,7 @@ class TermReportAction extends SemesterSupportAction {
     val stds = entityDao.get(classOf[Student], Strings.splitToLong(get("std.ids")))
     val setting = new GradeReportSetting()
     populate(setting, "reportSetting")
-    setting.setGradeType(entityDao.get(classOf[GradeType], setting.gradeType.getId))
+    setting.setGradeType(entityDao.get(classOf[GradeType], setting.gradeType.id))
     if (Strings.isEmpty(setting.getOrder.getProperty)) {
       setting.setOrder(Order.desc("semester.pga"))
     }

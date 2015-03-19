@@ -1,21 +1,19 @@
 package org.openurp.edu.eams.teach.program.major.web.action
 
 import org.beangle.commons.web.util.RequestUtils.encodeAttachName
-import java.util.ArrayList
-import java.util.Collection
-import java.util.Collections
+
 import java.util.Comparator
-import java.util.HashMap
-import java.util.Iterator
-import java.util.List
-import java.util.Map
+
+
+
+
 import javax.servlet.http.HttpServletResponse
 import org.apache.commons.lang3.ArrayUtils
 import org.apache.struts2.ServletActionContext
 import org.beangle.commons.bean.comparators.PropertyComparator
 import org.beangle.commons.collection.Order
 import org.beangle.commons.dao.query.builder.Condition
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.text.seq.MultiLevelSeqGenerator
 import org.beangle.commons.text.seq.SeqNumStyle
@@ -28,19 +26,19 @@ import com.ekingstar.eams.core.CommonAuditState
 import com.ekingstar.eams.teach.code.school.CourseHourType
 import com.ekingstar.eams.teach.code.school.CourseType
 import com.ekingstar.eams.teach.major.helper.MajorPlanSearchHelper
-import org.openurp.edu.eams.teach.program.CourseGroup
-import org.openurp.edu.eams.teach.program.PlanCourse
+import org.openurp.edu.teach.plan.CourseGroup
+import org.openurp.edu.teach.plan.PlanCourse
 import org.openurp.edu.eams.teach.program.exporter.FloatNumFormat
 import org.openurp.edu.eams.teach.program.major.MajorPlan
-import org.openurp.edu.teach.plan.MajorPlanCourseGroup
-import org.openurp.edu.eams.teach.program.major.model.MajorPlanCourseGroupBean
+import org.openurp.edu.teach.plan.MajorCourseGroup
+import org.openurp.edu.eams.teach.program.major.model.MajorCourseGroupBean
 import org.openurp.edu.eams.teach.program.major.service.MajorPlanService
 import org.openurp.edu.eams.teach.program.share.SharePlan
 import org.openurp.edu.eams.teach.program.share.SharePlanCourse
 import org.openurp.edu.eams.teach.program.share.SharePlanCourseGroup
 import com.ekingstar.eams.web.action.common.ProjectSupportAction
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class MajorPlanSearchAction extends ProjectSupportAction {
 
@@ -118,7 +116,7 @@ class MajorPlanSearchAction extends ProjectSupportAction {
     null
   }
 
-  protected def getPlanCourseDatas(): Collection[_] = {
+  protected def getPlanCourseDatas(): Iterable[_] = {
     val planIds = Strings.splitToLong(get("planIds")).asInstanceOf[Array[Long]]
     val query = OqlBuilder.from(classOf[MajorPlan], "plan")
     query.where("plan.id in (:ids)", planIds).join("left", "plan.program.major", "major")
@@ -134,18 +132,18 @@ class MajorPlanSearchAction extends ProjectSupportAction {
     if (null == get("node") || "root" == get("node")) {
       var orderBy = get("orderBy")
       if (Strings.isEmpty(orderBy)) {
-        orderBy = "majorPlanCourseGroup.courseType.priority"
+        orderBy = "MajorCourseGroup.courseType.priority"
       }
-      val query = OqlBuilder.from(classOf[MajorPlanCourseGroup], "majorPlanCourseGroup")
-        .where(new Condition("majorPlanCourseGroup.plan.id=:planId", getLong("plan.id")))
-        .where(new Condition("majorPlanCourseGroup.parent is null"))
+      val query = OqlBuilder.from(classOf[MajorCourseGroup], "MajorCourseGroup")
+        .where(new Condition("MajorCourseGroup.plan.id=:planId", getLong("plan.id")))
+        .where(new Condition("MajorCourseGroup.parent is null"))
         .orderBy(orderBy)
       populateConditions(query)
-      put("majorPlanCourseGroups", entityDao.search(query))
+      put("MajorCourseGroups", entityDao.search(query))
       forward("fudan/infoGroupData")
     } else {
-      val majorPlanCourseGroupBean = entityDao.get(classOf[MajorPlanCourseGroupBean], getLong("node")).asInstanceOf[MajorPlanCourseGroupBean]
-      put("majorPlanCourses", majorPlanCourseGroupBean.getPlanCourses)
+      val MajorCourseGroupBean = entityDao.get(classOf[MajorCourseGroupBean], getLong("node")).asInstanceOf[MajorCourseGroupBean]
+      put("majorPlanCourses", MajorCourseGroupBean.getPlanCourses)
       forward("fudan/infoCourseData")
     }
   }
@@ -169,15 +167,15 @@ class MajorPlanSearchAction extends ProjectSupportAction {
         shareCourseTypes.add(courseType)
       }
     }
-    val query = OqlBuilder.from(classOf[MajorPlanCourseGroup], "majorPlanCourseGroup")
-      .where(new Condition("majorPlanCourseGroup.parent is null"))
-      .orderBy(Order.parse("majorPlanCourseGroup.courseType.priority"))
+    val query = OqlBuilder.from(classOf[MajorCourseGroup], "MajorCourseGroup")
+      .where(new Condition("MajorCourseGroup.parent is null"))
+      .orderBy(Order.parse("MajorCourseGroup.courseType.priority"))
     populateConditions(query)
     if (majorPlanId != null && "" != majorPlanId) {
-      query.where(new Condition("majorPlanCourseGroup.plan.id=:majorPlanId", majorPlanId))
+      query.where(new Condition("MajorCourseGroup.plan.id=:majorPlanId", majorPlanId))
     }
-    val majorPlanCourseGroups = entityDao.search(query)
-    val it = majorPlanCourseGroups.iterator()
+    val MajorCourseGroups = entityDao.search(query)
+    val it = MajorCourseGroups.iterator()
     val sg = new MultiLevelSeqGenerator()
     sg.add(new SeqPattern(SeqNumStyle.HANZI, "{1}"))
     sg.add(new SeqPattern(SeqNumStyle.HANZI, "({2})"))
@@ -191,21 +189,21 @@ class MajorPlanSearchAction extends ProjectSupportAction {
     val indexMap = new HashMap[Long, String]()
     val depthMap = new HashMap[Long, Integer]()
     val planCoursesMap = new HashMap[Long, List[PlanCourse]]()
-    val shareCourseGroupList = new ArrayList[MajorPlanCourseGroup]()
-    val topMajorCourseGroupList = new ArrayList[MajorPlanCourseGroup]()
+    val shareCourseGroupList = new ArrayList[MajorCourseGroup]()
+    val topMajorCourseGroupList = new ArrayList[MajorCourseGroup]()
     while (it.hasNext) {
-      val majorPlanCourseGroupBean = it.next().asInstanceOf[MajorPlanCourseGroupBean]
-      if (shareCourseTypes.contains(majorPlanCourseGroupBean.getCourseType)) {
-        shareCourseGroupList.add(majorPlanCourseGroupBean)
+      val MajorCourseGroupBean = it.next().asInstanceOf[MajorCourseGroupBean]
+      if (shareCourseTypes.contains(MajorCourseGroupBean.getCourseType)) {
+        shareCourseGroupList.add(MajorCourseGroupBean)
       } else {
-        topMajorCourseGroupList.add(majorPlanCourseGroupBean)
+        topMajorCourseGroupList.add(MajorCourseGroupBean)
       }
     }
     for (g <- shareCourseGroupList) {
-      indexMap.put(g.getId, sg.getSytle(2).next())
-      depthMap.put(g.getId, new java.lang.Integer(2))
+      indexMap.put(g.id, sg.getSytle(2).next())
+      depthMap.put(g.id, new java.lang.Integer(2))
     }
-    val majorCourseGroupList = new ArrayList[MajorPlanCourseGroup]()
+    val majorCourseGroupList = new ArrayList[MajorCourseGroup]()
     for (g <- topMajorCourseGroupList) {
       addGroup(majorCourseGroupList, g, indexMap, depthMap, planCoursesMap, sg, 2)
     }
@@ -220,29 +218,29 @@ class MajorPlanSearchAction extends ProjectSupportAction {
     context.put("majorCourseGroupList", majorCourseGroupList)
   }
 
-  protected def addGroup(groups: List[MajorPlanCourseGroup], 
-      mpg: MajorPlanCourseGroup, 
+  protected def addGroup(groups: List[MajorCourseGroup], 
+      mpg: MajorCourseGroup, 
       indexMap: Map[Long, String], 
       depthMap: Map[Long, Integer], 
       planCoursesMap: Map[Long, List[PlanCourse]], 
       sg: MultiLevelSeqGenerator, 
       depth: Int) {
     groups.add(mpg)
-    indexMap.put(mpg.getId, sg.getSytle(depth).next())
-    depthMap.put(mpg.getId, new java.lang.Integer(depth))
+    indexMap.put(mpg.id, sg.getSytle(depth).next())
+    depthMap.put(mpg.id, new java.lang.Integer(depth))
     val courses = mpg.getPlanCourses
     if (mpg.isCompulsory) {
       Collections.sort(courses, new MyCmp())
     } else {
       Collections.sort(courses, new PropertyComparator("course.code"))
     }
-    planCoursesMap.put(mpg.getId, courses)
+    planCoursesMap.put(mpg.id, courses)
     val childrenGroup = mpg.getChildren
     if (mpg.getChildren.size > 0) {
       Collections.sort(childrenGroup, new PropertyComparator("courseType.priority"))
       var iter = mpg.getChildren.iterator()
       while (iter.hasNext) {
-        val gg = iter.next().asInstanceOf[MajorPlanCourseGroupBean]
+        val gg = iter.next().asInstanceOf[MajorCourseGroupBean]
         addGroup(groups, gg, indexMap, depthMap, planCoursesMap, sg, depth + 1)
       }
     }

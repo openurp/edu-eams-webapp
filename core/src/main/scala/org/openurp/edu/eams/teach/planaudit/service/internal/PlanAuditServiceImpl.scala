@@ -1,37 +1,33 @@
 package org.openurp.edu.eams.teach.planaudit.service.internal
 
-import java.util.ArrayList
-import java.util.Collections
 import java.util.Date
-import java.util.Iterator
-import java.util.List
+
+
 import org.beangle.commons.dao.impl.BaseServiceImpl
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.security.blueprint.SecurityUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.openurp.edu.base.Student
-import org.openurp.edu.eams.teach.grade.service.CourseGradeProvider
+import org.openurp.edu.teach.grade.domain.CourseGradeProvider
 import org.openurp.edu.teach.grade.CourseGrade
-import org.openurp.edu.eams.teach.planaudit.AuditStat
-import org.openurp.edu.eams.teach.planaudit.GroupAuditResult
-import org.openurp.edu.eams.teach.planaudit.PlanAuditResult
-import org.openurp.edu.eams.teach.planaudit.adapters.CourseGroupAdapter
-import org.openurp.edu.eams.teach.planaudit.adapters.GroupResultAdapter
-import org.openurp.edu.eams.teach.planaudit.model.CourseAuditResultBean
-import org.openurp.edu.eams.teach.planaudit.model.PlanAuditResultBean
+import org.openurp.edu.teach.planaudit.AuditStat
+import org.openurp.edu.teach.planaudit.GroupAuditResult
+import org.openurp.edu.teach.planaudit.PlanAuditResult
+import org.openurp.edu.teach.planaudit.adapters.CourseGroupAdapter
+import org.openurp.edu.teach.planaudit.adapters.GroupResultAdapter
+import org.openurp.edu.teach.planaudit.model.CourseAuditResultBean
+import org.openurp.edu.teach.planaudit.model.PlanAuditResultBean
 import org.openurp.edu.eams.teach.planaudit.service.PlanAuditContext
 import org.openurp.edu.eams.teach.planaudit.service.PlanAuditListener
 import org.openurp.edu.eams.teach.planaudit.service.PlanAuditService
-import org.openurp.edu.eams.teach.program.CourseGroup
+import org.openurp.edu.teach.plan.CourseGroup
 import org.openurp.edu.teach.plan.CoursePlan
-import org.openurp.edu.eams.teach.program.PlanCourse
-import org.openurp.edu.eams.teach.program.ReferedCourseGroup
-import org.openurp.edu.eams.teach.program.major.model.ReferenceGroupBean
+import org.openurp.edu.teach.plan.PlanCourse
 import org.openurp.edu.eams.teach.program.service.CoursePlanProvider
 import org.openurp.edu.eams.teach.program.util.PlanUtils
 
-import scala.collection.JavaConversions._
+
 
 class PlanAuditServiceImpl extends BaseServiceImpl with PlanAuditService {
 

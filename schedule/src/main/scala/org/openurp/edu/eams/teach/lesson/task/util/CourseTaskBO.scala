@@ -1,23 +1,23 @@
 package org.openurp.edu.eams.teach.lesson.task.util
 
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Adminclass
-import org.openurp.edu.eams.teach.program.PlanCourse
+import org.openurp.edu.teach.plan.PlanCourse
 import org.openurp.edu.teach.plan.MajorPlan
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConversions._
+
+
 
 class CourseTaskBO {
 
-  @BeanProperty
+  
   var semester: Semester = _
 
   private var teachPlan: MajorPlan = _
 
   private var adminClass: Adminclass = _
 
-  @BeanProperty
+  
   var planCourse: PlanCourse = _
 
   def getAdminclass(): Adminclass = adminClass

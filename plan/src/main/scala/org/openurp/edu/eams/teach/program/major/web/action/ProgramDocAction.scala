@@ -1,11 +1,11 @@
 package org.openurp.edu.eams.teach.program.major.web.action
 
 import java.util.Date
-import java.util.List
+
 import java.util.Locale
-import java.util.Map
+
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.text.seq.SeqPattern
 import org.openurp.edu.eams.teach.program.Program
 import org.openurp.edu.eams.teach.program.doc.ProgramDocMeta
@@ -15,7 +15,7 @@ import org.openurp.edu.eams.teach.program.doc.model.ProgramDocTemplateBean
 import org.openurp.edu.eams.teach.program.major.MajorPlan
 import com.ekingstar.eams.web.action.common.ProjectSupportAction
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class ProgramDocAction extends ProjectSupportAction {
 

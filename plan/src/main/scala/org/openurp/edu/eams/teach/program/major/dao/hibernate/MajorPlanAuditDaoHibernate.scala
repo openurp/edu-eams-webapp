@@ -5,7 +5,7 @@ import org.openurp.edu.eams.teach.program.major.MajorPlan
 import org.openurp.edu.eams.teach.program.major.dao.MajorPlanAuditDao
 import org.openurp.edu.eams.teach.program.major.service.MajorPlanDuplicatedException
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class MajorPlanAuditDaoHibernate extends MajorPlanAuditDao {
 

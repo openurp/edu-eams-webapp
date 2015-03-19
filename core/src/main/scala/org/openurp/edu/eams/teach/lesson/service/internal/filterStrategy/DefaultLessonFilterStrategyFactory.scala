@@ -1,11 +1,11 @@
 package org.openurp.edu.eams.teach.lesson.service.internal.filterStrategy
 
-import java.util.HashMap
-import java.util.Map
+
+
 import org.openurp.edu.eams.teach.lesson.service.LessonFilterStrategy
 import org.openurp.edu.eams.teach.lesson.service.LessonFilterStrategyFactory
 
-import scala.collection.JavaConversions._
+
 
 class DefaultLessonFilterStrategyFactory extends LessonFilterStrategyFactory {
 

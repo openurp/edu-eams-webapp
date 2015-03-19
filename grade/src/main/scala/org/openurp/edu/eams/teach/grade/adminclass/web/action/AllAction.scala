@@ -1,21 +1,19 @@
 package org.openurp.edu.eams.teach.grade.adminclass.web.action
-
-import java.util.Collections
 import java.util.Date
-import java.util.List
+
 import org.beangle.commons.bean.comparators.PropertyComparator
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.base.Student
 import org.openurp.edu.eams.teach.Grade
-import org.openurp.edu.eams.teach.code.industry.GradeType
+import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.teach.grade.CourseGrade
 import org.openurp.edu.eams.teach.lesson.GradeTypeConstants
 import org.openurp.edu.eams.web.action.common.ProjectSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class AllAction extends ProjectSupportAction {
 
@@ -49,7 +47,7 @@ class AllAction extends ProjectSupportAction {
     val stds = CollectUtils.newArrayList(adminclass.getStudents)
     Collections.sort(stds, new PropertyComparator("code"))
     if (null == stdId && !stds.isEmpty) {
-      stdId = stds.get(0).getId
+      stdId = stds.get(0).id
     }
     put("students", stds)
     if (null != stdId) {

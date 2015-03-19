@@ -1,8 +1,6 @@
 package org.openurp.edu.eams.teach.grade.teacher.web.action
 
-import java.util.Collections
-import java.util.List
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.base.Student
 import org.openurp.edu.base.Teacher
@@ -11,7 +9,7 @@ import org.openurp.edu.teach.grade.CourseGrade
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 import org.openurp.edu.eams.web.helper.AdminclassSearchHelper
 
-import scala.collection.JavaConversions._
+
 
 class GradeForTeacherAction extends SemesterSupportAction {
 

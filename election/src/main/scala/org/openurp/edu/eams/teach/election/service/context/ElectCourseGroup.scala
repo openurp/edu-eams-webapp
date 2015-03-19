@@ -1,49 +1,49 @@
 package org.openurp.edu.eams.teach.election.service.context
 
 import java.io.Serializable
-import java.util.List
-import java.util.Set
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.entity.metadata.Model
-import org.openurp.edu.teach.Course
+import org.openurp.edu.base.Course
 import org.openurp.edu.teach.code.CourseType
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConversions._
+
+
 
 @SerialVersionUID(6392274306070105614L)
-class ElectCourseGroup(@BeanProperty val courseType: CourseType) extends Serializable() {
+class ElectCourseGroup( val courseType: CourseType) extends Serializable() {
 
-  @BeanProperty
+  
   var parent: ElectCourseGroup = _
 
-  @BeanProperty
+  
   var requireCredits: Float = _
 
-  @BeanProperty
+  
   var completeCredits: Float = _
 
-  @BeanProperty
+  
   var limitCredits: Float = _
 
-  @BeanProperty
+  
   var electCredits: Float = _
 
-  @BeanProperty
+  
   var takedCredits: Float = _
 
-  @BeanProperty
+  
   val courses = CollectUtils.newHashSet()
 
-  @BeanProperty
+  
   var children: List[ElectCourseGroup] = CollectUtils.newArrayList()
 
-  @BooleanBeanProperty
+  
   var hasLesson: Boolean = false
 
   def addCourse(course: Course) {
-    val _course = Model.newInstance(classOf[Course], course.getId)
-    _course.setId(course.getId)
+    val _course = Model.newInstance(classOf[Course], course.id)
+    _course.setId(course.id)
     _course.setCode(course.getCode)
     _course.setName(course.getName)
     _course.setEngName(course.getEngName)

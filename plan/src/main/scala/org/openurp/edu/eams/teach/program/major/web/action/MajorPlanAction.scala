@@ -2,19 +2,19 @@ package org.openurp.edu.eams.teach.program.major.web.action
 
 import java.io.IOException
 import java.text.SimpleDateFormat
-import java.util.ArrayList
+
 import java.util.Arrays
 import java.util.Calendar
 import java.util.Date
-import java.util.HashSet
-import java.util.List
-import java.util.Map
-import java.util.Set
+
+
+
+
 import javax.persistence.EntityNotFoundException
 import javax.servlet.http.HttpServletResponse
 import org.apache.commons.lang3.ArrayUtils
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.beangle.security.blueprint.User
 import org.beangle.struts2.convention.route.Action
@@ -30,9 +30,9 @@ import com.ekingstar.eams.core.code.nation.StudyType
 import com.ekingstar.eams.teach.Course
 import com.ekingstar.eams.teach.code.school.CourseCategory
 import com.ekingstar.eams.teach.code.school.CourseType
-import org.openurp.edu.eams.teach.program.CourseGroup
+import org.openurp.edu.teach.plan.CourseGroup
 import org.openurp.edu.eams.teach.program.CoursePlan
-import org.openurp.edu.eams.teach.program.PlanCourse
+import org.openurp.edu.teach.plan.PlanCourse
 import org.openurp.edu.eams.teach.program.Program
 import org.openurp.edu.eams.teach.program.StudentProgram
 import org.openurp.edu.eams.teach.program.common.dao.PlanCommonDao
@@ -45,24 +45,24 @@ import org.openurp.edu.eams.teach.program.helper.ProgramCollector
 import org.openurp.edu.eams.teach.program.helper.ProgramNamingHelper
 import org.openurp.edu.eams.teach.program.major.MajorPlan
 import org.openurp.edu.teach.plan.MajorPlanCourse
-import org.openurp.edu.teach.plan.MajorPlanCourseGroup
+import org.openurp.edu.teach.plan.MajorCourseGroup
 import org.openurp.edu.eams.teach.program.major.flexible.MajorProgramTextTitleProvider
 import org.openurp.edu.eams.teach.program.major.guard.MajorProgramOperateGuard
 import org.openurp.edu.eams.teach.program.major.guard.MajorProgramOperateType
 import org.openurp.edu.eams.teach.program.major.model.MajorPlanBean
 import org.openurp.edu.eams.teach.program.major.model.MajorPlanCourseBean
-import org.openurp.edu.eams.teach.program.major.model.MajorPlanCourseGroupBean
+import org.openurp.edu.eams.teach.program.major.model.MajorCourseGroupBean
 import org.openurp.edu.eams.teach.program.major.service.MajorPlanAuditService
-import org.openurp.edu.eams.teach.program.major.service.MajorPlanCourseGroupService
+import org.openurp.edu.eams.teach.program.major.service.MajorCourseGroupService
 import org.openurp.edu.eams.teach.program.major.service.MajorPlanGenParameter
 import org.openurp.edu.eams.teach.program.service.CoursePlanProvider
 import com.google.gson.Gson
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class MajorPlanAction extends MajorPlanSearchAction {
 
-  private var majorPlanCourseGroupService: MajorPlanCourseGroupService = _
+  private var MajorCourseGroupService: MajorCourseGroupService = _
 
   private var planCommonDao: PlanCommonDao = _
 
@@ -95,9 +95,9 @@ class MajorPlanAction extends MajorPlanSearchAction {
 
   def save(): String = {
     val program = populateEntity(classOf[Program], "plan.program")
-    program.setMajor(entityDao.get(classOf[Major], program.getMajor.getId))
+    program.setMajor(entityDao.get(classOf[Major], program.getMajor.id))
     if (program.getDirection != null) {
-      program.setDirection(entityDao.get(classOf[Direction], program.getDirection.getId))
+      program.setDirection(entityDao.get(classOf[Direction], program.getDirection.id))
     }
     program.setCreatedAt(new Date())
     program.setUpdatedAt(new Date())
@@ -120,7 +120,7 @@ class MajorPlanAction extends MajorPlanSearchAction {
     plan.setProgram(program)
     plan.setTermsCount(termsCount)
     majorPlanService.saveOrUpdateMajorPlan(plan)
-    redirect(new Action(classOf[MajorPlanAction], "search", "toGroupPane=1&planId=" + plan.getId), "info.save.success")
+    redirect(new Action(classOf[MajorPlanAction], "search", "toGroupPane=1&planId=" + plan.id), "info.save.success")
   }
 
   def remove(): String = {
@@ -239,9 +239,9 @@ class MajorPlanAction extends MajorPlanSearchAction {
   def duplicateNameCheck(): String = {
     val program = populate(classOf[Program], "plan.program")
     var name: String = null
-    program.setMajor(entityDao.get(classOf[Major], program.getMajor.getId))
+    program.setMajor(entityDao.get(classOf[Major], program.getMajor.id))
     if (program.getDirection != null) {
-      program.setDirection(entityDao.get(classOf[Direction], program.getDirection.getId))
+      program.setDirection(entityDao.get(classOf[Direction], program.getDirection.id))
     }
     name = if (getBool("fake.autoname")) ProgramNamingHelper.name(program) else program.getName
     name = Strings.trim(name)
@@ -249,7 +249,7 @@ class MajorPlanAction extends MajorPlanSearchAction {
     query.where("program.name = :name and program.grade = :grade", name, program.getGrade)
       .where("program.major.project = :project", program.getMajor.getProject)
     if (program.isPersisted) {
-      query.where("program.id <> :meId", program.getId)
+      query.where("program.id <> :meId", program.id)
     }
     val programs = entityDao.search(query)
     val result = CollectUtils.newHashMap()
@@ -318,14 +318,14 @@ class MajorPlanAction extends MajorPlanSearchAction {
       for (plan <- plans) {
         val group = plan.getGroup(courseType)
         if (null != group) {
-          majorPlanCourseGroupService.removeCourseGroup(group.getId)
+          MajorCourseGroupService.removeCourseGroup(group.id)
         }
       }
       entityDao.saveOrUpdate(plans)
     } else if ("add" == action) {
       for (plan <- plans) {
-        val courseGroup = populateEntity(classOf[MajorPlanCourseGroupBean], "courseGroup")
-        val existed = plan.getGroup(courseGroup.getCourseType).asInstanceOf[MajorPlanCourseGroup]
+        val courseGroup = populateEntity(classOf[MajorCourseGroupBean], "courseGroup")
+        val existed = plan.getGroup(courseGroup.getCourseType).asInstanceOf[MajorCourseGroup]
         if (null == existed) {
           planCourseGroupCommonDao.addCourseGroupToPlan(courseGroup, plan)
         }
@@ -371,13 +371,13 @@ class MajorPlanAction extends MajorPlanSearchAction {
       val alreadyExistCourseCodes = new HashSet[String]()
 
       for (group <- plan.getGroups; planCourse <- group.getPlanCourses if -1 != 
-        Arrays.binarySearch(courseIds, planCourse.getCourse.getId) && 
+        Arrays.binarySearch(courseIds, planCourse.getCourse.id) && 
         group.getCourseType == courseType) {
         alreadyExistCourseCodes.add(planCourse.getCourse.getCode)
         //break
       }
       var cgroup: CourseGroup = null
-      for (group <- plan.getGroups if group.getCourseType.getId == courseType.getId) {
+      for (group <- plan.getGroups if group.getCourseType.id == courseType.id) {
         cgroup = group
         //break
       }
@@ -411,7 +411,7 @@ class MajorPlanAction extends MajorPlanSearchAction {
     val courseIds = Strings.splitToLong(get("courseIds"))
     for (plan <- majorPlans) {
       var cgroup: CourseGroup = null
-      for (group <- plan.getGroups if group.getCourseType.getId == courseType.getId) {
+      for (group <- plan.getGroups if group.getCourseType.id == courseType.id) {
         cgroup = group
         //break
       }
@@ -419,7 +419,7 @@ class MajorPlanAction extends MajorPlanSearchAction {
         //continue
       }
       val removePlanCourses = new ArrayList[PlanCourse]()
-      for (planCourse <- cgroup.getPlanCourses; courseId <- courseIds if planCourse.getCourse.getId == courseId) {
+      for (planCourse <- cgroup.getPlanCourses; courseId <- courseIds if planCourse.getCourse.id == courseId) {
         removePlanCourses.add(planCourse)
       }
       for (planCourse <- removePlanCourses) {
@@ -527,8 +527,8 @@ class MajorPlanAction extends MajorPlanSearchAction {
     null
   }
 
-  def setMajorPlanCourseGroupService(majorPlanCourseGroupService: MajorPlanCourseGroupService) {
-    this.majorPlanCourseGroupService = majorPlanCourseGroupService
+  def setMajorCourseGroupService(MajorCourseGroupService: MajorCourseGroupService) {
+    this.MajorCourseGroupService = MajorCourseGroupService
   }
 
   def setMajorPlanAuditService(majorPlanAuditService: MajorPlanAuditService) {

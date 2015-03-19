@@ -4,7 +4,7 @@ import java.util.UUID
 import org.openurp.edu.eams.teach.textbook.TextbookOrderLine
 import org.openurp.edu.eams.teach.textbook.service.TextbookOrderLineCodeGenerator
 
-import scala.collection.JavaConversions._
+
 
 class DefaultTextbookOrderLineCodeGenerator extends TextbookOrderLineCodeGenerator {
 

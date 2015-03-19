@@ -1,15 +1,15 @@
 package org.openurp.edu.eams.teach.grade.course.service.impl
 
 import java.util.Date
-import java.util.List
+
 import org.beangle.commons.dao.impl.BaseServiceImpl
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.openurp.edu.eams.base.Semester
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.openurp.base.Semester
 import org.openurp.edu.base.Project
 import org.openurp.edu.eams.teach.grade.course.service.GradeInputSwitchService
 import org.openurp.edu.eams.teach.grade.lesson.model.GradeInputSwitch
 
-import scala.collection.JavaConversions._
+
 
 class GradeInputSwithServiceImpl extends BaseServiceImpl with GradeInputSwitchService {
 

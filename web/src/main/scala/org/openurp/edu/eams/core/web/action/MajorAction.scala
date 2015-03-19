@@ -1,13 +1,13 @@
 package org.openurp.edu.eams.core.web.action
 
 import java.util.Date
-import java.util.List
-import java.util.Map
-import java.util.Set
+
+
+
 import javax.persistence.EntityExistsException
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.transfer.TransferListener
@@ -21,7 +21,7 @@ import org.openurp.edu.eams.core.code.ministry.DisciplineCategory
 import org.openurp.edu.eams.core.model.MajorJournalBean
 import org.openurp.edu.eams.core.service.listener.MajorImportListener
 
-import scala.collection.JavaConversions._
+
 
 class MajorAction extends MajorSearchAction {
 
@@ -52,7 +52,7 @@ class MajorAction extends MajorSearchAction {
 
   def saveJournal(): String = {
     val journal = populateEntity(classOf[MajorJournal], "journal")
-    val major = entityDao.get(classOf[Major], journal.major.getId)
+    val major = entityDao.get(classOf[Major], journal.major.id)
     if (journal.isTransient) {
       major.getJournals.add(journal)
     }
@@ -169,16 +169,16 @@ class MajorAction extends MajorSearchAction {
     var i = 0
     while (i <= count) {
       val md = populate(classOf[MajorJournal], "md" + i)
-      if (md.education == null || md.education.getId == null || 
+      if (md.education == null || md.education.id == null || 
         md.getDepart == null || 
-        md.getDepart.getId == null || 
+        md.getDepart.id == null || 
         md.getEffectiveAt == null || 
-        mdCahe.contains((md.education.getId + "" + md.getDepart.getId).hashCode)) {
+        mdCahe.contains((md.education.id + "" + md.getDepart.id).hashCode)) {
         //continue
       }
       md.setMajor(major)
       major.getJournals.add(md)
-      mdCahe.add((md.education.getId + "" + md.getDepart.getId).hashCode)
+      mdCahe.add((md.education.id + "" + md.getDepart.id).hashCode)
       i += 1
     }
     !major.getJournals.isEmpty

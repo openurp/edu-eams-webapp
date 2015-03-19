@@ -1,24 +1,24 @@
 package org.openurp.edu.eams.teach.grade.course.dao.hibernate
 
-import java.util.Collection
-import java.util.List
-import java.util.Map
+
+
+
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.beangle.orm.hibernate.HibernateEntityDao
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.beangle.data.jpa.hibernate.HibernateEntityDao
 import org.openurp.edu.base.Student
-import org.openurp.edu.teach.Course
+import org.openurp.edu.base.Course
 import org.openurp.edu.eams.teach.Grade
-import org.openurp.edu.eams.teach.code.industry.GradeType
+import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.eams.teach.grade.course.dao.CourseGradeDao
 import org.openurp.edu.eams.teach.grade.service.CourseGradeCalculator
 import org.openurp.edu.teach.grade.CourseGrade
-import org.openurp.edu.teach.grade.CourseGradeState
-import org.openurp.edu.eams.teach.lesson.ExamGradeState
+import org.openurp.edu.teach.grade.model.CourseGradeState
+import org.openurp.edu.teach.grade.model.ExamGradeState
 import org.openurp.edu.eams.teach.lesson.GradeTypeConstants
 import org.openurp.edu.teach.lesson.Lesson
 
-import scala.collection.JavaConversions._
+
 
 class CourseGradeDaoHibernate extends HibernateEntityDao with CourseGradeDao {
 
@@ -26,10 +26,10 @@ class CourseGradeDaoHibernate extends HibernateEntityDao with CourseGradeDao {
 
   def needReStudy(std: Student, course: Course): Boolean = {
     val query = OqlBuilder.from(classOf[CourseGrade], "grade")
-    query.where("grade.std.id = :stdId", std.getId)
-    query.where("grade.course.id = :courseId", course.getId)
+    query.where("grade.std.id = :stdId", std.id)
+    query.where("grade.course.id = :courseId", course.id)
     query.select("grade.passed")
-    val rs = search(query).asInstanceOf[Collection[Boolean]]
+    val rs = search(query).asInstanceOf[Iterable[Boolean]]
     if (CollectUtils.isEmpty(rs)) {
       false
     } else {
@@ -41,7 +41,7 @@ class CourseGradeDaoHibernate extends HibernateEntityDao with CourseGradeDao {
     val query = OqlBuilder.from(classOf[CourseGrade], "cg")
     query.where("cg.std.id = :stdId", stdId)
     query.select("cg.course.id,cg.passed")
-    val rs = search(query).asInstanceOf[Collection[Array[Any]]]
+    val rs = search(query).asInstanceOf[Iterable[Array[Any]]]
     val courseMap = CollectUtils.newHashMap()
     for (obj <- rs) {
       if (null != obj(1)) {
@@ -57,8 +57,8 @@ class CourseGradeDaoHibernate extends HibernateEntityDao with CourseGradeDao {
   }
 
   def removeExamGrades(lesson: Lesson, gradeType: GradeType, isClearState: Boolean) {
-    if (gradeType.getId.longValue() == GradeTypeConstants.GA_ID || 
-      gradeType.getId.longValue() == GradeTypeConstants.FINAL_ID) {
+    if (gradeType.id.longValue() == GradeTypeConstants.GA_ID || 
+      gradeType.id.longValue() == GradeTypeConstants.FINAL_ID) {
       removeGrades(lesson, isClearState)
       return
     }
@@ -116,7 +116,7 @@ class CourseGradeDaoHibernate extends HibernateEntityDao with CourseGradeDao {
     val hql = new StringBuilder()
     hql.append("update CourseGrade set status=")
     hql.append((if (true == isPublished) Grade.Status.PUBLISHED else Grade.Status.CONFIRMED))
-    hql.append(" where lesson.id=" + lesson.getId)
+    hql.append(" where lesson.id=" + lesson.id)
     getSession.createQuery(hql.toString).executeUpdate()
   }
 
@@ -124,8 +124,8 @@ class CourseGradeDaoHibernate extends HibernateEntityDao with CourseGradeDao {
     val hql = new StringBuilder()
     hql.append("update ExamGrade set status=")
     hql.append(if (true == isPublished) Grade.Status.PUBLISHED else Grade.Status.CONFIRMED)
-    hql.append("where gradeType.id=" + gradeType.getId)
-    hql.append(" exists(from CourseGrade cg where cg.lesson.id=" + lesson.getId)
+    hql.append("where gradeType.id=" + gradeType.id)
+    hql.append(" exists(from CourseGrade cg where cg.lesson.id=" + lesson.id)
     hql.append("and cg.id=courseGrade.id)")
     getSession.createQuery(hql.toString).executeUpdate()
   }
@@ -133,7 +133,7 @@ class CourseGradeDaoHibernate extends HibernateEntityDao with CourseGradeDao {
   def publishExamGrade(lesson: Lesson, gradeTypes: List[GradeType], isPublished: java.lang.Boolean) {
     val gradeTypeIds = new StringBuffer(",")
     for (gradeType <- gradeTypes) {
-      gradeTypeIds.append(gradeType.getId).append(",")
+      gradeTypeIds.append(gradeType.id).append(",")
     }
     val hql = new StringBuilder()
     hql.append("update ExamGrade set status=")
@@ -141,7 +141,7 @@ class CourseGradeDaoHibernate extends HibernateEntityDao with CourseGradeDao {
     hql.append(" where id in (select id from ExamGrade where instr('" + 
       gradeTypeIds)
     hql.append("',','||gradeType.id||',')>0 " + " and courseGrade.lesson.id=" + 
-      lesson.getId + 
+      lesson.id + 
       ")")
     getSession.createQuery(hql.toString).executeUpdate()
   }

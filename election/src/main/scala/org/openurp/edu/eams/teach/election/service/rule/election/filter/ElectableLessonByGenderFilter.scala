@@ -8,7 +8,7 @@ import org.openurp.edu.eams.teach.election.service.rule.AbstractElectRuleExecuto
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnum
 
-import scala.collection.JavaConversions._
+
 
 class ElectableLessonByGenderFilter extends AbstractElectableLessonFilter {
 

@@ -10,7 +10,7 @@ import org.openurp.edu.eams.teach.election.service.rule.ElectRulePrepare
 import org.openurp.edu.eams.teach.election.service.rule.election.CourseGradePrepare
 import org.openurp.edu.teach.lesson.Lesson
 
-import scala.collection.JavaConversions._
+
 
 class ElectableLessonOnlyRetakeFilter extends AbstractElectableLessonFilter with ElectRulePrepare {
 
@@ -19,7 +19,7 @@ class ElectableLessonOnlyRetakeFilter extends AbstractElectableLessonFilter with
   order = AbstractElectRuleExecutor.Priority.FIRST.ordinal()
 
   def isElectable(lesson: Lesson, state: ElectState): Boolean = {
-    state.isRetakeCourse(lesson.getCourse.getId)
+    state.isRetakeCourse(lesson.getCourse.id)
   }
 
   protected override def onExecuteRuleReturn(result: Boolean, context: ElectionCourseContext): Boolean = {

@@ -3,7 +3,7 @@ package org.openurp.edu.eams.teach.program.major.web.action
 import org.beangle.commons.text.seq.HanZiSeqStyle
 import LuomaSeqStyle._
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 object LuomaSeqStyle {
 

@@ -1,10 +1,8 @@
 package org.openurp.edu.eams.teach.planaudit.service
 
-import org.openurp.edu.eams.teach.planaudit.GroupAuditResult
-import org.openurp.edu.eams.teach.program.CourseGroup
-import org.openurp.edu.eams.teach.program.PlanCourse
-
-import scala.collection.JavaConversions._
+import org.openurp.edu.teach.planaudit.GroupAuditResult
+import org.openurp.edu.teach.plan.CourseGroup
+import org.openurp.edu.teach.plan.PlanCourse
 
 trait PlanAuditListener {
 

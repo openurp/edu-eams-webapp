@@ -1,8 +1,8 @@
 package org.openurp.edu.eams.teach.election.service.rule.election
 
-import java.util.Collection
-import java.util.List
-import java.util.Set
+
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.lang.Strings
 import org.beangle.ems.rule.Context
@@ -16,13 +16,13 @@ import org.openurp.edu.eams.teach.election.service.context.PrepareContext
 import org.openurp.edu.eams.teach.election.service.context.PrepareContext.PreparedDataName
 import org.openurp.edu.eams.teach.election.service.rule.AbstractElectRuleExecutor
 import org.openurp.edu.eams.teach.election.service.rule.ElectRulePrepare
-import org.openurp.edu.eams.teach.lesson.CourseActivity
+import org.openurp.edu.teach.schedule.CourseActivity
 import org.openurp.edu.teach.lesson.CourseTake
 import org.openurp.edu.eams.teach.lesson.CourseTime
 import org.openurp.edu.teach.lesson.Lesson
 import TimeConflictChecker._
 
-import scala.collection.JavaConversions._
+
 
 object TimeConflictChecker {
 
@@ -43,8 +43,8 @@ class TimeConflictChecker extends AbstractElectRuleExecutor with ElectRulePrepar
       .booleanValue()
     val isContinuous = electContext.getState.getParams.get("TIME_CONFLICT_IS_CONTINUOUS").asInstanceOf[java.lang.Boolean]
       .booleanValue()
-    val electedLessons = electContext.getParams.get(Params.CONFLICT_COURSE_TAKES.toString).asInstanceOf[Collection[Lesson]]
-    val electingLessons = electContext.getParams.get(Params.CONFLICT_LESSONS.toString).asInstanceOf[Collection[Lesson]]
+    val electedLessons = electContext.getParams.get(Params.CONFLICT_COURSE_TAKES.toString).asInstanceOf[Iterable[Lesson]]
+    val electingLessons = electContext.getParams.get(Params.CONFLICT_LESSONS.toString).asInstanceOf[Iterable[Lesson]]
     val conflictCourseTake = getConflictLessons(electLesson, electedLessons, unitCount, checkType, isContinuous)
     val conflictLessons = getConflictLessons(electLesson, electingLessons, unitCount, checkType, isContinuous)
     if (!conflictLessons.isEmpty || !conflictCourseTake.isEmpty) {
@@ -91,7 +91,7 @@ class TimeConflictChecker extends AbstractElectRuleExecutor with ElectRulePrepar
       allUnitCount += timeOneDayUnit
       for (courseActivity2 <- activities2) {
         val time2 = courseActivity2.getTime
-        if ((time.getWeekStateNum & time2.getWeekStateNum) > 0 && time.getWeekday == time2.getWeekday) {
+        if ((time.state & time2.state) > 0 && time.day == time2.day) {
           if (time.getStartUnit <= time2.getEndUnit && time.getEndUnit >= time2.getStartUnit) {
             oneDayUnConfictCount = 0
             if (unitCount < 2 && checkType) {
@@ -144,7 +144,7 @@ class TimeConflictChecker extends AbstractElectRuleExecutor with ElectRulePrepar
   }
 
   def getConflictLessons(lesson: Lesson, 
-      lessons: Collection[Lesson], 
+      lessons: Iterable[Lesson], 
       conflictTimeCount: Int, 
       checkType: Boolean, 
       isContinuous: Boolean): List[Lesson] = {
@@ -165,7 +165,7 @@ class TimeConflictChecker extends AbstractElectRuleExecutor with ElectRulePrepar
   }
 
   def getConflictLessonsWithCourseTakes(lesson: Lesson, 
-      courseTakes: Collection[CourseTake], 
+      courseTakes: Iterable[CourseTake], 
       timeConflictCount: Int, 
       checkType: Boolean, 
       isContinuous: Boolean): List[Lesson] = {

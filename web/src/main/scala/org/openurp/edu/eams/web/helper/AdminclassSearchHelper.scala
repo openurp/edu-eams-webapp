@@ -1,14 +1,14 @@
 package org.openurp.edu.eams.web.helper
 
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.beangle.struts2.helper.Params
 import org.beangle.struts2.helper.QueryHelper
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.base.Teacher
 
-import scala.collection.JavaConversions._
+
 
 class AdminclassSearchHelper extends SearchHelper {
 

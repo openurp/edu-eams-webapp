@@ -2,7 +2,7 @@ package org.openurp.edu.eams.teach.lesson.service
 
 import org.openurp.base.Semester
 
-import scala.collection.JavaConversions._
+
 
 class TaskCopyParams {
 

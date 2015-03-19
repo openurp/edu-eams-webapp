@@ -2,7 +2,7 @@ package org.openurp.edu.eams.number
 
 import NumberRange._
 
-import scala.collection.JavaConversions._
+
 
 object NumberRange {
 

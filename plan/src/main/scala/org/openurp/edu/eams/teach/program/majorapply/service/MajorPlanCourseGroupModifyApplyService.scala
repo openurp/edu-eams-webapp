@@ -1,21 +1,21 @@
 package org.openurp.edu.eams.teach.program.majorapply.service
 
-import java.util.List
-import org.openurp.edu.teach.plan.MajorPlanCourseGroup
-import org.openurp.edu.eams.teach.program.majorapply.model.MajorPlanCourseGroupModifyBean
-import org.openurp.edu.eams.teach.program.majorapply.model.MajorPlanCourseGroupModifyDetailAfterBean
+
+import org.openurp.edu.teach.plan.MajorCourseGroup
+import org.openurp.edu.eams.teach.program.majorapply.model.MajorCourseGroupModifyBean
+import org.openurp.edu.eams.teach.program.majorapply.model.MajorCourseGroupModifyDetailAfterBean
 //remove if not needed
-import scala.collection.JavaConversions._
 
-trait MajorPlanCourseGroupModifyApplyService {
 
-  def saveModifyApply(modifyBean: MajorPlanCourseGroupModifyBean, courseGroupId: java.lang.Long, after: MajorPlanCourseGroupModifyDetailAfterBean): Unit
+trait MajorCourseGroupModifyApplyService {
 
-  def myApplies(planId: java.lang.Long, userId: java.lang.Long): List[MajorPlanCourseGroupModifyBean]
+  def saveModifyApply(modifyBean: MajorCourseGroupModifyBean, courseGroupId: java.lang.Long, after: MajorCourseGroupModifyDetailAfterBean): Unit
 
-  def myReadyModifyApply(planId: java.lang.Long, userId: java.lang.Long): List[MajorPlanCourseGroup]
+  def myApplies(planId: java.lang.Long, userId: java.lang.Long): List[MajorCourseGroupModifyBean]
 
-  def myReadyAddApplies(planId: java.lang.Long, userId: java.lang.Long): List[MajorPlanCourseGroupModifyBean]
+  def myReadyModifyApply(planId: java.lang.Long, userId: java.lang.Long): List[MajorCourseGroup]
 
-  def appliesOfPlan(planId: java.lang.Long): List[MajorPlanCourseGroupModifyBean]
+  def myReadyAddApplies(planId: java.lang.Long, userId: java.lang.Long): List[MajorCourseGroupModifyBean]
+
+  def appliesOfPlan(planId: java.lang.Long): List[MajorCourseGroupModifyBean]
 }

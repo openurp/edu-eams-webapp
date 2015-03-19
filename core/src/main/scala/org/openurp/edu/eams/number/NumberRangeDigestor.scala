@@ -2,9 +2,9 @@ package org.openurp.edu.eams.number
 
 import java.util.Arrays
 import org.beangle.commons.text.i18n.TextResource
-import org.openurp.edu.eams.weekstate.SemesterWeekStateBuilder
-import org.openurp.edu.eams.weekstate.YearWeekStateBuilder
-import scala.collection.JavaConversions._
+import org.openurp.edu.eams.weekstate.SemesterWeekTimeBuilder
+import org.beangle.commons.lang.time.YearWeekTimeBuilder
+
 
 object NumberRangeDigestor {
 

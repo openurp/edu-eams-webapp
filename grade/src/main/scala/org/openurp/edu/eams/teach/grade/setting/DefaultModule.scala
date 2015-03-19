@@ -5,7 +5,7 @@ import org.openurp.edu.eams.teach.grade.setting.service.impl.CourseGradeSettings
 import org.openurp.edu.eams.teach.grade.setting.web.action.ConfigAction
 import org.openurp.edu.eams.teach.grade.setting.web.action.RateAction
 
-import scala.collection.JavaConversions._
+
 
 class DefaultModule extends AbstractBindModule {
 

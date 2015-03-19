@@ -11,7 +11,7 @@ import org.openurp.edu.eams.teach.election.service.rule.AbstractElectRuleExecuto
 import org.openurp.edu.eams.teach.election.service.rule.ElectRulePrepare
 import org.openurp.edu.teach.lesson.CourseLimitGroup
 
-import scala.collection.JavaConversions._
+
 
 class LimitCountChecker extends AbstractElectRuleExecutor() with ElectRulePrepare {
 
@@ -23,7 +23,7 @@ class LimitCountChecker extends AbstractElectRuleExecutor() with ElectRulePrepar
     if (limitGroup == null) {
     } else {
       val sql = "update t_course_limit_groups set cur_count = cur_count+1 where (cur_count<max_count or max_count=0) and id=?"
-      val update = electionDao.updateStdCount(sql, limitGroup.getId)
+      val update = electionDao.updateStdCount(sql, limitGroup.id)
       if (update == 0) {
         context.addMessage(new ElectMessage("人数已满", ElectRuleType.ELECTION, false, electContext.getLesson))
         return false
@@ -32,11 +32,11 @@ class LimitCountChecker extends AbstractElectRuleExecutor() with ElectRulePrepar
       }
     }
     var sql = "update t_lessons set std_count=std_count+1 where std_count<(limit_count-reserved_count) and id=?"
-    val update = electionDao.updateStdCount(sql, electContext.getLesson.getId)
+    val update = electionDao.updateStdCount(sql, electContext.getLesson.id)
     if (update == 0) {
       context.addMessage(new ElectMessage("人数已满", ElectRuleType.ELECTION, false, electContext.getLesson))
       sql = "update t_course_limit_groups lg set lg.cur_count = (select count(*) from t_course_takes xk where xk.limit_group_id=lg.id) where lg.id=?"
-      electionDao.updateStdCount(sql, limitGroup.getId)
+      electionDao.updateStdCount(sql, limitGroup.id)
       return false
     }
     true

@@ -1,13 +1,13 @@
 package org.openurp.edu.eams.teach.program.major.dao.hibernate
 
-import java.util.List
+
 import org.beangle.commons.dao.query.builder.Condition
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.beangle.orm.hibernate.HibernateEntityDao
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.beangle.data.jpa.hibernate.HibernateEntityDao
 import org.openurp.edu.teach.plan.MajorPlanCourse
 import org.openurp.edu.eams.teach.program.major.dao.MajorPlanCourseDao
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class MajorPlanCourseDaoHibernate extends HibernateEntityDao with MajorPlanCourseDao {
 

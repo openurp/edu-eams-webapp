@@ -1,15 +1,13 @@
 package org.openurp.edu.eams.teach.grade.adminclass.web.action
 
-import java.util.Collections
-import java.util.List
-import java.util.Map
+
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.openurp.edu.eams.base.Semester
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.openurp.base.Semester
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.base.Student
-import org.openurp.edu.eams.teach.code.industry.GradeType
+import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.eams.teach.grade.service.CourseGradeProvider
 import org.openurp.edu.eams.teach.grade.service.GpaService
 import org.openurp.edu.eams.teach.grade.service.stat.GradeReportSetting
@@ -19,7 +17,7 @@ import org.openurp.edu.teach.grade.CourseGrade
 import org.openurp.edu.eams.teach.lesson.GradeTypeConstants
 import org.openurp.edu.eams.web.action.common.ProjectSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class TermAction extends ProjectSupportAction {
 
@@ -45,7 +43,7 @@ class TermAction extends ProjectSupportAction {
       setting.setOrder(Order.desc("stdGpa.gpa"))
     }
     if (null != setting.gradeType) {
-      setting.setGradeType(entityDao.get(classOf[GradeType], setting.gradeType.getId))
+      setting.setGradeType(entityDao.get(classOf[GradeType], setting.gradeType.id))
     }
     if (setting.getPageSize.intValue() < 0) {
       setting.setPageSize(new java.lang.Integer(20))

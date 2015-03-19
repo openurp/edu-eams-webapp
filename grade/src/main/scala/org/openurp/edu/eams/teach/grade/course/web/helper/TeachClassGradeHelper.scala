@@ -1,27 +1,25 @@
 package org.openurp.edu.eams.teach.grade.course.web.helper
 
-import java.util.Collections
-import java.util.Iterator
-import java.util.List
-import java.util.Set
+
+
 import org.beangle.commons.lang.Objects
 import org.beangle.commons.lang.Strings
 import org.apache.commons.lang3.ArrayUtils
 import org.beangle.commons.bean.comparators.PropertyComparator
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.beangle.ems.dictionary.service.BaseCodeService
 import org.beangle.security.blueprint.User
 import org.beangle.struts2.helper.ContextHelper
 import org.beangle.struts2.helper.Params
-import org.openurp.edu.eams.base.Semester
-import org.openurp.edu.teach.Course
+import org.openurp.base.Semester
+import org.openurp.edu.base.Course
 import org.openurp.edu.eams.teach.Grade
 import org.openurp.edu.teach.code.CourseTakeType
-import org.openurp.edu.eams.teach.code.industry.ExamStatus
-import org.openurp.edu.eams.teach.code.industry.GradeType
+import org.openurp.edu.teach.code.ExamStatus
+import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.eams.teach.grade.course.service.CourseGradeComparator
 import org.openurp.edu.eams.teach.grade.lesson.service.CourseSegStat
 import org.openurp.edu.eams.teach.grade.lesson.service.GradeSegStats
@@ -32,14 +30,14 @@ import org.openurp.edu.eams.teach.grade.service.CourseGradeCalculator
 import org.openurp.edu.eams.teach.grade.service.CourseGradeService
 import org.openurp.edu.eams.teach.grade.service.CourseGradeSettings
 import org.openurp.edu.teach.grade.CourseGrade
-import org.openurp.edu.teach.grade.CourseGradeState
-import org.openurp.edu.eams.teach.lesson.ExamGrade
+import org.openurp.edu.teach.grade.model.CourseGradeState
+import org.openurp.edu.teach.grade.ExamGrade
 import org.openurp.edu.eams.teach.lesson.GradeTypeConstants
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.util.stat.FloatSegment
 import org.openurp.edu.eams.web.action.BaseAction
 
-import scala.collection.JavaConversions._
+
 
 class TeachClassGradeHelper extends BaseAction {
 
@@ -143,7 +141,7 @@ class TeachClassGradeHelper extends BaseAction {
         val setting = settings.getSetting(lesson.getProject)
         val gaElGradeTypes = setting.getGaElementTypes
         for (gradeType <- gaElGradeTypes if !gradeTypes.contains(gradeType)) {
-          gradeTypes.add(entityDao.get(classOf[GradeType], gradeType.getId))
+          gradeTypes.add(entityDao.get(classOf[GradeType], gradeType.id))
         }
         val gaGradeType = entityDao.get(classOf[GradeType], GradeTypeConstants.GA_ID)
         if (!gradeTypes.contains(gaGradeType)) {

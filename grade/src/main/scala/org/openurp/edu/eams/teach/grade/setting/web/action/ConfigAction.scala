@@ -2,14 +2,14 @@ package org.openurp.edu.eams.teach.grade.setting.web.action
 
 import java.util.Date
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.openurp.edu.base.ProjectConfig
 import org.openurp.edu.base.ProjectProperty
 import org.openurp.edu.eams.core.model.ProjectConfigBean
 import org.openurp.edu.eams.core.model.ProjectPropertyBean
-import org.openurp.edu.eams.teach.code.industry.ExamStatus
-import org.openurp.edu.eams.teach.code.industry.GradeType
+import org.openurp.edu.teach.code.ExamStatus
+import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.eams.teach.grade.model.CourseGradeSetting
 import org.openurp.edu.eams.teach.grade.setting.ExamStatusJsonAdapter
 import org.openurp.edu.eams.teach.grade.setting.GradeTypeJsonAdapter
@@ -18,7 +18,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import ConfigAction._
 
-import scala.collection.JavaConversions._
+
 
 object ConfigAction {
 

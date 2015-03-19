@@ -1,11 +1,11 @@
 package org.openurp.edu.eams.teach.lesson.task.util
 
-import java.util.ArrayList
-import java.util.List
+
+
 import org.openurp.base.Department
 import org.openurp.edu.base.Project
 
-import scala.collection.JavaConversions._
+
 
 object ProjectUtils {
 

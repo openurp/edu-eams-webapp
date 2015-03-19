@@ -1,20 +1,20 @@
 package org.openurp.edu.eams.system.web.action
 
-import java.util.ArrayList
-import java.util.Iterator
-import java.util.List
+
+
+
 import org.beangle.commons.config.property.PropertyConfig
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.beangle.security.blueprint.User
 import org.beangle.security.blueprint.nav.Menu
 import org.beangle.security.blueprint.nav.MenuProfile
 import org.beangle.security.blueprint.nav.service.MenuService
 import org.openurp.edu.eams.base.Calendar
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class PreferenceAction extends SemesterSupportAction {
 
@@ -95,7 +95,7 @@ class PreferenceAction extends SemesterSupportAction {
       var profile = profiles.get(0).asInstanceOf[MenuProfile]
       val profileId = getInt("menuProfile.id")
       if (null != profileId) {
-        for (one <- profiles if one.getId == profileId) {
+        for (one <- profiles if one.id == profileId) {
           profile = one
           //break
         }

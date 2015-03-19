@@ -2,7 +2,7 @@ package org.openurp.edu.eams.teach.grade.course.service.impl
 
 import org.openurp.edu.eams.teach.grade.service.NumPrecisionReserveMethod
 
-import scala.collection.JavaConversions._
+
 
 class More01ReserveMethod extends NumPrecisionReserveMethod {
 

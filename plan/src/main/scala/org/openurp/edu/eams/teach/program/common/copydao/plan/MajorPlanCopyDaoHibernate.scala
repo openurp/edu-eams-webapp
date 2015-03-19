@@ -10,7 +10,7 @@ import org.openurp.edu.eams.teach.program.major.model.MajorPlanBean
 import org.openurp.edu.eams.teach.program.major.service.MajorPlanGenParameter
 import org.openurp.edu.eams.teach.program.model.ProgramBean
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class MajorPlanCopyDaoHibernate extends AbstractPlanCopyDao {
 

@@ -1,10 +1,10 @@
 package org.openurp.edu.eams.teach.program.personal.service.impl
 
-import java.util.List
+
 import org.apache.commons.beanutils.PropertyUtils
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.impl.BaseServiceImpl
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import com.ekingstar.eams.core.Student
 import org.openurp.edu.eams.teach.program.Program
 import org.openurp.edu.eams.teach.program.StudentProgram
@@ -19,7 +19,7 @@ import org.openurp.edu.eams.teach.program.service.CoursePlanProvider
 import org.openurp.edu.eams.teach.program.service.NoMajorProgramException
 import org.openurp.edu.eams.teach.program.service.StudentProgramBindService
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class PersonalPlanServiceImpl extends BaseServiceImpl with PersonalPlanService {
 

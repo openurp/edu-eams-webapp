@@ -3,7 +3,7 @@ package org.openurp.edu.eams.teach.time.service.impl
 import java.io.Serializable
 import org.openurp.edu.eams.teach.time.service.OccupyTable
 
-import scala.collection.JavaConversions._
+
 
 @SerialVersionUID(-2264610685600348371L)
 abstract class AbstractIntArrayOccupyTable extends OccupyTable with Serializable with Cloneable {

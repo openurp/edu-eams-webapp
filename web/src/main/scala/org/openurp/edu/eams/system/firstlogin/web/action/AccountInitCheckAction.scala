@@ -13,7 +13,7 @@ import org.openurp.edu.eams.system.mail.service.MailService
 import org.openurp.edu.eams.system.security.model.EamsUserBean
 import org.openurp.edu.eams.web.action.BaseAction
 
-import scala.collection.JavaConversions._
+
 
 class AccountInitCheckAction extends BaseAction with FirstLoginChecker {
 

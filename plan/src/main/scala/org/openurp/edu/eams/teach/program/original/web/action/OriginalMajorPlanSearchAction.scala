@@ -9,7 +9,7 @@ import org.openurp.edu.eams.teach.program.original.OriginalPlan
 import org.openurp.edu.eams.teach.program.service.CoursePlanProvider
 import com.ekingstar.eams.web.action.common.RestrictionSupportAction
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class OriginalMajorPlanSearchAction extends RestrictionSupportAction {
 

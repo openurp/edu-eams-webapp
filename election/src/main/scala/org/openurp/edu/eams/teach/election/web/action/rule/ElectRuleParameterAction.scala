@@ -1,11 +1,11 @@
 package org.openurp.edu.eams.teach.election.web.action.rule
 
-import org.beangle.commons.entity.Entity
+import org.beangle.data.model.Entity
 import org.beangle.ems.rule.Rule
 import org.beangle.ems.rule.RuleParameter
 import org.openurp.edu.eams.web.action.BaseAction
 
-import scala.collection.JavaConversions._
+
 
 class ElectRuleParameterAction extends BaseAction {
 

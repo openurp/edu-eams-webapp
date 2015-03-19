@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.lesson.service
 
 
-import scala.collection.JavaConversions._
+
 
 object LessonOperateViolation extends Enumeration {
 

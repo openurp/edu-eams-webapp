@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.program.majorapply.dao.hibernate
 
 import java.sql.Date
-import org.beangle.orm.hibernate.HibernateEntityDao
+import org.beangle.data.jpa.hibernate.HibernateEntityDao
 import org.beangle.security.blueprint.User
 import com.ekingstar.eams.teach.Course
 import org.openurp.edu.eams.teach.program.common.dao.PlanCourseCommonDao
@@ -9,7 +9,7 @@ import org.openurp.edu.eams.teach.program.common.dao.PlanCourseGroupCommonDao
 import org.openurp.edu.eams.teach.program.helper.PlanTermCreditTool
 import org.openurp.edu.eams.teach.program.major.MajorPlan
 import org.openurp.edu.teach.plan.MajorPlanCourse
-import org.openurp.edu.teach.plan.MajorPlanCourseGroup
+import org.openurp.edu.teach.plan.MajorCourseGroup
 import org.openurp.edu.eams.teach.program.major.model.MajorPlanCourseBean
 import org.openurp.edu.eams.teach.program.majorapply.dao.MajorPlanCourseModifyAuditDao
 import org.openurp.edu.eams.teach.program.majorapply.exception.MajorPlanAuditException
@@ -17,7 +17,7 @@ import org.openurp.edu.eams.teach.program.majorapply.model.MajorPlanCourseModify
 import org.openurp.edu.eams.teach.program.majorapply.model.MajorPlanCourseModifyDetailAfterBean
 import org.openurp.edu.eams.teach.program.majorapply.model.MajorPlanCourseModifyDetailBean
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class MajorPlanCourseModifyAuditDaoHibernate extends HibernateEntityDao with MajorPlanCourseModifyAuditDao {
 
@@ -29,7 +29,7 @@ class MajorPlanCourseModifyAuditDaoHibernate extends HibernateEntityDao with Maj
     if (MajorPlanCourseModifyBean.INITREQUEST != apply.getFlag) {
       throw new MajorPlanAuditException("只能对待审核的申请进行审核")
     }
-    val plan = get(classOf[MajorPlan], apply.getMajorPlan.getId)
+    val plan = get(classOf[MajorPlan], apply.getMajorPlan.id)
     if (plan == null) {
       throw new MajorPlanAuditException("您要修改的专业培养计划已经不存在。")
     }
@@ -40,7 +40,7 @@ class MajorPlanCourseModifyAuditDaoHibernate extends HibernateEntityDao with Maj
       planCourse.setTerms(PlanTermCreditTool.normalizeTerms(after.getTerms))
       planCourse.setRemark(after.getRemark)
       planCourse.setCompulsory(after.isCompulsory)
-      val mg = get(classOf[MajorPlanCourseGroup], after.getFakeCourseGroup.getId)
+      val mg = get(classOf[MajorCourseGroup], after.getFakeCourseGroup.id)
       if (mg == null) {
         throw new MajorPlanAuditException("课程组不存在：" + after.getFakeCourseGroup.getCourseType.getName)
       }
@@ -61,13 +61,13 @@ class MajorPlanCourseModifyAuditDaoHibernate extends HibernateEntityDao with Maj
       if (planCourse == null) {
         throw new MajorPlanAuditException("课程不存在：" + before.getCourse)
       }
-      val oldGroup = planCourse.getCourseGroup.asInstanceOf[MajorPlanCourseGroup]
+      val oldGroup = planCourse.getCourseGroup.asInstanceOf[MajorCourseGroup]
       val after = apply.getNewPlanCourse
       planCourse.setCompulsory(after.isCompulsory)
       planCourse.setCourse(after.getCourse)
       planCourse.setTerms(after.getTerms)
       planCourse.setRemark(after.getRemark)
-      val mg = get(classOf[MajorPlanCourseGroup], after.getFakeCourseGroup.getId)
+      val mg = get(classOf[MajorCourseGroup], after.getFakeCourseGroup.id)
       if (mg == null) {
         throw new MajorPlanAuditException("课程组不存在：" + after.getFakeCourseGroup.getCourseType.getName)
       }

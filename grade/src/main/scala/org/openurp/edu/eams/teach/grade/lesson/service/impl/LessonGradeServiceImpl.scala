@@ -1,28 +1,26 @@
 package org.openurp.edu.eams.teach.grade.lesson.service.impl
-
-import java.util.Collections
 import java.util.Date
-import java.util.List
-import java.util.Set
+
+
 import org.apache.commons.beanutils.BeanComparator
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.impl.BaseServiceImpl
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.ems.dictionary.service.BaseCodeService
 import org.openurp.edu.base.Student
 import org.openurp.edu.eams.teach.Grade
-import org.openurp.edu.eams.teach.code.industry.GradeType
+import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.eams.teach.code.industry.ScoreMarkStyle
 import org.openurp.edu.eams.teach.grade.course.model.GradeViewScope
 import org.openurp.edu.eams.teach.grade.lesson.model.GradeInputSwitch
 import org.openurp.edu.eams.teach.grade.lesson.service.LessonGradeService
-import org.openurp.edu.teach.grade.CourseGradeState
-import org.openurp.edu.eams.teach.lesson.ExamGradeState
+import org.openurp.edu.teach.grade.model.CourseGradeState
+import org.openurp.edu.teach.grade.model.ExamGradeState
 import org.openurp.edu.eams.teach.lesson.GradeTypeConstants
 import org.openurp.edu.teach.lesson.Lesson
 
-import scala.collection.JavaConversions._
+
 
 class LessonGradeServiceImpl extends BaseServiceImpl with LessonGradeService {
 
@@ -61,9 +59,9 @@ class LessonGradeServiceImpl extends BaseServiceImpl with LessonGradeService {
     }
     val gradeTypes = CollectUtils.newArrayList()
     if (CollectUtils.isNotEmpty(states)) {
-      for (state <- states.get(0).getStates if state.getStatus > Grade.Status.NEW if state.gradeType.getId == GradeTypeConstants.GA_ID || 
+      for (state <- states.get(0).getStates if state.getStatus > Grade.Status.NEW if state.gradeType.id == GradeTypeConstants.GA_ID || 
         (state.getPercent != null && state.getPercent > 0)) {
-        gradeTypes.add(entityDao.get(classOf[GradeType], state.gradeType.getId))
+        gradeTypes.add(entityDao.get(classOf[GradeType], state.gradeType.id))
       }
     }
     gradeTypes
@@ -102,7 +100,7 @@ class LessonGradeServiceImpl extends BaseServiceImpl with LessonGradeService {
       gradeTypeState.setGradeState(gradeState)
       gradeTypeState.setPrecision(precision)
       gradeTypeState.setInputedAt(new Date())
-      gradeTypeState.setScoreMarkStyle(Model.newInstance(classOf[ScoreMarkStyle], gradeState.getScoreMarkStyle.getId))
+      gradeTypeState.setScoreMarkStyle(Model.newInstance(classOf[ScoreMarkStyle], gradeState.getScoreMarkStyle.id))
       gradeState.getStates.add(gradeTypeState)
     }
     gradeTypeState

@@ -1,21 +1,21 @@
 package org.openurp.edu.eams.teach.schedule.util
 
-import java.util.List
-import java.util.Map
-import java.util.Set
+
+
+
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.entity.Entity
+import org.beangle.data.model.Entity
 import org.openurp.base.Room
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.base.Student
 import org.openurp.edu.base.Teacher
-import org.openurp.edu.eams.teach.lesson.CourseActivity
+import org.openurp.edu.teach.schedule.CourseActivity
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.base.Program
 import org.openurp.edu.eams.teach.schedule.web.action.CourseTableAction
 import CourseTable._
 
-import scala.collection.JavaConversions._
+
 
 object CourseTable {
 
@@ -37,7 +37,7 @@ object CourseTable {
 
   resourceClass.put(TEACHER, classOf[Teacher])
 
-  resourceClass.put(ROOM, classOf[Classroom])
+  resourceClass.put(ROOM, classOf[Room])
 
   resourceClass.put(PROGRAM, classOf[Program])
 

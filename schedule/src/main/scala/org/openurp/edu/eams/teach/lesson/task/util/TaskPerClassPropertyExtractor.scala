@@ -1,11 +1,11 @@
 package org.openurp.edu.eams.teach.lesson.task.util
 
-import java.util.HashMap
-import java.util.Map
+
+
 import org.beangle.commons.text.i18n.TextResource
 import org.openurp.edu.teach.lesson.Lesson
 
-import scala.collection.JavaConversions._
+
 
 class TaskPerClassPropertyExtractor(textResource: TextResource) extends TeachTaskPropertyExtractor(textResource) {
 

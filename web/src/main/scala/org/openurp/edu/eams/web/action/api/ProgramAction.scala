@@ -1,23 +1,23 @@
 package org.openurp.edu.eams.web.action.api
 
 import java.util.Date
-import java.util.List
-import java.util.Map
+
+
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.openurp.edu.base.Program
 import org.openurp.edu.eams.web.action.common.ProjectSupportAction
 import com.google.gson.Gson
 
-import scala.collection.JavaConversions._
+
 
 class ProgramAction extends ProjectSupportAction {
 
   def json(): String = {
     val query = OqlBuilder.from(classOf[Program], "program")
     populateConditions(query, "program.grade")
-    query.where("program.major.project.id = :projectId", getProject.getId)
+    query.where("program.major.project.id = :projectId", getProject.id)
     query.where(":now >= program.effectiveOn and (program.invalidOn is null or :now <= program.invalidOn)", 
       new Date())
       .orderBy("program.name")
@@ -76,7 +76,7 @@ class ProgramAction extends ProjectSupportAction {
     val programs = entityDao.search(query)
     for (program <- programs) {
       val entity = CollectUtils.newHashMap()
-      entity.put("id", program.getId)
+      entity.put("id", program.id)
       entity.put("name", program.getName)
       result.add(entity)
     }

@@ -1,14 +1,14 @@
 package org.openurp.edu.eams.teach.grade.search.web.action
 
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.base.Major
 import org.openurp.edu.base.Student
 import org.openurp.edu.eams.teach.grade.model.StdGpa
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class GpaStatAction extends SemesterSupportAction {
 

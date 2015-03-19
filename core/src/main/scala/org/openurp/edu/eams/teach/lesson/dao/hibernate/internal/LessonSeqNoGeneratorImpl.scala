@@ -1,36 +1,33 @@
 package org.openurp.edu.eams.teach.lesson.dao.hibernate.internal
 
 import java.text.MessageFormat
-import java.util.ArrayList
-import java.util.Collection
-import java.util.Iterator
-import java.util.List
-import java.util.Map
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.lang.Numbers
 import org.beangle.commons.lang.Strings
-import org.beangle.orm.hibernate.HibernateEntityDao
+import org.beangle.data.jpa.hibernate.HibernateEntityDao
 import org.openurp.base.Semester
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.teach.lesson.dao.LessonSeqNoGenerator
 import LessonSeqNoGeneratorImpl._
+import org.beangle.data.model.dao.EntityDao
 
-import scala.collection.JavaConversions._
 
 object LessonSeqNoGeneratorImpl {
 
   val initSeqNo = "0001"
 }
 
-class LessonSeqNoGeneratorImpl extends HibernateEntityDao with LessonSeqNoGenerator {
+class LessonSeqNoGeneratorImpl  extends LessonSeqNoGenerator {
 
+  var entityDao:EntityDao=_
+  
   def genLessonSeqNo(lesson: Lesson) {
     if (Strings.isNotEmpty(lesson.getNo)) {
       return
     }
     synchronized (this) {
       val hql = MessageFormat.format("select no from org.openurp.edu.teach.lesson.Lesson lesson where lesson.semester.id={0} and lesson.project.id={1} order by no", 
-        lesson.getSemester.getId.toString, lesson.getProject.getId.toString)
+        lesson.getSemester.id.toString, lesson.getProject.id.toString)
       val lessonNos = search(hql)
       var newNo = 0
       for (seqNo <- lessonNos) {
@@ -49,7 +46,7 @@ class LessonSeqNoGeneratorImpl extends HibernateEntityDao with LessonSeqNoGenera
     }
   }
 
-  def genLessonSeqNos(lessons: Collection[Lesson]) {
+  def genLessonSeqNos(lessons: Iterable[Lesson]) {
     val semesterTasks = CollectUtils.newHashMap()
     for (lesson <- lessons if Strings.isEmpty(lesson.getNo)) {
       var matches = semesterTasks.get(lesson.getSemester)
@@ -66,7 +63,7 @@ class LessonSeqNoGeneratorImpl extends HibernateEntityDao with LessonSeqNoGenera
     }
   }
 
-  private def genLessonSeqNos(semester: Semester, tasks: Collection[_]) {
+  private def genLessonSeqNos(semester: Semester, tasks: Iterable[_]) {
     if (tasks.isEmpty) {
       return
     }
@@ -74,17 +71,18 @@ class LessonSeqNoGeneratorImpl extends HibernateEntityDao with LessonSeqNoGenera
       val iter1 = tasks.iterator()
       var projectId: java.lang.Integer = null
       if (iter1.hasNext) {
-        projectId = iter1.next().asInstanceOf[Lesson].getProject.getId
+        projectId = iter1.next().asInstanceOf[Lesson].getProject.id
       }
       val hql = MessageFormat.format("select no from org.openurp.edu.teach.lesson.Lesson lesson where lesson.semester.id={0} and lesson.project.id={1} order by no", 
-        semester.getId.toString, projectId.toString)
+        semester.id.toString, projectId.toString)
       val allSeqNos = search(hql)
       var newSeqNo = 0
       var seq = 0
       var allocated = 0
       val taskIter = tasks.iterator()
       var iter = allSeqNos.iterator()
-      while (iter.hasNext) {
+      var break=false
+      while (iter.hasNext && !break) {
         val seqNo = iter.next().asInstanceOf[String]
         seq = Numbers.toInt(seqNo)
         if ((seq - newSeqNo >= 2)) {
@@ -95,9 +93,9 @@ class LessonSeqNoGeneratorImpl extends HibernateEntityDao with LessonSeqNoGenera
             val task = taskIter.next().asInstanceOf[Lesson]
             task.setNo(Strings.repeat("0", 4 - String.valueOf(newSeqNo).length) + 
               newSeqNo)
-            if (allocated >= tasks.size) //break
+            if (allocated >= tasks.size) break=true
           }
-          if (allocated >= tasks.size) //break
+          if (allocated >= tasks.size)  break=true
         }
         newSeqNo = seq
       }

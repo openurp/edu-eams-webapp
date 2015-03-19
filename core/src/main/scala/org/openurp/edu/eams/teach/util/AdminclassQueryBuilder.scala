@@ -1,10 +1,10 @@
 package org.openurp.edu.eams.teach.util
 
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.teach.plan.MajorPlan
 
-import scala.collection.JavaConversions._
+
 
 object AdminclassQueryBuilder {
 

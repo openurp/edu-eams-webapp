@@ -9,7 +9,7 @@ import org.openurp.edu.eams.teach.election.service.context.ElectionCourseContext
 import org.openurp.edu.eams.teach.election.service.rule.AbstractElectRuleExecutor
 import org.openurp.edu.teach.lesson.Lesson
 
-import scala.collection.JavaConversions._
+
 
 class ElectableLessonByPlanFilter extends AbstractElectableLessonFilter {
 
@@ -20,10 +20,10 @@ class ElectableLessonByPlanFilter extends AbstractElectableLessonFilter {
     if (null == coursePlan) {
       return false
     }
-    val courseTypeId = coursePlan.getCourseIds.get(lesson.getCourse.getId)
+    val courseTypeId = coursePlan.getCourseIds.get(lesson.getCourse.id)
     var inplan = false
     var group: ElectCourseGroup = null
-    group = if (null != courseTypeId) coursePlan.groups.get(courseTypeId) else coursePlan.groups.get(lesson.getCourseType.getId)
+    group = if (null != courseTypeId) coursePlan.groups.get(courseTypeId) else coursePlan.groups.get(lesson.getCourseType.id)
     inplan = if (null != courseTypeId) true else (null != group && group.getCourses.isEmpty)
     if (inplan && null != group && !group.isHasLesson) {
       group.setHasLesson(true)

@@ -1,15 +1,15 @@
 package org.openurp.edu.eams.teach.lesson.service.limit.impl
 
 import java.io.Serializable
-import java.util.HashSet
+
 import java.util.LinkedHashMap
-import java.util.Map
-import java.util.Map.Entry
-import java.util.Set
+
+.Entry
+
 import org.beangle.ems.dictionary.service.BaseCodeService
 import org.openurp.code.person.Gender
 
-import scala.collection.JavaConversions._
+
 
 class CourseLimitGenderProvider extends AbstractCourseLimitNamedEntityProvider[Gender, Integer] {
 
@@ -26,7 +26,7 @@ class CourseLimitGenderProvider extends AbstractCourseLimitNamedEntityProvider[G
     val results = new LinkedHashMap[String, Gender]()
     for ((key, value) <- contentMap) {
       val gender = value
-      val id = gender.getId
+      val id = gender.id
       if (!excludedIds.contains(id)) {
         results.put(key, gender)
       }

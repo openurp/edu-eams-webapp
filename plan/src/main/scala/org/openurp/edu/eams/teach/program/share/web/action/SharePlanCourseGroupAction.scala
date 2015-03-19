@@ -1,26 +1,26 @@
 package org.openurp.edu.eams.teach.program.share.web.action
 
-import java.util.Collection
-import java.util.HashMap
-import java.util.Map
+
+
+
 import org.beangle.commons.dao.query.builder.Condition
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.beangle.commons.entity.Entity
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.beangle.data.model.Entity
 import org.beangle.struts2.convention.route.Action
 import com.ekingstar.eams.base.code.nation.Language
 import com.ekingstar.eams.teach.code.school.CourseType
-import org.openurp.edu.eams.teach.program.CourseGroup
+import org.openurp.edu.teach.plan.CourseGroup
 import org.openurp.edu.eams.teach.program.common.dao.PlanCourseGroupCommonDao
-import org.openurp.edu.eams.teach.program.major.service.MajorPlanCourseGroupService
+import org.openurp.edu.eams.teach.program.major.service.MajorCourseGroupService
 import org.openurp.edu.eams.teach.program.share.SharePlan
 import org.openurp.edu.eams.teach.program.share.SharePlanCourseGroup
 import com.ekingstar.eams.web.action.BaseAction
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class SharePlanCourseGroupAction extends BaseAction {
 
-  protected var majorPlanCourseGroupService: MajorPlanCourseGroupService = _
+  protected var MajorCourseGroupService: MajorCourseGroupService = _
 
   protected var planCourseGroupCommonDao: PlanCourseGroupCommonDao = _
 
@@ -40,12 +40,12 @@ class SharePlanCourseGroupAction extends BaseAction {
       val sharePlanCourseGroup = entityDao.get(classOf[SharePlanCourseGroup], getLong("sharePlanCourseGroupId")).asInstanceOf[SharePlanCourseGroup]
       val params = new HashMap[String, Any]()
       params.put("planId", getLong("sharePlanCourseGroup.plan.id"))
-      params.put("ctype", sharePlanCourseGroup.getCourseType.getId)
+      params.put("ctype", sharePlanCourseGroup.getCourseType.id)
       queryCourseType.where(new Condition("not exists(from " + classOf[SharePlanCourseGroup].getName + 
         " group " + 
         "where group.courseType=courseType and group.plan.id=:planId) or courseType.id=:ctype"))
       queryCourseType.params(params)
-      queryparams.put("ctype", sharePlanCourseGroup.getCourseType.getId)
+      queryparams.put("ctype", sharePlanCourseGroup.getCourseType.id)
     }
     if (null == getLong("sharePlanCourseGroupId")) {
       query.where(new Condition("sharePlanCourseGroup.plan.id=:sharePlanCourseGroupPlanId"))
@@ -60,7 +60,7 @@ class SharePlanCourseGroupAction extends BaseAction {
 
   protected def saveAndForward(entity: Entity[_]): String = {
     val group = entity.asInstanceOf[SharePlanCourseGroup]
-    val plan = entityDao.get(classOf[SharePlan], group.getPlan.getId)
+    val plan = entityDao.get(classOf[SharePlan], group.getPlan.id)
     val oldParent = group.getParent
     val parentId = getLong("newParentId")
     var parent: CourseGroup = null
@@ -73,16 +73,16 @@ class SharePlanCourseGroupAction extends BaseAction {
     }
     try {
       if (group.isPersisted) {
-        if ((parent != null && oldParent != null && parentId != oldParent.getId) || 
+        if ((parent != null && oldParent != null && parentId != oldParent.id) || 
           (parent == null && oldParent != null) || 
           (parent != null && oldParent == null)) {
-          majorPlanCourseGroupService.move(group, parent, indexno)
+          MajorCourseGroupService.move(group, parent, indexno)
         }
         planCourseGroupCommonDao.saveOrUpdateCourseGroup(group)
       } else {
         group.setIndexno("--")
         planCourseGroupCommonDao.addCourseGroupToPlan(group, parent, plan)
-        majorPlanCourseGroupService.move(group, parent, indexno)
+        MajorCourseGroupService.move(group, parent, indexno)
       }
       redirect(new Action(classOf[SharePlanAction], "groupList"), "info.save.success")
     } catch {
@@ -93,15 +93,15 @@ class SharePlanCourseGroupAction extends BaseAction {
     }
   }
 
-  def setMajorPlanCourseGroupService(majorPlanCourseGroupService: MajorPlanCourseGroupService) {
-    this.majorPlanCourseGroupService = majorPlanCourseGroupService
+  def setMajorCourseGroupService(MajorCourseGroupService: MajorCourseGroupService) {
+    this.MajorCourseGroupService = MajorCourseGroupService
   }
 
   def setPlanCourseGroupCommonDao(planCourseGroupCommonDao: PlanCourseGroupCommonDao) {
     this.planCourseGroupCommonDao = planCourseGroupCommonDao
   }
 
-  protected def removeAndForward(entities: Collection[_]): String = {
+  protected def removeAndForward(entities: Iterable[_]): String = {
     try {
       remove(entities)
     } catch {

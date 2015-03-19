@@ -1,8 +1,8 @@
 package org.openurp.edu.eams.time.web.dwr
 
-import java.util.List
 
-import scala.collection.JavaConversions._
+
+
 
 trait SemesterDaoDwr {
 

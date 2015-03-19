@@ -1,13 +1,13 @@
 package org.openurp.edu.eams.teach.election.web.action
 
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.openurp.edu.base.Student
 import org.openurp.edu.eams.teach.election.ElectLogger
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class StdElectLogAction extends SemesterSupportAction {
 

@@ -1,6 +1,6 @@
 package org.openurp.edu.eams.web.helper
 
-import java.util.List
+
 import javax.persistence.EntityNotFoundException
 import javax.servlet.http.HttpServletRequest
 import org.apache.struts2.ServletActionContext
@@ -12,13 +12,13 @@ import org.beangle.security.blueprint.function.service.FuncPermissionService
 import org.beangle.security.blueprint.nav.MenuProfile
 import org.beangle.struts2.helper.ContextHelper
 import org.beangle.struts2.helper.Params
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Project
 import org.openurp.edu.eams.core.service.SemesterService
 import org.openurp.edu.eams.system.security.EamsUserCategory
 import com.opensymphony.xwork2.ActionContext
 
-import scala.collection.JavaConversions._
+
 
 class SemesterHelper extends RestrictionHelperImpl() {
 

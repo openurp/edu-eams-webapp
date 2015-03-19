@@ -3,13 +3,13 @@ package org.openurp.edu.eams.teach.lesson.task.model
 import java.util.Date
 import org.beangle.commons.entity.pojo.LongIdObject
 import org.beangle.security.blueprint.User
-import org.openurp.edu.eams.base.Semester
-import org.openurp.edu.teach.Course
+import org.openurp.base.Semester
+import org.openurp.edu.base.Course
 import org.openurp.edu.teach.plan.MajorPlan
 import PlanTask._
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConversions._
+
+
 
 object PlanTask {
 
@@ -24,27 +24,27 @@ object PlanTask {
 @Deprecated
 class PlanTask extends LongIdObject {
 
-  @BeanProperty
+  
   var semester: Semester = _
 
   private var teachPlan: MajorPlan = _
 
-  @BeanProperty
+  
   var course: Course = _
 
-  @BeanProperty
+  
   var applyDate: Date = new Date(System.currentTimeMillis())
 
-  @BeanProperty
+  
   var replyDate: Date = _
 
-  @BeanProperty
+  
   var flag: java.lang.Integer = INIT
 
-  @BeanProperty
+  
   var proposer: User = _
 
-  @BeanProperty
+  
   var assessor: User = _
 
   def getMajorPlan(): MajorPlan = teachPlan

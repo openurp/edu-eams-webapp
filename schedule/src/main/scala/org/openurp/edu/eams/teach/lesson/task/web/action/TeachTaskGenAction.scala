@@ -1,20 +1,20 @@
 package org.openurp.edu.eams.teach.lesson.task.web.action
 
 import java.sql.Date
-import java.util.List
-import java.util.Map
-import java.util.Set
+
+
+
 import javax.servlet.http.HttpServletResponse
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.openurp.base.Department
-import org.openurp.edu.eams.base.Semester
-import org.openurp.edu.eams.base.code.school.ClassroomType
+import org.openurp.base.Semester
+import org.openurp.edu.eams.base.code.school.RoomType
 import org.openurp.edu.eams.base.util.WeekStates
 import org.openurp.edu.eams.core.CommonAuditState
-import org.openurp.edu.teach.Course
+import org.openurp.edu.base.Course
 import org.openurp.edu.teach.code.CourseType
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.teach.lesson.LessonPlanRelation
@@ -32,7 +32,7 @@ import org.openurp.edu.eams.teach.program.share.SharePlanCourse
 import org.openurp.edu.eams.teach.time.util.TermCalculator
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class TeachTaskGenAction extends SemesterSupportAction {
 
@@ -91,7 +91,7 @@ class TeachTaskGenAction extends SemesterSupportAction {
 
   def genSetting(): String = {
     val semester = semesterService.getSemester(getInt("semester.id"))
-    put("classroomTypeList", baseCodeService.getCodes(classOf[ClassroomType]))
+    put("classroomTypeList", baseCodeService.getCodes(classOf[RoomType]))
     put("startWeek", 1)
     put("weeks", semester.getWeeks)
     put("semester", semester)
@@ -126,7 +126,7 @@ class TeachTaskGenAction extends SemesterSupportAction {
     params.put("removeGenerated", getBool("params.removeGenerated"))
     params.put("allowNoAdminclass", getBool("params.allowNoAdminclass"))
     params.put("omitSmallTerm", getBool("params.omitSmallTerm"))
-    params.put("roomType", entityDao.get(classOf[ClassroomType], getInt("params.roomType.id")))
+    params.put("roomType", entityDao.get(classOf[RoomType], getInt("params.roomType.id")))
     val onlyGenCourseIds = Strings.splitToLong(get("fake.onlyGenCourseIds"))
     val dontGenCourseIds = Strings.splitToLong(get("fake.dontGenCourseIds"))
     val onlyGenCourseTypeIds = Strings.splitToInt(get("fake.onlyGenCourseTypeIds"))
@@ -145,7 +145,7 @@ class TeachTaskGenAction extends SemesterSupportAction {
   def genShareLessons(): String = {
     val semesterId = getInt("semester.id")
     val semester = entityDao.get(classOf[Semester], semesterId)
-    val sharePlanCourses = getModels(classOf[SharePlanCourse], getIds("targetCourse", classOf[Long]))
+    val sharePlanCourses = getModels(classOf[SharePlanCourse], ids("targetCourse", classOf[Long]))
     val lessons = CollectUtils.newArrayList()
     for (sharePlanCourse <- sharePlanCourses) {
       val course = sharePlanCourse.getCourse

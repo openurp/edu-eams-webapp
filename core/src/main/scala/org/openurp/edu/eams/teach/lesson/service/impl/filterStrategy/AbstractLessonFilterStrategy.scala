@@ -3,19 +3,19 @@ package org.openurp.edu.eams.teach.lesson.service.impl.filterStrategy
 import org.hibernate.Query
 import org.hibernate.Session
 import org.openurp.edu.eams.teach.lesson.service.LessonFilterStrategy
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConversions._
+
+
 
 abstract class AbstractLessonFilterStrategy extends LessonFilterStrategy() {
 
-  @BeanProperty
+  
   var name: String = _
 
-  @BeanProperty
+  
   var prefix: String = "from Lesson as lesson "
 
-  @BeanProperty
+  
   var postfix: String = _
 
   protected def this(name: String) {

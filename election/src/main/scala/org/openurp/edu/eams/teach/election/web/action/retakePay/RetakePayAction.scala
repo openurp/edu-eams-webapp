@@ -1,18 +1,16 @@
 package org.openurp.edu.eams.teach.election.web.action.retakePay
 
-import java.util.ArrayList
-import java.util.Collections
 import java.util.Date
-import java.util.List
-import java.util.Map
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.lang.Strings
 import org.beangle.security.blueprint.User
 import org.beangle.struts2.helper.Params
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Project
 import org.openurp.edu.base.Student
 import org.openurp.edu.eams.fee.Bill
@@ -35,7 +33,7 @@ import org.openurp.edu.eams.teach.election.service.RetakeFeeConfigService
 import org.openurp.edu.teach.lesson.CourseTake
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class RetakePayAction extends SemesterSupportAction {
 
@@ -82,7 +80,7 @@ class RetakePayAction extends SemesterSupportAction {
     val paid = getBool("paid")
     for (courseTake <- courseTakes if null == courseTake.getBill) {
       courseTake.setPaid(paid)
-      val student = entityDao.get(classOf[Student], courseTake.getStd.getId)
+      val student = entityDao.get(classOf[Student], courseTake.getStd.id)
       toChanges.add(courseTake)
     }
     try {
@@ -103,9 +101,9 @@ class RetakePayAction extends SemesterSupportAction {
     val billMap = CollectUtils.newHashMap()
     for (bill <- bills) {
       val paid = paymentService.checkBillOnPurpose(bill)
-      if (paid && bill.getState.getId != PayState.PAID) {
+      if (paid && bill.getState.id != PayState.PAID) {
         billMap.put(bill, true)
-      } else if (!paid && bill.getState.getId == PayState.PAID) {
+      } else if (!paid && bill.getState.id == PayState.PAID) {
         billMap.put(bill, false)
       }
     }
@@ -121,7 +119,7 @@ class RetakePayAction extends SemesterSupportAction {
     }
     val bill = entityDao.get(classOf[Bill], billId)
     put("bill", bill)
-    if (PayState.CANCEL == bill.getState.getId) {
+    if (PayState.CANCEL == bill.getState.id) {
       put("courseTakes", Collections.emptyList())
     } else {
       put("courseTakes", entityDao.get(classOf[CourseTake], "bill", bill))
@@ -202,21 +200,21 @@ class RetakePayAction extends SemesterSupportAction {
     val courseTakes = entityDao.get(classOf[CourseTake], "bill", bills)
     val billCourseTakes = CollectUtils.newHashMap()
     for (courseTake <- courseTakes) {
-      var takes = billCourseTakes.get(courseTake.getBill.getId)
+      var takes = billCourseTakes.get(courseTake.getBill.id)
       if (null == takes) {
         takes = new ArrayList[CourseTake]()
-        billCourseTakes.put(courseTake.getBill.getId, takes)
+        billCourseTakes.put(courseTake.getBill.id, takes)
       }
       takes.add(courseTake)
     }
     for (bill <- bills) {
-      if (PayState.UNPAID == bill.getState.getId) {
+      if (PayState.UNPAID == bill.getState.id) {
         val students = entityDao.get(classOf[Student], "code", bill.getUsername)
         if (students.isEmpty) {
           //continue
         }
         bill.setUpdatedAt(date)
-        val takes = billCourseTakes.get(bill.getId)
+        val takes = billCourseTakes.get(bill.id)
         for (courseTake <- takes) {
           courseTake.setUpdatedAt(date)
           courseTake.setPaid(paid)
@@ -267,7 +265,7 @@ class RetakePayAction extends SemesterSupportAction {
     val toSaveBills = CollectUtils.newArrayList()
     val notSaveList = CollectUtils.newArrayList()
     for (bill <- bills) {
-      if (PayState.UNPAID == bill.getState.getId && user.getName == bill.getUsername) {
+      if (PayState.UNPAID == bill.getState.id && user.getName == bill.getUsername) {
         bill.setState(Model.newInstance(classOf[PayState], PayState.CANCEL))
         bill.setUpdatedAt(date)
         toSaveBills.add(bill)
@@ -297,7 +295,7 @@ class RetakePayAction extends SemesterSupportAction {
       .limit(getPageLimit)
     val bills = entityDao.search(builder)
     val date = new Date()
-    for (bill <- bills if PayState.UNPAID == bill.getState.getId if paymentService.checkBillOnPurpose(bill)) {
+    for (bill <- bills if PayState.UNPAID == bill.getState.id if paymentService.checkBillOnPurpose(bill)) {
       bill.setPaid(bill.getAmount)
       bill.setUpdatedAt(date)
       bill.setState(entityDao.get(classOf[PayState], PayState.PAID))
@@ -360,7 +358,7 @@ class RetakePayAction extends SemesterSupportAction {
   private def genBillCode(feeType: FeeType, user: User): String = {
     val hql = "select max(code) from org.openurp.edu.eams.fee.Bill bill " + 
       "where bill.code like :code"
-    val code = user.getName + feeType.getId
+    val code = user.getName + feeType.id
     val query = OqlBuilder.hql(hql)
     query.param("code", code + "%")
     val maxCode = entityDao.uniqueResult(query)
@@ -396,7 +394,7 @@ class RetakePayAction extends SemesterSupportAction {
     if (!bill.inPaymentTime()) {
       return redirect("showBillTest", "订单支付时间未开放或已结束")
     }
-    if (PayState.UNPAID != bill.getState.getId) {
+    if (PayState.UNPAID != bill.getState.id) {
       return redirect("showBillTest", "该订单已支付或退订")
     }
     val feedBackUrl = getRequest.getRequestURL.toString
@@ -407,7 +405,7 @@ class RetakePayAction extends SemesterSupportAction {
     context.put("semester", semester)
     context.put("project", project)
     context.put("feeConfigs", retakeFeeConfigService.getOpenConfigs(project, semester))
-    context.put("billId", bill.getId)
+    context.put("billId", bill.id)
     context.put("remoteAddr", getRemoteAddr)
     context.put("returnUrl", returnUrl)
     context.setBill(bill)

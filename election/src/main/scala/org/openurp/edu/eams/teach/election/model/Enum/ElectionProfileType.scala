@@ -1,8 +1,8 @@
 package org.openurp.edu.eams.teach.election.model.Enum
 
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConversions._
+
+
 
 object ElectionProfileType extends Enumeration {
 
@@ -12,9 +12,9 @@ object ElectionProfileType extends Enumeration {
 
   val ADMIN = new ElectionProfileType("管理员")
 
-  class ElectionProfileType(@BeanProperty var title: String) extends Val {
+  class ElectionProfileType( var title: String) extends Val {
 
-    def getId(): String = toString
+    def id(): String = toString
   }
 
   implicit def convertValue(v: Value): ElectionProfileType = v.asInstanceOf[ElectionProfileType]

@@ -1,12 +1,12 @@
 package org.openurp.edu.eams.core.service
 
 import org.openurp.base.Building
-import org.openurp.edu.eams.base.Campus
-import org.openurp.edu.eams.base.Semester
-import org.openurp.edu.eams.base.TimeSetting
+import org.openurp.base.Campus
+import org.openurp.base.Semester
+import org.openurp.base.TimeSetting
 import org.openurp.edu.base.Project
 
-import scala.collection.JavaConversions._
+
 
 trait TimeSettingService {
 

@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.election.service.rule
 
-import java.util.Iterator
-import java.util.Set
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.ems.rule.model.RuleConfig
 import org.beangle.ems.rule.model.RuleConfigParam
@@ -9,7 +9,7 @@ import org.openurp.edu.eams.teach.election.service.context.ElectState
 import org.openurp.edu.eams.teach.election.service.rule.election.filter.ElectableLessonByTeachClassFilter
 import org.openurp.edu.eams.teach.election.service.rule.election.filter.ElectableLessonNoRetakeFilter
 
-import scala.collection.JavaConversions._
+
 
 class RetakeServiceImpl {
 

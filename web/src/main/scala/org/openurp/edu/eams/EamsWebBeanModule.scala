@@ -43,7 +43,7 @@ import org.openurp.edu.eams.web.helper.StdSearchHelper
 import org.openurp.edu.eams.web.view.component.semester.ui.MenuSemesterCalendar
 import org.openurp.edu.eams.web.view.component.semester.ui.SemesterUIFactory
 
-import scala.collection.JavaConversions._
+
 
 class EamsWebBeanModule extends AbstractBindModule {
 

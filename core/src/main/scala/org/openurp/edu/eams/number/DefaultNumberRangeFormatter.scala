@@ -4,7 +4,7 @@ import org.beangle.commons.lang.Strings
 import org.beangle.commons.text.i18n.TextResource
 import DefaultNumberRangeFormatter._
 
-import scala.collection.JavaConversions._
+
 
 object DefaultNumberRangeFormatter {
 

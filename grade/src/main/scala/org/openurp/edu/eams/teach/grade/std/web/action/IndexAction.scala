@@ -1,18 +1,18 @@
 package org.openurp.edu.eams.teach.grade.std.web.action
 
-import java.util.Collection
+
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.openurp.edu.eams.base.Semester
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.openurp.base.Semester
 import org.openurp.edu.base.Student
 import org.openurp.edu.eams.teach.Grade
-import org.openurp.edu.eams.teach.code.industry.GradeType
+import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.eams.teach.grade.service.GpaStatService
 import org.openurp.edu.teach.grade.CourseGrade
 import org.openurp.edu.eams.teach.lesson.GradeTypeConstants
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class IndexAction extends SemesterSupportAction {
 

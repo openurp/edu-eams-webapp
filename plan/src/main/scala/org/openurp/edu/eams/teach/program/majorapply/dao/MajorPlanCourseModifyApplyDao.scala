@@ -4,7 +4,7 @@ import org.openurp.edu.eams.teach.program.majorapply.model.MajorPlanCourseModify
 import org.openurp.edu.eams.teach.program.majorapply.model.MajorPlanCourseModifyDetailAfterBean
 import org.openurp.edu.eams.teach.program.majorapply.model.MajorPlanCourseModifyDetailBeforeBean
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 trait MajorPlanCourseModifyApplyDao {
 

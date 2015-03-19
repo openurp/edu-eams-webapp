@@ -6,7 +6,7 @@ import java.io.PrintWriter
 import org.beangle.commons.text.i18n.TextResource
 import org.springframework.core.io.ClassPathResource
 
-import scala.collection.JavaConversions._
+
 
 class OutputWebObserver extends OutputProcessObserver {
 

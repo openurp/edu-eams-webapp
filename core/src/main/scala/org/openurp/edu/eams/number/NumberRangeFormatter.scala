@@ -2,7 +2,7 @@ package org.openurp.edu.eams.number
 
 import org.beangle.commons.text.i18n.TextResource
 
-import scala.collection.JavaConversions._
+
 
 trait NumberRangeFormatter {
 

@@ -1,15 +1,15 @@
 package org.openurp.edu.eams.teach.program.common.dao
 
-import java.util.List
+
 import com.ekingstar.eams.teach.Course
 import com.ekingstar.eams.teach.code.school.CourseType
-import org.openurp.edu.eams.teach.program.CourseGroup
+import org.openurp.edu.teach.plan.CourseGroup
 import org.openurp.edu.eams.teach.program.CoursePlan
-import org.openurp.edu.eams.teach.program.PlanCourse
+import org.openurp.edu.teach.plan.PlanCourse
 import org.openurp.edu.eams.teach.program.Program
 import org.openurp.edu.eams.teach.program.major.MajorPlan
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 trait PlanCommonDao {
 

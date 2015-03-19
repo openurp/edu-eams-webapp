@@ -2,18 +2,18 @@ package org.openurp.edu.eams.teach.grade.course.service
 
 import java.text.Collator
 import java.util.Comparator
-import java.util.Iterator
-import java.util.List
-import java.util.Map
+
+
+
 import org.apache.commons.beanutils.PropertyUtils
 import org.beangle.commons.collection.CollectUtils
-import org.openurp.edu.eams.teach.code.industry.GradeType
+import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.eams.teach.grade.course.web.helper.TeachClassGradeHelper
 import org.openurp.edu.eams.teach.grade.service.stat.StdGrade
 import org.openurp.edu.teach.grade.CourseGrade
-import org.openurp.edu.eams.teach.lesson.ExamGrade
+import org.openurp.edu.teach.grade.ExamGrade
 
-import scala.collection.JavaConversions._
+
 
 class CourseGradeComparator(var cmpWhat: String, var isAsc: Boolean, gradeTypes: List[GradeType])
     extends Comparator[Any] {
@@ -23,7 +23,7 @@ class CourseGradeComparator(var cmpWhat: String, var isAsc: Boolean, gradeTypes:
   var iter = gradeTypes.iterator()
   while (iter.hasNext) {
     val gradeType = iter.next()
-    gradeTypeMap.put(gradeType.getId.toString, gradeType)
+    gradeTypeMap.put(gradeType.id.toString, gradeType)
   }
 
   def compare(arg0: AnyRef, arg1: AnyRef): Int = {

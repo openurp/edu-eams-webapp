@@ -1,28 +1,22 @@
 package org.openurp.edu.eams.weekstate
 
-import org.openurp.edu.eams.weekstate.WeekStateDirection.LTR
-import org.openurp.edu.eams.weekstate.SemesterWeekState.RESERVE_BITS
-import org.openurp.edu.eams.weekstate.WeekStateDirection.RTL
-import java.util.Collection
+
 import java.util.Date
-import java.util.List
-import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.lang.Strings
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.eams.date.EamsDateUtil
-import org.openurp.edu.eams.date.EamsWeekday
+import org.beangle.commons.lang.time.WeekDays._
 import org.openurp.edu.eams.date.RelativeDateUtil
 import org.openurp.edu.eams.exception.WeekStateException
-import SemesterWeekStateBuilder._
+import SemesterWeekTimeBuilder._
+import org.openurp.base.SemesterWeekTime
+import 
 
-import scala.collection.JavaConversions._
+object SemesterWeekTimeBuilder {
 
-object SemesterWeekStateBuilder {
 
-  def LTR(semester: Semester): SemesterWeekStateBuilder = {
-    val helper = new SemesterWeekStateBuilder()
-    helper.direction = WeekStateDirection.LTR
-    helper.paddingLength = BasicWeekState.MAX_LENGTH
+  def RTL(semester: Semester): SemesterWeekTimeBuilder = {
+    val helper = new SemesterWeekTimeBuilder()
     helper.semester = semester
     if (semester != null) {
       helper.rdateUtil = RelativeDateUtil.startOn(semester)
@@ -30,18 +24,7 @@ object SemesterWeekStateBuilder {
     helper
   }
 
-  def RTL(semester: Semester): SemesterWeekStateBuilder = {
-    val helper = new SemesterWeekStateBuilder()
-    helper.direction = WeekStateDirection.RTL
-    helper.paddingLength = 0
-    helper.semester = semester
-    if (semester != null) {
-      helper.rdateUtil = RelativeDateUtil.startOn(semester)
-    }
-    helper
-  }
-
-  def merge(state1: SemesterWeekState, state2: SemesterWeekState): SemesterWeekState = {
+  def merge(state1: SemesterWeekTime, state2: SemesterWeekTime): SemesterWeekTime = {
     if (state1 == null && state2 == null) {
       return null
     }
@@ -50,21 +33,19 @@ object SemesterWeekStateBuilder {
     } else if (state2 == null) {
       return state1.clone()
     }
-    if (state1.direction != state2.direction) {
-      throw new WeekStateException("Merge Error: Direction Different")
-    } else if (state1.getWeekday != state2.getWeekday) {
+    if (state1.day != state2.day) {
       throw new WeekStateException("Merge Error: Weekday Different")
     } else if (state1.getSemester != state2.getSemester) {
       throw new WeekStateException("Merge Error: Semester Different")
     } else if (state1.getReserveBits != state2.getReserveBits) {
       throw new WeekStateException("Merge Error: Reserve Bits Different")
     }
-    val res = new SemesterWeekState(state1)
+    val res = new SemesterWeekTime(state1)
     res.setWeekState(state1.getNumber | state2.getNumber)
     res
   }
 
-  def merge(states: Array[SemesterWeekState]): SemesterWeekState = {
+  def merge(states: Array[SemesterWeekTime]): SemesterWeekTime = {
     if (states == null || states.length == 0) {
       return null
     }
@@ -78,24 +59,22 @@ object SemesterWeekStateBuilder {
     res
   }
 
-  def merge(states: List[SemesterWeekState]): SemesterWeekState = {
+  def merge(states: List[SemesterWeekTime]): SemesterWeekTime = {
     if (CollectUtils.isEmpty(states)) {
       return null
     }
-    merge(states.toArray(Array.ofDim[SemesterWeekState](0)))
+    merge(states.toArray(Array.ofDim[SemesterWeekTime](0)))
   }
 
-  def merge(states: Collection[SemesterWeekState]): SemesterWeekState = {
+  def merge(states: Iterable[SemesterWeekTime]): SemesterWeekTime = {
     if (CollectUtils.isEmpty(states)) {
       return null
     }
-    merge(states.toArray(Array.ofDim[SemesterWeekState](0)))
+    merge(states.toArray(Array.ofDim[SemesterWeekTime](0)))
   }
 
-  def parse(weekState: String, direction: WeekStateDirection): Array[Integer] = {
-    if (direction == RTL) {
-      weekState = new StringBuilder(weekState).reverse().toString
-    }
+  def parse(weekState: String): Array[Integer] = {
+     // weekState = new StringBuilder(weekState).reverse().toString
     val weekIndecies = CollectUtils.newArrayList()
     var i = 0
     while (i != -1) {
@@ -114,39 +93,34 @@ object SemesterWeekStateBuilder {
     weekIndecies.toArray(Array.ofDim[Integer](0))
   }
 
-  def parse(weekState: java.lang.Long, direction: WeekStateDirection): Array[Integer] = {
-    parse(BinaryConverter.toString(weekState), direction)
+  def parse(weekState: java.lang.Long): Array[Integer] = {
+    parse(BinaryConverter.toString(weekState))
   }
 }
 
-class SemesterWeekStateBuilder private () extends RelativeWeekStateBuilder() {
-
-  private var direction: WeekStateDirection = _
-
-  private var paddingLength: java.lang.Integer = _
+class SemesterWeekTimeBuilder{
 
   private var semester: Semester = _
 
   private var rdateUtil: RelativeDateUtil = _
 
-  def build(date: Date): SemesterWeekState = {
-    build(Array(rdateUtil.getWeekIndex(date)), EamsDateUtil.getWeekday(date))
+  def build(date: Date): SemesterWeekTime = {
+    build(Array(rdateUtil.getWeekIndex(date)), EamsDateUtil.day(date))
   }
 
-  def build(relativeWeekIndecies: Array[Int], weekday: EamsWeekday): SemesterWeekState = {
+  def build(relativeWeekIndecies: Array[Int], weekday: WeekDay): SemesterWeekTime = {
     if (relativeWeekIndecies == null || relativeWeekIndecies.length == 0) {
       return null
     }
-    val weekState = new SemesterWeekState()
+    val weekState = new SemesterWeekTime()
     weekState.setSemester(semester)
-    weekState.setDirection(direction)
     weekState.setReserveBits(RESERVE_BITS)
     weekState.setWeekState(buildString(relativeWeekIndecies))
     weekState.setWeekday(weekday)
     weekState
   }
 
-  def build(relativeWeekIndecies: Array[Integer], weekday: EamsWeekday): SemesterWeekState = {
+  def build(relativeWeekIndecies: Array[Integer], weekday: WeekDay): SemesterWeekTime = {
     if (relativeWeekIndecies == null || relativeWeekIndecies.length == 0) {
       return null
     }
@@ -157,11 +131,11 @@ class SemesterWeekStateBuilder private () extends RelativeWeekStateBuilder() {
     build(weekIndeciesArray, weekday)
   }
 
-  def build(relativeWeekIndecies: String, weekday: EamsWeekday): SemesterWeekState = {
+  def build(relativeWeekIndecies: String, weekday: WeekDay): SemesterWeekTime = {
     build(Strings.splitToInt(relativeWeekIndecies), weekday)
   }
 
-  private def convertFrom(yearWeekState: YearWeekState): SemesterWeekState = {
+  private def convertFrom(yearWeekState: YearWeekTime): SemesterWeekTime = {
     if (yearWeekState == null) {
       return null
     }
@@ -169,7 +143,7 @@ class SemesterWeekStateBuilder private () extends RelativeWeekStateBuilder() {
     if (yearWeekState.direction == RTL) {
       year_weekStateString = new StringBuilder(year_weekStateString).reverse().toString
     }
-    val weekday = yearWeekState.getWeekday
+    val weekday = yearWeekState.day
     val sem_weekIndecies = CollectUtils.newArrayList()
     var oneIndex = -1
     while (oneIndex < year_weekStateString.length) {
@@ -178,7 +152,7 @@ class SemesterWeekStateBuilder private () extends RelativeWeekStateBuilder() {
         //break
       }
       val year_weekIndex = oneIndex + 1
-      val date = EamsDateUtil.SUNDAY_FIRST.getDate(yearWeekState.getYear, year_weekIndex, weekday)
+      val date = EamsDateUtil.SUNDAY_FIRST.getDate(yearWeekState.year, year_weekIndex, weekday)
       val sem_weekIndex = rdateUtil.getWeekIndex(date)
       if (sem_weekIndex < -RESERVE_BITS) {
         throw new WeekStateException("Convert Error: weekIndex is less than -" + RESERVE_BITS + 
@@ -189,15 +163,15 @@ class SemesterWeekStateBuilder private () extends RelativeWeekStateBuilder() {
       }
       sem_weekIndecies.add(sem_weekIndex)
     }
-    build(sem_weekIndecies.toArray(Array.ofDim[Integer](0)), yearWeekState.getWeekday)
+    build(sem_weekIndecies.toArray(Array.ofDim[Integer](0)), yearWeekState.day)
   }
 
-  def convertFrom(yearWeekStates: Array[YearWeekState]): SemesterWeekState = {
+  def convertFrom(yearWeekStates: Array[YearWeekTime]): SemesterWeekTime = {
     if (yearWeekStates == null || yearWeekStates.length == 0) {
       return null
     }
-    val weekday = yearWeekStates(0).getWeekday
-    for (i <- 1 until yearWeekStates.length if weekday != yearWeekStates(i).getWeekday) {
+    val weekday = yearWeekStates(0).day
+    for (i <- 1 until yearWeekStates.length if weekday != yearWeekStates(i).day) {
       throw new WeekStateException("Convert error: weekday should be same")
     }
     val states = CollectUtils.newArrayList()
@@ -219,11 +193,11 @@ class SemesterWeekStateBuilder private () extends RelativeWeekStateBuilder() {
     state
   }
 
-  def convertFrom(yearWeekStates: List[YearWeekState]): SemesterWeekState = {
+  def convertFrom(yearWeekStates: List[YearWeekTime]): SemesterWeekTime = {
     convertFrom(yearWeekStates.toArray(Array()))
   }
 
-  def convertFrom(yearWeekStates: Collection[YearWeekState]): SemesterWeekState = {
+  def convertFrom(yearWeekStates: Iterable[YearWeekTime]): SemesterWeekTime = {
     convertFrom(yearWeekStates.toArray(Array()))
   }
 
@@ -247,11 +221,7 @@ class SemesterWeekStateBuilder private () extends RelativeWeekStateBuilder() {
         sb.setCharAt(charAt, '1')
       }
     }
-    if (this.direction == LTR) {
-      Strings.rightPad(sb.toString, this.paddingLength, '0')
-    } else {
       Strings.leftPad(sb.reverse().toString.replaceAll("^0+1", "1"), this.paddingLength, '0')
-    }
   }
 
   def parse(weekState: String): Array[Integer] = parse(weekState, this.direction)

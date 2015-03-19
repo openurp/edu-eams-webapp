@@ -9,14 +9,14 @@ import javax.persistence.ManyToOne
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
 import org.beangle.commons.entity.pojo.LongIdObject
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.teach.code.CourseType
 import org.openurp.edu.eams.teach.election.CourseTypeCreditConstraint
 import org.openurp.edu.eams.teach.election.model.Enum.ConstraintType
 import ConstraintLogger._
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConversions._
+
+
 
 object ConstraintLogger {
 
@@ -90,31 +90,31 @@ object ConstraintLogger {
 class ConstraintLogger extends LongIdObject() {
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @BeanProperty
+  
   var semester: Semester = _
 
   @NotNull
   @Enumerated(value = EnumType.STRING)
-  @BeanProperty
+  
   var constraintType: ConstraintType = _
 
   @NotNull
   @Size(max = 30)
-  @BeanProperty
+  
   var `type`: String = _
 
   @NotNull
-  @BeanProperty
+  
   var key: String = _
 
-  @BeanProperty
+  
   var value: String = _
 
   @NotNull
-  @BeanProperty
+  
   var createdAt: Date = _
 
   @NotNull
-  @BeanProperty
+  
   var operator: String = _
 }

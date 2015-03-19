@@ -1,20 +1,20 @@
 package org.openurp.edu.eams.teach.grade.teacher.web.action
 
 import java.util.Date
-import java.util.List
-import java.util.Set
+
+
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.beangle.commons.entity.Entity
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.beangle.data.model.Entity
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.security.blueprint.User
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Teacher
 import org.openurp.edu.eams.teach.Grade
-import org.openurp.edu.eams.teach.code.industry.ExamStatus
-import org.openurp.edu.eams.teach.code.industry.GradeType
+import org.openurp.edu.teach.code.ExamStatus
+import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.teach.code.CourseType
 import org.openurp.edu.eams.teach.grade.course.GradeModifyApply
 import org.openurp.edu.eams.teach.grade.course.model.GradeModifyApplyBean
@@ -23,13 +23,13 @@ import org.openurp.edu.eams.teach.grade.model.GradeRateConfig
 import org.openurp.edu.eams.teach.grade.service.CourseGradeService
 import org.openurp.edu.eams.teach.grade.service.GradeRateService
 import org.openurp.edu.teach.grade.CourseGrade
-import org.openurp.edu.teach.grade.CourseGradeState
-import org.openurp.edu.eams.teach.lesson.ExamGrade
-import org.openurp.edu.eams.teach.lesson.ExamGradeState
+import org.openurp.edu.teach.grade.model.CourseGradeState
+import org.openurp.edu.teach.grade.ExamGrade
+import org.openurp.edu.teach.grade.model.ExamGradeState
 import org.openurp.edu.eams.teach.lesson.GradeTypeConstants
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class GradeModifyApplyAction extends SemesterSupportAction {
 
@@ -81,7 +81,7 @@ class GradeModifyApplyAction extends SemesterSupportAction {
     populateConditions(builder)
     builder.where("courseGrade.semester = :semester", semester)
     builder.where("courseGrade.project = :project", getProject)
-    builder.where("exists (from org.openurp.edu.teach.grade.CourseGradeState gradeState " + 
+    builder.where("exists (from org.openurp.edu.teach.grade.model.CourseGradeState gradeState " + 
       "where gradeState.lesson=courseGrade.lesson and gradeState.extraInputer = :user) " + 
       "or exists (from courseGrade.lesson.teachers teacher where teacher = :teacher)", user, teacher)
     builder.where("courseGrade.status = :status", Grade.Status.PUBLISHED)
@@ -115,9 +115,9 @@ class GradeModifyApplyAction extends SemesterSupportAction {
     val toUpdates = CollectUtils.newArrayList()
     for (examGrade <- examGrades) {
       if ((!tempGa && 
-        GradeTypeConstants.GA_ID == examGrade.gradeType.getId) || 
-        GradeTypeConstants.FINAL_ID == examGrade.gradeType.getId || 
-        GradeTypeConstants.BONUS_ID == examGrade.gradeType.getId) {
+        GradeTypeConstants.GA_ID == examGrade.gradeType.id) || 
+        GradeTypeConstants.FINAL_ID == examGrade.gradeType.id || 
+        GradeTypeConstants.BONUS_ID == examGrade.gradeType.id) {
         //continue
       }
       toUpdates.add(examGrade)
@@ -148,11 +148,11 @@ class GradeModifyApplyAction extends SemesterSupportAction {
     val user = entityDao.get(classOf[User], getUserId)
     for (examGrade <- examGrades) {
       val apply = Model.newInstance(classOf[GradeModifyApplyBean])
-      val scoreInputName = examGrade.gradeType.getShortName + "_" + courseGrade.getStd.getId
+      val scoreInputName = examGrade.gradeType.getShortName + "_" + courseGrade.getStd.id
       val examScoreStr = get(scoreInputName)
       var examStatusId = getInt("examStatus_" + scoreInputName)
       if ((null == examScoreStr && null == examStatusId && 
-        examGrade.gradeType.getId != GradeTypeConstants.GA_ID)) {
+        examGrade.gradeType.id != GradeTypeConstants.GA_ID)) {
         //continue
       }
       if (null == examStatusId) {
@@ -160,7 +160,7 @@ class GradeModifyApplyAction extends SemesterSupportAction {
       }
       val applyReason = get("applyReason_" + examGrade.gradeType.getShortName + 
         "_" + 
-        courseGrade.getStd.getId)
+        courseGrade.getStd.id)
       if (Strings.isBlank(applyReason)) {
         //continue
       }

@@ -14,7 +14,7 @@ import org.openurp.edu.eams.system.validate.model.Challenge
 import org.openurp.edu.eams.system.validate.service.ChallengeGenerator
 import org.openurp.edu.eams.web.action.BaseAction
 
-import scala.collection.JavaConversions._
+
 
 class MailValidateAction extends BaseAction {
 

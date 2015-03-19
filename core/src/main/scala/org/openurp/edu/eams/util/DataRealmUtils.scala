@@ -1,16 +1,14 @@
 package org.openurp.edu.eams.util
 
-import java.util.ArrayList
-import java.util.Collections
-import java.util.List
+
 import org.beangle.commons.dao.query.builder.Condition
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.openurp.base.Department
 import org.openurp.edu.base.code.StdType
 import org.openurp.edu.eams.system.security.DataRealm
 
-import scala.collection.JavaConversions._
+
 
 object DataRealmUtils {
 

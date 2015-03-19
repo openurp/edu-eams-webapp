@@ -2,22 +2,20 @@ package org.openurp.edu.eams.web.view.component.semester
 
 import java.io.InputStream
 import java.lang.reflect.Method
-import java.util.Collection
-import java.util.Collections
 import java.util.Comparator
-import java.util.List
-import java.util.Map
-import java.util.Map.Entry
+
+
+.Entry
 import java.util.Properties
 import java.util.TreeMap
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.YearWeekTime
 import org.apache.commons.beanutils.BeanUtils
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.lang.Strings
 import org.beangle.struts2.view.component.Form
 import org.beangle.struts2.view.component.UIBean
 import org.beangle.struts2.view.template.Theme
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.eams.web.view.component.semester.ui.SemesterCalendarUI
 import org.openurp.edu.eams.web.view.component.semester.ui.SemesterUIFactory
 import com.opensymphony.xwork2.util.ValueStack
@@ -25,7 +23,7 @@ import freemarker.ext.beans.HashAdapter
 import Rule._
 import AbstractSemesterCalendarUI._
 
-import scala.collection.JavaConversions._
+
 
 object AbstractSemesterCalendarUI {
 
@@ -101,7 +99,7 @@ object AbstractSemesterCalendarUI {
 
     private def updateConfig(timeToLiveMills: java.lang.Long, defaultUiType: String) {
       if (null == timeToLiveMills) {
-        timeToLiveMills = TimeUnit.MINUTES.toMillis(30)
+        timeToLiveMills = YearWeekTime.MINUTES.toMillis(30)
       }
       this.timeToLiveMills = timeToLiveMills
       if (null == defaultUiType) {
@@ -223,8 +221,8 @@ abstract class AbstractSemesterCalendarUI(stack: ValueStack) extends UIBean(stac
       semesterCalendarUI = SemesterUIFactory.get(uiType)
     }
     if (null != items) {
-      if (items.isInstanceOf[Collection[_]]) {
-        val c = CollectUtils.newArrayList(items.asInstanceOf[Collection[Semester]])
+      if (items.isInstanceOf[Iterable[_]]) {
+        val c = CollectUtils.newArrayList(items.asInstanceOf[Iterable[Semester]])
         Collections.sort(c)
         val termFormat = null != format && format.contains("T")
         val yearFormat = null != format && format.matches("^yy(-T)?$")
@@ -409,8 +407,8 @@ abstract class AbstractSemesterCalendarUI(stack: ValueStack) extends UIBean(stac
     if (null == items) {
       return true
     }
-    if (items.isInstanceOf[Collection[_]]) {
-      return items.asInstanceOf[Collection[_]].isEmpty
+    if (items.isInstanceOf[Iterable[_]]) {
+      return items.asInstanceOf[Iterable[_]].isEmpty
     }
     semesterTree.isEmpty
   }

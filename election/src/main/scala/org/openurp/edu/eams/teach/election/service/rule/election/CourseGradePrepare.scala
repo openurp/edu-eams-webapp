@@ -1,17 +1,17 @@
 package org.openurp.edu.eams.teach.election.service.rule.election
 
-import java.util.List
-import java.util.Map
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.EntityDao
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.edu.eams.teach.Grade
 import org.openurp.edu.eams.teach.election.service.context.PrepareContext
 import org.openurp.edu.eams.teach.election.service.context.PrepareContext.PreparedDataName
 import org.openurp.edu.eams.teach.election.service.rule.ElectRulePrepare
 import org.openurp.edu.teach.grade.CourseGrade
 
-import scala.collection.JavaConversions._
+
 
 class CourseGradePrepare extends ElectRulePrepare {
 

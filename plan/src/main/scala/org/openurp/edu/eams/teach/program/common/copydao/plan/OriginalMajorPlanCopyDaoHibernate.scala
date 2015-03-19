@@ -6,7 +6,7 @@ import org.openurp.edu.eams.teach.program.major.MajorPlan
 import org.openurp.edu.eams.teach.program.major.service.MajorPlanGenParameter
 import org.openurp.edu.eams.teach.program.original.model.OriginalPlanBean
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class OriginalMajorPlanCopyDaoHibernate extends AbstractPlanCopyDao {
 

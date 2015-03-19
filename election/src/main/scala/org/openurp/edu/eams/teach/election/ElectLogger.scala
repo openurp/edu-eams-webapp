@@ -1,15 +1,15 @@
 package org.openurp.edu.eams.teach.election
 
-import org.beangle.commons.entity.Entity
+import org.beangle.data.model.Entity
 import org.beangle.commons.entity.TimeEntity
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Project
 import org.openurp.edu.teach.code.CourseTakeType
 import org.openurp.edu.teach.code.ElectionMode
 import org.openurp.edu.eams.teach.election.model.Enum.ElectRuleType
 import org.openurp.edu.teach.lesson.CourseTake
 
-import scala.collection.JavaConversions._
+
 
 trait ElectLogger extends Entity[Long] with TimeEntity {
 

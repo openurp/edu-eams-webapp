@@ -9,14 +9,14 @@ import org.beangle.commons.lang.Numbers
 import org.beangle.commons.lang.Objects
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.text.i18n.TextResource
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.eams.base.util.WeekDay
 import org.openurp.edu.eams.base.util.WeekDays
-import org.openurp.edu.eams.date.EamsWeekday
+import org.beangle.commons.lang.time.WeekDays._
 import AvailableTime._
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConversions._
+
+
 
 object AvailableTime {
 
@@ -55,16 +55,16 @@ class AvailableTime extends LongIdObject with Serializable with Cloneable {
 
   @NotNull
   @Size(max = 200)
-  @BeanProperty
+  
   var available: String = _
 
   @Size(max = 200)
-  @BeanProperty
+  
   var remark: String = _
 
   @NotNull
   @Size(max = 20)
-  @BeanProperty
+  
   var struct: String = AvailableTime.STRUCTS
 
   private var units: Int = _
@@ -84,7 +84,7 @@ class AvailableTime extends LongIdObject with Serializable with Cloneable {
     for (i <- 0 until WeekDays.All.length) {
       val dayAvalible = available.substring(i * units, i * units + units)
       if (dayAvalible == allZeroUnit) //continue
-      sb.append(textResource.getText(EamsWeekday.getDay(i + 1).getI18nKey))
+      sb.append(textResource.getText(WeekDay.getDay(i + 1).getI18nKey))
       if (!Strings.contains(dayAvalible, '0')) {
         sb.append(" ")
         //continue

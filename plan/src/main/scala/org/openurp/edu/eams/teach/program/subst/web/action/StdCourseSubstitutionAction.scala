@@ -1,28 +1,28 @@
 package org.openurp.edu.eams.teach.program.subst.web.action
 
 import java.sql.Date
-import java.util.ArrayList
-import java.util.Iterator
-import java.util.List
-import java.util.Set
+
+
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.beangle.commons.entity.Entity
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.beangle.data.model.Entity
 import org.beangle.commons.lang.Strings
 import com.ekingstar.eams.base.Department
 import com.ekingstar.eams.core.Student
 import com.ekingstar.eams.teach.Course
-import org.openurp.edu.eams.teach.program.CourseGroup
+import org.openurp.edu.teach.plan.CourseGroup
 import org.openurp.edu.eams.teach.program.CoursePlan
-import org.openurp.edu.eams.teach.program.PlanCourse
+import org.openurp.edu.teach.plan.PlanCourse
 import org.openurp.edu.eams.teach.program.StdCourseSubstitution
 import org.openurp.edu.eams.teach.program.model.StdCourseSubstitutionBean
 import org.openurp.edu.eams.teach.program.service.CoursePlanProvider
 import com.ekingstar.eams.teach.service.CourseService
 import com.ekingstar.eams.web.action.common.RestrictionSupportAction
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class StdCourseSubstitutionAction extends RestrictionSupportAction {
 
@@ -125,7 +125,7 @@ class StdCourseSubstitutionAction extends RestrictionSupportAction {
       stdCourseSubstitution.asInstanceOf[StdCourseSubstitutionBean]
         .setCreatedAt(new Date(System.currentTimeMillis()))
     } else {
-      stdCourseSubId = stdCourseSubstitution.getId
+      stdCourseSubId = stdCourseSubstitution.id
     }
     if (stdCourseSubstitution.getOrigins.isEmpty || stdCourseSubstitution.getSubstitutes.isEmpty) {
       editSetting(entity)
@@ -134,7 +134,7 @@ class StdCourseSubstitutionAction extends RestrictionSupportAction {
       forward("edit")
     } else {
       val builder = OqlBuilder.from(classOf[StdCourseSubstitution], "stdCourseSubstitution")
-      builder.where("stdCourseSubstitution.std.id=:stdId", stdCourseSubstitution.getStd.getId)
+      builder.where("stdCourseSubstitution.std.id=:stdId", stdCourseSubstitution.getStd.id)
         .where("stdCourseSubstitution.std.project= :project", getProject)
       if (stdCourseSubId != 0) {
         builder.where("stdCourseSubstitution.id !=:stdCourseSubId", stdCourseSubId)

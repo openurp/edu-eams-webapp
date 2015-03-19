@@ -1,11 +1,11 @@
 package org.openurp.edu.eams.teach.election.service
 
-import java.util.Collection
-import java.util.List
-import java.util.Map
-import org.beangle.commons.entity.Entity
+
+
+
+import org.beangle.data.model.Entity
 import org.beangle.ems.rule.model.RuleConfig
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Project
 import org.openurp.edu.eams.teach.election.ElectionProfile
 import org.openurp.edu.eams.teach.election.model.Enum.ElectRuleType
@@ -13,7 +13,7 @@ import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.web.helper.RestrictionHelper
 import ElectionProfileService._
 
-import scala.collection.JavaConversions._
+
 
 object ElectionProfileService {
 
@@ -38,11 +38,11 @@ trait ElectionProfileService {
 
   def getRuleConfigs(`type`: ElectRuleType): List[RuleConfig]
 
-  def setLessonIds(ids: Collection[Long], lessonIds: Array[Any]): Unit
+  def setLessonIds(ids: Iterable[Long], lessonIds: Array[Any]): Unit
 
   def initDataByChance(profileId: java.lang.Long): Unit
 
-  def getData(profileId: java.lang.Long, lessonIds: Collection[Long]): String
+  def getData(profileId: java.lang.Long, lessonIds: Iterable[Long]): String
 
   def getLastUpdateTime(profileId: java.lang.Long): String
 

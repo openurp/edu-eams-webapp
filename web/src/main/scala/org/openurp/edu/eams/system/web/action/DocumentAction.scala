@@ -2,9 +2,9 @@ package org.openurp.edu.eams.system.web.action
 
 import java.io.File
 import java.sql.Date
-import java.util.List
+
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.beangle.ems.config.model.PropertyConfigItemBean
 import org.beangle.security.codec.EncryptUtil
@@ -17,7 +17,7 @@ import org.openurp.edu.eams.system.doc.model.TeacherDocument
 import org.openurp.edu.eams.system.doc.service.DocPath
 import org.openurp.edu.eams.web.action.common.FileAction
 
-import scala.collection.JavaConversions._
+
 
 class DocumentAction extends FileAction {
 

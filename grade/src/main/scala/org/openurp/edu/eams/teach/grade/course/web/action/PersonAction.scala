@@ -1,21 +1,21 @@
 package org.openurp.edu.eams.teach.grade.course.web.action
 
-import java.util.Collection
+
 import java.util.Date
-import java.util.Iterator
-import java.util.List
-import java.util.Map
+
+
+
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.eams.core.StdPerson
 import org.openurp.edu.base.Student
 import org.openurp.edu.eams.core.service.SemesterService
 import org.openurp.edu.eams.core.service.StudentService
 import org.openurp.edu.eams.teach.Grade
 import org.openurp.edu.eams.teach.code.industry.ExamMode
-import org.openurp.edu.eams.teach.code.industry.GradeType
+import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.eams.teach.grade.lesson.service.LessonGradeService
 import org.openurp.edu.eams.teach.grade.model.StdGpa
 import org.openurp.edu.eams.teach.grade.service.CourseGradeProvider
@@ -24,7 +24,7 @@ import org.openurp.edu.teach.grade.CourseGrade
 import org.openurp.edu.eams.teach.lesson.GradeTypeConstants
 import org.openurp.edu.eams.web.action.common.AbstractStudentProjectSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class PersonAction extends AbstractStudentProjectSupportAction {
 

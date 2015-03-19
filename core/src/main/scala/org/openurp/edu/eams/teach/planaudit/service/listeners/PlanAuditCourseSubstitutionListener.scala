@@ -1,28 +1,25 @@
 package org.openurp.edu.eams.teach.planaudit.service.listeners
 
-import java.util.Iterator
-import java.util.List
-import java.util.Map
-import java.util.Set
+
 import org.beangle.commons.collection.CollectUtils
-import org.openurp.edu.teach.Course
-import org.openurp.edu.eams.teach.grade.service.impl.GradeComparator
+import org.openurp.edu.base.Course
+import org.openurp.edu.teach.grade.domain.impl.GradeComparator
 import org.openurp.edu.teach.grade.CourseGrade
-import org.openurp.edu.eams.teach.planaudit.CourseAuditResult
-import org.openurp.edu.eams.teach.planaudit.GroupAuditResult
-import org.openurp.edu.eams.teach.planaudit.model.CourseAuditResultBean
+import org.openurp.edu.teach.planaudit.CourseAuditResult
+import org.openurp.edu.teach.planaudit.GroupAuditResult
+import org.openurp.edu.teach.planaudit.model.CourseAuditResultBean
 import org.openurp.edu.eams.teach.planaudit.service.PlanAuditContext
 import org.openurp.edu.eams.teach.planaudit.service.PlanAuditListener
 import org.openurp.edu.eams.teach.planaudit.service.StdGrade
-import org.openurp.edu.eams.teach.program.CourseGroup
+import org.openurp.edu.teach.plan.CourseGroup
 import org.openurp.edu.teach.plan.CourseSubstitution
-import org.openurp.edu.eams.teach.program.PlanCourse
+import org.openurp.edu.teach.plan.PlanCourse
 import org.openurp.edu.eams.teach.program.service.CourseSubstitutionService
 import org.openurp.edu.eams.teach.time.util.TermCalculator
 import PlanAuditCourseSubstitutionListener._
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConversions._
+
+
 
 object PlanAuditCourseSubstitutionListener {
 
@@ -31,7 +28,7 @@ object PlanAuditCourseSubstitutionListener {
 
 class PlanAuditCourseSubstitutionListener extends PlanAuditListener {
 
-  @BeanProperty
+  
   var courseSubstitutionService: CourseSubstitutionService = _
 
   private def getGroupKey(courseGroup: CourseGroup): String = courseGroup.getName + "c"

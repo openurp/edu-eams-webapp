@@ -7,13 +7,13 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonSerializationContext
 import com.google.gson.JsonSerializer
 
-import scala.collection.JavaConversions._
+
 
 class BaseCodeJsonAdapter extends JsonSerializer[BaseCode] {
 
   def serialize(baseCode: BaseCode, `type`: Type, jsc: JsonSerializationContext): JsonElement = {
     val jsonObject = new JsonObject()
-    jsonObject.addProperty("id", baseCode.getId)
+    jsonObject.addProperty("id", baseCode.id)
     jsonObject.addProperty("code", baseCode.getCode)
     jsonObject.addProperty("name", baseCode.getName)
     jsonObject

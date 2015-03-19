@@ -1,14 +1,14 @@
 package org.openurp.edu.eams.teach.grade.course.web.helper
 
 import org.openurp.base.Department
-import org.openurp.edu.teach.Course
+import org.openurp.edu.base.Course
 
-import scala.collection.JavaConversions._
+
 
 class MakeupCourse(val depart: Department, val course: Course, val count: Number)
     {
 
-  val id = course.getId + "@" + depart.getId
+  val id = course.id + "@" + depart.id
 
   var status: Int = _
 
@@ -24,5 +24,5 @@ class MakeupCourse(val depart: Department, val course: Course, val count: Number
 
   def getDepart(): Department = depart
 
-  def getId(): String = id
+  def id(): String = id
 }

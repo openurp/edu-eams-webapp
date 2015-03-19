@@ -32,12 +32,12 @@ import org.openurp.edu.eams.teach.schedule.web.action.ManualArrangeAction
 import org.openurp.edu.eams.teach.schedule.web.action.ManualArrangeForDepartAction
 import org.openurp.edu.eams.teach.schedule.web.action.MultiManualArrangeAction
 import org.openurp.edu.eams.teach.schedule.web.action.MultiManualArrangeForDepartAction
-import org.openurp.edu.eams.teach.schedule.web.action.ReplaceClassroomAction
+import org.openurp.edu.eams.teach.schedule.web.action.ReplaceRoomAction
 import org.openurp.edu.eams.teach.schedule.web.action.ScheduleLogSearchAction
 import org.openurp.edu.eams.teach.schedule.web.action.ScheduleSearchAction
 import org.openurp.edu.eams.web.util.DownloadHelper
 
-import scala.collection.JavaConversions._
+
 
 class ScheduleModule extends AbstractBindModule {
 
@@ -48,7 +48,7 @@ class ScheduleModule extends AbstractBindModule {
       classOf[CourseTableAction], classOf[CourseArrangeSwitchAction], classOf[CourseTableCheckAction], 
       classOf[CourseArrangeAlterationAction], classOf[CurriculumChangeApplyAction], classOf[CourseArrangeSettingAction], 
       classOf[CurriculumChangeManageAction], classOf[MultiManualArrangeAction], classOf[CalendarDownloadAction], 
-      classOf[ReplaceClassroomAction], classOf[LessonGroupAction], classOf[ArrangeSuggestAction], classOf[ArrangeSuggestToScheduleAction])
+      classOf[ReplaceRoomAction], classOf[LessonGroupAction], classOf[ArrangeSuggestAction], classOf[ArrangeSuggestToScheduleAction])
     bind("stdCourseTablePermissionChecker", classOf[DefaultStdCourseTablePermissionChecker])
     bind("manualArrange", classOf[ManualArrangeAction])
     bind("courseActivityService", classOf[CourseActivityServiceImpl])

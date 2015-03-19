@@ -5,24 +5,22 @@ import java.io.FileInputStream
 import java.io.IOException
 import java.io.InputStream
 import java.text.SimpleDateFormat
-import java.util.ArrayList
+
 import java.util.Calendar
-import java.util.Collection
-import java.util.Collections
 import java.util.Date
-import java.util.HashMap
-import java.util.Iterator
-import java.util.List
-import java.util.Map
-import java.util.Set
+
+
+
+
+
 import java.util.TreeMap
 import javax.servlet.http.HttpServletResponse
 import org.apache.commons.lang3.time.DateUtils
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import org.apache.struts2.ServletActionContext
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.beangle.commons.entity.Entity
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.beangle.data.model.Entity
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.lang.Arrays
 import org.beangle.commons.lang.Strings
@@ -55,7 +53,7 @@ import org.openurp.edu.eams.core.service.listener.AdminclassImportListener
 import com.google.gson.Gson
 import com.opensymphony.xwork2.ActionContext
 
-import scala.collection.JavaConversions._
+
 
 class AdminclassAction extends AdminclassSearchAction {
 
@@ -186,7 +184,7 @@ class AdminclassAction extends AdminclassSearchAction {
     null
   }
 
-  protected override def getExportDatas(): Collection[_] = {
+  protected override def getExportDatas(): Iterable[_] = {
     if ("std" == get("exportType")) {
       val ids = getIntIds("adminclass")
       val builder = OqlBuilder.from(classOf[Student], "student")
@@ -220,7 +218,7 @@ class AdminclassAction extends AdminclassSearchAction {
       val adminclassPropertyExtractor = new AdminclassPropertyExtractor(getTextResource)
       val query = OqlBuilder.from(classOf[StudentJournal], "studentJournal")
         .where("beginOn <= :now and :now <= endOn", new Date())
-      val ids = getIds("adminclass", classOf[Long])
+      val ids = ids("adminclass", classOf[Long])
       val builder = OqlBuilder.from(classOf[Student], "student")
       builder.orderBy("student.adminclass.name").orderBy("student.code")
         .limit(null)
@@ -485,14 +483,14 @@ class AdminclassAction extends AdminclassSearchAction {
         var b = false
         if (CollectUtils.isNotEmpty(t)) {
           val std = t.get(0)
-          if (std.getProject.getId == projectId && !studentList.contains(std)) {
+          if (std.getProject.id == projectId && !studentList.contains(std)) {
             studentList.add(std)
             b = true
           }
         } else {
           val t1 = entityDao.search(OqlBuilder.from(classOf[Student], "c").where("c.name like :name", 
             "%" + code.trim() + "%"))
-          for (std <- t1 if std.getProject.getId == projectId && !studentList.contains(std)) {
+          for (std <- t1 if std.getProject.id == projectId && !studentList.contains(std)) {
             studentList.add(std)
             b = true
           }
@@ -526,7 +524,7 @@ class AdminclassAction extends AdminclassSearchAction {
       val students = entityDao.get(classOf[Student], stdIds)
       for (student <- students) {
         val adminclass = student.getAdminclass
-        if (adminclass == null || adminclass.getId != adminclassId) {
+        if (adminclass == null || adminclass.id != adminclassId) {
           //continue
         }
         student.setAdminclass(null)
@@ -631,6 +629,6 @@ class AdminclassPropertyExtractor(resource: TextResource) extends DefaultPropert
   }
 
   private def searchJournal(std: Student): StudentJournal = {
-    journals.find(_.getStd.getId == std.getId).getOrElse(null)
+    journals.find(_.getStd.id == std.id).getOrElse(null)
   }
 }

@@ -1,24 +1,24 @@
 package org.openurp.edu.eams.teach.grade.course.web.action
 
-import java.util.List
-import java.util.Map
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.transfer.exporter.PropertyExtractor
 import org.openurp.base.Department
-import org.openurp.edu.eams.base.Semester
-import org.openurp.edu.eams.teach.code.industry.GradeType
+import org.openurp.base.Semester
+import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.eams.teach.grade.course.model.GradeStateStat
 import org.openurp.edu.eams.teach.grade.course.service.propertyExtractor.GradeStatExtractor
-import org.openurp.edu.teach.grade.CourseGradeState
+import org.openurp.edu.teach.grade.model.CourseGradeState
 import org.openurp.edu.eams.teach.lesson.GradeTypeConstants
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.teach.lesson.service.LessonService
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class GradeStateStatAction extends SemesterSupportAction {
 
@@ -59,7 +59,7 @@ class GradeStateStatAction extends SemesterSupportAction {
       lessonBuilder.where("lesson.teachDepart.id = :departmentId", departmentId)
       lessonBuilder.where("lesson.semester = :semester", putSemester(null))
       lessonBuilder.where("lesson.project = :project", getProject)
-      lessonBuilder.where("not exists(from org.openurp.edu.eams.teach.lesson.ExamGradeState egt where lesson=egt.gradeState.lesson and egt.gradeType.id = :gradeTypeId)", 
+      lessonBuilder.where("not exists(from org.openurp.edu.teach.grade.model.ExamGradeState egt where lesson=egt.gradeState.lesson and egt.gradeType.id = :gradeTypeId)", 
         gradeTypeId)
       lessonBuilder.limit(getPageLimit)
       lessonBuilder.orderBy(get(Order.ORDER_STR))
@@ -101,12 +101,12 @@ class GradeStateStatAction extends SemesterSupportAction {
       lessonBuilder.where("lesson.teachDepart = :department", department)
       lessonBuilder.where("lesson.semester = :semester", semester)
       lessonBuilder.where("lesson.project = :project", getProject)
-      lessonBuilder.where("not exists(from org.openurp.edu.eams.teach.lesson.ExamGradeState egt where lesson=egt.gradeState.lesson and egt.gradeType = :gradeType)", 
+      lessonBuilder.where("not exists(from org.openurp.edu.teach.grade.model.ExamGradeState egt where lesson=egt.gradeState.lesson and egt.gradeType = :gradeType)", 
         gradeType)
       lessonBuilder.select("select count(*)")
-      unInputLessonMap.put(department.getId + "_" + gradeType.getId, entityDao.search(lessonBuilder).get(0))
+      unInputLessonMap.put(department.id + "_" + gradeType.id, entityDao.search(lessonBuilder).get(0))
       val queryInput = OqlBuilder.from(classOf[CourseGradeState], "gradeState")
-      if (gradeType.getId == GradeTypeConstants.FINAL_ID) {
+      if (gradeType.id == GradeTypeConstants.FINAL_ID) {
         //continue
       }
       queryInput.where("gradeState.lesson.teachDepart= :department", department)

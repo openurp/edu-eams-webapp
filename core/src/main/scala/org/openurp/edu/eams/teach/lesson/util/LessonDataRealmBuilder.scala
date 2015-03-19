@@ -1,16 +1,15 @@
 package org.openurp.edu.eams.teach.lesson.util
 
 import java.text.MessageFormat
-import java.util.List
+
 import org.beangle.commons.dao.EntityDao
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.base.Department
 import org.openurp.edu.base.Project
 import org.openurp.code.edu.Education
 import org.openurp.edu.base.code.StdType
 import LessonDataRealmBuilder._
 
-import scala.collection.JavaConversions._
 
 object LessonDataRealmBuilder {
 

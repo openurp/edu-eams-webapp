@@ -2,16 +2,16 @@ package org.openurp.edu.eams.teach.lesson.service.limit.impl
 
 import java.io.Serializable
 import java.util.LinkedHashMap
-import java.util.List
-import java.util.Map
+
+
 import org.beangle.commons.collection.page.PageLimit
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.beangle.commons.entity.Entity
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.beangle.data.model.Entity
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.lang.Arrays
 import org.beangle.commons.lang.tuple.Pair
 
-import scala.collection.JavaConversions._
+
 
 abstract class AbstractCourseLimitEntityProvider[T <: Entity[ID], ID <: Serializable]
     extends AbstractCourseLimitContentProvider[T] {
@@ -20,7 +20,7 @@ abstract class AbstractCourseLimitEntityProvider[T <: Entity[ID], ID <: Serializ
     val entities = entityDao.get(getMetaEnum.getContentType.getName, "id", content)
     val results = new LinkedHashMap[String, T]()
     for (entity <- entities) {
-      results.put(entity.getId.toString, entity)
+      results.put(entity.id.toString, entity)
     }
     results
   }

@@ -1,16 +1,15 @@
 package org.openurp.edu.eams.core.service.internal
 
-import java.util.List
+
 import org.beangle.commons.dao.impl.BaseServiceImpl
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.base.Building
-import org.openurp.edu.eams.base.Campus
-import org.openurp.edu.eams.base.Semester
-import org.openurp.edu.eams.base.TimeSetting
+import org.openurp.base.Campus
+import org.openurp.base.Semester
+import org.openurp.base.TimeSetting
 import org.openurp.edu.base.Project
 import org.openurp.edu.eams.core.service.TimeSettingService
 
-import scala.collection.JavaConversions._
 
 class TimeSettingServiceImpl extends BaseServiceImpl with TimeSettingService {
 

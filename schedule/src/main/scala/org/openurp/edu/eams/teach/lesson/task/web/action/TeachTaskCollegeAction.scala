@@ -1,26 +1,26 @@
 package org.openurp.edu.eams.teach.lesson.task.web.action
 
-import java.util.List
+
 import org.beangle.commons.lang.Strings
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.eams.core.CommonAuditState
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.teach.lesson.service.LessonOperateViolation
 import org.openurp.edu.eams.teach.lesson.task.web.action.parent.LessonManagerCoreAction
 
-import scala.collection.JavaConversions._
+
 
 class TeachTaskCollegeAction extends LessonManagerCoreAction {
 
   override def copyViolationCheck(lesson: Lesson, semester: Semester): LessonOperateViolation = {
-    if (!lessonCollegeSwitchService.status(semester.getId, lesson.getProject.getId)) {
+    if (!lessonCollegeSwitchService.status(semester.id, lesson.getProject.id)) {
       return LessonOperateViolation.PERMIT_VIOLATION
     }
     LessonOperateViolation.NO_VIOLATION
   }
 
   override def operateViolationCheck(lesson: Lesson): LessonOperateViolation = {
-    if (!lessonCollegeSwitchService.status(lesson.getSemester.getId, lesson.getProject.getId)) {
+    if (!lessonCollegeSwitchService.status(lesson.getSemester.id, lesson.getProject.id)) {
       return LessonOperateViolation.PERMIT_VIOLATION
     }
     if (lesson.isPersisted) {

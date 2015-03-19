@@ -1,45 +1,30 @@
 package org.openurp.edu.eams.weekstate
 
-import org.openurp.edu.eams.weekstate.SemesterWeekState.RESERVE_BITS
-import org.openurp.edu.eams.weekstate.WeekStateDirection.LTR
-import org.openurp.edu.eams.weekstate.WeekStateDirection.RTL
 import java.util.Arrays
-import java.util.Collection
 import java.util.Date
-import java.util.List
-import java.util.Map
-import java.util.Map.Entry
 import java.util.TreeMap
-import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.lang.Strings
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.eams.date.EamsDateUtil
-import org.openurp.edu.eams.date.EamsWeekday
+import org.beangle.commons.lang.time.WeekDays._
 import org.openurp.edu.eams.date.RelativeDateUtil
 import org.openurp.edu.eams.exception.WeekStateException
-import YearWeekStateBuilder._
+import YearWeekTimeBuilder._
+import org.openurp.base.SemesterWeekTime
+import 
 
-import scala.collection.JavaConversions._
 
-object YearWeekStateBuilder {
+object YearWeekTimeBuilder {
 
-  def LTR(year: Int): YearWeekStateBuilder = {
-    val helper = new YearWeekStateBuilder()
+
+  def RTL(year: Int): YearWeekTimeBuilder = {
+    val helper = new YearWeekTimeBuilder()
     helper.year = year
-    helper.direction = WeekStateDirection.LTR
-    helper.paddingLength = BasicWeekState.MAX_LENGTH
-    helper
-  }
-
-  protected def RTL(year: Int): YearWeekStateBuilder = {
-    val helper = new YearWeekStateBuilder()
-    helper.year = year
-    helper.direction = WeekStateDirection.RTL
     helper.paddingLength = 0
     helper
   }
 
-  def convertFrom(semesterWeekState: SemesterWeekState): Array[YearWeekState] = {
+  def convertFrom(semesterWeekState: SemesterWeekTime): Array[YearWeekTime] = {
     if (semesterWeekState == null) {
       return null
     }
@@ -49,7 +34,7 @@ object YearWeekStateBuilder {
       semesterWeekStateString = new StringBuilder(semesterWeekStateString).reverse()
         .toString
     }
-    val weekday = semesterWeekState.getWeekday
+    val weekday = semesterWeekState.day
     val rdateUtil = RelativeDateUtil.startOn(semester)
     val actual_year2weekIndexOfYearList = new TreeMap[Integer, List[Integer]]()
     var oneIndex = -1
@@ -65,7 +50,7 @@ object YearWeekStateBuilder {
           " weeks")
       }
       val date = rdateUtil.getDate(sem_weekIndex, weekday)
-      val actual_year = EamsDateUtil.getYear(date)
+      val actual_year = EamsDateUtil.year(date)
       val actual_weekOfYear = EamsDateUtil.SUNDAY_FIRST.getWeekOfYear(date)
       var actual_year_weekIndecies = actual_year2weekIndexOfYearList.get(java.lang.Integer.valueOf(actual_year))
       if (actual_year_weekIndecies == null) {
@@ -80,10 +65,10 @@ object YearWeekStateBuilder {
       val year_weekIndecies = value
       states.add(LTR(year).build(year_weekIndecies.toArray(Array.ofDim[Integer](0)), weekday)(0))
     }
-    states.toArray(Array.ofDim[YearWeekState](0))
+    states.toArray(Array.ofDim[YearWeekTime](0))
   }
 
-  def merge(state1: YearWeekState, state2: YearWeekState): YearWeekState = {
+  def merge(state1: YearWeekTime, state2: YearWeekTime): YearWeekTime = {
     if (state1 == null && state2 == null) {
       return null
     }
@@ -94,17 +79,17 @@ object YearWeekStateBuilder {
     }
     if (state1.direction != state2.direction) {
       throw new WeekStateException("Merge Error: Direction Different")
-    } else if (state1.getWeekday != state2.getWeekday) {
+    } else if (state1.day != state2.day) {
       throw new WeekStateException("Merge Error: Weekday Different")
-    } else if (state1.getYear != state2.getYear) {
+    } else if (state1.year != state2.year) {
       throw new WeekStateException("Merge Error: Year Different")
     }
-    val res = new YearWeekState(state1)
+    val res = new YearWeekTime(state1)
     res.setWeekState(state1.getNumber | state2.getNumber)
     res
   }
 
-  def merge(states: Array[YearWeekState]): YearWeekState = {
+  def merge(states: Array[YearWeekTime]): YearWeekTime = {
     if (states == null || states.length == 0) {
       return null
     }
@@ -118,18 +103,18 @@ object YearWeekStateBuilder {
     res
   }
 
-  def merge(states: List[YearWeekState]): YearWeekState = {
+  def merge(states: List[YearWeekTime]): YearWeekTime = {
     if (CollectUtils.isEmpty(states)) {
       return null
     }
-    merge(states.toArray(Array.ofDim[YearWeekState](0)))
+    merge(states.toArray(Array.ofDim[YearWeekTime](0)))
   }
 
-  def merge(states: Collection[YearWeekState]): YearWeekState = {
+  def merge(states: Iterable[YearWeekTime]): YearWeekTime = {
     if (CollectUtils.isEmpty(states)) {
       return null
     }
-    merge(states.toArray(Array.ofDim[YearWeekState](0)))
+    merge(states.toArray(Array.ofDim[YearWeekTime](0)))
   }
 
   def parse(weekState: String, direction: WeekStateDirection): Array[Integer] = {
@@ -157,23 +142,23 @@ object YearWeekStateBuilder {
     parse(BinaryConverter.toString(weekState), direction)
   }
 
-  def build(date: Date, direction: WeekStateDirection): YearWeekState = {
-    val year = EamsDateUtil.getYear(date)
-    val weekday = EamsDateUtil.getWeekday(date)
+  def build(date: Date, direction: WeekStateDirection): YearWeekTime = {
+    val year = EamsDateUtil.year(date)
+    val weekday = EamsDateUtil.day(date)
     val weekOfYear = EamsDateUtil.SUNDAY_FIRST.getWeekOfYear(date)
     LTR(year).build(Array(weekOfYear), weekday)(0)
   }
 }
+import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.lang.time.YearWeekTime
 
-class YearWeekStateBuilder private () extends AbsolutWeekStateBuilder() {
+class YearWeekTimeBuilder {
 
   private var year: Int = _
 
-  private var direction: WeekStateDirection = _
-
   private var paddingLength: java.lang.Integer = _
 
-  def build(weekIndeciesOfYear: Array[Int], weekday: EamsWeekday): Array[YearWeekState] = {
+  def build(weekIndeciesOfYear: Array[Int], weekday: WeekDay): Array[YearWeekTime] = {
     if (weekIndeciesOfYear == null || weekIndeciesOfYear.length == 0) {
       return null
     }
@@ -183,7 +168,7 @@ class YearWeekStateBuilder private () extends AbsolutWeekStateBuilder() {
     for (weekOfYear <- weekIndeciesOfYear) {
       val date = SUNDAY_MODE.getDate(year, weekOfYear, weekday)
       val actual_weekOfYear = SUNDAY_MODE.getWeekOfYear(date)
-      val actual_year = EamsDateUtil.getYear(date)
+      val actual_year = EamsDateUtil.year(date)
       var actual_year_weekIndecies = actual_year2weekIndexOfYearList.get(java.lang.Integer.valueOf(actual_year))
       if (actual_year_weekIndecies == null) {
         actual_year_weekIndecies = CollectUtils.newArrayList()
@@ -195,17 +180,17 @@ class YearWeekStateBuilder private () extends AbsolutWeekStateBuilder() {
     for ((key, value) <- actual_year2weekIndexOfYearList) {
       val year = key
       val year_weekIndecies = value
-      val weekState = new YearWeekState()
+      val weekState = new YearWeekTime()
       weekState.setYear(year)
       weekState.setDirection(direction)
       weekState.setWeekState(buildString(year_weekIndecies.toArray(Array.ofDim[Integer](0)), year))
       weekState.setWeekday(weekday)
       states.add(weekState)
     }
-    states.toArray(Array.ofDim[YearWeekState](0))
+    states.toArray(Array.ofDim[YearWeekTime](0))
   }
 
-  def build(weekIndeciesOfYear: Array[Integer], weekday: EamsWeekday): Array[YearWeekState] = {
+  def build(weekIndeciesOfYear: Array[Integer], weekday: WeekDay): Array[YearWeekTime] = {
     if (weekIndeciesOfYear == null || weekIndeciesOfYear.length == 0) {
       return null
     }
@@ -216,7 +201,7 @@ class YearWeekStateBuilder private () extends AbsolutWeekStateBuilder() {
     build(weekIndeciesArray, weekday)
   }
 
-  def build(weekIndeciesOfYear: String, weekday: EamsWeekday): Array[YearWeekState] = {
+  def build(weekIndeciesOfYear: String, weekday: WeekDay): Array[YearWeekTime] = {
     if (Strings.isEmpty(weekIndeciesOfYear)) {
       return null
     }
@@ -238,14 +223,10 @@ class YearWeekStateBuilder private () extends AbsolutWeekStateBuilder() {
       }
       sb.setCharAt(weekIndex - 1, '1')
     }
-    if (this.direction == LTR) {
-      sb.toString
-    } else {
       Strings.leftPad(sb.reverse().toString.replaceAll("^0+1", "1"), this.paddingLength, '0')
-    }
   }
 
-  def parse(weekState: String): Array[Integer] = parse(weekState, this.direction)
+  def parse(weekState: String): Array[Integer] = parse(weekState)
 
-  def parse(weekState: java.lang.Long): Array[Integer] = parse(weekState, this.direction)
+  def parse(weekState: java.lang.Long): Array[Integer] = parse(weekState)
 }

@@ -1,10 +1,10 @@
 package org.openurp.edu.eams.core.service
 
-import java.util.Collection
-import java.util.List
+
+
 import org.openurp.edu.base.Teacher
 
-import scala.collection.JavaConversions._
+
 
 trait TeacherService {
 
@@ -22,7 +22,7 @@ trait TeacherService {
 
   def getTeachersById(teacherIds: Array[java.lang.Long]): List[Teacher]
 
-  def getTeachersById(teacherIds: Collection[_]): List[Teacher]
+  def getTeachersById(teacherIds: Iterable[_]): List[Teacher]
 
   def getTeachersByNO(teacherNOs: Array[String]): List[Teacher]
 

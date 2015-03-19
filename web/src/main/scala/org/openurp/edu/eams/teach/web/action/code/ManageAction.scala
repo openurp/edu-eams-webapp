@@ -5,7 +5,7 @@ import org.openurp.edu.eams.teach.code.industry.ExamType
 import org.openurp.edu.eams.teach.code.industry.OtherExamCategory
 import org.openurp.edu.eams.teach.code.industry.PressLevel
 
-import scala.collection.JavaConversions._
+
 
 class ManageAction extends AbstractManageAction {
 

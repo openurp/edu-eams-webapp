@@ -1,8 +1,6 @@
 package org.openurp.edu.eams.teach.grade.transcript.service.impl
 
-import java.util.Collections
-import java.util.List
-import java.util.Map
+
 import org.beangle.commons.collection.CollectUtils
 import org.springframework.beans.factory.InitializingBean
 import org.openurp.edu.base.Student
@@ -14,7 +12,7 @@ import org.openurp.edu.eams.teach.grade.service.impl.GradeFilterRegistry
 import org.openurp.edu.eams.teach.grade.transcript.service.TranscriptDataProvider
 import org.openurp.edu.teach.grade.CourseGrade
 
-import scala.collection.JavaConversions._
+
 
 class TranscriptGpaProvider extends TranscriptDataProvider with InitializingBean {
 

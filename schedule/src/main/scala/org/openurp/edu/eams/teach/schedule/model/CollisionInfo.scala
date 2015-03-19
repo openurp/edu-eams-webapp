@@ -1,21 +1,21 @@
 package org.openurp.edu.eams.teach.schedule.model
 
-import java.util.List
+
 import org.beangle.commons.collection.CollectUtils
 import org.openurp.edu.eams.teach.lesson.CourseTime
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConversions._
+
+
 
 class CollisionInfo {
 
-  @BeanProperty
+  
   var resource: AnyRef = _
 
-  @BeanProperty
+  
   var times: List[CourseTime] = CollectUtils.newArrayList()
 
-  @BeanProperty
+  
   var reason: String = _
 
   def this(resource: AnyRef, time: CourseTime) {
@@ -44,6 +44,6 @@ class CollisionInfo {
   }
 
   def mergeTimes() {
-    setTimes(CourseTime.mergeTimeUnits(getTimes))
+    setTimes(CourseTime.mergeYearWeekTimes(getTimes))
   }
 }

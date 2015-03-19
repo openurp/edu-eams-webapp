@@ -1,8 +1,8 @@
 package org.openurp.edu.eams.teach.program.log
 
-import java.util.Map
+
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class EndChain(someProperties: Map[String, String]) extends PhaseChain(someProperties) {
 

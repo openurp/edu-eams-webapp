@@ -1,13 +1,13 @@
 package org.openurp.edu.eams.teach.lesson.task.web.action.old
 
-import java.util.HashMap
-import java.util.HashSet
-import java.util.List
-import java.util.Map
-import java.util.Set
-import org.beangle.commons.dao.query.builder.OqlBuilder
+
+
+
+
+
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.base.code.StdType
 import org.openurp.edu.teach.lesson.Lesson
@@ -19,7 +19,7 @@ import org.openurp.edu.eams.teach.time.util.TermCalculator
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 import org.openurp.edu.eams.web.helper.BaseInfoSearchHelper
 
-import scala.collection.JavaConversions._
+
 
 class TeachTaskCheckAction extends SemesterSupportAction {
 
@@ -60,7 +60,7 @@ class TeachTaskCheckAction extends SemesterSupportAction {
       val tasksQuery = OqlBuilder.from(classOf[Lesson], "task")
       tasksQuery.where("task.semester.id=:semeterId", getLong("task.semester.id"))
       tasksQuery.join("task.teachClass.adminClasses", "adminClass")
-      tasksQuery.where("adminClass.id in (:adminClassIds)", Array(adminClass.getId))
+      tasksQuery.where("adminClass.id in (:adminClassIds)", Array(adminClass.id))
       val tasks = entityDao.search(tasksQuery)
       val taskCourses = new HashSet()
       for (z <- 0 until tasks.size) {
@@ -77,7 +77,7 @@ class TeachTaskCheckAction extends SemesterSupportAction {
       val allCourses = new HashSet()
       allCourses.addAll(planCourses)
       allCourses.addAll(taskCourses)
-      adminClassMap.put(adminClass.getId.toString, Array(planCourses, taskCourses, allCourses, onCampusTimeNotFound))
+      adminClassMap.put(adminClass.id.toString, Array(planCourses, taskCourses, allCourses, onCampusTimeNotFound))
     }
     put("adminClassMap", adminClassMap)
     forward()

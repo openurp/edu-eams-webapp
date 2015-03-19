@@ -1,11 +1,11 @@
 package org.openurp.edu.eams.teach.program.personal.web.action
 
 import java.util.Date
-import java.util.HashMap
-import java.util.Map
+
+
 import org.apache.commons.lang3.ArrayUtils
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.struts2.helper.QueryHelper
 import com.ekingstar.eams.core.Student
 import com.ekingstar.eams.core.code.industry.StdStatus
@@ -22,7 +22,7 @@ import org.openurp.edu.eams.teach.program.service.CoursePlanProvider
 import org.openurp.edu.eams.teach.program.service.NoMajorProgramException
 import com.ekingstar.eams.web.action.common.ProjectSupportAction
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class PersonalPlanSearchAction extends ProjectSupportAction {
 
@@ -134,7 +134,7 @@ class PersonalPlanSearchAction extends ProjectSupportAction {
       val std = entityDao.get(classOf[Student], stdId)
       val personalPlan = coursePlanProvider.getPersonalPlan(std)
       val oneComparisonResult = new HashMap[String, Any]()
-      multiComparisonResult.put(personalPlan.getId.toString, oneComparisonResult)
+      multiComparisonResult.put(personalPlan.id.toString, oneComparisonResult)
       oneComparisonResult.put("personalPlan", personalPlan)
       try {
         val majorTeachPlan = personalPlanService.getMajorPlanForDiff(std)

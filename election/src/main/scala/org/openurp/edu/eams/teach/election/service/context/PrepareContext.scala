@@ -1,17 +1,17 @@
 package org.openurp.edu.eams.teach.election.service.context
 
 import java.io.Serializable
-import java.util.List
-import java.util.Set
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.openurp.edu.base.Student
 import org.openurp.edu.eams.teach.election.ElectionProfile
 import org.openurp.edu.teach.lesson.CourseTake
 import org.openurp.edu.teach.plan.CoursePlan
 import PrepareContext._
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConversions._
+
+
 
 object PrepareContext {
 
@@ -60,11 +60,11 @@ object PrepareContext {
 }
 
 @SerialVersionUID(55623470436456155L)
-class PrepareContext(@BeanProperty val profile: ElectionProfile, 
-    @BeanProperty val state: ElectState, 
-    @BeanProperty val student: Student, 
-    @BeanProperty val takes: List[CourseTake], 
-    @BeanProperty val plan: CoursePlan) extends Serializable() {
+class PrepareContext( val profile: ElectionProfile, 
+     val state: ElectState, 
+     val student: Student, 
+     val takes: List[CourseTake], 
+     val plan: CoursePlan) extends Serializable() {
 
   private var preparedDataNames: Set[PreparedDataName] = CollectUtils.newHashSet()
 

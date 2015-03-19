@@ -2,19 +2,19 @@ package org.openurp.edu.eams.teach.lesson.task.service.genstrategy.impl
 
 import java.sql.Date
 import java.text.MessageFormat
-import java.util.ArrayList
-import java.util.HashSet
-import java.util.List
-import java.util.Map
-import java.util.Set
+
+
+
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.lang.Strings
-import org.openurp.edu.eams.base.Semester
-import org.openurp.edu.eams.base.code.school.ClassroomType
+import org.openurp.base.Semester
+import org.openurp.edu.eams.base.code.school.RoomType
 import org.openurp.edu.eams.base.util.WeekStates
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.eams.core.service.SemesterService
-import org.openurp.edu.teach.Course
+import org.openurp.edu.base.Course
 import org.openurp.edu.teach.code.CourseType
 import org.openurp.edu.eams.teach.lesson.CourseSchedule
 import org.openurp.edu.teach.lesson.Lesson
@@ -30,15 +30,15 @@ import org.openurp.edu.eams.teach.lesson.task.biz.LessonGenPreview
 import org.openurp.edu.eams.teach.lesson.task.service.LessonPlanRelationService
 import org.openurp.edu.eams.teach.lesson.task.service.TaskGenObserver
 import org.openurp.edu.eams.teach.lesson.task.service.genstrategy.AbstractLessonGenStrategy
-import org.openurp.edu.eams.teach.program.PlanCourse
+import org.openurp.edu.teach.plan.PlanCourse
 import org.openurp.edu.teach.plan.MajorPlan
 import org.openurp.edu.teach.plan.MajorPlanCourse
-import org.openurp.edu.eams.teach.program.major.model.MajorPlanCourseGroupBean
+import org.openurp.edu.eams.teach.program.major.model.MajorCourseGroupBean
 import org.openurp.edu.eams.teach.program.util.PlanUtils
 import org.openurp.edu.eams.teach.time.util.TermCalculator
 import org.openurp.edu.eams.teach.util.AdminclassQueryBuilder
 
-import scala.collection.JavaConversions._
+
 
 class ClassicLessonGenStrategy extends AbstractLessonGenStrategy {
 
@@ -247,7 +247,7 @@ class ClassicLessonGenStrategy extends AbstractLessonGenStrategy {
     val semester = params.get("semester").asInstanceOf[Semester]
     val startWeek = params.get("startWeek").asInstanceOf[java.lang.Integer]
     val weeks = params.get("weeks").asInstanceOf[java.lang.Integer]
-    val roomType = params.get("roomType").asInstanceOf[ClassroomType]
+    val roomType = params.get("roomType").asInstanceOf[RoomType]
     val lesson = LessonBean.getDefault
     lesson.setProject(plan.getProgram.major.getProject)
     lesson.setTeachDepart(planCourse.department)
@@ -284,11 +284,11 @@ class ClassicLessonGenStrategy extends AbstractLessonGenStrategy {
       if (plan.getProgram.direction != null) {
         builder.in(plan.getProgram.direction)
       }
-      if (planCourse.getCourseGroup.isInstanceOf[MajorPlanCourseGroupBean]) {
-        if (planCourse.getCourseGroup.asInstanceOf[MajorPlanCourseGroupBean]
+      if (planCourse.getCourseGroup.isInstanceOf[MajorCourseGroupBean]) {
+        if (planCourse.getCourseGroup.asInstanceOf[MajorCourseGroupBean]
           .direction != 
           null) {
-          builder.in(planCourse.getCourseGroup.asInstanceOf[MajorPlanCourseGroupBean]
+          builder.in(planCourse.getCourseGroup.asInstanceOf[MajorCourseGroupBean]
             .direction)
         }
       }

@@ -2,16 +2,14 @@ package org.openurp.edu.eams.teach.lesson.task.web.action.parent
 
 import org.beangle.commons.web.util.RequestUtils.encodeAttachName
 import java.io.IOException
-import java.util.ArrayList
-import java.util.Collection
-import java.util.Collections
+
 import java.util.Date
-import java.util.HashMap
-import java.util.Iterator
+
+
 import java.util.LinkedHashMap
-import java.util.List
-import java.util.Map
-import java.util.Set
+
+
+
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 import org.apache.commons.lang3.ArrayUtils
@@ -19,8 +17,8 @@ import org.apache.struts2.ServletActionContext
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
 import org.beangle.commons.collection.page.PageLimit
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.beangle.commons.entity.Entity
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.beangle.data.model.Entity
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.lang.Arrays
 import org.beangle.commons.lang.Strings
@@ -35,11 +33,11 @@ import org.beangle.commons.transfer.io.TransferFormat
 import org.beangle.commons.web.util.RequestUtils
 import org.beangle.ems.config.model.PropertyConfigItemBean
 import org.beangle.struts2.convention.route.Action
-import org.openurp.edu.eams.base.Campus
+import org.openurp.base.Campus
 import org.openurp.base.Department
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.code.person.Gender
-import org.openurp.edu.eams.base.code.school.ClassroomType
+import org.openurp.edu.eams.base.code.school.RoomType
 import org.openurp.edu.eams.base.model.WeekState
 import org.openurp.edu.eams.base.util.WeekDays
 import org.openurp.edu.eams.base.util.WeekStates
@@ -51,20 +49,20 @@ import org.openurp.edu.base.code.StdType
 import org.openurp.edu.eams.core.service.AdminclassService
 import org.openurp.edu.eams.core.service.TimeSettingService
 import org.openurp.edu.eams.system.doc.service.DocPath
-import org.openurp.edu.teach.Course
+import org.openurp.edu.base.Course
 import org.openurp.edu.eams.teach.code.industry.ExamMode
 import org.openurp.edu.eams.teach.code.industry.ExamType
 import org.openurp.edu.eams.teach.code.industry.TeachLangType
 import org.openurp.edu.eams.teach.code.school.CourseHourType
 import org.openurp.edu.teach.code.CourseType
 import org.openurp.edu.eams.teach.exam.ExamTurn
-import org.openurp.edu.eams.teach.exam.service.ExamTimeUnitUtil
+import org.openurp.edu.eams.teach.exam.service.ExamYearWeekTimeUtil
 import org.openurp.edu.teach.lesson.CourseLimitGroup
 import org.openurp.edu.teach.lesson.CourseLimitItem
 import org.openurp.edu.teach.lesson.CourseLimitMeta
 import org.openurp.edu.teach.lesson.CourseLimitMeta.Operator
 import org.openurp.edu.teach.lesson.CourseTake
-import org.openurp.edu.eams.teach.lesson.ExamActivity
+import org.openurp.edu.teach.exam.ExamActivity
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.teach.lesson.LessonTag
 import org.openurp.edu.teach.lesson.TeachClass
@@ -95,11 +93,11 @@ import org.openurp.edu.eams.teach.lesson.task.splitter.NumberMode
 import org.openurp.edu.eams.teach.lesson.task.util.ProjectUtils
 import org.openurp.edu.eams.teach.lesson.task.web.action.TeachTaskSearchAction
 import org.openurp.edu.eams.teach.lesson.util.CourseActivityDigestor
-import org.openurp.edu.eams.teach.lesson.util.TimeUnitUtil
+import org.openurp.edu.eams.teach.lesson.util.YearWeekTimeUtil
 import org.openurp.edu.eams.web.helper.BaseInfoSearchHelper
 import LessonManagerCoreAction._
 
-import scala.collection.JavaConversions._
+
 
 object LessonManagerCoreAction {
 
@@ -157,7 +155,7 @@ abstract class LessonManagerCoreAction extends TeachTaskSearchAction {
     put("teacherDeparts", getDeparts)
     addBaseCode("langTypes", classOf[TeachLangType])
     put("campuses", project.getCampuses)
-    put("lessonCollegeSwitchStatus", lessonCollegeSwitchService.status(semester.getId, getProject.getId))
+    put("lessonCollegeSwitchStatus", lessonCollegeSwitchService.status(semester.id, getProject.id))
     forward()
   }
 
@@ -185,11 +183,11 @@ abstract class LessonManagerCoreAction extends TeachTaskSearchAction {
     }
     put("lessons", lessons)
     put("tags", entityDao.getAll(classOf[LessonTag]))
-    put("classroomTypes", baseCodeService.getCodes(classOf[ClassroomType]))
+    put("classroomTypes", baseCodeService.getCodes(classOf[RoomType]))
     put("teachDeparts", departmentService.getTeachDeparts)
     put("langTypes", baseCodeService.getCodes(classOf[TeachLangType]))
-    put("guaPaiTagId", LessonTag.PredefinedTags.GUAPAI.getId)
-    put("canxuanTagId", LessonTag.PredefinedTags.ELECTABLE.getId)
+    put("guaPaiTagId", LessonTag.PredefinedTags.GUAPAI.id)
+    put("canxuanTagId", LessonTag.PredefinedTags.ELECTABLE.id)
     put("courseHourTypes", baseCodeService.getCodes(classOf[CourseHourType]))
     put("courseTypes", baseCodeService.getCodes(classOf[CourseType]))
     put("examModes", baseCodeService.getCodes(classOf[ExamMode]))
@@ -210,7 +208,7 @@ abstract class LessonManagerCoreAction extends TeachTaskSearchAction {
     put("lessons", lessons)
     val genderMap = new HashMap[String, Gender]()
     for (lesson <- lessons) {
-      genderMap.put(lesson.getId.toString, courseLimitService.extractGender(lesson.getTeachClass))
+      genderMap.put(lesson.id.toString, courseLimitService.extractGender(lesson.getTeachClass))
     }
     put("genderMap", genderMap)
     put("lessonIds", get("lessonIds"))
@@ -228,11 +226,11 @@ abstract class LessonManagerCoreAction extends TeachTaskSearchAction {
       case _ => //break
     }
     for (lesson <- lessons) {
-      val teachClassName = get("fake" + lesson.getId + ".teachClass.name")
+      val teachClassName = get("fake" + lesson.id + ".teachClass.name")
       lesson.getTeachClass.setName(teachClassName)
-      val grade = get("fake" + lesson.getId + ".teachClass.grade")
+      val grade = get("fake" + lesson.id + ".teachClass.grade")
       lesson.getTeachClass.setGrade(grade)
-      val genderId = getInt("fake" + lesson.getId + ".gender.id")
+      val genderId = getInt("fake" + lesson.id + ".gender.id")
       val courseLimitBuilder = courseLimitService.builder(lesson.getTeachClass)
       courseLimitBuilder.clear(new CourseLimitMetaBean(CourseLimitMetaEnum.GENDER.getMetaId))
       courseLimitBuilder.clear(new CourseLimitMetaBean(CourseLimitMetaEnum.GRADE.getMetaId))
@@ -247,9 +245,9 @@ abstract class LessonManagerCoreAction extends TeachTaskSearchAction {
         emptyGroups.add(group)
       }
       lesson.getTeachClass.getLimitGroups.removeAll(emptyGroups)
-      val limitCount = getInt("fake" + lesson.getId + ".teachClass.limitCount")
+      val limitCount = getInt("fake" + lesson.id + ".teachClass.limitCount")
       lesson.getTeachClass.setLimitCount(limitCount)
-      val autoName = getBoolean("fake" + lesson.getId + ".autoname")
+      val autoName = getBoolean("fake" + lesson.id + ".autoname")
       if (true == autoName) {
         teachClassNameStrategy.autoName(lesson.getTeachClass)
       }
@@ -268,44 +266,44 @@ abstract class LessonManagerCoreAction extends TeachTaskSearchAction {
       case _ => //break
     }
     for (lesson <- lessons) {
-      val courseId = getLong("fake" + lesson.getId + ".course")
+      val courseId = getLong("fake" + lesson.id + ".course")
       if (courseId != null) {
         lesson.setCourse(entityDao.get(classOf[Course], courseId))
       }
-      val courseTypeId = getInt("fake" + lesson.getId + ".courseType.id")
+      val courseTypeId = getInt("fake" + lesson.id + ".courseType.id")
       if (null != courseTypeId) {
         lesson.setCourseType(entityDao.get(classOf[CourseType], courseTypeId))
       }
-      val teachDepartId = getInt("fake" + lesson.getId + ".teachDepart.id")
+      val teachDepartId = getInt("fake" + lesson.id + ".teachDepart.id")
       if (null != teachDepartId) {
         lesson.setTeachDepart(entityDao.get(classOf[Department], teachDepartId))
       }
-      val examModeId = getInt("fake" + lesson.getId + ".examMode.id")
+      val examModeId = getInt("fake" + lesson.id + ".examMode.id")
       if (examModeId == null) {
         lesson.setExamMode(null)
       } else {
         lesson.setExamMode(entityDao.get(classOf[ExamMode], examModeId))
       }
-      val teacherIds = getIds("fake" + lesson.getId + ".teacher", classOf[Long])
+      val teacherIds = ids("fake" + lesson.id + ".teacher", classOf[Long])
       if (teacherIds == null || teacherIds.length == 0) {
         lessonService.fillTeachers(Array.ofDim[Long](0), lesson)
       } else {
         lessonService.fillTeachers(teacherIds, lesson)
       }
-      val startWeek = getInt("lesson" + lesson.getId + ".courseSchedule.startWeek")
-      val endWeek = getInt("lesson" + lesson.getId + ".courseSchedule.endWeek")
+      val startWeek = getInt("lesson" + lesson.id + ".courseSchedule.startWeek")
+      val endWeek = getInt("lesson" + lesson.id + ".courseSchedule.endWeek")
       if (null != startWeek && null != endWeek) {
         lesson.getCourseSchedule.setWeekState(WeekStates.build(startWeek + "-" + endWeek))
       } else {
-        lesson.getCourseSchedule.setWeekState(WeekStates.build(get("lesson" + lesson.getId + ".courseSchedule.weekState")))
+        lesson.getCourseSchedule.setWeekState(WeekStates.build(get("lesson" + lesson.id + ".courseSchedule.weekState")))
       }
-      val roomTypeId = getInt("fake" + lesson.getId + ".roomType.id")
+      val roomTypeId = getInt("fake" + lesson.id + ".roomType.id")
       if (roomTypeId == null) {
         lesson.getCourseSchedule.setRoomType(null)
       } else {
-        lesson.getCourseSchedule.setRoomType(entityDao.get(classOf[ClassroomType], roomTypeId))
+        lesson.getCourseSchedule.setRoomType(entityDao.get(classOf[RoomType], roomTypeId))
       }
-      val langId = getInt("fake" + lesson.getId + ".lang.id")
+      val langId = getInt("fake" + lesson.id + ".lang.id")
       if (langId == null) {
         lesson.setLangType(null)
       } else {
@@ -313,18 +311,18 @@ abstract class LessonManagerCoreAction extends TeachTaskSearchAction {
       }
       lesson.getTags.clear()
       val tags = entityDao.getAll(classOf[LessonTag])
-      for (tag <- tags if true == getBoolean("fake" + lesson.getId + ".guapai" + tag.getId)) {
+      for (tag <- tags if true == getBoolean("fake" + lesson.id + ".guapai" + tag.id)) {
         lesson.getTags.add(tag)
       }
-      val campusId = getInt("fake" + lesson.getId + ".campus.id")
+      val campusId = getInt("fake" + lesson.id + ".campus.id")
       if (campusId == null) {
         lesson.setCampus(null)
       } else {
         lesson.setCampus(entityDao.get(classOf[Campus], campusId))
       }
-      val remark = get("fake" + lesson.getId + ".remark")
+      val remark = get("fake" + lesson.id + ".remark")
       lesson.setRemark(remark)
-      val limitCount = getInt("fake" + lesson.getId + ".teachClass.limitCount")
+      val limitCount = getInt("fake" + lesson.id + ".teachClass.limitCount")
       if (null != limitCount) {
         lesson.getTeachClass.setLimitCount(limitCount)
       }
@@ -574,7 +572,7 @@ abstract class LessonManagerCoreAction extends TeachTaskSearchAction {
     val groupItems = new LinkedHashMap[CourseLimitGroup, List[CourseLimitItem]]()
     val limitItemContents = new HashMap[Long, Map[String, String]]()
     for (limitItem <- limitItems) {
-      val courseLimitMetaEnum = metaIdEnums.get(limitItem.getMeta.getId)
+      val courseLimitMetaEnum = metaIdEnums.get(limitItem.getMeta.id)
       if (null != courseLimitMetaEnum) {
         val group = limitItem.getGroup
         var items = groupItems.get(group)
@@ -583,7 +581,7 @@ abstract class LessonManagerCoreAction extends TeachTaskSearchAction {
           groupItems.put(group, items)
         }
         val provider = courseLimitItemContentProviderFactory.getProvider(courseLimitMetaEnum)
-        limitItemContents.put(limitItem.getId, provider.getContentIdTitleMap(limitItem.getContent))
+        limitItemContents.put(limitItem.id, provider.getContentIdTitleMap(limitItem.getContent))
         items.add(limitItem)
       }
     }
@@ -596,11 +594,11 @@ abstract class LessonManagerCoreAction extends TeachTaskSearchAction {
     if (isLessonExamArrange) {
       put("isLessonExamArrange", true)
       put("weeks", WeekDays.All)
-      if (lesson.getId != null) {
+      if (lesson.id != null) {
         val activity = lessonExamArrangeHelper.getExamActivityByLesson(lesson)
         if (activity != null) {
-          put("exam_weeks", ExamTimeUnitUtil.getTeachWeekOfYear(lesson.getSemester, activity.getStartAt))
-          put("exam_weekDay", ExamTimeUnitUtil.getWeekDayByDate(activity.getStartAt))
+          put("exam_weeks", ExamYearWeekTimeUtil.getTeachWeekOfYear(lesson.getSemester, activity.getStartAt))
+          put("exam_weekDay", ExamYearWeekTimeUtil.getWeekDayByDate(activity.getStartAt))
           put("exam_turn", lessonExamArrangeHelper.getExamTurnByActivity(activity))
           put("activity", activity)
         }
@@ -611,9 +609,9 @@ abstract class LessonManagerCoreAction extends TeachTaskSearchAction {
     put("examTurns", entityDao.search(query))
     put("normalClass", new NormalClassBean())
     put("lesson", lesson)
-    put("guaPaiTagId", LessonTag.PredefinedTags.GUAPAI.getId)
+    put("guaPaiTagId", LessonTag.PredefinedTags.GUAPAI.id)
     addBaseCode("courseTypeList", classOf[CourseType])
-    addBaseCode("classroomTypeList", classOf[ClassroomType])
+    addBaseCode("classroomTypeList", classOf[RoomType])
     addBaseInfo("campusList", classOf[Campus])
     put("examModes", baseCodeService.getCodes(classOf[ExamMode]))
     put("teacherDeparts", project.departments)
@@ -627,7 +625,7 @@ abstract class LessonManagerCoreAction extends TeachTaskSearchAction {
     val groupIds = CollectUtils.newHashSet()
     val takes = lesson.getTeachClass.getCourseTakes
     for (courseTake <- takes if courseTake.getLimitGroup != null) {
-      groupIds.add(courseTake.getLimitGroup.getId)
+      groupIds.add(courseTake.getLimitGroup.id)
     }
     groupIds
   }
@@ -669,7 +667,7 @@ abstract class LessonManagerCoreAction extends TeachTaskSearchAction {
           put("entities", provider.getOtherContents(content, term, getPageLimit))
         }
       }
-      if (!classOf[Entity].isAssignableFrom(provider.getMetaEnum.getContentType)) {
+      if (!classOf[Entity[_]].isAssignableFrom(provider.getMetaEnum.getContentType)) {
         result = provider.getMetaEnum.toString.toLowerCase()
       }
     }
@@ -719,7 +717,7 @@ abstract class LessonManagerCoreAction extends TeachTaskSearchAction {
     for (task <- lessons) {
       val myCourseTakes = new ArrayList[CourseTake]()
       myCourseTakes.addAll(task.getTeachClass.getCourseTakes)
-      courseTakes.put(task.getId.toString, myCourseTakes)
+      courseTakes.put(task.id.toString, myCourseTakes)
     }
     put("lessons", lessons)
     put("courseTakes", courseTakes)
@@ -751,16 +749,16 @@ abstract class LessonManagerCoreAction extends TeachTaskSearchAction {
     val educationMap = new HashMap[String, List[Education]]()
     val stdTypeMap = new HashMap[String, List[StdType]]()
     for (lesson <- tasks) {
-      if (arrangeInfos.get(lesson.getId) == null) {
-        arrangeInfos.put(lesson.getId, digestor.digest(getTextResource, lesson, format))
+      if (arrangeInfos.get(lesson.id) == null) {
+        arrangeInfos.put(lesson.id, digestor.digest(getTextResource, lesson, format))
       }
       val myCourseTakes = CollectUtils.newArrayList()
       myCourseTakes.addAll(lesson.getTeachClass.getCourseTakes)
       val educations = courseLimitService.extractEducations(lesson.getTeachClass)
-      educationMap.put(lesson.getId.toString, educations)
+      educationMap.put(lesson.id.toString, educations)
       val stdTypes = courseLimitService.extractStdTypes(lesson.getTeachClass)
-      stdTypeMap.put(lesson.getId.toString, stdTypes)
-      firstTimes.put(lesson.getId, TimeUnitUtil.buildFirstLessonDay(lesson))
+      stdTypeMap.put(lesson.id.toString, stdTypes)
+      firstTimes.put(lesson.id, YearWeekTimeUtil.buildFirstLessonDay(lesson))
     }
     put("tasks", tasks)
     put("arrangeInfos", arrangeInfos)
@@ -790,7 +788,7 @@ abstract class LessonManagerCoreAction extends TeachTaskSearchAction {
     var lesson = populate(classOf[Lesson], "lesson")
     var update = false
     if (lesson.isPersisted) {
-      lesson = entityDao.get(classOf[Lesson], lesson.getId)
+      lesson = entityDao.get(classOf[Lesson], lesson.id)
       populate(lesson, "lesson")
       update = true
     }
@@ -849,7 +847,7 @@ abstract class LessonManagerCoreAction extends TeachTaskSearchAction {
     val electedLimitGroupIds = getElectedLimitGroupIds(lesson)
     val limitGroups = teachClass.getLimitGroups
     val toRemove = CollectUtils.newArrayList()
-    for (courseLimitGroup <- limitGroups if !electedLimitGroupIds.contains(courseLimitGroup.getId)) {
+    for (courseLimitGroup <- limitGroups if !electedLimitGroupIds.contains(courseLimitGroup.id)) {
       toRemove.add(courseLimitGroup)
     }
     teachClass.getLimitGroups.removeAll(toRemove)
@@ -1018,12 +1016,12 @@ abstract class LessonManagerCoreAction extends TeachTaskSearchAction {
     var iter = lessons.iterator()
     while (iter.hasNext) {
       val task = iter.next().asInstanceOf[Lesson]
-      taskStdCollisionMap.put(task.getId.toString, CollectUtils.newArrayList())
-      arrangeInfos.put(task.getId.toString, CourseActivityDigestor.getInstance.digest(getTextResource, 
+      taskStdCollisionMap.put(task.id.toString, CollectUtils.newArrayList())
+      arrangeInfos.put(task.id.toString, CourseActivityDigestor.getInstance.digest(getTextResource, 
         task))
-      courseTakes.put(task.getId.toString, CollectUtils.newArrayList(task.getTeachClass.getCourseTakes))
+      courseTakes.put(task.id.toString, CollectUtils.newArrayList(task.getTeachClass.getCourseTakes))
       val params = new HashMap[String, Any]()
-      params.put("taskId", task.getId)
+      params.put("taskId", task.id)
       params.put("semester", task.getSemester)
       val collisionQuery = new StringBuilder()
       collisionQuery.append("select stdTake.std.id from")
@@ -1034,12 +1032,12 @@ abstract class LessonManagerCoreAction extends TeachTaskSearchAction {
         .append("\n and exists (")
         .append("\n 	select activity.id from org.openurp.edu.teach.lesson.Lesson task join task.courseSchedule.activities activity")
         .append("\n 	where task.id=:taskId")
-        .append("\n 	and bitand(activity.time.weekStateNum, activity2.time.weekStateNum) > 0")
-        .append("\n 	and activity.time.weekday = activity2.time.weekday")
-        .append("\n 	and activity.time.startTime <= activity2.time.endTime")
-        .append("\n 	and activity2.time.startTime <= activity.time.endTime")
+        .append("\n 	and bitand(activity.time.state, activity2.time.state) > 0")
+        .append("\n 	and activity.time.day = activity2.time.day")
+        .append("\n 	and activity.time.start <= activity2.time.end")
+        .append("\n 	and activity2.time.start <= activity.time.end")
         .append("\n )")
-      taskStdCollisionMap.get(task.getId.toString).addAll(entityDao.search(collisionQuery.toString, params))
+      taskStdCollisionMap.get(task.id.toString).addAll(entityDao.search(collisionQuery.toString, params))
     }
     put("lessons", lessons)
     put("arrangeInfos", arrangeInfos)

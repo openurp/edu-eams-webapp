@@ -4,26 +4,26 @@ import org.openurp.edu.eams.teach.Grade.Status.CONFIRMED
 import org.openurp.edu.eams.teach.Grade.Status.PUBLISHED
 import java.io.IOException
 import java.util.Date
-import java.util.Iterator
-import java.util.List
-import java.util.Map
+
+
+
 import javax.servlet.http.HttpServletResponse
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.lang.Strings
 import org.beangle.security.blueprint.User
 import org.beangle.struts2.convention.route.Action
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Project
 import org.openurp.edu.base.Student
-import org.openurp.edu.teach.Course
+import org.openurp.edu.base.Course
 import org.openurp.edu.eams.teach.Grade
 import org.openurp.edu.teach.code.CourseTakeType
 import org.openurp.edu.eams.teach.code.industry.ExamMode
-import org.openurp.edu.eams.teach.code.industry.ExamStatus
-import org.openurp.edu.eams.teach.code.industry.GradeType
+import org.openurp.edu.teach.code.ExamStatus
+import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.eams.teach.code.industry.ScoreMarkStyle
 import org.openurp.edu.teach.code.CourseType
 import org.openurp.edu.eams.teach.grade.course.service.MarkStyleHelper
@@ -35,14 +35,14 @@ import org.openurp.edu.eams.teach.grade.service.CourseGradeCalculator
 import org.openurp.edu.eams.teach.grade.service.GradeCourseTypeProvider
 import org.openurp.edu.eams.teach.grade.service.GradeRateService
 import org.openurp.edu.teach.grade.CourseGrade
-import org.openurp.edu.teach.grade.CourseGradeState
+import org.openurp.edu.teach.grade.model.CourseGradeState
 import org.openurp.edu.teach.lesson.CourseTake
-import org.openurp.edu.eams.teach.lesson.ExamGrade
-import org.openurp.edu.eams.teach.lesson.ExamTake
+import org.openurp.edu.teach.grade.ExamGrade
+import org.openurp.edu.teach.exam.ExamTake
 import org.openurp.edu.eams.teach.lesson.GradeTypeConstants
 import org.openurp.edu.teach.lesson.Lesson
 
-import scala.collection.JavaConversions._
+
 
 class StdGradeAction extends StdGradeSearchAction {
 
@@ -87,14 +87,14 @@ class StdGradeAction extends StdGradeSearchAction {
       if (lessons.size >= 1) {
         val lesson = lessons.get(0)
         val gradeState = courseGradeService.getState(lesson)
-        resMap.put("lessonId", lesson.getId.toString)
+        resMap.put("lessonId", lesson.id.toString)
         resMap.put("courseCode", lesson.getCourse.getCode.trim())
         resMap.put("courseName", lesson.getCourse.getName.trim())
         var markStyleId: java.lang.Integer = null
         var markStyleName = ""
         if (gradeState == null) {
           if (null != lesson.getCourse.getExamMode && 
-            lesson.getCourse.getExamMode.getId != ExamMode.NORMAL) {
+            lesson.getCourse.getExamMode.id != ExamMode.NORMAL) {
             markStyleId = ScoreMarkStyle.RANK_EN
             markStyleName = "英文等级制"
           } else {
@@ -102,7 +102,7 @@ class StdGradeAction extends StdGradeSearchAction {
             markStyleName = "百分制"
           }
         } else {
-          markStyleId = gradeState.getScoreMarkStyle.getId
+          markStyleId = gradeState.getScoreMarkStyle.id
           markStyleName = gradeState.getScoreMarkStyle.getName
         }
         resMap.put("markStyleId", markStyleId.toString)
@@ -134,7 +134,7 @@ class StdGradeAction extends StdGradeSearchAction {
         val course = courses.get(0)
         courseMap.put("courseName", course.getName)
         courseMap.put("credit", course.getCredits + "")
-        courseMap.put("courseId", course.getId.toString)
+        courseMap.put("courseId", course.id.toString)
       }
     } else {
       courseMap.put("responseStr", "reqIsNull")
@@ -162,7 +162,7 @@ class StdGradeAction extends StdGradeSearchAction {
         } else if (takes.size > 1) {
           stdMap.put("dataException", "takeDataException")
         } else {
-          stdMap.put("stdId", std.getId.toString)
+          stdMap.put("stdId", std.id.toString)
           stdMap.put("stdName", std.getName)
         }
       }
@@ -183,7 +183,7 @@ class StdGradeAction extends StdGradeSearchAction {
     if (semesterId != null && Strings.isNotEmpty(stuCode) && Strings.isNotEmpty(courseCode)) {
       val semester = entityDao.get(classOf[Semester], semesterId)
       val grade = getCourseGrade(stuCode.trim(), semester, courseCode, gradeTypeId)
-      resMap.put("gradeId", if (grade.getId == null) "" else grade.getId.toString)
+      resMap.put("gradeId", if (grade.id == null) "" else grade.id.toString)
       if (null != grade.getStd) {
         resMap.put("stdName", grade.getStd.getName)
         val examGrade = grade.getExamGrade(Model.newInstance(classOf[GradeType], gradeTypeId))
@@ -191,9 +191,9 @@ class StdGradeAction extends StdGradeSearchAction {
         resMap.put("examGradeStatus", if (examGrade == null) "" else if (examGrade.getExamStatus == null) "" else examGrade.getExamStatus.getName)
         resMap.put("lessonNo", if (grade.getLessonNo == null) "" else grade.getLessonNo)
         val courseType = grade.getCourseType
-        resMap.put("courseTypeId", if (courseType == null) "" else courseType.getId.toString)
+        resMap.put("courseTypeId", if (courseType == null) "" else courseType.id.toString)
         val courseTakeType = grade.getCourseTakeType
-        resMap.put("courseTakeTypeId", if (courseTakeType == null) "" else courseTakeType.getId.toString)
+        resMap.put("courseTakeTypeId", if (courseTakeType == null) "" else courseTakeType.id.toString)
         resMap.put("flag", "true")
       } else {
         resMap.put("flag", "false")
@@ -390,7 +390,7 @@ class StdGradeAction extends StdGradeSearchAction {
     val grade = populateEntity(classOf[CourseGrade], "courseGrade")
     val take = getCourseTake(grade.getLesson, grade.getStd)
     val project = getProject
-    val lesson = entityDao.get(classOf[Lesson], grade.getLesson.getId)
+    val lesson = entityDao.get(classOf[Lesson], grade.getLesson.id)
     if (stdGradeService.checkStdGradeExists(grade.getStd, grade.getSemester, lesson.getCourse, getProject)) {
       return redirect("search", "该课程成绩已存在!")
     }
@@ -414,7 +414,7 @@ class StdGradeAction extends StdGradeSearchAction {
     var it = gradeTypes.iterator()
     while (it.hasNext) {
       val gradeType = it.next()
-      val gradeTypeId = gradeType.getId
+      val gradeTypeId = gradeType.id
       val score = get("examGrade" + gradeTypeId + ".score")
       val statusId = getInt("examGrade" + gradeTypeId + ".examStatus.id")
       if (Strings.isNotBlank(score) || null != statusId && statusId != ExamStatus.NORMAL) {
@@ -457,7 +457,7 @@ class StdGradeAction extends StdGradeSearchAction {
   def saveAddGradeByStd(): String = {
     val grade = buildGrade()
     saveCourseGrade(grade)
-    redirect("search", "info.save.success", "&stdId=" + grade.getStd.getId)
+    redirect("search", "info.save.success", "&stdId=" + grade.getStd.id)
   }
 
   def saveAndAddNext(): String = {
@@ -469,8 +469,8 @@ class StdGradeAction extends StdGradeSearchAction {
   private def buildGrade(): CourseGrade = {
     val grade = populateEntity(classOf[CourseGrade], "courseGrade")
     val take = getCourseTake(grade.getLesson, grade.getStd)
-    val lesson = entityDao.get(classOf[Lesson], grade.getLesson.getId)
-    val std = entityDao.get(classOf[Student], grade.getStd.getId)
+    val lesson = entityDao.get(classOf[Lesson], grade.getLesson.id)
+    val std = entityDao.get(classOf[Student], grade.getStd.id)
     grade.setLesson(lesson)
     grade.setStd(std)
     grade.setCreatedAt(new Date())
@@ -479,7 +479,7 @@ class StdGradeAction extends StdGradeSearchAction {
     grade.setCourse(lesson.getCourse)
     val markStyle = grade.getMarkStyle
     if (null != grade.getMarkStyle) {
-      grade.setMarkStyle(entityDao.get(classOf[ScoreMarkStyle], markStyle.getId))
+      grade.setMarkStyle(entityDao.get(classOf[ScoreMarkStyle], markStyle.id))
     }
     grade.setStatus(Grade.Status.PUBLISHED)
     grade.setCourseType(lesson.getCourseType)
@@ -495,7 +495,7 @@ class StdGradeAction extends StdGradeSearchAction {
     markStyleHelper.init(ScoreMarkStyle.PERCENT)
     val gradeTypes = entityDao.search(stdGradeService.buildGradeTypeQuery())
     for (gradeType <- gradeTypes) {
-      val gradeTypeId = gradeType.getId
+      val gradeTypeId = gradeType.id
       val score = get("examGrade" + gradeTypeId + ".score")
       val statusId = getInt("examGrade" + gradeTypeId + ".examStatus.id")
       if (Strings.isNotEmpty(score) || null != statusId && statusId != ExamStatus.NORMAL) {
@@ -535,7 +535,7 @@ class StdGradeAction extends StdGradeSearchAction {
       semesterYear, semesterTerm)
     if (null == semester) return gradeInfo
     val grade = getCourseGrade(stdCode.trim(), semester, courseCode, gradeTypeId)
-    gradeInfo(0) = grade.getId
+    gradeInfo(0) = grade.id
     if (null != grade.getStd) {
       gradeInfo(1) = grade.getStd.getName
       val examGrade = grade.getExamGrade(new GradeType(gradeTypeId))
@@ -547,14 +547,14 @@ class StdGradeAction extends StdGradeSearchAction {
       gradeInfo(5) = grade.getLessonNo
       val courseType = grade.getCourseType
       if (courseType != null) {
-        gradeInfo(6) = courseType.getId
+        gradeInfo(6) = courseType.id
       }
       val courseTakeType = grade.getCourseTakeType
       if (courseTakeType != null) {
-        gradeInfo(7) = courseTakeType.getId
+        gradeInfo(7) = courseTakeType.id
       }
       if (null != grade.getCourseTakeType) {
-        gradeInfo(8) = grade.getCourseTakeType.getId
+        gradeInfo(8) = grade.getCourseTakeType.id
       }
     }
     gradeInfo

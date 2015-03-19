@@ -1,19 +1,17 @@
 package org.openurp.edu.eams.web.view.component
 
-import java.util.ArrayList
-import java.util.Collections
-import java.util.Iterator
-import java.util.List
-import java.util.Map
+
+
+
 import org.apache.struts2.util.MakeIterator
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.entity.HierarchyEntity
 import org.beangle.struts2.view.component.ClosingUIBean
 import com.opensymphony.xwork2.util.ValueStack
 import Menu._
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConversions._
+
+
 
 object Menu {
 
@@ -85,50 +83,50 @@ object Menu {
 
 class Menu(stack: ValueStack) extends ClosingUIBean(stack) {
 
-  @BeanProperty
+  
   var label: String = _
 
-  @BeanProperty
+  
   var title: String = _
 
-  @BeanProperty
+  
   var multi: String = _
 
-  @BeanProperty
+  
   var name: String = _
 
-  @BeanProperty
+  
   var onChange: String = _
 
-  @BeanProperty
+  
   var onClick: String = _
 
-  @BeanProperty
+  
   var initCallback: String = _
 
-  @BeanProperty
+  
   var autocomplete: String = "false"
 
-  @BeanProperty
+  
   var empty: AnyRef = _
 
-  @BeanProperty
+  
   var required: AnyRef = _
 
-  @BeanProperty
+  
   var items: List[_] = new ArrayList[Any]()
 
   private var allIndex: Int = -1
 
   private var curOption: Option = _
 
-  @BeanProperty
+  
   var `var`: String = _
 
-  @BeanProperty
+  
   var value: String = _
 
-  @BeanProperty
+  
   var filters: Map[String, String] = CollectUtils.newHashMap()
 
   protected override def evaluateParams() {

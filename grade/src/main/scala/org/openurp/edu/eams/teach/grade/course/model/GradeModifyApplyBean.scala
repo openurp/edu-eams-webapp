@@ -8,17 +8,17 @@ import javax.persistence.ManyToOne
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
 import org.beangle.commons.entity.pojo.NumberIdTimeObject
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Project
 import org.openurp.edu.base.Student
-import org.openurp.edu.teach.Course
-import org.openurp.edu.eams.teach.code.industry.ExamStatus
-import org.openurp.edu.eams.teach.code.industry.GradeType
+import org.openurp.edu.base.Course
+import org.openurp.edu.teach.code.ExamStatus
+import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.eams.teach.grade.course.GradeModifyApply
 import GradeModifyApplyBean._
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConversions._
+
+
 
 object GradeModifyApplyBean {
 
@@ -42,7 +42,7 @@ object GradeModifyApplyBean {
 
     class GradeModifyStatus private () extends Val {
 
-      @BeanProperty
+      
       var fullName: String = _
 
       private def this(fullName: String) {
@@ -61,72 +61,72 @@ class GradeModifyApplyBean extends NumberIdTimeObject[Long] with GradeModifyAppl
 
   @NotNull
   @ManyToOne(fetch = FetchType.LAZY)
-  @BeanProperty
+  
   var std: Student = _
 
   @NotNull
   @ManyToOne(fetch = FetchType.LAZY)
-  @BeanProperty
+  
   var semester: Semester = _
 
   @NotNull
   @ManyToOne(fetch = FetchType.LAZY)
-  @BeanProperty
+  
   var project: Project = _
 
   @NotNull
   @ManyToOne(fetch = FetchType.LAZY)
-  @BeanProperty
+  
   var course: Course = _
 
   @NotNull
   @ManyToOne(fetch = FetchType.LAZY)
-  @BeanProperty
+  
   var gradeType: GradeType = _
 
   @NotNull
   @ManyToOne(fetch = FetchType.LAZY)
-  @BeanProperty
+  
   var examStatus: ExamStatus = _
 
   @NotNull
   @ManyToOne(fetch = FetchType.LAZY)
-  @BeanProperty
+  
   var examStatusBefore: ExamStatus = _
 
-  @BeanProperty
+  
   var origScore: java.lang.Float = _
 
-  @BeanProperty
+  
   var origScoreText: String = _
 
-  @BeanProperty
+  
   var score: java.lang.Float = _
 
-  @BeanProperty
+  
   var scoreText: String = _
 
   @NotNull
   @Enumerated(value = EnumType.STRING)
-  @BeanProperty
+  
   var status: GradeModifyStatus = GradeModifyStatus.NOT_AUDIT
 
-  @BeanProperty
+  
   var applyReason: String = _
 
-  @BeanProperty
+  
   var auditReason: String = _
 
   @Size(max = 50)
-  @BeanProperty
+  
   var applyer: String = _
 
   @Size(max = 50)
-  @BeanProperty
+  
   var auditer: String = _
 
   @Size(max = 50)
-  @BeanProperty
+  
   var finalAuditer: String = _
 
   def hasChange(): Boolean = {

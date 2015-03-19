@@ -1,11 +1,9 @@
 package org.openurp.edu.eams.teach.grade.transcript.web.action
 
 import java.io.File
-import java.io.StringWriter
-import java.util.Collections
-import java.util.Date
-import java.util.List
-import java.util.Map
+import java.io.StringWriterimport java.util.Date
+
+
 import javax.servlet.http.HttpServletRequest
 import org.apache.commons.io.FileUtils
 import org.beangle.commons.lang.Strings
@@ -19,7 +17,7 @@ import org.openurp.edu.base.Student
 import org.openurp.edu.eams.system.report.ReportTemplate
 import org.openurp.edu.eams.system.report.service.ReportTemplateService
 import org.openurp.edu.teach.code.CourseTakeType
-import org.openurp.edu.eams.teach.code.industry.GradeType
+import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.eams.teach.grade.transcript.service.TranscriptDataProvider
 import org.openurp.edu.eams.teach.grade.transcript.service.impl.SpringTranscriptDataProviderRegistry
 import org.openurp.edu.eams.teach.lesson.GradeTypeConstants
@@ -29,7 +27,7 @@ import org.openurp.edu.eams.web.util.DownloadHelper
 import com.google.gson.Gson
 import com.opensymphony.xwork2.ActionContext
 
-import scala.collection.JavaConversions._
+
 
 class FinalAction extends SemesterSupportAction {
 

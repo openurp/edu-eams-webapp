@@ -1,22 +1,22 @@
 package org.openurp.edu.eams.teach.grade.setting.service.impl
 
-import java.util.List
-import java.util.Map
+
+
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.impl.BaseServiceImpl
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.ems.dictionary.service.BaseCodeService
 import org.openurp.edu.base.Project
 import org.openurp.edu.base.ProjectConfig
 import org.openurp.edu.base.ProjectProperty
-import org.openurp.edu.eams.teach.code.industry.GradeType
+import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.eams.teach.grade.model.CourseGradeSetting
 import org.openurp.edu.eams.teach.grade.service.CourseGradeSettings
 import com.google.gson.Gson
 import CourseGradeSettingsImpl._
 
-import scala.collection.JavaConversions._
+
 
 object CourseGradeSettingsImpl {
 
@@ -47,12 +47,12 @@ class CourseGradeSettingsImpl extends BaseServiceImpl with CourseGradeSettings {
       }
     }
     if (null == setting) {
-      setting = cache.get(project.getId)
+      setting = cache.get(project.id)
       if (setting == null) {
         setting = new CourseGradeSetting(project)
         val allTypes = baseCodeService.getCodes(classOf[GradeType])
         setting.getGaElementTypes.retainAll(allTypes)
-        cache.put(project.getId, setting)
+        cache.put(project.id, setting)
       }
     }
     setting

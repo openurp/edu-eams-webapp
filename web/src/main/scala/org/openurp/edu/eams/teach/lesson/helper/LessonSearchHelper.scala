@@ -2,25 +2,25 @@ package org.openurp.edu.eams.teach.lesson.helper
 
 import java.sql.Timestamp
 import java.util.Date
-import java.util.Iterator
-import java.util.List
+
+
 import org.apache.commons.lang3.StringUtils
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
 import org.beangle.commons.dao.query.builder.Condition
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.BitStrings
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.lang.tuple.Pair
 import org.beangle.struts2.helper.Params
 import org.beangle.struts2.helper.QueryHelper
 import org.openurp.base.Department
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.eams.core.CommonAuditState
 import org.openurp.edu.eams.teach.code.industry.ExamType
 import org.openurp.edu.eams.teach.lesson.ArrangeSuggest
-import org.openurp.edu.eams.teach.lesson.ExamActivity.ExamAuditState
+import org.openurp.edu.teach.exam.ExamActivity.ExamAuditState
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.teach.lesson.LessonTag
 import org.openurp.edu.eams.teach.lesson.model.CourseScheduleBean
@@ -28,7 +28,7 @@ import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnum
 import org.openurp.edu.eams.teach.lesson.util.SemesterUtil
 import org.openurp.edu.eams.web.helper.SearchHelper
 
-import scala.collection.JavaConversions._
+
 
 class LessonSearchHelper extends SearchHelper {
 
@@ -77,7 +77,7 @@ class LessonSearchHelper extends SearchHelper {
       query.where("lesson.auditStatus = :status", CommonAuditState.valueOf(status.toUpperCase()))
     }
     val buildingId = Params.getLong("fack.building.id")
-    val weekday = Params.getInt("fake.time.weekday")
+    val weekday = Params.getInt("fake.time.day")
     var courseUnit = Params.getInt("courseActivity.time.startUnit")
     var activityWeekStart = Params.getInt("fake.time.weekstart")
     var activityWeekEnd = Params.getInt("fake.time.weekend")
@@ -101,8 +101,8 @@ class LessonSearchHelper extends SearchHelper {
       if (null != courseUnit) activityQuery.append("and courseActivity.time.startUnit <= " + courseUnit + 
         " and courseActivity.time.endUnit >= " + 
         courseUnit)
-      if (null != weekday) activityQuery.append("and courseActivity.time.weekday=" + weekday)
-      if (null != activityWeekState) activityQuery.append(" and bitand(courseActivity.time.weekStateNum," + activityWeekState + 
+      if (null != weekday) activityQuery.append("and courseActivity.time.day=" + weekday)
+      if (null != activityWeekState) activityQuery.append(" and bitand(courseActivity.time.state," + activityWeekState + 
         ")>0")
       if (null != buildingId) activityQuery.append(" and exists(from courseActivity.rooms as cr where cr.building.id=" + 
         buildingId + 
@@ -163,9 +163,9 @@ class LessonSearchHelper extends SearchHelper {
     }
     val guapai = Params.getBoolean("fake.guapai")
     if (true == guapai) {
-      query.where("exists (select tag.id from lesson.tags tag where tag.id=:guaPai)", LessonTag.PredefinedTags.GUAPAI.getId)
+      query.where("exists (select tag.id from lesson.tags tag where tag.id=:guaPai)", LessonTag.PredefinedTags.GUAPAI.id)
     } else if (false == guapai) {
-      query.where("not exists (select tag.id from lesson.tags tag where tag.id=:guaPai)", LessonTag.PredefinedTags.GUAPAI.getId)
+      query.where("not exists (select tag.id from lesson.tags tag where tag.id=:guaPai)", LessonTag.PredefinedTags.GUAPAI.id)
     }
     val adminclassName = Params.get("fake.adminclass.name")
     if (Strings.isNotBlank(adminclassName)) {
@@ -184,10 +184,10 @@ class LessonSearchHelper extends SearchHelper {
         while (iter.hasNext) {
           val adminclass = iter.next()
           adminclassCondition.append("instr(litem.content, ',")
-            .append(adminclass.getId.toString)
+            .append(adminclass.id.toString)
             .append(",') > 0")
             .append(" or litem.content ='")
-            .append(adminclass.getId.toString)
+            .append(adminclass.id.toString)
             .append("' ")
           if (iter.hasNext) {
             adminclassCondition.append(" or ")
@@ -212,12 +212,12 @@ class LessonSearchHelper extends SearchHelper {
     if (examTypeId != null && examTypeId == ExamType.MAKEUP) {
       var semesterId = Params.getInt("lesson.semester.id")
       if (semesterId == null) semesterId = Params.getInt("semesterId")
-      query.where("exists (from org.openurp.edu.eams.teach.lesson.ExamTake examTake where examTake.examType.id in (:examTypeIds)" + 
+      query.where("exists (from org.openurp.edu.teach.exam.ExamTake examTake where examTake.examType.id in (:examTypeIds)" + 
         " and examTake.lesson.project.id = :projectId and examTake.semester.id = :semesterId and examTake.lesson = lesson)", 
         Array(ExamType.MAKEUP, ExamType.DELAY), Params.getInt("lesson.project.id"), semesterId)
     }
     if (isExamArrangeComplete == 1) {
-      var activitySubQuery = "exists(from org.openurp.edu.eams.teach.lesson.ExamActivity " + 
+      var activitySubQuery = "exists(from org.openurp.edu.teach.exam.ExamActivity " + 
         "examActivity left join examActivity.examRooms examRoom where examActivity.lesson=lesson and " + 
         "examActivity.examType.id=:examTypeId"
       val activityParams = CollectUtils.newArrayList()
@@ -270,7 +270,7 @@ class LessonSearchHelper extends SearchHelper {
       activityCondition.params(activityParams)
       query.where(activityCondition)
     } else if (isExamArrangeComplete == 0) {
-      query.where("not exists (from org.openurp.edu.eams.teach.lesson.ExamActivity exam " + 
+      query.where("not exists (from org.openurp.edu.teach.exam.ExamActivity exam " + 
         "where exam.lesson=lesson and exam.examType.id=:examTypeId)", examTypeId)
     }
     val queryGrouped = Params.getBoolean("arrangeInfo.examGrouped")

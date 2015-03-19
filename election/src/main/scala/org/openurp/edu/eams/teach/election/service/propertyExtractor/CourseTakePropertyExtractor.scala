@@ -1,13 +1,13 @@
 package org.openurp.edu.eams.teach.election.service.propertyExtractor
 
-import java.util.Iterator
+
 import org.beangle.commons.text.i18n.TextResource
 import org.beangle.commons.transfer.exporter.DefaultPropertyExtractor
 import org.openurp.edu.base.Teacher
 import org.openurp.edu.eams.teach.lesson.CourseSchedule
 import org.openurp.edu.teach.lesson.CourseTake
 
-import scala.collection.JavaConversions._
+
 
 class CourseTakePropertyExtractor(textResource: TextResource) extends DefaultPropertyExtractor(textResource) {
 

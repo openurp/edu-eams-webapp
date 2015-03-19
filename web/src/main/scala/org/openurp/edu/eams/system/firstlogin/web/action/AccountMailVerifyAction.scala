@@ -1,12 +1,12 @@
 package org.openurp.edu.eams.system.firstlogin.web.action
 
-import java.util.List
-import org.beangle.commons.dao.query.builder.OqlBuilder
+
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.edu.eams.system.firstlogin.impl.VerifyEmailKeyGenerator
 import org.openurp.edu.eams.system.security.model.EamsUserBean
 import org.openurp.edu.eams.web.action.BaseAction
 
-import scala.collection.JavaConversions._
+
 
 class AccountMailVerifyAction extends BaseAction {
 

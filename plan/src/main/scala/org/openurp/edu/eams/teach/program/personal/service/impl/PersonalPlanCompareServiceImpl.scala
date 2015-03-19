@@ -1,12 +1,10 @@
 package org.openurp.edu.eams.teach.program.personal.service.impl
 
-import java.util.Collections
-import java.util.List
-import java.util.Map
+
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import com.ekingstar.eams.teach.code.school.CourseType
-import org.openurp.edu.eams.teach.program.CourseGroup
-import org.openurp.edu.eams.teach.program.PlanCourse
+import org.openurp.edu.teach.plan.CourseGroup
+import org.openurp.edu.teach.plan.PlanCourse
 import org.openurp.edu.eams.teach.program.common.copydao.coursegroup.IPlanCourseGroupCopyDao
 import org.openurp.edu.eams.teach.program.common.copydao.plancourse.IPlanCourseCopyDao
 import org.openurp.edu.eams.teach.program.common.dao.PlanCommonDao
@@ -15,13 +13,13 @@ import org.openurp.edu.eams.teach.program.common.dao.PlanCourseGroupCommonDao
 import org.openurp.edu.eams.teach.program.common.service.PlanCompareService
 import org.openurp.edu.eams.teach.program.major.MajorPlan
 import org.openurp.edu.teach.plan.MajorPlanCourse
-import org.openurp.edu.teach.plan.MajorPlanCourseGroup
+import org.openurp.edu.teach.plan.MajorCourseGroup
 import org.openurp.edu.eams.teach.program.personal.PersonalPlan
 import org.openurp.edu.eams.teach.program.personal.PersonalPlanCourse
 import org.openurp.edu.eams.teach.program.personal.exception.PersonalPlanSyncException
 import org.openurp.edu.eams.teach.program.personal.service.PersonalPlanCompareService
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class PersonalPlanCompareServiceImpl extends BaseServiceImpl with PersonalPlanCompareService {
 
@@ -60,7 +58,7 @@ class PersonalPlanCompareServiceImpl extends BaseServiceImpl with PersonalPlanCo
       if (sourcePlanCourse == null) {
         throw new PersonalPlanSyncException("Cannot find PlanCourse")
       }
-      personalPlanCourseCopyDao.copyPlanCourse(sourcePlanCourse, toPlan.getGroup(`type`).asInstanceOf[MajorPlanCourseGroup])
+      personalPlanCourseCopyDao.copyPlanCourse(sourcePlanCourse, toPlan.getGroup(`type`).asInstanceOf[MajorCourseGroup])
       toPlan.setCredits(planCommonDao.statPlanCredits(toPlan))
       planCommonDao.saveOrUpdatePlan(toPlan)
       entityDao.refresh(toPlan)
@@ -92,7 +90,7 @@ class PersonalPlanCompareServiceImpl extends BaseServiceImpl with PersonalPlanCo
         copy = personalPlanCourseGroupCopyDao.copyCourseGroup(sourceGroup, toPlan.getGroup(sourceGroup.getParent.getCourseType), 
           toPlan)
       } else {
-        copy = personalPlanCourseGroupCopyDao.copyCourseGroup(sourceGroup.asInstanceOf[MajorPlanCourseGroup], 
+        copy = personalPlanCourseGroupCopyDao.copyCourseGroup(sourceGroup.asInstanceOf[MajorCourseGroup], 
           null, toPlan)
       }
       if (copy == null) {
@@ -115,7 +113,7 @@ class PersonalPlanCompareServiceImpl extends BaseServiceImpl with PersonalPlanCo
       if (group == null) {
         throw new PersonalPlanSyncException("源计划不存在课程类别：" + `type`.toString)
       }
-      planCourseGroupCommonDao.removeCourseGroup(group.asInstanceOf[MajorPlanCourseGroup])
+      planCourseGroupCommonDao.removeCourseGroup(group.asInstanceOf[MajorCourseGroup])
       plan.setCredits(planCommonDao.statPlanCredits(plan))
       entityDao.saveOrUpdate(plan)
       entityDao.refresh(plan)

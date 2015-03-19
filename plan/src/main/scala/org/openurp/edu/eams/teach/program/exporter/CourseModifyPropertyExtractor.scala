@@ -6,7 +6,7 @@ import org.beangle.commons.transfer.exporter.DefaultPropertyExtractor
 import org.openurp.edu.eams.teach.program.major.MajorPlan
 import org.openurp.edu.eams.teach.program.majorapply.model.MajorPlanCourseModifyBean
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class CourseModifyPropertyExtractor(resource: TextResource) extends DefaultPropertyExtractor(resource) {
 
@@ -20,7 +20,7 @@ class CourseModifyPropertyExtractor(resource: TextResource) extends DefaultPrope
 
   def getPropertyValue(target: AnyRef, property: String): AnyRef = {
     val modify = target.asInstanceOf[MajorPlanCourseModifyBean]
-    val plan = entityDao.get(classOf[MajorPlan], modify.getMajorPlan.getId)
+    val plan = entityDao.get(classOf[MajorPlan], modify.getMajorPlan.id)
     if (property == "flag") {
       return changeValue(modify.getFlag)
     } else if (property == "majorPlan.program.grade") {

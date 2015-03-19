@@ -1,11 +1,11 @@
 package org.openurp.edu.eams.teach.program.log
 
-import java.util.Map
+
 import org.openurp.edu.eams.teach.program.major.MajorPlan
 import org.openurp.edu.teach.plan.MajorPlanCourse
-import org.openurp.edu.teach.plan.MajorPlanCourseGroup
+import org.openurp.edu.teach.plan.MajorCourseGroup
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class AfterChain(someProperties: Map[String, String]) extends PhaseChain(someProperties) {
 
@@ -14,7 +14,7 @@ class AfterChain(someProperties: Map[String, String]) extends PhaseChain(somePro
     new InfoChain(informations)
   }
 
-  def after(courseGroup: MajorPlanCourseGroup): InfoChain = {
+  def after(courseGroup: MajorCourseGroup): InfoChain = {
     super.informations.put(MajorPlanLogHelper.AFTER, courseGroup.toString)
     new InfoChain(informations)
   }

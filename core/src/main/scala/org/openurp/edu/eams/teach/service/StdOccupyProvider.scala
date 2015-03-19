@@ -1,9 +1,9 @@
 package org.openurp.edu.eams.teach.service
 
-import java.util.Map
+
 import org.openurp.edu.eams.teach.service.wrapper.TimeZone
 
-import scala.collection.JavaConversions._
+
 
 trait StdOccupyProvider {
 

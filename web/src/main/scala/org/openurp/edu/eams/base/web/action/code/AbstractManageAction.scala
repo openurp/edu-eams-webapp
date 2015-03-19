@@ -2,15 +2,15 @@ package org.openurp.edu.eams.base.web.action.code
 
 import java.io.IOException
 import java.lang.reflect.Method
-import java.util.Collection
+
 import java.util.Date
-import java.util.List
+
 import org.apache.commons.lang.exception.ExceptionUtils
 import org.apache.commons.lang3.ClassUtils
 import org.apache.struts2.ServletActionContext
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.pojo.BaseCode
 import org.beangle.commons.lang.Objects
 import org.beangle.commons.lang.Strings
@@ -22,7 +22,7 @@ import org.beangle.commons.transfer.io.TransferFormat
 import org.beangle.ems.dictionary.model.CodeMeta
 import org.springframework.dao.DataIntegrityViolationException
 
-import scala.collection.JavaConversions._
+
 
 abstract class AbstractManageAction extends SearchAction {
 
@@ -105,7 +105,7 @@ abstract class AbstractManageAction extends SearchAction {
       val baseCodeObj = populateEntity(Class.forName(className), shortName).asInstanceOf[BaseCode[_]]
       val query = OqlBuilder.from(Class.forName(className), shortName)
       query.where(shortName + ".code = :code", baseCodeObj.getCode)
-      if (null != baseCodeObj.getId) {
+      if (null != baseCodeObj.id) {
         query.where(shortName + " != :" + shortName, baseCodeObj)
       }
       if (CollectUtils.isNotEmpty(entityDao.search(query))) {
@@ -115,7 +115,7 @@ abstract class AbstractManageAction extends SearchAction {
         search()
         return "edit"
       }
-      if (null == baseCodeObj.getId) {
+      if (null == baseCodeObj.id) {
         baseCodeObj.setCreatedAt(new Date())
         baseCodeObj.setUpdatedAt(baseCodeObj.getCreatedAt)
       } else {

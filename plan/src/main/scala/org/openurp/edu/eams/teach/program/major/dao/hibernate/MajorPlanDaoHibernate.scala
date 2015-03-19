@@ -1,10 +1,10 @@
 package org.openurp.edu.eams.teach.program.major.dao.hibernate
 
-import java.util.List
+
 import org.apache.commons.lang3.Range
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
-import org.beangle.orm.hibernate.HibernateEntityDao
+import org.beangle.data.jpa.hibernate.HibernateEntityDao
 import org.hibernate.Criteria
 import org.hibernate.criterion.Restrictions
 import com.ekingstar.eams.core.Major
@@ -12,11 +12,11 @@ import com.ekingstar.eams.core.code.industry.Education
 import com.ekingstar.eams.core.service.SemesterService
 import org.openurp.edu.eams.teach.program.common.dao.PlanCommonDao
 import org.openurp.edu.eams.teach.program.major.MajorPlan
-import org.openurp.edu.eams.teach.program.major.dao.MajorPlanCourseGroupDao
+import org.openurp.edu.eams.teach.program.major.dao.MajorCourseGroupDao
 import org.openurp.edu.eams.teach.program.major.dao.MajorPlanDao
 import com.ekingstar.eams.util.DataRealmLimit
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class MajorPlanDaoHibernate extends HibernateEntityDao with MajorPlanDao {
 
@@ -31,7 +31,7 @@ class MajorPlanDaoHibernate extends HibernateEntityDao with MajorPlanDao {
 
   protected var semesterService: SemesterService = _
 
-  protected var majorPlanCourseGroupDao: MajorPlanCourseGroupDao = _
+  protected var MajorCourseGroupDao: MajorCourseGroupDao = _
 
   protected def getMajorPlan(id: java.lang.Long): MajorPlan = get(classOf[MajorPlan], id)
 
@@ -68,8 +68,8 @@ class MajorPlanDaoHibernate extends HibernateEntityDao with MajorPlanDao {
     }
   }
 
-  def setMajorPlanCourseGroupDao(majorPlanCourseGroupDao: MajorPlanCourseGroupDao) {
-    this.majorPlanCourseGroupDao = majorPlanCourseGroupDao
+  def setMajorCourseGroupDao(MajorCourseGroupDao: MajorCourseGroupDao) {
+    this.MajorCourseGroupDao = MajorCourseGroupDao
   }
 
   def setPlanCommonDao(planCommonDao: PlanCommonDao) {

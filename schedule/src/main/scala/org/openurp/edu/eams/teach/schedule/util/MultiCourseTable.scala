@@ -1,13 +1,11 @@
 package org.openurp.edu.eams.teach.schedule.util
 
-import java.util.Collections
-import java.util.List
 import org.beangle.commons.bean.comparators.PropertyComparator
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
-import org.beangle.commons.entity.Entity
+import org.beangle.data.model.Entity
 
-import scala.collection.JavaConversions._
+
 
 class MultiCourseTable {
 

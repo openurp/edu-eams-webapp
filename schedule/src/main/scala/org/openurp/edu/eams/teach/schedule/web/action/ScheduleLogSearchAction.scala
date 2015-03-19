@@ -2,19 +2,19 @@ package org.openurp.edu.eams.teach.schedule.web.action
 
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.Collection
+
 import java.util.Date
-import java.util.List
+
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.beangle.ems.log.BusinessLog
 import org.openurp.edu.eams.teach.schedule.log.ScheduleLogBuilder
 import org.openurp.edu.eams.web.action.common.RestrictionSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class ScheduleLogSearchAction extends RestrictionSupportAction {
 
@@ -40,7 +40,7 @@ class ScheduleLogSearchAction extends RestrictionSupportAction {
       val lessonId = matcher.group(1)
       val prevLogs = entityDao.search(OqlBuilder.from(classOf[BusinessLog], "log").where("log.detail.content like :pattern", 
         ScheduleLogBuilder.LESSON_ID + "=" + lessonId + "\n%")
-        .where("log.id < :meId", log.getId)
+        .where("log.id < :meId", log.id)
         .where("log.resource = '排课日志'")
         .orderBy("log.operateAt desc"))
       if (CollectUtils.isNotEmpty(prevLogs)) {
@@ -51,7 +51,7 @@ class ScheduleLogSearchAction extends RestrictionSupportAction {
     forward()
   }
 
-  protected def getExportDatas(): Collection[_] = {
+  protected def getExportDatas(): Iterable[_] = {
     val logIds = getLongIds("log")
     if (logIds != null && logIds.length != 0) {
       return entityDao.search(buildOql().where("log.id in (:ids)", logIds).limit(null))

@@ -8,7 +8,7 @@ import org.openurp.edu.eams.system.firstlogin.PasswordValidator
 import org.openurp.edu.eams.system.firstlogin.web.action.AccountInitCheckAction
 import org.openurp.edu.eams.system.security.model.EamsUserBean
 
-import scala.collection.JavaConversions._
+
 
 @Action("/security/my")
 class MyAction extends org.beangle.ems.security.web.action.MyAction {

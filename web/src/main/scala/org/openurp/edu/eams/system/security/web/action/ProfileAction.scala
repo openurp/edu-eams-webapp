@@ -1,16 +1,14 @@
 package org.openurp.edu.eams.system.security.web.action
 
-import java.util.Collection
-import java.util.Collections
 import java.util.Comparator
-import java.util.List
-import java.util.Map
-import java.util.Set
+
+
+
 import java.util.TreeSet
 import org.beangle.commons.bean.PropertyUtils
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.Operation.Builder
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Arrays
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.lang.functor.Predicate
@@ -32,7 +30,7 @@ import org.openurp.edu.base.Project
 import org.openurp.code.edu.Education
 import org.openurp.edu.base.code.StdType
 
-import scala.collection.JavaConversions._
+
 
 @Action("/security/profile")
 class ProfileAction extends org.beangle.ems.security.web.action.ProfileAction {
@@ -54,12 +52,12 @@ class ProfileAction extends org.beangle.ems.security.web.action.ProfileAction {
     if (isAdmin) {
       mngProjects = entityDao.getAll(classOf[Project])
       for (mngProject <- mngProjects) {
-        mngFields.put(mngProject.getId + "_educations", mngProject.educations)
-        mngFields.put(mngProject.getId + "_stdTypes", mngProject.getTypes)
-        mngFields.put(mngProject.getId + "_departs", mngProject.departments)
-        mngFields.put(mngProject.getId + "_majors", entityDao.get(classOf[Major], "project.id", mngProject.getId))
-        mngFields.put(mngProject.getId + "_directions", entityDao.get(classOf[Direction], "major.project.id", 
-          mngProject.getId))
+        mngFields.put(mngProject.id + "_educations", mngProject.educations)
+        mngFields.put(mngProject.id + "_stdTypes", mngProject.getTypes)
+        mngFields.put(mngProject.id + "_departs", mngProject.departments)
+        mngFields.put(mngProject.id + "_majors", entityDao.get(classOf[Major], "project.id", mngProject.id))
+        mngFields.put(mngProject.id + "_directions", entityDao.get(classOf[Direction], "major.project.id", 
+          mngProject.id))
       }
     } else {
       for (mngProfile <- mngProfiles) {
@@ -73,16 +71,16 @@ class ProfileAction extends org.beangle.ems.security.web.action.ProfileAction {
           if (!mngProjects.contains(mngProject)) {
             mngProjects.add(mngProject)
           }
-          mngFields.put(mngProject.getId + "_educations", CollectUtils.intersection(mngProject.educations, 
+          mngFields.put(mngProject.id + "_educations", CollectUtils.intersection(mngProject.educations, 
             educations))
-          mngFields.put(mngProject.getId + "_stdTypes", CollectUtils.intersection(mngProject.getTypes, 
+          mngFields.put(mngProject.id + "_stdTypes", CollectUtils.intersection(mngProject.getTypes, 
             stdTypes))
-          mngFields.put(mngProject.getId + "_departs", CollectUtils.intersection(mngProject.departments, 
+          mngFields.put(mngProject.id + "_departs", CollectUtils.intersection(mngProject.departments, 
             departs))
-          mngFields.put(mngProject.getId + "_majors", CollectUtils.intersection(entityDao.get(classOf[Major], 
-            "project.id", mngProject.getId), majors))
-          mngFields.put(mngProject.getId + "_directions", CollectUtils.intersection(entityDao.get(classOf[Direction], 
-            "major.project.id", mngProject.getId), directions))
+          mngFields.put(mngProject.id + "_majors", CollectUtils.intersection(entityDao.get(classOf[Major], 
+            "project.id", mngProject.id), majors))
+          mngFields.put(mngProject.id + "_directions", CollectUtils.intersection(entityDao.get(classOf[Direction], 
+            "major.project.id", mngProject.id), directions))
         }
       }
     }
@@ -92,7 +90,7 @@ class ProfileAction extends org.beangle.ems.security.web.action.ProfileAction {
     for (aoProfile <- aoProfiles) {
       val projects = profileService.getProperty(aoProfile, projectField).asInstanceOf[List[_]]
       val aoProject = projects.get(0).asInstanceOf[Project]
-      projectId2aoProfile.put(aoProject.getId.toString, aoProfile)
+      projectId2aoProfile.put(aoProject.id.toString, aoProfile)
       val profileId = PropertyUtils.getProperty(aoProfile, "id")
       aoFields.put(profileId + "_project", aoProject)
       aoFields.put(profileId + "_educations", profileService.getProperty(aoProfile, educationField))
@@ -232,7 +230,7 @@ class ProfileAction extends org.beangle.ems.security.web.action.ProfileAction {
         val value = property.getValue
         if (null != value) {
           if (property.getField.isMultiple) {
-            values.addAll(profileService.getProperty(profile, field).asInstanceOf[Collection[_]])
+            values.addAll(profileService.getProperty(profile, field).asInstanceOf[Iterable[_]])
           } else {
             values.add(profileService.getProperty(profile, field))
           }
@@ -268,7 +266,7 @@ class ProfileAction extends org.beangle.ems.security.web.action.ProfileAction {
     for (uprofile <- profiles) {
       val projects = securityHelper.getProfileService.getProperty(uprofile, projectField).asInstanceOf[List[_]]
       var suitable = false
-      for (project <- projects if project.getId == projectId) {
+      for (project <- projects if project.id == projectId) {
         suitable = true
         //break
       }
@@ -329,7 +327,7 @@ class ProfileAction extends org.beangle.ems.security.web.action.ProfileAction {
     for (aoProfile <- aoProfiles) {
       val aoProjects = getMyProfileValues(Collections.singletonList(aoProfile.asInstanceOf[Profile]), 
         projectField).asInstanceOf[List[_]]
-      for (mngProject <- mngProjects if CollectUtils.isNotEmpty(aoProjects) && aoProjects.get(0).getId == mngProject.getId) {
+      for (mngProject <- mngProjects if CollectUtils.isNotEmpty(aoProjects) && aoProjects.get(0).id == mngProject.id) {
         visibleProfile.add(aoProfile)
         //break
       }

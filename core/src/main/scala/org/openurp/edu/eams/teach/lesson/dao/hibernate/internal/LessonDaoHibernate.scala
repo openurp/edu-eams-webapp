@@ -1,17 +1,17 @@
 package org.openurp.edu.eams.teach.lesson.dao.hibernate.internal
 
 import java.io.Serializable
-import java.util.Collection
-import java.util.HashMap
-import java.util.Iterator
-import java.util.List
-import java.util.Map
+
+
+
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.page.Page
 import org.beangle.commons.collection.page.PageLimit
 import org.beangle.commons.dao.query.builder.Conditions
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.beangle.orm.hibernate.HibernateEntityDao
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.beangle.data.jpa.hibernate.HibernateEntityDao
 import org.hibernate.Cache
 import org.hibernate.FlushMode
 import org.hibernate.Query
@@ -23,7 +23,6 @@ import org.openurp.edu.eams.core.CommonAuditState
 import org.openurp.edu.eams.teach.lesson.ArrangeSuggest
 import org.openurp.edu.teach.lesson.CourseLimitGroup
 import org.openurp.edu.teach.lesson.Lesson
-import org.openurp.edu.teach.lesson.LessonMaterial
 import org.openurp.edu.teach.lesson.LessonPlanRelation
 import org.openurp.edu.eams.teach.lesson.dao.LessonDao
 import org.openurp.edu.eams.teach.lesson.dao.LessonPlanRelationDao
@@ -31,7 +30,6 @@ import org.openurp.edu.eams.teach.lesson.dao.LessonSeqNoGenerator
 import org.openurp.edu.eams.teach.lesson.service.LessonFilterStrategy
 import org.openurp.edu.teach.plan.MajorPlan
 
-import scala.collection.JavaConversions._
 
 class LessonDaoHibernate extends HibernateEntityDao with LessonDao {
 
@@ -56,13 +54,13 @@ class LessonDaoHibernate extends HibernateEntityDao with LessonDao {
       id = "%" + id + "%"
     }
     params.put("id", id)
-    params.put("semesterId", semester.getId)
+    params.put("semesterId", semester.id)
     val queryStr = strategy.getQueryString(null, " and task.semester.id= :semesterId ")
     val lessons = search(queryStr, params, new PageLimit(pageNo, pageSize), false)
     lessons.asInstanceOf[Page[Lesson]]
   }
 
-  def getLessonsByCategory(id: Serializable, strategy: LessonFilterStrategy, semesters: Collection[Semester]): List[Lesson] = {
+  def getLessonsByCategory(id: Serializable, strategy: LessonFilterStrategy, semesters: Iterable[Semester]): List[Lesson] = {
     val taskQuery = strategy.createQuery(getSession, "select distinct task.id from Lesson as task ", 
       " and task.semester in (:semesters) ")
     taskQuery.setParameter("id", id)
@@ -85,7 +83,7 @@ class LessonDaoHibernate extends HibernateEntityDao with LessonDao {
       semester: Semester): Int = {
     evictLessonRegion()
     val queryStr = strategy.getQueryString("update TeachTask set " + attr + " = :value ", " and semester.id = :semesterId")
-    executeUpdate(queryStr, Array(value, semester.getId))
+    executeUpdate(queryStr, Array(value, semester.id))
   }
 
   private def getUpdateQueryString(attr: String, 
@@ -127,7 +125,7 @@ class LessonDaoHibernate extends HibernateEntityDao with LessonDao {
       " and task.semester.id  = :semesterId")
     if (strategy.getName == "teacher") id = "%" + id + "%"
     countQuery.setParameter("id", id)
-    countQuery.setParameter("semesterId", semester.getId)
+    countQuery.setParameter("semesterId", semester.id)
     val rsList = countQuery.list()
     rsList.get(0).asInstanceOf[Number].intValue()
   }

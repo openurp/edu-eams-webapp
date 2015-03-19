@@ -1,27 +1,27 @@
 package org.openurp.edu.eams.teach.grade.lesson.web.action
 
-import java.util.Collection
+
 import java.util.Date
-import java.util.List
-import java.util.Map
+
+
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.bean.transformers.PropertyTransformer
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
 import org.beangle.commons.dao.query.builder.Condition
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.lang.Strings
 import org.beangle.security.blueprint.User
 import org.beangle.struts2.convention.route.Action
 import org.beangle.struts2.helper.QueryHelper
 import org.openurp.base.Department
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Project
 import org.openurp.edu.base.Teacher
 import org.openurp.edu.eams.system.security.EamsUserCategory
 import org.openurp.edu.eams.teach.Grade
-import org.openurp.edu.eams.teach.code.industry.GradeType
+import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.eams.teach.code.industry.ScoreMarkStyle
 import org.openurp.edu.eams.teach.grade.course.service.MakeupStdStrategy
 import org.openurp.edu.eams.teach.grade.course.web.helper.CourseGradeHelper
@@ -33,16 +33,16 @@ import org.openurp.edu.eams.teach.grade.service.CourseGradeService
 import org.openurp.edu.eams.teach.grade.service.CourseGradeSettings
 import org.openurp.edu.eams.teach.grade.service.GradeRateService
 import org.openurp.edu.teach.grade.CourseGrade
-import org.openurp.edu.teach.grade.CourseGradeState
+import org.openurp.edu.teach.grade.model.CourseGradeState
 import org.openurp.edu.teach.lesson.CourseTake
-import org.openurp.edu.eams.teach.lesson.ExamGradeState
+import org.openurp.edu.teach.grade.model.ExamGradeState
 import org.openurp.edu.eams.teach.lesson.GradeTypeConstants
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.teach.lesson.model.CourseGradeStateBean
 import org.openurp.edu.eams.teach.lesson.service.LessonService
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class GaAction extends SemesterSupportAction {
 
@@ -84,7 +84,7 @@ class GaAction extends SemesterSupportAction {
   def batchSaveExtraInputer(): String = {
     val courseGradeStates = getModels(classOf[CourseGradeState], getLongIds("courseGradeState"))
     for (courseGradeState <- courseGradeStates) {
-      val userId = getLong("courseGradeState.extraInputer.id" + courseGradeState.getId)
+      val userId = getLong("courseGradeState.extraInputer.id" + courseGradeState.id)
       if (userId == null) {
         courseGradeState.setExtraInputer(null)
       } else {
@@ -181,7 +181,7 @@ class GaAction extends SemesterSupportAction {
     forward()
   }
 
-  protected def getExportDatas(): Collection[_] = {
+  protected def getExportDatas(): Iterable[_] = {
     val kind = get("kind")
     if (Strings.isEmpty(kind) || kind == "noGradeTakes") {
       val takeIds = get("takeIds")
@@ -257,7 +257,7 @@ class GaAction extends SemesterSupportAction {
     courseGradeHelper.saveGrade(entityDao.get(classOf[User], getUserId))
     val courseGradeId = getLong("courseGrade.id")
     val courseGrade = entityDao.get(classOf[CourseGrade], courseGradeId)
-    redirect("info", "info.save.success", "&lessonId=" + courseGrade.getLesson.getId)
+    redirect("info", "info.save.success", "&lessonId=" + courseGrade.getLesson.id)
   }
 
   def saveGradeState(): String = {
@@ -268,8 +268,8 @@ class GaAction extends SemesterSupportAction {
     var finalStyle: ScoreMarkStyle = null
     var finalPrecision = 0
     for (gradeType <- entityDao.getAll(classOf[GradeType])) {
-      val egs = populateEntity(classOf[ExamGradeState], "state" + gradeType.getId)
-      val stateId = get("state" + gradeType.getId + ".id")
+      val egs = populateEntity(classOf[ExamGradeState], "state" + gradeType.id)
+      val stateId = get("state" + gradeType.id + ".id")
       if (null == stateId) {
         if (null != gradeState.getState(gradeType)) removed.add(gradeState.getState(gradeType))
         //continue
@@ -284,7 +284,7 @@ class GaAction extends SemesterSupportAction {
       if (setting.getFinalCandinateTypes.contains(gradeType)) {
         if (egs.getStatus > finalStatus) finalStatus = egs.getStatus
       }
-      if (gradeType.getId == GradeTypeConstants.GA_ID) {
+      if (gradeType.id == GradeTypeConstants.GA_ID) {
         finalStyle = egs.getScoreMarkStyle
         finalPrecision = egs.getPrecision
       }
@@ -307,7 +307,7 @@ class GaAction extends SemesterSupportAction {
     var semesterId = getInt("lesson.semester.id")
     if (semesterId == null) {
       val semester = putSemester(null)
-      semesterId = semester.getId
+      semesterId = semester.id
       query.where("lesson.semester.id = :semesterId", semesterId)
     }
     if (null == status) status = 0

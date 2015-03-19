@@ -8,18 +8,17 @@ import org.beangle.commons.text.i18n.TextResource
 import org.openurp.edu.eams.number.DefaultNumberRangeFormatter
 import org.openurp.edu.eams.number.NumberRange
 import org.openurp.edu.eams.number.NumberRangeDigestor
-import org.openurp.edu.eams.weekstate.SemesterWeekStateBuilder
-import org.openurp.edu.eams.weekstate.WeekStateDirection
+import org.openurp.edu.eams.weekstate.SemesterWeekTimeBuilder
 import org.beangle.commons.lang.time.WeekState
 import org.openurp.base.Semester
-import org.openurp.base.CircleTime
-import org.openurp.base.Semester
 import org.beangle.commons.lang.time.WeekDays._
+import 
+import org.beangle.commons.lang.time.WeekDays
 
 object WeekStates {
 
   val OVERALLWEEKS = 53
-  def relativeMerge(units: Iterable[CircleTime], semester: Semester): String = {
+  def relativeMerge(units: Iterable[YearWeekTime], semester: Semester): String = {
     var thisYearWeeks = Strings.repeat("0", OVERALLWEEKS)
     var nextYearWeeks = ""
     val thisYear = getStartYear(semester)
@@ -27,10 +26,10 @@ object WeekStates {
     for (unit <- units) {
       if (unit.year == thisYear) {
         //FIXME
-        thisYearWeeks = unit.weekState.toString()
+        thisYearWeeks = unit.state.toString()
       } else if (unit.year == thisYear + 1) {
         //FIXME
-        nextYearWeeks = unit.weekState.toString()
+        nextYearWeeks = unit.state.toString()
       }
     }
     var weekStates: String = null
@@ -47,17 +46,11 @@ object WeekStates {
       }
       weekStates = thisYearWeeks + nextYearWeeks
     }
-    var weekday = jdkWeekIdex(first.weekday)
+    var weekday =  first.day.index
     if (semester.firstWeekday != Sun && weekday < jdkWeekIdex(semester.firstWeekday)) {
       weekStates = weekStates.substring(1)
     }
     weekStates
-  }
-
-  def jdkWeekIdex(weekday: org.beangle.commons.lang.time.WeekDays.WeekDay): Int = {
-    var idx = weekday.id + 1
-    if (idx == 8) idx = 1
-    idx
   }
 
   def build(str: String): WeekState = {
@@ -117,7 +110,7 @@ object WeekStates {
     val year = getStartYear(semester)
     val sb = new StringBuffer(Strings.repeat("0", semester.startWeek(Sun) - 1))
     sb.append(weekState.substring(1)).append(Strings.repeat("0", OVERALLWEEKS * 2 - sb.length))
-    if (weekDay == WeekDays.Sunday && jdkWeekIdex(semester.firstWeekday) > Calendar.SUNDAY) sb.insert(0, '0')
+    if (weekDay == Sun && semester.firstWeekday.index > Calendar.SUNDAY) sb.insert(0, '0')
     if (shareAt53(year)) {
       var weekday = weekDay.id + 1
       if (weekday == 8) weekday = 1
@@ -165,7 +158,7 @@ object WeekStates {
   
   def digest(state: WeekState): String = {
     if (null == state) return ""
-    val weekIndecies = SemesterWeekStateBuilder.parse(state.toString /**FIXME*/ , WeekStateDirection.LTR)
+    val weekIndecies = SemesterWeekTimeBuilder.parse(state.toString /**FIXME*/)
     val digest = NumberRangeDigestor.digest(weekIndecies, null)
     digest.replace("[", "").replace("]", "").replace("number.range.odd", "单")
       .replace("number.range.even", "双")

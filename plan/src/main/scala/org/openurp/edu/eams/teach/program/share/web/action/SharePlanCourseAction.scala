@@ -1,14 +1,14 @@
 package org.openurp.edu.eams.teach.program.share.web.action
 
-import java.util.ArrayList
-import java.util.HashMap
-import java.util.Iterator
-import java.util.List
-import java.util.Map
+
+
+
+
+
 import org.beangle.commons.collection.Order
 import org.beangle.commons.dao.query.builder.Condition
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.beangle.commons.entity.Entity
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.beangle.data.model.Entity
 import org.beangle.commons.lang.Strings
 import com.ekingstar.eams.base.Department
 import com.ekingstar.eams.teach.Course
@@ -17,7 +17,7 @@ import org.openurp.edu.eams.teach.program.share.SharePlanCourseGroup
 import org.openurp.edu.eams.teach.program.share.model.SharePlanCourseBean
 import com.ekingstar.eams.web.action.BaseAction
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class SharePlanCourseAction extends BaseAction {
 
@@ -56,11 +56,11 @@ class SharePlanCourseAction extends BaseAction {
       } else {
         entityDao.saveOrUpdate(planCourse)
       }
-      redirect("search", "info.save.success", "&sharePlanCourse.courseGroup.id=" + planCourse.getCourseGroup.getId)
+      redirect("search", "info.save.success", "&sharePlanCourse.courseGroup.id=" + planCourse.getCourseGroup.id)
     } catch {
       case e: Exception => {
         logger.info("saveAndForward failure for:" + e.getMessage)
-        redirect("search", "info.save.failure", "&sharePlanCourse.courseGroup.id=" + planCourse.getCourseGroup.getId)
+        redirect("search", "info.save.failure", "&sharePlanCourse.courseGroup.id=" + planCourse.getCourseGroup.id)
       }
     }
   }
@@ -89,16 +89,16 @@ class SharePlanCourseAction extends BaseAction {
       val course = selectCourses.get(i).asInstanceOf[Course]
       val planCourse = new org.openurp.edu.eams.teach.program.share.model.SharePlanCourseBean()
       planCourse.setCourse(course)
-      if (null == get("courseTerms" + course.getId) || "" == get("courseTerms" + course.getId)) {
+      if (null == get("courseTerms" + course.id) || "" == get("courseTerms" + course.id)) {
         planCourse.setTerms("春")
-      } else planCourse.setTerms(get("courseTerms" + course.getId))
+      } else planCourse.setTerms(get("courseTerms" + course.id))
       planCourse.setDepartment(course.getDepartment)
       planCourse.setCourseGroup(group)
       val params = new HashMap[String, Any]()
       params.put("courseGroup", group)
       params.put("course", course)
       if (null != course.getDepartment && 
-        entityDao.duplicate(classOf[SharePlanCourseBean].getName, planCourse.getId, params)) {
+        entityDao.duplicate(classOf[SharePlanCourseBean].getName, planCourse.id, params)) {
         planCourses.add(planCourse)
       }
     }

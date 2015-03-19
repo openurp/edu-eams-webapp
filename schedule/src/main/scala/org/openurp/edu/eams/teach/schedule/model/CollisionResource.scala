@@ -7,12 +7,12 @@ import javax.persistence.FetchType
 import javax.persistence.ManyToOne
 import org.beangle.commons.entity.pojo.LongIdObject
 import org.hibernate.annotations.NaturalId
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.teach.lesson.Lesson
 import CollisionResource._
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConversions._
+
+
 
 object CollisionResource {
 
@@ -38,21 +38,21 @@ class CollisionResource extends LongIdObject() {
 
   @NaturalId
   @ManyToOne(fetch = FetchType.LAZY)
-  @BeanProperty
+  
   var semester: Semester = _
 
   @NaturalId
   @ManyToOne(fetch = FetchType.LAZY)
-  @BeanProperty
+  
   var lesson: Lesson = _
 
   @NaturalId
-  @BeanProperty
+  
   var resourceId: String = _
 
   @NaturalId
   @Enumerated(value = EnumType.STRING)
-  @BeanProperty
+  
   var resourceType: ResourceType = _
 
   def this(semester: Semester, 

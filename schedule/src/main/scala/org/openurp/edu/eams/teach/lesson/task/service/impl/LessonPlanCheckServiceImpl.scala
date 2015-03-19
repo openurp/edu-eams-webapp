@@ -1,11 +1,11 @@
 package org.openurp.edu.eams.teach.lesson.task.service.impl
 
 import java.sql.Date
-import java.util.ArrayList
-import java.util.List
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.impl.BaseServiceImpl
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.eams.core.service.SemesterService
 import org.openurp.edu.teach.code.CourseType
@@ -18,13 +18,13 @@ import org.openurp.edu.eams.teach.lesson.task.biz.CourseTypePackage
 import org.openurp.edu.eams.teach.lesson.task.biz.PlanPackage
 import org.openurp.edu.eams.teach.lesson.task.service.LessonPlanCheckService
 import org.openurp.edu.eams.teach.lesson.task.service.LessonPlanRelationService
-import org.openurp.edu.eams.teach.program.CourseGroup
+import org.openurp.edu.teach.plan.CourseGroup
 import org.openurp.edu.teach.plan.MajorPlan
 import org.openurp.edu.eams.teach.program.util.PlanUtils
 import org.openurp.edu.eams.teach.time.util.TermCalculator
 import org.openurp.edu.eams.teach.util.AdminclassQueryBuilder
 
-import scala.collection.JavaConversions._
+
 
 class LessonPlanCheckServiceImpl extends BaseServiceImpl with LessonPlanCheckService {
 

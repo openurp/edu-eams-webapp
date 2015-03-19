@@ -1,13 +1,13 @@
 package org.openurp.edu.eams.teach.lesson.service
 
-import java.util.HashMap
-import java.util.Iterator
-import java.util.Map
+
+
+
 import org.beangle.commons.lang.Strings
 import org.openurp.edu.base.Teacher
 import org.openurp.edu.teach.lesson.Lesson
 
-import scala.collection.JavaConversions._
+
 
 object LessonLogBuilder {
 
@@ -49,7 +49,7 @@ object LessonLogBuilder {
     for (i <- 0 until LOG_FIELDS.length) {
       empty.put(LOG_FIELDS(i), "")
     }
-    empty.put(LESSON_ID, String.valueOf(lesson.getId))
+    empty.put(LESSON_ID, String.valueOf(lesson.id))
     empty.put(LESSON_PROJECT, String.valueOf(lesson.getProject.getName))
     empty.put(LESSON_SEMESTER, lesson.getSemester.getSchoolYear + "-" + lesson.getSemester.getName)
     empty.put(LESSON_NO, lesson.getNo)

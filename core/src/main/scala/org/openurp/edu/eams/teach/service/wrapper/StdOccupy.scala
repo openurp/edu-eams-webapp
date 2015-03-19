@@ -1,9 +1,7 @@
 package org.openurp.edu.eams.teach.service.wrapper
 
 import org.openurp.edu.base.Student
-import org.openurp.edu.teach.Course
-
-import scala.collection.JavaConversions._
+import org.openurp.edu.base.Course
 
 class StdOccupy {
 

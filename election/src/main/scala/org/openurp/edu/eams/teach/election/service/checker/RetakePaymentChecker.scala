@@ -1,6 +1,6 @@
 package org.openurp.edu.eams.teach.election.service.checker
 
-import java.util.List
+
 import org.openurp.edu.base.Student
 import org.openurp.edu.eams.fee.Bill
 import org.openurp.edu.eams.fee.code.industry.PayState
@@ -8,7 +8,7 @@ import org.openurp.edu.eams.fee.service.PaymentChecker
 import org.openurp.edu.eams.fee.service.impl.PaymentContext
 import org.openurp.edu.eams.teach.election.RetakeFeeConfig
 
-import scala.collection.JavaConversions._
+
 
 class RetakePaymentChecker extends PaymentChecker {
 
@@ -28,7 +28,7 @@ class RetakePaymentChecker extends PaymentChecker {
     if (!bill.inPaymentTime()) {
       return "订单支付时间未开放或已结束"
     }
-    if (PayState.UNPAID != bill.getState.getId) {
+    if (PayState.UNPAID != bill.getState.id) {
       return "该订单已支付或退订"
     }
     null

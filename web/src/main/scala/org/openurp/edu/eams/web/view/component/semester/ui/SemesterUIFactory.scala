@@ -1,9 +1,9 @@
 package org.openurp.edu.eams.web.view.component.semester.ui
 
-import java.util.HashMap
-import java.util.Map
 
-import scala.collection.JavaConversions._
+
+
+
 
 object SemesterUIFactory {
 

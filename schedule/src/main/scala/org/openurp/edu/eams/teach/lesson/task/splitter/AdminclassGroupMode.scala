@@ -1,24 +1,24 @@
 package org.openurp.edu.eams.teach.lesson.task.splitter
 
-import java.util.ArrayList
-import java.util.Collection
-import java.util.HashSet
-import java.util.List
-import java.util.Set
+
+
+
+
+
 import org.apache.commons.collections.CollectionUtils
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.teach.lesson.CourseLimitMeta.Operator
 import org.openurp.edu.teach.lesson.CourseTake
-import org.openurp.edu.eams.teach.lesson.ExamTake
+import org.openurp.edu.teach.exam.ExamTake
 import org.openurp.edu.teach.lesson.TeachClass
 import org.openurp.edu.eams.teach.lesson.util.LessonElectionUtil
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConversions._
+
+
 
 class AdminclassGroupMode extends AbstractTeachClassSplitter() {
 
-  @BeanProperty
+  
   var adminclassGroups: List[Array[Long]] = new ArrayList[Array[Long]]()
 
   this.name = "adminclass_split"
@@ -45,7 +45,7 @@ class AdminclassGroupMode extends AbstractTeachClassSplitter() {
               problemTakes.add(take)
               //continue
             }
-            if (adminclass.getId == take.getStd.getAdminclass.getId) {
+            if (adminclass.id == take.getStd.getAdminclass.id) {
               LessonElectionUtil.addCourseTake(teachclasses(i), take)
               assignedCourseTakes.add(take)
             }
@@ -61,7 +61,7 @@ class AdminclassGroupMode extends AbstractTeachClassSplitter() {
     teachclasses
   }
 
-  private def selectAdminClass(adminClassId: java.lang.Long, adminclasses: Collection[Adminclass]): Adminclass = {
-    adminclasses.find(_.getId == adminClassId).getOrElse(null)
+  private def selectAdminClass(adminClassId: java.lang.Long, adminclasses: Iterable[Adminclass]): Adminclass = {
+    adminclasses.find(_.id == adminClassId).getOrElse(null)
   }
 }

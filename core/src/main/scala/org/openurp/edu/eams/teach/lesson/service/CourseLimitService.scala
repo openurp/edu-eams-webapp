@@ -1,8 +1,8 @@
 package org.openurp.edu.eams.teach.lesson.service
 
-import java.util.List
-import java.util.Set
-import org.beangle.commons.entity.Entity
+
+
+import org.beangle.data.model.Entity
 import org.beangle.commons.lang.tuple.Pair
 import org.openurp.base.Department
 import org.openurp.code.person.Gender
@@ -22,7 +22,7 @@ import org.openurp.edu.eams.teach.lesson.model.CourseLimitGroupPair
 import org.openurp.edu.eams.teach.lesson.model.NormalClassBean
 import org.openurp.edu.base.Program
 
-import scala.collection.JavaConversions._
+
 
 trait CourseLimitService {
 

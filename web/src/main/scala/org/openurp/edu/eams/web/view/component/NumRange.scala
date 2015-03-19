@@ -1,49 +1,49 @@
 package org.openurp.edu.eams.web.view.component
 
 import java.math.BigDecimal
-import java.util.Map
+
 import org.beangle.commons.lang.Numbers
 import org.beangle.commons.lang.Strings
 import org.beangle.struts2.view.component.ClosingUIBean
 import com.opensymphony.xwork2.util.ValueStack
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConversions._
+
+
 
 class NumRange(stack: ValueStack) extends ClosingUIBean(stack) {
 
-  @BeanProperty
+  
   var label: String = _
 
-  @BeanProperty
+  
   var name: String = _
 
-  @BeanProperty
+  
   var comment: String = _
 
-  @BeanProperty
+  
   var required: String = _
 
-  @BeanProperty
+  
   var format: String = _
 
   private var minRange: AnyRef = _
 
   private var maxRange: AnyRef = _
 
-  @BeanProperty
+  
   var minVal: AnyRef = _
 
-  @BeanProperty
+  
   var maxVal: AnyRef = _
 
-  @BeanProperty
+  
   var debug: AnyRef = _
 
-  @BeanProperty
+  
   var minField: NumTextfield = _
 
-  @BeanProperty
+  
   var maxField: NumTextfield = _
 
   protected override def evaluateParams() {
@@ -121,7 +121,7 @@ class NumRange(stack: ValueStack) extends ClosingUIBean(stack) {
         maxField.setMin(minRange.toString)
       }
     } else {
-      maxField.setMin("#" + minField.getId)
+      maxField.setMin("#" + minField.id)
     }
     if (maxRange != null) {
       if (maxRange.isInstanceOf[Number]) {
@@ -129,7 +129,7 @@ class NumRange(stack: ValueStack) extends ClosingUIBean(stack) {
         maxField.setMax(maxRange.toString)
       }
     } else {
-      minField.setMax("#" + maxField.getId)
+      minField.setMax("#" + maxField.id)
     }
   }
 

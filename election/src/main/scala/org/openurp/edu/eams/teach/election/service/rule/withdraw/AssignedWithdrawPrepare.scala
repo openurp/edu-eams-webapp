@@ -1,6 +1,6 @@
 package org.openurp.edu.eams.teach.election.service.rule.withdraw
 
-import java.util.Set
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.ems.rule.Context
 import org.openurp.edu.teach.code.ElectionMode
@@ -14,7 +14,7 @@ import org.openurp.edu.eams.teach.election.service.rule.ElectRulePrepare
 import org.openurp.edu.teach.lesson.CourseTake
 import AssignedWithdrawPrepare._
 
-import scala.collection.JavaConversions._
+
 
 object AssignedWithdrawPrepare {
 
@@ -26,7 +26,7 @@ class AssignedWithdrawPrepare extends AbstractElectRuleExecutor with ElectRulePr
   def execute(context: Context): Boolean = {
     val electContext = context.asInstanceOf[ElectionCourseContext]
     val assignedLessonIds = electContext.getState.getParams.get("assignedLessonIds").asInstanceOf[Set[Long]]
-    val result = !assignedLessonIds.contains(electContext.getLesson.getId)
+    val result = !assignedLessonIds.contains(electContext.getLesson.id)
     if (!result) {
       electContext.addMessage(new ElectMessage(ERROR_WITHDRAW_ASSIGNED, ElectRuleType.WITHDRAW, false, 
         electContext.getLesson))
@@ -37,9 +37,9 @@ class AssignedWithdrawPrepare extends AbstractElectRuleExecutor with ElectRulePr
   def prepare(context: PrepareContext) {
     if (!context.isPreparedData(PreparedDataName.ASSIGNED_LESSON_IDS)) {
       val assignedLessonIds = CollectUtils.newHashSet()
-      for (take <- context.getTakes if ElectionMode.ASSIGEND == take.getElectionMode.getId) {
-        assignedLessonIds.add(take.getLesson.getId)
-        context.getState.getUnWithdrawableLessonIds.put(take.getLesson.getId, ERROR_WITHDRAW_ASSIGNED)
+      for (take <- context.getTakes if ElectionMode.ASSIGEND == take.getElectionMode.id) {
+        assignedLessonIds.add(take.getLesson.id)
+        context.getState.getUnWithdrawableLessonIds.put(take.getLesson.id, ERROR_WITHDRAW_ASSIGNED)
       }
       context.getState.getParams.put("assignedLessonIds", assignedLessonIds)
       context.addPreparedDataName(PreparedDataName.ASSIGNED_LESSON_IDS)

@@ -10,19 +10,19 @@ import com.ekingstar.eams.teach.code.school.CourseType
 import org.openurp.edu.eams.teach.program.GroupRelation
 import org.openurp.edu.eams.teach.program.majorapply.model.component.FakeCourseGroup
 import org.openurp.edu.eams.teach.program.model.ExpressionGroupRelation
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
+
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 @SerialVersionUID(5552733977609925991L)
 @MappedSuperclass
-abstract class MajorPlanCourseGroupModifyDetailBean extends LongIdObject {
+abstract class MajorCourseGroupModifyDetailBean extends LongIdObject {
 
   @ManyToOne(fetch = FetchType.LAZY)
   protected var courseType: CourseType = _
 
   @Target(classOf[ExpressionGroupRelation])
-  @BeanProperty
+  
   var relation: GroupRelation = _
 
   protected var credits: Float = _
@@ -73,7 +73,7 @@ abstract class MajorPlanCourseGroupModifyDetailBean extends LongIdObject {
     this.remark = remark
   }
 
-  def getApply(): MajorPlanCourseGroupModifyBean
+  def getApply(): MajorCourseGroupModifyBean
 
-  def setApply(apply: MajorPlanCourseGroupModifyBean): Unit
+  def setApply(apply: MajorCourseGroupModifyBean): Unit
 }

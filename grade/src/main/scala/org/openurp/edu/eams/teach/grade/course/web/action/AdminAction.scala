@@ -1,29 +1,27 @@
 package org.openurp.edu.eams.teach.grade.course.web.action
-
-import java.util.Collections
 import java.util.Date
-import java.util.List
-import java.util.Map
-import java.util.Set
+
+
+
 import org.apache.commons.collections.CollectionUtils
 import org.beangle.commons.bean.comparators.PropertyComparator
 import org.beangle.commons.bean.transformers.PropertyTransformer
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.lang.Strings
 import org.beangle.security.blueprint.User
 import org.beangle.struts2.convention.route.Action
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Project
 import org.openurp.edu.base.Student
 import org.openurp.edu.base.Teacher
 import org.openurp.edu.eams.core.service.StudentService
 import org.openurp.edu.eams.teach.Grade
 import org.openurp.edu.teach.code.CourseTakeType
-import org.openurp.edu.eams.teach.code.industry.ExamStatus
+import org.openurp.edu.teach.code.ExamStatus
 import org.openurp.edu.eams.teach.code.industry.ExamType
-import org.openurp.edu.eams.teach.code.industry.GradeType
+import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.eams.teach.code.industry.ScoreMarkStyle
 import org.openurp.edu.teach.code.CourseType
 import org.openurp.edu.eams.teach.grade.course.service.GradeInputSwitchService
@@ -43,11 +41,11 @@ import org.openurp.edu.eams.teach.grade.service.GradeCourseTypeProvider
 import org.openurp.edu.eams.teach.grade.service.GradeRateService
 import org.openurp.edu.eams.teach.grade.service.event.CourseGradeSubmitEvent
 import org.openurp.edu.teach.grade.CourseGrade
-import org.openurp.edu.teach.grade.CourseGradeState
+import org.openurp.edu.teach.grade.model.CourseGradeState
 import org.openurp.edu.teach.lesson.CourseTake
-import org.openurp.edu.eams.teach.lesson.ExamGrade
-import org.openurp.edu.eams.teach.lesson.ExamGradeState
-import org.openurp.edu.eams.teach.lesson.ExamTake
+import org.openurp.edu.teach.grade.ExamGrade
+import org.openurp.edu.teach.grade.model.ExamGradeState
+import org.openurp.edu.teach.exam.ExamTake
 import org.openurp.edu.eams.teach.lesson.GradeTypeConstants
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.teach.lesson.model.CourseGradeBean
@@ -58,7 +56,7 @@ import org.openurp.edu.eams.teach.lesson.service.LessonFilterStrategyFactory
 import org.openurp.edu.eams.teach.lesson.service.LessonService
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class AdminAction extends SemesterSupportAction {
 
@@ -107,7 +105,7 @@ class AdminAction extends SemesterSupportAction {
     put("gradeState", gradeState)
     for (gradeType <- getGradeTypes(gradeState) if null != getState(gradeType) && Grade.Status.NEW != getState(gradeType).getStatus && 
       getState(gradeType).getStatus > Grade.Status.CONFIRMED) {
-      return redirect(new Action(classOf[AdminAction], "inputTask", "&lessonId=" + lesson.getId), "error.grade.modifyPublished")
+      return redirect(new Action(classOf[AdminAction], "inputTask", "&lessonId=" + lesson.id), "error.grade.modifyPublished")
     }
     null
   }
@@ -124,7 +122,7 @@ class AdminAction extends SemesterSupportAction {
       gradeTypeState.setGradeState(getGradeState)
       gradeTypeState.setPrecision(precision)
       gradeTypeState.setInputedAt(new Date())
-      gradeTypeState.setScoreMarkStyle(Model.newInstance(classOf[ScoreMarkStyle], gradeState.getScoreMarkStyle.getId))
+      gradeTypeState.setScoreMarkStyle(Model.newInstance(classOf[ScoreMarkStyle], gradeState.getScoreMarkStyle.id))
       gradeState.getStates.add(gradeTypeState)
     }
     gradeTypeState
@@ -208,7 +206,7 @@ class AdminAction extends SemesterSupportAction {
       return forwardError("error.teacher.noTask")
     }
     val semester = entityDao.get(classOf[Semester], semesterId)
-    val lessons = lessonService.getLessonByCategory(teacher.getId, lessonFilterStrategyFactory.getLessonFilterCategory(LessonFilterStrategy.TEACHER), 
+    val lessons = lessonService.getLessonByCategory(teacher.id, lessonFilterStrategyFactory.getLessonFilterCategory(LessonFilterStrategy.TEACHER), 
       semester)
     val builder = OqlBuilder.from(classOf[CourseGradeState], "courseGradeState")
     builder.where("courseGradeState.extraInputer = :user", user)
@@ -222,7 +220,7 @@ class AdminAction extends SemesterSupportAction {
     val gradeStates = CollectUtils.newHashMap()
     for (lesson <- lessons) {
       val state = courseGradeService.getState(lesson)
-      if (state != null) gradeStates.put(lesson.getId, state)
+      if (state != null) gradeStates.put(lesson.id, state)
     }
     put("makeupTakeCounts", makeupStdStrategy.getCourseTakeCounts(lessons))
     put("gradeStates", gradeStates)
@@ -317,11 +315,11 @@ class AdminAction extends SemesterSupportAction {
       val gradeRateConfigs = CollectUtils.newHashMap()
       val gradeTypes = getGradeTypes(state)
       for (gradeType <- gradeTypes) {
-        if (GradeTypeConstants.GA_ID == gradeType.getId) {
+        if (GradeTypeConstants.GA_ID == gradeType.id) {
           //continue
         }
         val examGradeState = state.getState(gradeType)
-        val scoreMarkStyle = entityDao.get(classOf[ScoreMarkStyle], examGradeState.getScoreMarkStyle.getId)
+        val scoreMarkStyle = entityDao.get(classOf[ScoreMarkStyle], examGradeState.getScoreMarkStyle.id)
         if (!scoreMarkStyle.isNumStyle) {
           if (!gradeRateConfigs.containsKey(scoreMarkStyle)) {
             gradeRateConfigs.put(scoreMarkStyle, gradeRateService.getConfig(getProject, scoreMarkStyle))
@@ -347,7 +345,7 @@ class AdminAction extends SemesterSupportAction {
     }
     val converterMap = CollectUtils.newHashMap()
     for (gradeTypeState <- gradeState.getStates) {
-      markStyles.put(gradeTypeState.gradeType.getId.toString, gradeTypeState.getScoreMarkStyle)
+      markStyles.put(gradeTypeState.gradeType.id.toString, gradeTypeState.getScoreMarkStyle)
     }
     put("markStyles", markStyles)
     put("converterMap", converterMap)
@@ -366,7 +364,7 @@ class AdminAction extends SemesterSupportAction {
     val stdExamTypeMap = CollectUtils.newHashMap()
     val examTakes = entityDao.search(query)
     for (examTake <- examTakes) {
-      stdExamTypeMap.put(examTake.getStd.getId + "_" + examTake.getExamType.getId, examTake)
+      stdExamTypeMap.put(examTake.getStd.id + "_" + examTake.getExamType.id, examTake)
     }
     stdExamTypeMap
   }
@@ -386,7 +384,7 @@ class AdminAction extends SemesterSupportAction {
     val gaGradeTypes = settings.getSetting(getProject).getGaElementTypes
     val gaGradeTypeParams = CollectUtils.newArrayList()
     for (gradeType <- gaGradeTypes) {
-      gradeType = entityDao.get(classOf[GradeType], gradeType.getId)
+      gradeType = entityDao.get(classOf[GradeType], gradeType.id)
       if (gradeInputSwitch.getTypes.contains(gradeType)) gaGradeTypeParams.add(gradeType)
     }
     put("gaGradeTypes", gaGradeTypeParams)
@@ -442,12 +440,12 @@ class AdminAction extends SemesterSupportAction {
     val gradeState = getGradeState
     val operator = getUsername
     gradeState.setOperator(operator)
-    val params = new StringBuilder("&lessonId=" + lesson.getId)
+    val params = new StringBuilder("&lessonId=" + lesson.id)
     params.append("&gradeTypeIds=")
     val inputableGradeTypes = getGradeTypes(gradeState)
     for (gradeType <- inputableGradeTypes) {
       getState(gradeType).setOperator(operator)
-      params.append(gradeType.getId + ",")
+      params.append(gradeType.id + ",")
     }
     entityDao.saveOrUpdate(grades, gradeState)
     if (submit) {
@@ -456,9 +454,9 @@ class AdminAction extends SemesterSupportAction {
         var alreadyContainGA = false
         var alreadyContainFINAL = false
         for (publishGradeType <- publishableGradeTypes) {
-          if (publishGradeType.getId == GradeTypeConstants.FINAL_ID) {
+          if (publishGradeType.id == GradeTypeConstants.FINAL_ID) {
             alreadyContainFINAL = true
-          } else if (publishGradeType.getId == GradeTypeConstants.GA_ID) {
+          } else if (publishGradeType.id == GradeTypeConstants.GA_ID) {
             alreadyContainGA = true
           }
         }
@@ -468,7 +466,7 @@ class AdminAction extends SemesterSupportAction {
         if (!alreadyContainFINAL) {
           publishableGradeTypes.add(Model.newInstance(classOf[GradeType], GradeTypeConstants.FINAL_ID))
         }
-        courseGradeService.publish(lesson.getId + "", publishableGradeTypes.toArray(Array()), true)
+        courseGradeService.publish(lesson.id + "", publishableGradeTypes.toArray(Array()), true)
       }
       publish(new CourseGradeSubmitEvent(gradeState))
     }
@@ -508,7 +506,7 @@ class AdminAction extends SemesterSupportAction {
     val state = getGradeState
     grade.setMarkStyle(state.getScoreMarkStyle)
     grade.setStatus(status)
-    grade.setProject(Model.newInstance(classOf[Project], take.getStd.getProject.getId))
+    grade.setProject(Model.newInstance(classOf[Project], take.getStd.getProject.id))
     val planCourseType = gradeCourseTypeProvider.getCourseType(take.getStd, take.getLesson.getCourse, 
       take.getLesson.getCourseType)
     grade.setCourseType(planCourseType)
@@ -519,7 +517,7 @@ class AdminAction extends SemesterSupportAction {
   protected def updateGradeState(status: Int, inputedAt: Date) {
     val gradeState = getGradeState
     for (gradeType <- getGradeTypes(gradeState)) {
-      if ((GradeTypeConstants.GA_ID) == gradeType.getId) {
+      if ((GradeTypeConstants.GA_ID) == gradeType.id) {
         gradeState.setStatus(status)
       }
       gradeState.getState(gradeType).setStatus(status)
@@ -541,7 +539,7 @@ class AdminAction extends SemesterSupportAction {
     } else {
       grade.setMarkStyle(gradeState.getScoreMarkStyle)
     }
-    grade.setRemark(get("courseGrade.remark" + take.getStd.getId))
+    grade.setRemark(get("courseGrade.remark" + take.getStd.id))
     grade.setOperator(operator)
     grade.setUpdatedAt(inputedAt)
     for (gradeType <- gradeTypes) {
@@ -561,10 +559,10 @@ class AdminAction extends SemesterSupportAction {
       status: Int, 
       inputedAt: Date, 
       operator: String) {
-    val scoreInputName = gradeType.getShortName + "_" + take.getStd.getId
+    val scoreInputName = gradeType.getShortName + "_" + take.getStd.id
     val examScoreStr = get(scoreInputName)
     var examStatusId = getInt("examStatus_" + scoreInputName)
-    if (null == examScoreStr && null == examStatusId && gradeType.getId != GradeTypeConstants.GA_ID) {
+    if (null == examScoreStr && null == examStatusId && gradeType.id != GradeTypeConstants.GA_ID) {
       return
     }
     val examScore = getFloat(scoreInputName)
@@ -581,7 +579,7 @@ class AdminAction extends SemesterSupportAction {
       grade.addExamGrade(examGrade)
     }
     grade.setUpdatedAt(inputedAt)
-    val personPercent = getInt("personPercent_" + gradeType.getShortName + "_" + take.getStd.getId)
+    val personPercent = getInt("personPercent_" + gradeType.getShortName + "_" + take.getStd.id)
     examGrade.setPercent(personPercent)
     examGrade.setMarkStyle(markStyle)
     examGrade.setExamStatus(examStatus)
@@ -636,7 +634,7 @@ class AdminAction extends SemesterSupportAction {
     val msg = courseGradeHelper.removeLessonGrade(getUserId)
     if (Strings.isEmpty(msg)) {
       logHelper.info("delete grade")
-      redirect("inputTask", "info.delete.success", "&lessonId=" + lesson.getId)
+      redirect("inputTask", "info.delete.success", "&lessonId=" + lesson.id)
     } else {
       forwardError(msg)
     }
@@ -658,7 +656,7 @@ class AdminAction extends SemesterSupportAction {
       .where("config.project=:project", getProject)
     val gradeConfigMap = CollectUtils.newHashMap()
     for (config <- entityDao.search(query)) {
-      gradeConfigMap.put(String.valueOf(config.getScoreMarkStyle.getId), config)
+      gradeConfigMap.put(String.valueOf(config.getScoreMarkStyle.id), config)
     }
     put("gradeConfigMap", gradeConfigMap)
     put("GA_ID", GradeTypeConstants.GA_ID)

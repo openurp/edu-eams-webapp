@@ -5,7 +5,7 @@ import org.beangle.commons.lang.Strings
 import org.openurp.edu.eams.web.action.BaseAction
 import HelpAction._
 
-import scala.collection.JavaConversions._
+
 
 object HelpAction {
 

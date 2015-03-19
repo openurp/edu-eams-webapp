@@ -5,7 +5,7 @@ import org.beangle.commons.text.i18n.TextResource
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.web.util.OutputMessage
 
-import scala.collection.JavaConversions._
+
 
 class CourseTakeInitMessage(key: String, var lesson: Lesson) extends OutputMessage {
 

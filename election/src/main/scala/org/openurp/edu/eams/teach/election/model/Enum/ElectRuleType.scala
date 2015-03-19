@@ -1,10 +1,10 @@
 package org.openurp.edu.eams.teach.election.model.Enum
 
-import java.util.List
-import java.util.Map
+
+
 import org.beangle.commons.collection.CollectUtils
 
-import scala.collection.JavaConversions._
+
 
 object ElectRuleType extends Enumeration {
 

@@ -5,7 +5,7 @@ import org.openurp.edu.eams.teach.grade.search.web.action.GpaAction
 import org.openurp.edu.eams.teach.grade.search.web.action.GpaStatAction
 import org.openurp.edu.eams.teach.grade.search.web.action.MultiStdAction
 
-import scala.collection.JavaConversions._
+
 
 class DefaultModule extends AbstractBindModule {
 

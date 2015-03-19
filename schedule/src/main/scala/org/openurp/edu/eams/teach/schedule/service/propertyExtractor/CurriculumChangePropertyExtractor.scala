@@ -5,7 +5,7 @@ import org.beangle.commons.text.i18n.TextResource
 import org.beangle.commons.transfer.exporter.DefaultPropertyExtractor
 import org.openurp.edu.eams.teach.schedule.model.CurriculumChangeApplication
 
-import scala.collection.JavaConversions._
+
 
 class CurriculumChangePropertyExtractor(textResource: TextResource) extends DefaultPropertyExtractor(textResource) {
 

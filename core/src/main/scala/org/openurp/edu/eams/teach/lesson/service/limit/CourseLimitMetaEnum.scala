@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.lesson.service.limit
 
 import java.io.Serializable
-import org.beangle.commons.entity.Entity
+import org.beangle.data.model.Entity
 import org.beangle.commons.entity.metadata.Model
 import org.openurp.base.Department
 import org.openurp.code.person.Gender
@@ -14,9 +14,9 @@ import org.openurp.edu.base.code.StdType
 import org.openurp.edu.teach.lesson.CourseLimitMeta.Operator
 import org.openurp.edu.eams.teach.lesson.NormalClass
 import org.openurp.edu.base.Program
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConversions._
+
+
 
 object CourseLimitMetaEnum extends Enumeration {
 
@@ -42,12 +42,12 @@ object CourseLimitMetaEnum extends Enumeration {
 
   val STDLABEL = new CourseLimitMetaEnum(11L, classOf[StdLabel], null, Operator.IN, Operator.NOT_IN)
 
-  class CourseLimitMetaEnum(@BeanProperty var metaId: Long, 
+  class CourseLimitMetaEnum( var metaId: Long, 
       clazz: Class[_ <: Serializable], 
-      @BeanProperty var format: String, 
-      @BeanProperty var operators: Operator*) extends Val {
+       var format: String, 
+       var operators: Operator*) extends Val {
 
-    @BeanProperty
+    
     var contentType: Class[_ <: Serializable] = clazz
 
     private var contentValueType: Class[_ <: Serializable] = _
@@ -56,7 +56,7 @@ object CourseLimitMetaEnum extends Enumeration {
 
     def getContentValueType(): Class[_ <: Serializable] = {
       if (null == contentValueType && null != contentType) {
-        this.contentValueType = if (classOf[Entity].isAssignableFrom(contentType)) Model.getType(contentType).getIdType else contentType
+        this.contentValueType = if (classOf[Entity[_]].isAssignableFrom(contentType)) Model.getType(contentType).idType else contentType
       }
       contentValueType
     }

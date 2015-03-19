@@ -1,11 +1,11 @@
 package org.openurp.edu.eams.teach.program.major.service.impl
 
-import java.util.List
+
 import com.ekingstar.eams.system.security.DataRealm
 import org.openurp.edu.eams.teach.program.major.dao.MajorPlanStatDao
 import org.openurp.edu.eams.teach.program.major.service.MajorPlanStatService
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class MajorPlanStatServiceImpl extends MajorPlanStatService {
 

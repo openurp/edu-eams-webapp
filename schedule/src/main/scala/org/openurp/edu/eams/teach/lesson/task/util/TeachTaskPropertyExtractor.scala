@@ -1,17 +1,17 @@
 package org.openurp.edu.eams.teach.lesson.task.util
 
 import java.text.MessageFormat
-import java.util.ArrayList
-import java.util.HashSet
-import java.util.Iterator
-import java.util.List
-import java.util.Map
-import java.util.Set
+
+
+
+
+
+
 import org.apache.commons.collections.CollectionUtils
 import org.apache.commons.collections.Transformer
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.EntityDao
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.lang.tuple.Pair
 import org.beangle.commons.text.i18n.TextResource
@@ -24,11 +24,11 @@ import org.openurp.edu.eams.teach.Textbook
 import org.openurp.edu.eams.teach.code.industry.ExamType
 import org.openurp.edu.eams.teach.code.school.CourseHourType
 import org.openurp.edu.eams.teach.lesson.ArrangeSuggest
-import org.openurp.edu.eams.teach.lesson.CourseActivity
+import org.openurp.edu.teach.schedule.CourseActivity
 import org.openurp.edu.teach.lesson.CourseLimitMeta.Operator
 import org.openurp.edu.eams.teach.lesson.CourseMaterial
-import org.openurp.edu.eams.teach.lesson.ExamActivity
-import org.openurp.edu.eams.teach.lesson.ExamRoom
+import org.openurp.edu.teach.exam.ExamActivity
+import org.openurp.edu.teach.exam.ExamRoom
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.teach.lesson.LessonMaterial
 import org.openurp.edu.eams.teach.lesson.service.CourseLimitService
@@ -38,7 +38,7 @@ import org.openurp.edu.eams.teach.lesson.util.ExamActivityDigestor
 import org.openurp.edu.eams.teach.lesson.util.SuggestActivityDigestor
 import org.openurp.edu.eams.teach.time.util.TermCalculator
 
-import scala.collection.JavaConversions._
+
 
 class TeachTaskPropertyExtractor(resource: TextResource) extends DefaultPropertyExtractor(resource) {
 
@@ -152,7 +152,7 @@ class TeachTaskPropertyExtractor(resource: TextResource) extends DefaultProperty
             Strings.join(CollectionUtils.collect(suggest.getRooms, new Transformer() {
 
             def transform(input: AnyRef): AnyRef = {
-              return input.asInstanceOf[Classroom].getName
+              return input.asInstanceOf[Room].getName
             }
           }), ",")
         }
@@ -247,7 +247,7 @@ class TeachTaskPropertyExtractor(resource: TextResource) extends DefaultProperty
       }
       sb.toString
     } else if ("courseSchedule.activities.room.capacityOfCourse" == property) {
-      val rooms = new HashSet[Classroom]()
+      val rooms = new HashSet[Room]()
       for (activity <- lesson.getCourseSchedule.getActivities) {
         rooms.addAll(activity.getRooms)
       }
@@ -260,7 +260,7 @@ class TeachTaskPropertyExtractor(resource: TextResource) extends DefaultProperty
     } else if ("courseSchedule.activities.time" == property) {
       digestor.digest(textResource, lesson, ":day :units")
     } else if ("courseSchedule.activities.room" == property) {
-      val rooms = new HashSet[Classroom]()
+      val rooms = new HashSet[Room]()
       for (activity <- lesson.getCourseSchedule.getActivities) {
         rooms.addAll(activity.getRooms)
       }
@@ -348,7 +348,7 @@ class TeachTaskPropertyExtractor(resource: TextResource) extends DefaultProperty
   }
 
   private def getContents(lesson: Lesson): Map[String, String] = {
-    val lessonId = lesson.getId
+    val lessonId = lesson.id
     var contents: Map[String, String] = null
     if (null == currLimitContents || currLimitContents.getLeft != lessonId) {
       var fullname = lesson.getTeachClass.getFullname

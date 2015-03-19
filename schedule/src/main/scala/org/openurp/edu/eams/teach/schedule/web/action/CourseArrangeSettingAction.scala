@@ -1,15 +1,15 @@
 package org.openurp.edu.eams.teach.schedule.web.action
 
-import java.util.Collection
-import java.util.List
+
+
 import org.apache.commons.lang3.ArrayUtils
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.beangle.struts2.convention.route.Action
 import org.beangle.struts2.helper.ContextHelper
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.eams.base.util.WeekDays
 import org.openurp.edu.base.Project
 import org.openurp.edu.eams.core.service.TimeSettingService
@@ -20,7 +20,7 @@ import org.openurp.edu.eams.teach.lesson.model.CourseScheduleBean.CourseStatusEn
 import org.openurp.edu.eams.teach.lesson.service.LessonService
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class CourseArrangeSettingAction extends SemesterSupportAction {
 

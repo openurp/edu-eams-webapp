@@ -1,44 +1,44 @@
 package org.openurp.edu.eams.teach.schedule.service.impl
 
 import java.util.Date
-import java.util.Iterator
-import java.util.List
-import java.util.Map
+
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.page.PageLimit
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.beangle.commons.dao.query.builder.Condition
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.openurp.edu.eams.base.Building
-import org.openurp.edu.eams.base.Campus
+import org.openurp.base.Campus
 import org.openurp.base.Room
 import org.openurp.base.Department
-import org.openurp.edu.eams.base.code.school.ClassroomType
-import org.openurp.edu.eams.classroom.TimeUnit
-import org.openurp.edu.eams.teach.lesson.CourseActivity
+import org.openurp.edu.eams.base.code.school.RoomType
+import 
+import org.openurp.edu.teach.schedule.CourseActivity
 import org.openurp.edu.eams.teach.lesson.CourseTime
-import org.openurp.edu.eams.teach.lesson.util.TimeUnitUtil
+import org.openurp.edu.eams.teach.lesson.util.YearWeekTimeUtil
 import org.openurp.edu.eams.teach.schedule.service.ScheduleRoomService
 
-import scala.collection.JavaConversions._
+
 
 class ScheduleRoomServiceImpl extends BaseServiceImpl with ScheduleRoomService {
 
-  def getFreeRoomsOf(departments: List[Department], courseTimes: Array[CourseTime], activity: CourseActivity): OqlBuilder[Classroom] = {
+  def getFreeRoomsOf(departments: List[Department], courseTimes: Array[CourseTime], activity: CourseActivity): OqlBuilder[Room] = {
     val hql = new StringBuilder(" from org.openurp.edu.eams.classroom.Occupancy occupancy where occupancy.room = classroom")
     val params = CollectUtils.newHashMap()
     var ocuupy = ""
-    val timeUnits = TimeUnitUtil.convertToTimeUnits(activity.getLesson, courseTimes)
+    val timeUnits = YearWeekTimeUtil.convertToYearWeekTimes(activity.getLesson, courseTimes)
     for (i <- 0 until timeUnits.length) {
-      ocuupy = "(bitand(occupancy.time.weekStateNum," + new java.lang.Long(timeUnits(i).getWeekStateNum) + 
-        ")>0 and occupancy.time.weekday = :weekday" + 
+      ocuupy = "(bitand(occupancy.time.state," + new java.lang.Long(timeUnits(i).state) + 
+        ")>0 and occupancy.time.day = :weekday" + 
         i + 
         " and occupancy.time.year = :year" + 
         i + 
-        " and occupancy.time.startTime < :endTime" + 
+        " and occupancy.time.start < :endTime" + 
         i + 
-        " and occupancy.time.endTime > :startTime" + 
+        " and occupancy.time.end > :startTime" + 
         i + 
         ")"
       if (i > 0) {
@@ -47,13 +47,13 @@ class ScheduleRoomServiceImpl extends BaseServiceImpl with ScheduleRoomService {
         hql.append(" and (")
       }
       hql.append(ocuupy)
-      params.put("weekday" + i, new java.lang.Integer(timeUnits(i).getWeekday))
-      params.put("endTime" + i, new java.lang.Integer(timeUnits(i).getEndTime))
-      params.put("startTime" + i, new java.lang.Integer(timeUnits(i).getStartTime))
-      params.put("year" + i, new java.lang.Integer(timeUnits(i).getYear))
+      params.put("weekday" + i, new java.lang.Integer(timeUnits(i).day))
+      params.put("endTime" + i, new java.lang.Integer(timeUnits(i).end))
+      params.put("startTime" + i, new java.lang.Integer(timeUnits(i).start))
+      params.put("year" + i, new java.lang.Integer(timeUnits(i).year))
     }
     hql.append(")")
-    val builder = OqlBuilder.from(classOf[Classroom], "classroom").where("classroom.effectiveAt <= :now and (classroom.invalidAt is null or classroom.invalidAt >= :now)")
+    val builder = OqlBuilder.from(classOf[Room], "classroom").where("classroom.effectiveAt <= :now and (classroom.invalidAt is null or classroom.invalidAt >= :now)")
     params.put("now", new Date())
     if (!departments.isEmpty) {
       builder.join("classroom.departments", "department")
@@ -106,20 +106,20 @@ class ScheduleRoomServiceImpl extends BaseServiceImpl with ScheduleRoomService {
     builder
   }
 
-  def getOccupancyRoomsOf(departments: List[Department], courseTimes: Array[CourseTime], activity: CourseActivity): OqlBuilder[Classroom] = {
+  def getOccupancyRoomsOf(departments: List[Department], courseTimes: Array[CourseTime], activity: CourseActivity): OqlBuilder[Room] = {
     val hql = new StringBuilder(" from org.openurp.edu.eams.classroom.Occupancy occupancy where occupancy.room = classroom")
     val params = CollectUtils.newHashMap()
     var ocuupy = ""
-    val timeUnits = TimeUnitUtil.convertToTimeUnits(activity.getLesson, courseTimes)
+    val timeUnits = YearWeekTimeUtil.convertToYearWeekTimes(activity.getLesson, courseTimes)
     for (i <- 0 until timeUnits.length) {
-      ocuupy = "(bitand(occupancy.time.weekStateNum," + new java.lang.Long(timeUnits(i).getWeekStateNum) + 
-        ")>0 and occupancy.time.weekday = :weekday" + 
+      ocuupy = "(bitand(occupancy.time.state," + new java.lang.Long(timeUnits(i).state) + 
+        ")>0 and occupancy.time.day = :weekday" + 
         i + 
         " and occupancy.time.year = :year" + 
         i + 
-        " and occupancy.time.startTime < :endTime" + 
+        " and occupancy.time.start < :endTime" + 
         i + 
-        " and occupancy.time.endTime > :startTime" + 
+        " and occupancy.time.end > :startTime" + 
         i + 
         ")"
       if (i > 0) {
@@ -128,13 +128,13 @@ class ScheduleRoomServiceImpl extends BaseServiceImpl with ScheduleRoomService {
         hql.append(" and (")
       }
       hql.append(ocuupy)
-      params.put("weekday" + i, new java.lang.Integer(timeUnits(i).getWeekday))
-      params.put("endTime" + i, new java.lang.Integer(timeUnits(i).getEndTime))
-      params.put("startTime" + i, new java.lang.Integer(timeUnits(i).getStartTime))
-      params.put("year" + i, new java.lang.Integer(timeUnits(i).getYear))
+      params.put("weekday" + i, new java.lang.Integer(timeUnits(i).day))
+      params.put("endTime" + i, new java.lang.Integer(timeUnits(i).end))
+      params.put("startTime" + i, new java.lang.Integer(timeUnits(i).start))
+      params.put("year" + i, new java.lang.Integer(timeUnits(i).year))
     }
     hql.append(")")
-    val builder = OqlBuilder.from(classOf[Classroom], "classroom").where("classroom.effectiveAt <= :now and (classroom.invalidAt is null or classroom.invalidAt >= :now)")
+    val builder = OqlBuilder.from(classOf[Room], "classroom").where("classroom.effectiveAt <= :now and (classroom.invalidAt is null or classroom.invalidAt >= :now)")
     params.put("now", new Date())
     if (!departments.isEmpty) {
       builder.join("classroom.departments", "department")
@@ -187,19 +187,19 @@ class ScheduleRoomServiceImpl extends BaseServiceImpl with ScheduleRoomService {
     builder
   }
 
-  def getFreeRoomsOfConditions(units: Array[TimeUnit]): OqlBuilder[Classroom] = {
+  def getFreeRoomsOfConditions(units: Array[YearWeekTime]): OqlBuilder[Room] = {
     val hql = new StringBuilder(" from org.openurp.edu.eams.classroom.Occupancy occupancy where occupancy.room = classroom")
     var ocuupy = ""
     for (i <- 0 until units.length) {
-      ocuupy = "(bitand(occupancy.time.weekStateNum," + new java.lang.Long(units(i).getWeekStateNum) + 
-        ")>0 and occupancy.time.weekday = " + 
-        new java.lang.Integer(units(i).getWeekday) + 
+      ocuupy = "(bitand(occupancy.time.state," + new java.lang.Long(units(i).state) + 
+        ")>0 and occupancy.time.day = " + 
+        new java.lang.Integer(units(i).day) + 
         " and occupancy.time.year = " + 
-        new java.lang.Integer(units(i).getYear) + 
-        " and occupancy.time.startTime < " + 
-        new java.lang.Integer(units(i).getEndTime) + 
-        " and occupancy.time.endTime > " + 
-        new java.lang.Integer(units(i).getStartTime) + 
+        new java.lang.Integer(units(i).year) + 
+        " and occupancy.time.start < " + 
+        new java.lang.Integer(units(i).end) + 
+        " and occupancy.time.end > " + 
+        new java.lang.Integer(units(i).start) + 
         ")"
       if (i > 0) {
         hql.append(" or ")
@@ -209,14 +209,14 @@ class ScheduleRoomServiceImpl extends BaseServiceImpl with ScheduleRoomService {
       hql.append(ocuupy)
     }
     hql.append(")")
-    val query = OqlBuilder.from(classOf[Classroom], "classroom").where("classroom.effectiveAt <= :now and (classroom.invalidAt is null or classroom.invalidAt >= :now)", 
+    val query = OqlBuilder.from(classOf[Room], "classroom").where("classroom.effectiveAt <= :now and (classroom.invalidAt is null or classroom.invalidAt >= :now)", 
       new Date())
       .where("not exists (" + hql.toString + ")")
     query
   }
 
-  def getClassrooms(classroom: Classroom, departments: List[Department], limit: PageLimit): List[Classroom] = {
-    val builder = OqlBuilder.from(classOf[Classroom], "classroom").where("classroom.effectiveAt <= :now and (classroom.invalidAt is null or classroom.invalidAt >= :now)", 
+  def getRooms(classroom: Room, departments: List[Department], limit: PageLimit): List[Room] = {
+    val builder = OqlBuilder.from(classOf[Room], "classroom").where("classroom.effectiveAt <= :now and (classroom.invalidAt is null or classroom.invalidAt >= :now)", 
       new java.util.Date())
       .limit(limit)
     if (!departments.isEmpty) {
@@ -227,8 +227,8 @@ class ScheduleRoomServiceImpl extends BaseServiceImpl with ScheduleRoomService {
       if (null != campus && campus.isPersisted) {
         builder.where("classroom.campus = :campus", campus)
       }
-      if (null != classroom.getId) {
-        builder.where("(classroom.id = :id)", classroom.getId)
+      if (null != classroom.id) {
+        builder.where("(classroom.id = :id)", classroom.id)
       }
       if (Strings.isNotEmpty(classroom.getCode)) {
         builder.where(Condition.like("classroom.code", classroom.getCode))

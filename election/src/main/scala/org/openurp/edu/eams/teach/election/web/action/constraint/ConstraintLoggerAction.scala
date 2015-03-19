@@ -2,7 +2,7 @@ package org.openurp.edu.eams.teach.election.web.action.constraint
 
 import org.beangle.commons.collection.Order
 import org.beangle.commons.dao.EntityDao
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.beangle.struts2.action.ActionSupport
 import org.beangle.struts2.helper.ContextHelper
@@ -11,7 +11,7 @@ import org.beangle.struts2.helper.QueryHelper
 import org.openurp.edu.eams.teach.election.model.Enum.ConstraintType
 import org.openurp.edu.eams.teach.election.model.constraint.ConstraintLogger
 
-import scala.collection.JavaConversions._
+
 
 class ConstraintLoggerAction extends ActionSupport {
 

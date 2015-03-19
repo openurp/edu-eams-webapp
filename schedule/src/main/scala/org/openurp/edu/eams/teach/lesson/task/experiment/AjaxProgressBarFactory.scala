@@ -2,7 +2,7 @@ package org.openurp.edu.eams.teach.lesson.task.experiment
 
 import java.util.concurrent.ConcurrentHashMap
 
-import scala.collection.JavaConversions._
+
 
 object AjaxProgressBarFactory {
 
@@ -10,7 +10,7 @@ object AjaxProgressBarFactory {
 
   def getInstance(clazz: Class[_ <: AjaxProgressBar]): AjaxProgressBar = {
     val bar = clazz.newInstance()
-    barPool.putIfAbsent(bar.getId, bar)
+    barPool.putIfAbsent(bar.id, bar)
     bar
   }
 

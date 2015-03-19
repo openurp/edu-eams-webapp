@@ -1,29 +1,27 @@
 package org.openurp.edu.eams.teach.grade.course.web.action
 
-import java.util.Collection
-import java.util.Collections
-import java.util.List
-import java.util.Set
+
+
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.bean.comparators.PropertyComparator
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
 import org.beangle.commons.dao.query.builder.Condition
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.edu.base.Student
 import org.openurp.edu.teach.code.CourseTakeType
-import org.openurp.edu.eams.teach.code.industry.ExamStatus
-import org.openurp.edu.eams.teach.code.industry.GradeType
+import org.openurp.edu.teach.code.ExamStatus
+import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.eams.teach.grade.course.service.CourseGradeComparator
 import org.openurp.edu.eams.teach.grade.lesson.model.GradeInputSwitch
 import org.openurp.edu.teach.grade.CourseGrade
-import org.openurp.edu.teach.grade.CourseGradeState
+import org.openurp.edu.teach.grade.model.CourseGradeState
 import org.openurp.edu.teach.lesson.CourseTake
-import org.openurp.edu.eams.teach.lesson.ExamGrade
+import org.openurp.edu.teach.grade.ExamGrade
 import org.openurp.edu.eams.teach.lesson.GradeTypeConstants
 import org.openurp.edu.teach.lesson.Lesson
 
-import scala.collection.JavaConversions._
+
 
 class TeacherMakeupAction extends TeacherAction {
 

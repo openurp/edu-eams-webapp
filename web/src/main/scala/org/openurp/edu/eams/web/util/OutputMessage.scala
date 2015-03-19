@@ -3,7 +3,7 @@ package org.openurp.edu.eams.web.util
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.text.i18n.TextResource
 
-import scala.collection.JavaConversions._
+
 
 class OutputMessage {
 

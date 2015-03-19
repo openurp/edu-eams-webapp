@@ -2,14 +2,14 @@ package org.openurp.edu.eams.teach.grade.transcript
 
 import java.io.BufferedReader
 import java.io.InputStreamReader
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConversions._
 
-class Wk(@BeanProperty var exeName: String, @BeanProperty var pageUrl: String, @BeanProperty var imageUrl: String)
+
+
+class Wk( var exeName: String,  var pageUrl: String,  var imageUrl: String)
     {
 
-  @BeanProperty
+  
   var msg: String = ""
 
   def exec(): Int = windowExe()

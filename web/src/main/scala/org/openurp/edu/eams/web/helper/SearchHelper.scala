@@ -12,7 +12,7 @@ import org.openurp.edu.eams.core.service.DepartmentService
 import org.openurp.edu.eams.core.service.SemesterService
 import SearchHelper._
 
-import scala.collection.JavaConversions._
+
 
 object SearchHelper {
 

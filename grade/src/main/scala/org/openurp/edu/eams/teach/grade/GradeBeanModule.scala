@@ -39,7 +39,7 @@ import org.openurp.edu.eams.teach.grade.service.CourseGradePublishStack
 import org.openurp.edu.eams.teach.grade.service.impl.MoreHalfReserveMethod
 import org.openurp.edu.eams.teach.grade.transfer.web.action.AuditAction
 
-import scala.collection.JavaConversions._
+
 
 class GradeBeanModule extends AbstractBindModule {
 

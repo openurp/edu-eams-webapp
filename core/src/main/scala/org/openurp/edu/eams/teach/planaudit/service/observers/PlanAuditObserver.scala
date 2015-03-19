@@ -2,7 +2,7 @@ package org.openurp.edu.eams.teach.planaudit.service.observers
 
 import org.openurp.edu.eams.teach.planaudit.service.PlanAuditContext
 
-import scala.collection.JavaConversions._
+
 
 trait PlanAuditObserver {
 

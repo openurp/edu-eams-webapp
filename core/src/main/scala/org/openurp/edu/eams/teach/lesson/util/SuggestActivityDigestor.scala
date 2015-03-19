@@ -1,10 +1,8 @@
 package org.openurp.edu.eams.teach.lesson.util
 
 import java.text.SimpleDateFormat
-import java.util.Collection
-import java.util.Collections
-import java.util.List
-import java.util.Set
+
+
 import org.beangle.commons.bean.comparators.MultiPropertyComparator
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.lang.BitStrings
@@ -12,18 +10,15 @@ import org.beangle.commons.lang.Strings
 import org.beangle.commons.text.i18n.TextResource
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.openurp.edu.eams.base.Classroom
+import org.openurp.base.Room
 import org.openurp.base.Semester
 import org.openurp.edu.eams.base.util.WeekDays
-import org.openurp.edu.eams.classroom.TimeUnit
+import 
 import org.openurp.edu.base.Teacher
-import org.openurp.edu.eams.teach.lesson.ArrangeSuggest
-import org.openurp.edu.eams.teach.lesson.CourseTime
-import org.openurp.edu.eams.teach.lesson.SuggestActivity
 import org.openurp.edu.eams.util.TimeUtils
 import SuggestActivityDigestor._
 
-import scala.collection.JavaConversions._
+
 
 object SuggestActivityDigestor {
 
@@ -102,7 +97,7 @@ class SuggestActivityDigestor private () {
       }
     }
     val CourseArrangeBuf = new StringBuffer()
-    Collections.sort(mergedActivities, new MultiPropertyComparator("time.weekday"))
+    Collections.sort(mergedActivities, new MultiPropertyComparator("time.day"))
     for (activity <- mergedActivities) {
       CourseArrangeBuf.append(format)
       var replaceStart = 0
@@ -119,10 +114,10 @@ class SuggestActivityDigestor private () {
       replaceStart = CourseArrangeBuf.indexOf(day)
       if (-1 != replaceStart) {
         if (null != textResource && textResource.getLocale.getLanguage == "en") {
-          CourseArrangeBuf.replace(replaceStart, replaceStart + day.length, (WeekDays.get(activity.getTime.getWeekday)).getEngName + 
+          CourseArrangeBuf.replace(replaceStart, replaceStart + day.length, (WeekDays.get(activity.getTime.day)).getEngName + 
             ".")
         } else {
-          CourseArrangeBuf.replace(replaceStart, replaceStart + day.length, (WeekDays.get(activity.getTime.getWeekday)).getName)
+          CourseArrangeBuf.replace(replaceStart, replaceStart + day.length, (WeekDays.get(activity.getTime.day)).getName)
         }
       }
       replaceStart = CourseArrangeBuf.indexOf(units)
@@ -131,25 +126,25 @@ class SuggestActivityDigestor private () {
       }
       replaceStart = CourseArrangeBuf.indexOf(time)
       if (-1 != replaceStart) {
-        if (0 != activity.getTime.getStartTime) {
-          CourseArrangeBuf.replace(replaceStart, replaceStart + time.length, TimeUtils.getTimeStr(activity.getTime.getStartTime) + 
+        if (0 != activity.getTime.start) {
+          CourseArrangeBuf.replace(replaceStart, replaceStart + time.length, TimeUtils.getTimeStr(activity.getTime.start) + 
             "-" + 
-            TimeUtils.getTimeStr(activity.getTime.getEndTime))
+            TimeUtils.getTimeStr(activity.getTime.end))
         } else {
-          CourseArrangeBuf.replace(replaceStart, replaceStart + time.length, TimeUtils.getTimeStr(activity.getTime.getStartTime) + 
+          CourseArrangeBuf.replace(replaceStart, replaceStart + time.length, TimeUtils.getTimeStr(activity.getTime.start) + 
             "-" + 
-            TimeUtils.getTimeStr(activity.getTime.getEndTime))
+            TimeUtils.getTimeStr(activity.getTime.end))
         }
       }
       replaceStart = CourseArrangeBuf.indexOf(weeks)
       if (-1 != replaceStart) {
-        CourseArrangeBuf.replace(replaceStart, replaceStart + weeks.length, TimeUnitUtil.digest(activity.getTime.getWeekState, 
+        CourseArrangeBuf.replace(replaceStart, replaceStart + weeks.length, YearWeekTimeUtil.digest(activity.getTime.getWeekState, 
           CourseTime.FIRST_WEEK_FROM, 1, Semester.OVERALLWEEKS, textResource))
       }
       val sdf = new SimpleDateFormat("M月dd日起")
       replaceStart = CourseArrangeBuf.indexOf(starton)
       if (-1 != replaceStart) {
-        val timeUnits = TimeUnitUtil.convertToTimeUnits(semester, activity.getTime)
+        val timeUnits = YearWeekTimeUtil.convertToYearWeekTimes(semester, activity.getTime)
         if (null != timeUnits && timeUnits.length > 0) {
           val unit = timeUnits(0)
           CourseArrangeBuf.replace(replaceStart, replaceStart + starton.length, sdf.format(unit.getFirstDay))

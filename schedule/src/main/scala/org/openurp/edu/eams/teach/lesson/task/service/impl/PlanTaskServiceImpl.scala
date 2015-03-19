@@ -1,28 +1,26 @@
 package org.openurp.edu.eams.teach.lesson.task.service.impl
 
-import java.util.ArrayList
-import java.util.Collection
-import java.util.Collections
-import java.util.HashMap
-import java.util.HashSet
-import java.util.List
-import java.util.Map
-import java.util.Set
+
+
+
+
+
+
 import org.beangle.commons.bean.transformers.PropertyTransformer
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.impl.BaseServiceImpl
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.openurp.edu.eams.base.Semester
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.openurp.base.Semester
 import org.openurp.edu.eams.core.service.SemesterService
 import org.openurp.edu.eams.teach.lesson.task.model.PlanTask
 import org.openurp.edu.eams.teach.lesson.task.service.PlanTaskService
-import org.openurp.edu.eams.teach.program.CourseGroup
-import org.openurp.edu.eams.teach.program.PlanCourse
+import org.openurp.edu.teach.plan.CourseGroup
+import org.openurp.edu.teach.plan.PlanCourse
 import org.openurp.edu.teach.plan.MajorPlan
 import org.openurp.edu.eams.teach.program.util.PlanUtils
 import org.openurp.edu.eams.teach.time.util.TermCalculator
 
-import scala.collection.JavaConversions._
+
 
 class PlanTaskServiceImpl extends BaseServiceImpl with PlanTaskService {
 
@@ -61,7 +59,7 @@ class PlanTaskServiceImpl extends BaseServiceImpl with PlanTaskService {
       semester), requestedOpenPlanCourses, semester)
   }
 
-  def extractInappropriateTeachPlan(majorPlans: Collection[MajorPlan], semester: Semester): Map[MajorPlan, Map[CourseGroup, Array[Double]]] = {
+  def extractInappropriateTeachPlan(majorPlans: Iterable[MajorPlan], semester: Semester): Map[MajorPlan, Map[CourseGroup, Array[Double]]] = {
     val result = new HashMap[MajorPlan, Map[CourseGroup, Array[Double]]]()
     val termCalc = new TermCalculator(semesterService, semester)
     for (plan <- majorPlans) {
@@ -112,10 +110,10 @@ class PlanTaskServiceImpl extends BaseServiceImpl with PlanTaskService {
     val allPlanTask = new HashSet[PlanTask](planTaskList)
     val usedTeachPlanId = new HashSet[Long]()
     for (i <- 0 until planTaskList.size) {
-      if (usedTeachPlanId.contains(planTaskList.get(i).majorPlan.getId)) {
+      if (usedTeachPlanId.contains(planTaskList.get(i).majorPlan.id)) {
         //continue
       }
-      usedTeachPlanId.add(planTaskList.get(i).majorPlan.getId)
+      usedTeachPlanId.add(planTaskList.get(i).majorPlan.id)
       val planTaskQuery = OqlBuilder.from(classOf[PlanTask], "planTask")
       planTaskQuery.where("planTask.teachPlan=:plan", planTaskList.get(i).majorPlan)
       planTaskQuery.where("planTask.flag=:flag", PlanTask.REQ_CLOSE)

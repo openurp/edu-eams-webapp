@@ -1,14 +1,14 @@
 package org.openurp.edu.eams.teach.program.majorapply.web.action
 
 import java.util.Arrays
-import java.util.Collection
+
 import java.util.Comparator
-import java.util.HashMap
-import java.util.List
-import java.util.Map
+
+
+
 import org.beangle.commons.collection.Order
 import org.beangle.commons.dao.query.builder.Condition
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.transfer.exporter.PropertyExtractor
 import org.beangle.security.blueprint.User
@@ -19,18 +19,18 @@ import com.ekingstar.eams.core.code.industry.HSKDegree
 import com.ekingstar.eams.teach.Course
 import com.ekingstar.eams.teach.CourseHour
 import com.ekingstar.eams.teach.code.school.CourseHourType
-import org.openurp.edu.eams.teach.program.PlanCourse
+import org.openurp.edu.teach.plan.PlanCourse
 import org.openurp.edu.eams.teach.program.exporter.CourseModifyPropertyExtractor
 import org.openurp.edu.eams.teach.program.major.MajorPlan
 import org.openurp.edu.teach.plan.MajorPlanCourse
-import org.openurp.edu.teach.plan.MajorPlanCourseGroup
+import org.openurp.edu.teach.plan.MajorCourseGroup
 import org.openurp.edu.eams.teach.program.majorapply.model.MajorPlanCourseModifyBean
 import org.openurp.edu.eams.teach.program.majorapply.model.MajorPlanCourseModifyDetailAfterBean
 import org.openurp.edu.eams.teach.program.majorapply.model.MajorPlanCourseModifyDetailBeforeBean
 import org.openurp.edu.eams.teach.program.majorapply.service.MajorPlanCourseModifyApplyService
 import com.ekingstar.eams.web.action.common.ProjectSupportAction
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class MajorPlanCourseModifyApplyAction extends ProjectSupportAction {
 
@@ -46,7 +46,7 @@ class MajorPlanCourseModifyApplyAction extends ProjectSupportAction {
     val courseGroupId = getLong("courseGroupId")
     var duplicated = false
     if (Strings.isEmpty(oldCourseCode) || null == oldCourseGroupId) {
-      val cgroup = entityDao.get(classOf[MajorPlanCourseGroup], courseGroupId)
+      val cgroup = entityDao.get(classOf[MajorCourseGroup], courseGroupId)
       for (pcourse <- cgroup.getPlanCourses if pcourse.getCourse.getCode == courseCode) {
         duplicated = true
         //break
@@ -55,14 +55,14 @@ class MajorPlanCourseModifyApplyAction extends ProjectSupportAction {
       if (oldCourseGroupId == courseGroupId) {
         if (oldCourseCode == courseCode) {
         } else {
-          val cgroup = entityDao.get(classOf[MajorPlanCourseGroup], courseGroupId)
+          val cgroup = entityDao.get(classOf[MajorCourseGroup], courseGroupId)
           for (pcourse <- cgroup.getPlanCourses if pcourse.getCourse.getCode == courseCode) {
             duplicated = true
             //break
           }
         }
       } else {
-        val cgroup = entityDao.get(classOf[MajorPlanCourseGroup], courseGroupId)
+        val cgroup = entityDao.get(classOf[MajorCourseGroup], courseGroupId)
         for (pcourse <- cgroup.getPlanCourses if pcourse.getCourse.getCode == courseCode) {
           duplicated = true
           //break
@@ -162,14 +162,14 @@ class MajorPlanCourseModifyApplyAction extends ProjectSupportAction {
 
   private def populateAfter(): MajorPlanCourseModifyDetailAfterBean = {
     val after = populateEntity(classOf[MajorPlanCourseModifyDetailAfterBean], "newPlanCourse")
-    after.getFakeCourseGroup.setCourseType(entityDao.get(classOf[MajorPlanCourseGroup], after.getFakeCourseGroup.getId)
+    after.getFakeCourseGroup.setCourseType(entityDao.get(classOf[MajorCourseGroup], after.getFakeCourseGroup.id)
       .getCourseType)
     val newCourseCode = get("newPlanCourse.course.code")
     val course = getCourseByCode(newCourseCode)
     after.setCourse(course)
     val courseHourMap = new HashMap[Integer, Integer]()
     for (courseHour <- course.getHours) {
-      courseHourMap.put(courseHour.getType.getId, courseHour.getPeriod)
+      courseHourMap.put(courseHour.getType.id, courseHour.getPeriod)
     }
     after.getCourseHours.putAll(courseHourMap)
     val terms = after.getTerms
@@ -191,7 +191,7 @@ class MajorPlanCourseModifyApplyAction extends ProjectSupportAction {
     if (null == apply) {
       return forwardError("申请不存在")
     }
-    if (apply.getProposer.getId != getUserId) {
+    if (apply.getProposer.id != getUserId) {
       return forwardError("不能取消不是你的申请")
     }
     if (apply.getFlag.compareTo(MajorPlanCourseModifyBean.INITREQUEST) != 
@@ -211,7 +211,7 @@ class MajorPlanCourseModifyApplyAction extends ProjectSupportAction {
   def info(): String = {
     val apply = entityDao.get(classOf[MajorPlanCourseModifyBean], getLong("applyId"))
     put("apply", apply)
-    put("majorPlan", entityDao.get(classOf[MajorPlan], apply.getMajorPlan.getId))
+    put("majorPlan", entityDao.get(classOf[MajorPlan], apply.getMajorPlan.id))
     put("courseHourTypes", baseCodeService.getCodes(classOf[CourseHourType]))
     put("REQUISITIONTYPE", MajorPlanCourseModifyBean.REQUISITIONTYPE)
     forward()
@@ -294,7 +294,7 @@ class MajorPlanCourseModifyApplyAction extends ProjectSupportAction {
     null
   }
 
-  protected def getExportDatas(): Collection[_] = {
+  protected def getExportDatas(): Iterable[_] = {
     val query = getQueryBuilder
     query.limit(null)
     entityDao.search(query)

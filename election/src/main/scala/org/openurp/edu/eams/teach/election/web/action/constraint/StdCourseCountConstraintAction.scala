@@ -1,13 +1,11 @@
 package org.openurp.edu.eams.teach.election.web.action.constraint
 
-import java.util.Collection
-import java.util.Collections
 import java.util.Date
-import java.util.HashMap
-import java.util.List
-import java.util.Map
-import java.util.Map.Entry
-import java.util.Set
+
+
+
+.Entry
+
 import org.apache.commons.collections.CollectionUtils
 import org.apache.commons.collections.ListUtils
 import org.apache.commons.collections.MapUtils
@@ -16,13 +14,13 @@ import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
 import org.beangle.commons.dao.Operation
 import org.beangle.commons.dao.query.builder.Condition
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.beangle.commons.entity.Entity
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.beangle.data.model.Entity
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.lang.Strings
 import org.beangle.struts2.helper.QueryHelper
 import org.openurp.base.Department
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Project
 import org.openurp.edu.base.Student
 import org.openurp.edu.base.StudentJournal
@@ -35,13 +33,13 @@ import org.openurp.edu.eams.teach.election.model.constraint.ConstraintLogger
 import org.openurp.edu.eams.teach.election.model.constraint.StdCourseCountConstraint
 import org.openurp.edu.eams.teach.election.service.CourseTakeService
 import org.openurp.edu.teach.lesson.CourseTake
-import org.openurp.edu.eams.teach.program.CourseGroup
+import org.openurp.edu.teach.plan.CourseGroup
 import org.openurp.edu.teach.plan.CoursePlan
 import org.openurp.edu.eams.teach.program.service.CoursePlanProvider
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 import com.opensymphony.xwork2.ActionContext
 
-import scala.collection.JavaConversions._
+
 
 class StdCourseCountConstraintAction extends SemesterSupportAction {
 
@@ -163,7 +161,7 @@ class StdCourseCountConstraintAction extends SemesterSupportAction {
     for (courseGroup <- groups) {
       result.put(courseGroup.getCourseType, 0)
     }
-    for (courseTake <- courseTakes if courseTake.getCourseTakeType.getId != CourseTakeType.RESTUDY) {
+    for (courseTake <- courseTakes if courseTake.getCourseTakeType.id != CourseTakeType.RESTUDY) {
       var `type` = courseTake.getLesson.getCourse.getCourseType
       var count = result.get(`type`)
       count = if (count == null) 0 else count
@@ -268,7 +266,7 @@ class StdCourseCountConstraintAction extends SemesterSupportAction {
     put("stds", stds)
   }
 
-  private def getCourseTypes(stds: Collection[Student]): List[CourseType] = {
+  private def getCourseTypes(stds: Iterable[Student]): List[CourseType] = {
     if (CollectUtils.isEmpty(stds)) {
       return Collections.emptyList()
     }
@@ -330,7 +328,7 @@ class StdCourseCountConstraintAction extends SemesterSupportAction {
     }
     for (student <- stdCourseTakes.keySet) {
       val courseTakes = stdCourseTakes.get(student)
-      for (courseTake <- courseTakes if courseTake.getCourseTakeType.getId != CourseTakeType.RESTUDY) {
+      for (courseTake <- courseTakes if courseTake.getCourseTakeType.id != CourseTakeType.RESTUDY) {
         val count = result.get(courseTake.getStd)
         result.put(courseTake.getStd, if (null == count) 1 else (count + 1))
       }
@@ -474,7 +472,7 @@ class StdCourseCountConstraintAction extends SemesterSupportAction {
     redirect("search", "info.save.success")
   }
 
-  protected def removeAndForward(entities: Collection[_]): String = {
+  protected def removeAndForward(entities: Iterable[_]): String = {
     try {
       val loggers = CollectUtils.newArrayList()
       val createdAt = new Date()

@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.util.stat
 
 
-import scala.collection.JavaConversions._
+
 
 class StatItem(var what: AnyRef) extends StatCountor {
 

@@ -1,10 +1,10 @@
 package org.openurp.edu.eams.web.action.api.internal
 
-import java.util.List
-import java.util.Map
+
+
 import java.util.TreeMap
 
-import scala.collection.JavaConversions._
+
 
 object LessonGsonBuilderHelper {
 

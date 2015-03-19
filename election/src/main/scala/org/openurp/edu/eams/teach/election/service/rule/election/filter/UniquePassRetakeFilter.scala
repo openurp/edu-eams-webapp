@@ -1,8 +1,8 @@
 package org.openurp.edu.eams.teach.election.service.rule.election.filter
 
-import java.util.Set
+
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.edu.teach.code.CourseTakeType
 import org.openurp.edu.eams.teach.election.model.Enum.ElectRuleType
 import org.openurp.edu.eams.teach.election.service.context.ElectMessage
@@ -13,12 +13,12 @@ import org.openurp.edu.eams.teach.election.service.rule.ElectRulePrepare
 import org.openurp.edu.teach.grade.CourseGrade
 import org.openurp.edu.teach.lesson.Lesson
 
-import scala.collection.JavaConversions._
+
 
 class UniquePassRetakeFilter extends AbstractElectableLessonFilter with ElectRulePrepare {
 
   def isElectable(lesson: Lesson, state: ElectState): Boolean = {
-    val courseId = lesson.getCourse.getId
+    val courseId = lesson.getCourse.id
     val retakeCourseId = state.getOriginCourseId(courseId)
     if (null != retakeCourseId) {
       val passedRetakedCourseIds = state.getParams.get("passedRetakedCourseIds").asInstanceOf[Set[Long]]

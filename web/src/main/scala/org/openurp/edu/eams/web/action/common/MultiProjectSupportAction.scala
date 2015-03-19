@@ -1,11 +1,11 @@
 package org.openurp.edu.eams.web.action.common
 
-import java.util.List
+
 import org.beangle.struts2.convention.route.Action
 import org.openurp.edu.base.Project
 import org.openurp.edu.eams.web.action.BaseAction
 
-import scala.collection.JavaConversions._
+
 
 abstract class MultiProjectSupportAction extends BaseAction {
 
@@ -13,18 +13,18 @@ abstract class MultiProjectSupportAction extends BaseAction {
     val projects = getProjects
     if (projects.size == 1) {
       put("project", projects.get(0))
-      getRequest.getSession.setAttribute("projectId", projects.get(0).getId)
-      return forward(new Action(getClass, "innerIndex", "&projectId=" + projects.get(0).getId))
+      getRequest.getSession.setAttribute("projectId", projects.get(0).id)
+      return forward(new Action(getClass, "innerIndex", "&projectId=" + projects.get(0).id))
     }
     var defaultProjectId: java.lang.Integer = null
     if (projects.size > 0) {
-      defaultProjectId = projects.get(0).getId
+      defaultProjectId = projects.get(0).id
       var givenProjectId = getInt("projectId")
       if (null == givenProjectId) {
         givenProjectId = getRequest.getSession.getAttribute("projectId").asInstanceOf[java.lang.Integer]
       }
       if (null != givenProjectId) {
-        for (p <- projects if p.getId == givenProjectId) {
+        for (p <- projects if p.id == givenProjectId) {
           defaultProjectId = givenProjectId
           //break
         }
@@ -53,7 +53,7 @@ abstract class MultiProjectSupportAction extends BaseAction {
     }
     if (null != project) {
       put("project", project)
-      getRequest.getSession.setAttribute("projectId", project.getId)
+      getRequest.getSession.setAttribute("projectId", project.id)
     }
     project
   }

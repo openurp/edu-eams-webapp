@@ -1,15 +1,15 @@
 package org.openurp.edu.eams.teach.grade.transcript.service.impl
 
-import java.util.List
-import java.util.Map
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.EntityDao
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.edu.base.Student
 import org.openurp.edu.eams.teach.grade.transcript.service.TranscriptDataProvider
 import org.openurp.edu.eams.teach.thesis.Thesis
 
-import scala.collection.JavaConversions._
+
 
 class TranscriptThesisProvider extends TranscriptDataProvider {
 

@@ -1,39 +1,37 @@
 package org.openurp.edu.eams.teach.grade.service.stat
 
-import java.util.ArrayList
-import java.util.Collections
-import java.util.HashSet
-import java.util.Iterator
-import java.util.List
-import java.util.Map
-import java.util.Set
+
+
+
+
+
 import org.beangle.commons.bean.comparators.PropertyComparator
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.lang.Objects
 import org.openurp.base.Semester
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.base.Student
-import org.openurp.edu.teach.Course
+import org.openurp.edu.base.Course
 import org.openurp.edu.teach.grade.CourseGrade
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConversions._
 
-class MultiStdGrade(@BeanProperty var semester: Semester, grades: Map[Student, List[CourseGrade]], @BeanProperty var ratio: java.lang.Float)
+
+
+class MultiStdGrade( var semester: Semester, grades: Map[Student, List[CourseGrade]],  var ratio: java.lang.Float)
     {
 
   private var adminClass: Adminclass = _
 
-  @BeanProperty
+  
   var courses: List[Course] = CollectUtils.newArrayList()
 
-  @BeanProperty
+  
   var stdGrades: List[StdGrade] = new ArrayList[StdGrade](gradesMap.values)
 
-  @BeanProperty
+  
   var extraGradeMap: Map[String, List[CourseGrade]] = CollectUtils.newHashMap()
 
-  @BeanProperty
+  
   var maxDisplay: java.lang.Integer = new java.lang.Integer(courses.size + maxExtra)
 
   if (grades.isEmpty) {
@@ -46,7 +44,7 @@ class MultiStdGrade(@BeanProperty var semester: Semester, grades: Map[Student, L
 
   for ((key, value) <- grades) {
     val stdGrade = new StdGrade(key, value, null, null)
-    gradesMap.put(key.getId, stdGrade)
+    gradesMap.put(key.id, stdGrade)
     for (grade <- value) {
       val courseStdNum = courseStdNumMap.get(grade.getCourse).asInstanceOf[CourseStdNum]
       if (null == courseStdNum) {
@@ -97,7 +95,7 @@ class MultiStdGrade(@BeanProperty var semester: Semester, grades: Map[Student, L
       maxExtra = myExtra
     }
     if (!extraGrades.isEmpty) {
-      extraGradeMap.put(stdGrade.getStd.getId.toString, extraGrades)
+      extraGradeMap.put(stdGrade.getStd.id.toString, extraGrades)
     }
   }
 

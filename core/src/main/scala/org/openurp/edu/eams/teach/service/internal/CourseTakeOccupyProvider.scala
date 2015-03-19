@@ -1,11 +1,11 @@
 package org.openurp.edu.eams.teach.service.internal
 
-import java.util.ArrayList
-import java.util.HashMap
-import java.util.List
-import java.util.Map
+
+
+
+
 import org.beangle.commons.dao.EntityDao
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.dao.query.builder.SqlQuery
 import org.openurp.base.CourseUnit
 import org.openurp.base.Semester
@@ -18,7 +18,7 @@ import org.openurp.edu.eams.teach.service.impl.AbstractStdOccupyProvider
 import org.openurp.edu.eams.teach.service.wrapper.StdOccupy
 import org.openurp.edu.eams.teach.service.wrapper.TimeZone
 
-import scala.collection.JavaConversions._
+
 
 class CourseTakeOccupyProvider extends AbstractStdOccupyProvider {
 
@@ -38,7 +38,7 @@ class CourseTakeOccupyProvider extends AbstractStdOccupyProvider {
     for (std <- source.getStudents) {
       val sb = new StringBuilder(80)
       sb.append("insert into ").append(tmpTable)
-      sb.append(" values(").append(std.getId).append(")")
+      sb.append(" values(").append(std.id).append(")")
       sqls.add(sb.toString)
     }
     sqlDao.batchUpdate(sqls)
@@ -54,7 +54,7 @@ class CourseTakeOccupyProvider extends AbstractStdOccupyProvider {
     val query = new SqlQuery(occupyQuery)
     val params = new HashMap()
     query.setParams(params)
-    params.put("semesterId", semester.getId)
+    params.put("semesterId", semester.id)
     val occupis = executeOccupyQuery(query, zone, new OccupyProcessor() {
 
       def process(weekOccupy: Map[_,_], unit: CourseUnit, datas: List[_]) {
@@ -79,9 +79,9 @@ class CourseTakeOccupyProvider extends AbstractStdOccupyProvider {
     query.where("take.task.courseType.id not in(93,43)")
     query.where("exists( from take.task.courseSchedule.activities activity where" + 
       " activity.roomOccupation.time.weekId=:weekId" + 
-      " and activity.roomOccupation.time.startTime <:endTime" + 
-      " and activity.roomOccupation.time.endTime >:startTime" + 
-      " and bitand(activity.roomOccupation.time.weekStateNum,:weekState)>0 )")
+      " and activity.roomOccupation.time.start <:endTime" + 
+      " and activity.roomOccupation.time.end >:startTime" + 
+      " and bitand(activity.roomOccupation.time.state,:weekState)>0 )")
     val params = new HashMap()
     params.put("stds", source.getStudents)
     params.put("semester", semester)

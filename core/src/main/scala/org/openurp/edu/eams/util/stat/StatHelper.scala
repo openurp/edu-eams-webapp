@@ -1,20 +1,20 @@
 package org.openurp.edu.eams.util.stat
 
-import java.util.ArrayList
-import java.util.Collection
-import java.util.HashMap
-import java.util.Iterator
-import java.util.List
-import java.util.Map
+
+
+
+
+
+
 import org.beangle.commons.dao.EntityDao
-import org.beangle.commons.entity.Entity
+import org.beangle.data.model.Entity
 import StatHelper._
 
-import scala.collection.JavaConversions._
+
 
 object StatHelper {
 
-  def replaceIdWith(datas: Collection[_], clazzes: Array[Class[_]], entityDao: EntityDao) {
+  def replaceIdWith(datas: Iterable[_], clazzes: Array[Class[_]], entityDao: EntityDao) {
     var iter = datas.iterator()
     while (iter.hasNext) {
       val data = iter.next().asInstanceOf[Array[Any]]
@@ -39,14 +39,14 @@ class StatHelper(private var entityDao: EntityDao) {
     val entities = entityDao.get(entityClass, "id", statMap.keySet)
     var iter = entities.iterator()
     while (iter.hasNext) {
-      val entity = iter.next().asInstanceOf[Entity]
-      val stat = statMap.get(entity.getId).asInstanceOf[StatItem]
+      val entity = iter.next().asInstanceOf[Entity[_]]
+      val stat = statMap.get(entity.id).asInstanceOf[StatItem]
       stat.setWhat(entity)
     }
     new ArrayList(statMap.values)
   }
 
-  private def buildStatMap(stats: Collection[_]): Map[_,_] = {
+  private def buildStatMap(stats: Iterable[_]): Map[_,_] = {
     val statMap = new HashMap()
     var iter = stats.iterator()
     while (iter.hasNext) {
@@ -56,7 +56,7 @@ class StatHelper(private var entityDao: EntityDao) {
     statMap
   }
 
-  def replaceIdWith(datas: Collection[_], clazzes: Array[Class[_]]) {
+  def replaceIdWith(datas: Iterable[_], clazzes: Array[Class[_]]) {
     var iter = datas.iterator()
     while (iter.hasNext) {
       val data = iter.next().asInstanceOf[Array[Any]]
@@ -72,7 +72,7 @@ class StatHelper(private var entityDao: EntityDao) {
     }
   }
 
-  def setStatEntities(stats: Collection[_], entityClass: Class[_]): List[_] = {
+  def setStatEntities(stats: Iterable[_], entityClass: Class[_]): List[_] = {
     val statMap = buildStatMap(stats)
     setStatEntities(statMap, entityClass)
   }

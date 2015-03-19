@@ -4,7 +4,7 @@ import org.beangle.commons.event.Event
 import org.beangle.commons.event.EventListener
 import org.openurp.edu.eams.teach.election.service.cache.ProfileLessonDataProvider
 
-import scala.collection.JavaConversions._
+
 
 class ElectionProfileChangeEventListener extends EventListener[ElectionProfileChangeEvent] {
 

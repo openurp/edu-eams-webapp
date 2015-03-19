@@ -1,10 +1,10 @@
 package org.openurp.edu.eams.system.web.action
 
 import java.sql.Date
-import java.util.List
+
 import org.apache.commons.collections.CollectionUtils
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.util.ValidEntityKeyPredicate
 import org.beangle.commons.lang.Strings
 import org.beangle.struts2.helper.Params
@@ -16,7 +16,7 @@ import org.openurp.edu.eams.system.notice.model.Notice
 import org.openurp.edu.eams.system.notice.model.StudentNotice
 import org.openurp.edu.eams.system.notice.model.TeacherNotice
 
-import scala.collection.JavaConversions._
+
 
 class NoticeAction extends NoticeSearchAction {
 

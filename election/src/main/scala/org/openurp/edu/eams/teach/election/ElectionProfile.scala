@@ -1,17 +1,17 @@
 package org.openurp.edu.eams.teach.election
 
 import java.util.Date
-import java.util.List
-import java.util.Set
-import org.beangle.commons.entity.Entity
+
+
+import org.beangle.data.model.Entity
 import org.beangle.commons.entity.TimeEntity
 import org.beangle.ems.rule.model.RuleConfig
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Project
 import org.openurp.edu.eams.teach.election.model.Enum.ElectRuleType
 import org.openurp.edu.eams.teach.election.model.Enum.ElectionProfileType
 
-import scala.collection.JavaConversions._
+
 
 trait ElectionProfile extends Entity[Long] with TimeEntity {
 

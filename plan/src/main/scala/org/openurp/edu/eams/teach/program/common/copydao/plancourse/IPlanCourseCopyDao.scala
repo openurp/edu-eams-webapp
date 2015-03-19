@@ -1,10 +1,10 @@
 package org.openurp.edu.eams.teach.program.common.copydao.plancourse
 
-import java.util.List
-import org.openurp.edu.eams.teach.program.CourseGroup
-import org.openurp.edu.eams.teach.program.PlanCourse
+
+import org.openurp.edu.teach.plan.CourseGroup
+import org.openurp.edu.teach.plan.PlanCourse
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 trait IPlanCourseCopyDao {
 

@@ -1,6 +1,6 @@
 package org.openurp.edu.eams.base.util
 
-object TimeUnits {
+object YearWeekTimes {
 
   def toTime(timestring: String): Int = {
     val index = timestring.indexOf(":")

@@ -2,15 +2,13 @@ package org.openurp.edu.eams.teach.election.web.action
 
 import java.io.IOException
 import java.io.PrintWriter
-import java.util.ArrayList
-import java.util.Collection
-import java.util.Collections
+
 import java.util.Comparator
 import java.util.Date
-import java.util.HashSet
-import java.util.List
-import java.util.Map
-import java.util.Set
+
+
+
+
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 import org.apache.commons.collections.CollectionUtils
@@ -19,7 +17,7 @@ import org.beangle.commons.bean.comparators.PropertyComparator
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
 import org.beangle.commons.collection.page.SinglePage
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.lang.tuple.Triple
@@ -27,9 +25,9 @@ import org.beangle.commons.text.i18n.Message
 import org.beangle.ems.rule.engine.RuleExecutorBuilder
 import org.beangle.ems.rule.model.RuleConfig
 import org.beangle.security.blueprint.service.UserService
-import org.openurp.edu.eams.base.Campus
+import org.openurp.base.Campus
 import org.openurp.edu.eams.base.CourseUnit
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.eams.base.model.CampusBean
 import org.openurp.edu.eams.base.util.WeekDays
 import org.openurp.edu.base.Project
@@ -37,7 +35,7 @@ import org.openurp.edu.base.Student
 import org.openurp.edu.eams.core.model.ProjectBean
 import org.openurp.edu.eams.core.model.StudentBean
 import org.openurp.edu.eams.core.service.TimeSettingService
-import org.openurp.edu.teach.Course
+import org.openurp.edu.base.Course
 import org.openurp.edu.teach.code.CourseTakeType
 import org.openurp.edu.teach.code.ElectionMode
 import org.openurp.edu.teach.code.CourseType
@@ -63,14 +61,14 @@ import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.teach.lesson.helper.LessonSearchHelper
 import org.openurp.edu.eams.teach.lesson.service.CourseTableStyle
 import org.openurp.edu.eams.teach.lesson.service.LessonService
-import org.openurp.edu.eams.teach.planaudit.CourseAuditResult
-import org.openurp.edu.eams.teach.planaudit.GroupAuditResult
-import org.openurp.edu.eams.teach.planaudit.PlanAuditResult
+import org.openurp.edu.teach.planaudit.CourseAuditResult
+import org.openurp.edu.teach.planaudit.GroupAuditResult
+import org.openurp.edu.teach.planaudit.PlanAuditResult
 import org.openurp.edu.eams.teach.planaudit.service.PlanAuditContext
 import org.openurp.edu.eams.teach.planaudit.service.PlanAuditService
-import org.openurp.edu.eams.teach.program.CourseGroup
+import org.openurp.edu.teach.plan.CourseGroup
 import org.openurp.edu.teach.plan.CoursePlan
-import org.openurp.edu.eams.teach.program.PlanCourse
+import org.openurp.edu.teach.plan.PlanCourse
 import org.openurp.edu.eams.teach.program.StudentProgram
 import org.openurp.edu.eams.teach.program.service.CoursePlanProvider
 import org.openurp.edu.eams.teach.program.share.SharePlanCourseGroup
@@ -79,7 +77,7 @@ import org.openurp.edu.eams.web.action.common.AbstractStudentProjectSupportActio
 import com.opensymphony.xwork2.ActionContext
 import StdElectCourseAction._
 
-import scala.collection.JavaConversions._
+
 
 object StdElectCourseAction {
 
@@ -149,7 +147,7 @@ class StdElectCourseAction extends AbstractStudentProjectSupportAction {
       results.add(new ElectMessage("不在选课时间内", ElectRuleType.GENERAL, false, null))
       results
     } else {
-      val context = new ElectionCourseContext(new StudentBean(std.getId), state)
+      val context = new ElectionCourseContext(new StudentBean(std.id), state)
       stdElectionService.generalCheck(profile, context)
     }
   }
@@ -166,7 +164,7 @@ class StdElectCourseAction extends AbstractStudentProjectSupportAction {
     var state = ActionContext.getContext.getSession.get("electState" + profileId).asInstanceOf[ElectState]
     val std = getLoginStudent
     val builder = OqlBuilder.from(classOf[CourseTake].getName + " courseTake")
-    builder.where("courseTake.std.id=:stdId", std.getId)
+    builder.where("courseTake.std.id=:stdId", std.id)
     builder.where("courseTake.lesson.semester =:semester", profile.getSemester)
     val courseTakes = entityDao.search(builder)
     if (null == state || state.getProfileId != profileId) {
@@ -232,10 +230,10 @@ class StdElectCourseAction extends AbstractStudentProjectSupportAction {
     put("tableStyle", style)
     put("currentTime", new Date())
     val retakeLessonIds = CollectUtils.newHashSet()
-    for (take <- courseTakes if take.getCourseTakeType.isRetake) retakeLessonIds.add(take.getLesson.getId)
+    for (take <- courseTakes if take.getCourseTakeType.isRetake) retakeLessonIds.add(take.getLesson.id)
     put("retakeLessonIds", retakeLessonIds)
     val takeLessons = CollectUtils.newArrayList()
-    for (take <- courseTakes if !profile.getElectableLessons.contains(take.getLesson.getId)) {
+    for (take <- courseTakes if !profile.getElectableLessons.contains(take.getLesson.id)) {
       takeLessons.add(take.getLesson)
     }
     put("takedLessons", takeLessons)
@@ -244,7 +242,7 @@ class StdElectCourseAction extends AbstractStudentProjectSupportAction {
     put("electState", state)
     state.getElectedCourseIds.clear()
     for (take <- courseTakes) {
-      state.getElectedCourseIds.put(take.getLesson.getCourse.getId, take.getLesson.getId)
+      state.getElectedCourseIds.put(take.getLesson.getCourse.id, take.getLesson.id)
     }
     forward("default")
   }
@@ -299,7 +297,7 @@ class StdElectCourseAction extends AbstractStudentProjectSupportAction {
       Collections.sort(courses, new Comparator[Course]() {
 
         def compare(o1: Course, o2: Course): Int = {
-          return state.getHisCourses.get(o1.getId).compareTo(state.getHisCourses.get(o2.getId)) * 
+          return state.getHisCourses.get(o1.id).compareTo(state.getHisCourses.get(o2.id)) * 
             order
         }
       })
@@ -331,12 +329,12 @@ class StdElectCourseAction extends AbstractStudentProjectSupportAction {
 
       def compare(lhs: Course, rhs: Course): Int = {
         var lhsWeight = java.lang.Integer.MAX_VALUE
-        if (courseIdToOrisAndSubs.get(lhs.getId) != null) {
-          lhsWeight = courseIdToOrisAndSubs.get(lhs.getId)._3
+        if (courseIdToOrisAndSubs.get(lhs.id) != null) {
+          lhsWeight = courseIdToOrisAndSubs.get(lhs.id)._3
         }
         val rhsWeight = java.lang.Integer.MAX_VALUE
-        if (courseIdToOrisAndSubs.get(rhs.getId) != null) {
-          lhsWeight = courseIdToOrisAndSubs.get(rhs.getId)._3
+        if (courseIdToOrisAndSubs.get(rhs.id) != null) {
+          lhsWeight = courseIdToOrisAndSubs.get(rhs.id)._3
         }
         return lhsWeight - rhsWeight
       }
@@ -349,7 +347,7 @@ class StdElectCourseAction extends AbstractStudentProjectSupportAction {
   def data(): String = {
     val profileId = getLong("profileId")
     val state = ActionContext.getContext.getSession.get("electState" + profileId).asInstanceOf[ElectState]
-    val postfix = "_" + state.getStd.getId
+    val postfix = "_" + state.getStd.id
     var responseETag = electionProfileService.getLastUpdateTime(profileId) + 
       postfix
     val request = getRequest
@@ -381,15 +379,15 @@ class StdElectCourseAction extends AbstractStudentProjectSupportAction {
   protected def setLessons(state: ElectState, profile: ElectionProfile, takes: List[CourseTake]) {
     if (profile.getElectableLessons.isEmpty) return
     val courses = CollectUtils.newHashSet()
-    for (lesson <- electionProfileService.getLessons(profile.getId) if stdElectionService.isElectable(lesson, 
+    for (lesson <- electionProfileService.getLessons(profile.id) if stdElectionService.isElectable(lesson, 
       state)) {
-      state.getElectableLessonIds.add(lesson.getId)
+      state.getElectableLessonIds.add(lesson.id)
       courses.add(lesson.getCourse)
     }
     for (take <- takes) {
       val electLesson = take.getLesson
-      if (!state.getElectableLessonIds.contains(electLesson.getId)) {
-        state.getElectableLessonIds.add(electLesson.getId)
+      if (!state.getElectableLessonIds.contains(electLesson.id)) {
+        state.getElectableLessonIds.add(electLesson.id)
         courses.add(electLesson.getCourse)
       }
     }
@@ -406,7 +404,7 @@ class StdElectCourseAction extends AbstractStudentProjectSupportAction {
     }
     val now = new Date()
     val messages = CollectUtils.newArrayList()
-    val std = new StudentBean(state.getStd.getId)
+    val std = new StudentBean(state.getStd.id)
     val operatorMap = populateOperatorMap(std, state)
     val profile = state.getProfile(entityDao)
     if (!profile.isTimeSuitable) {
@@ -433,7 +431,7 @@ class StdElectCourseAction extends AbstractStudentProjectSupportAction {
           if (!profile.isWithdrawTimeSuitable(now)) {
             messages.add(new ElectMessage("当前退课不开放", ElectRuleType.GENERAL, false, null))
           } else {
-            withdrawCourseTakes = entityDao.get(classOf[CourseTake], Array("lesson.id", "std.id"), Array(withdrawLessonIds, std.getId))
+            withdrawCourseTakes = entityDao.get(classOf[CourseTake], Array("lesson.id", "std.id"), Array(withdrawLessonIds, std.id))
           }
         }
         val contextsMap = buildContextsMap(withdrawCourseTakes, electLessons, std, state, profile)
@@ -456,8 +454,8 @@ class StdElectCourseAction extends AbstractStudentProjectSupportAction {
     forward("electResult")
   }
 
-  protected def buildContextsMap(withdrawCourseTakes: Collection[CourseTake], 
-      electLessons: Collection[Lesson], 
+  protected def buildContextsMap(withdrawCourseTakes: Iterable[CourseTake], 
+      electLessons: Iterable[Lesson], 
       std: Student, 
       state: ElectState, 
       profile: ElectionProfile): Map[ElectRuleType, List[ElectionCourseContext]] = {
@@ -528,7 +526,7 @@ class StdElectCourseAction extends AbstractStudentProjectSupportAction {
       }
     }
     val courseApplyMap = CollectUtils.newHashMap()
-    buildApplyStat(failCourses, std.getId, profile.getSemester.getId)
+    buildApplyStat(failCourses, std.id, profile.getSemester.id)
     put("failCourses", failCourses)
     put("semesterId", get("semesterId"))
     put("courseApplyMap", courseApplyMap)
@@ -585,7 +583,7 @@ class StdElectCourseAction extends AbstractStudentProjectSupportAction {
       val creditPerTerms = courseGroup.getTermCredits.substring(1, courseGroup.getTermCredits.length - 1)
         .split(",")
       for (i <- 0 until creditPerTerms.length if (i + 1) == term) {
-        restrictionCredit.put(courseGroup.getCourseType.getId, java.lang.Float.parseFloat(creditPerTerms(i).toString))
+        restrictionCredit.put(courseGroup.getCourseType.id, java.lang.Float.parseFloat(creditPerTerms(i).toString))
       }
     }
     restrictionCredit
@@ -605,21 +603,21 @@ class StdElectCourseAction extends AbstractStudentProjectSupportAction {
     var credit = 0D
     for (take <- takes) {
       val lesson = take.getLesson
-      var `type` = courseTypes.get(lesson.getCourse.getId)
+      var `type` = courseTypes.get(lesson.getCourse.id)
       val courseGroup = plan.getGroup(lesson.getCourseType)
       if (null != courseGroup && !courseGroup.isCompulsory) {
         `type` = lesson.getCourseType
       }
       if (null != `type`) {
-        var credits = stdCreditMap.get(`type`.getId)
+        var credits = stdCreditMap.get(`type`.id)
         if (null == credits) {
           credits = 0.0
         }
         credits += lesson.getCourse.getCredits
-        stdCreditMap.put(`type`.getId, credits)
+        stdCreditMap.put(`type`.id, credits)
       } else if (courseGroup.isInstanceOf[SharePlanCourseGroup]) {
         credit += lesson.getCourse.getCredits
-        stdCreditMap.put(courseGroup.getCourseType.getId, credit)
+        stdCreditMap.put(courseGroup.getCourseType.id, credit)
       }
     }
     stdCreditMap
@@ -634,7 +632,7 @@ class StdElectCourseAction extends AbstractStudentProjectSupportAction {
       val courseTypeCreditConstraints = entityDao.search(builder)
       val courseTypeCreditMap = CollectUtils.newHashMap()
       for (courseTypeCreditConstraint <- courseTypeCreditConstraints) {
-        courseTypeCreditMap.put(courseTypeCreditConstraint.getCourseType.getId, courseTypeCreditConstraint.getLimitCredit)
+        courseTypeCreditMap.put(courseTypeCreditConstraint.getCourseType.id, courseTypeCreditConstraint.getLimitCredit)
       }
       state.getParams.put("COURSE_TYPE_CREDIT_MAP", courseTypeCreditMap)
     }
@@ -645,7 +643,7 @@ class StdElectCourseAction extends AbstractStudentProjectSupportAction {
     val courseTypeMap = CollectUtils.newHashMap()
     if (null != auditResult && null != plan) {
       for (courseGroup <- plan.getGroups; planCourse <- courseGroup.getPlanCourses) {
-        courseTypeMap.put(planCourse.getCourse.getId, courseGroup.getCourseType)
+        courseTypeMap.put(planCourse.getCourse.id, courseGroup.getCourseType)
       }
     }
     courseTypeMap
@@ -681,7 +679,7 @@ class StdElectCourseAction extends AbstractStudentProjectSupportAction {
       var electedStat = 0
       for (lesson <- lessons) {
         electedStat += lesson.getCourse.getCredits
-        state.getElectedCourseIds.put(lesson.getCourse.getId, lesson.getId)
+        state.getElectedCourseIds.put(lesson.getCourse.id, lesson.id)
       }
       if (electedStat != state.getElectedCredit) {
         state.setElectedCredit(electedStat)
@@ -705,14 +703,14 @@ class StdElectCourseAction extends AbstractStudentProjectSupportAction {
       semester = state.getProfile(entityDao).getSemester
     }
     val builder = OqlBuilder.from(classOf[StdApplyLog], "log")
-    builder.where("log.stdId=:stdId", std.getId)
-    builder.where("log.semesterId=:semesterId", semester.getId)
+    builder.where("log.stdId=:stdId", std.id)
+    builder.where("log.semesterId=:semesterId", semester.id)
     val logs = entityDao.search(builder)
     put("logs", logs)
     forward()
   }
 
-  private def buildApplyStat(courses: Collection[Course], stdId: java.lang.Long, semesterId: java.lang.Integer): Map[String, String] = {
+  private def buildApplyStat(courses: Iterable[Course], stdId: java.lang.Long, semesterId: java.lang.Integer): Map[String, String] = {
     val applyQry = OqlBuilder.from(classOf[StdApplyLog], "log")
     applyQry.where("log.stdId=:stdId", stdId)
     applyQry.where("log.semesterId=:semesterId", semesterId)
@@ -740,14 +738,14 @@ class StdElectCourseAction extends AbstractStudentProjectSupportAction {
     courseTakeQuery.where("take.task.semester.id =:semesterId", semesterId)
     val takeCourseIds = CollectUtils.newHashSet(entityDao.search(courseTakeQuery))
     for (course <- courses) {
-      if (takeCourseIds.contains(course.getId)) {
-        courseApplyMap.put(course.getId.toString, "已选")
+      if (takeCourseIds.contains(course.id)) {
+        courseApplyMap.put(course.id.toString, "已选")
       } else {
         val log = logMap.get(course.getCode)
         if (null == log) {
           //continue
         }
-        courseApplyMap.put(course.getId.toString, log.getApplyType.getName)
+        courseApplyMap.put(course.id.toString, log.getApplyType.getName)
       }
     }
     courseApplyMap

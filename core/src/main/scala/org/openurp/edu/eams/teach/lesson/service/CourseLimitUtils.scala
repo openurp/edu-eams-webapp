@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.lesson.service
 
 import org.beangle.commons.dao.query.builder.Condition
-import org.beangle.commons.entity.Entity
+import org.beangle.data.model.Entity
 import org.beangle.commons.lang.Strings
 import org.openurp.base.Department
 import org.openurp.code.person.Gender
@@ -13,7 +13,7 @@ import org.openurp.edu.base.code.StdType
 import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnum
 import org.openurp.edu.base.Program
 
-import scala.collection.JavaConversions._
+
 
 object CourseLimitUtils {
 
@@ -38,7 +38,7 @@ object CourseLimitUtils {
     } else {
       throw new RuntimeException("not supported limit meta class " + entity.getClass.getName)
     }
-    build(metaId, alias, entity.getId.toString)
+    build(metaId, alias, entity.id.toString)
   }
 
   def build(metaId: java.lang.Long, alias: String, id: String): Condition = {

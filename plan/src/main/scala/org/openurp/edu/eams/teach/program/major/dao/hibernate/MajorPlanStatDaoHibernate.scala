@@ -1,13 +1,13 @@
 package org.openurp.edu.eams.teach.program.major.dao.hibernate
 
-import java.util.List
+
 import org.beangle.commons.lang.Strings
-import org.beangle.orm.hibernate.HibernateEntityDao
+import org.beangle.data.jpa.hibernate.HibernateEntityDao
 import org.hibernate.Query
 import com.ekingstar.eams.system.security.DataRealm
 import org.openurp.edu.eams.teach.program.major.dao.MajorPlanStatDao
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class MajorPlanStatDaoHibernate extends HibernateEntityDao with MajorPlanStatDao {
 

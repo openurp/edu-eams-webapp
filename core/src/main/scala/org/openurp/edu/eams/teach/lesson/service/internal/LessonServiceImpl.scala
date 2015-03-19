@@ -1,17 +1,15 @@
 package org.openurp.edu.eams.teach.lesson.service.internal
 
 import java.io.Serializable
-import java.util.ArrayList
+
 import java.util.Arrays
-import java.util.Collection
-import java.util.Collections
-import java.util.HashSet
-import java.util.List
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.beangle.commons.dao.query.builder.Condition
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.beangle.commons.entity.Entity
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.beangle.data.model.Entity
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.lang.Strings
 import org.openurp.base.Department
@@ -34,7 +32,7 @@ import org.openurp.edu.eams.teach.lesson.service.TaskCopyParams
 import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnum
 import org.openurp.edu.eams.teach.lesson.util.LessonElectionUtil
 
-import scala.collection.JavaConversions._
+
 
 class LogHelper {
 
@@ -126,7 +124,7 @@ class LessonServiceImpl extends BaseServiceImpl with LessonService {
     entityDao.search(query).asInstanceOf[List[Project]]
   }
 
-  def getLessonByCategory(id: Serializable, strategy: LessonFilterStrategy, semesters: Collection[Semester]): List[Lesson] = {
+  def getLessonByCategory(id: Serializable, strategy: LessonFilterStrategy, semesters: Iterable[Semester]): List[Lesson] = {
     if (null == id || semesters.isEmpty) {
       CollectUtils.newArrayList(0)
     } else {
@@ -145,7 +143,7 @@ class LessonServiceImpl extends BaseServiceImpl with LessonService {
   }
 
   def getLessonByCategory(id: Serializable, strategy: LessonFilterStrategy, semester: Semester): List[Lesson] = {
-    if (null == id || null == semester.getId) {
+    if (null == id || null == semester.id) {
       CollectUtils.newArrayList(0)
     } else {
       getLessonByCategory(id, strategy, Collections.singletonList(semester))

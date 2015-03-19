@@ -1,13 +1,13 @@
 package org.openurp.edu.eams.teach.grade.course.dao
 
-import java.util.List
-import java.util.Map
+
+
 import org.openurp.edu.base.Student
-import org.openurp.edu.teach.Course
-import org.openurp.edu.eams.teach.code.industry.GradeType
+import org.openurp.edu.base.Course
+import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.teach.lesson.Lesson
 
-import scala.collection.JavaConversions._
+
 
 trait CourseGradeDao {
 

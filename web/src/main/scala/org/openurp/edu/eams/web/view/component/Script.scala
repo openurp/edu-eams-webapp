@@ -1,14 +1,14 @@
 package org.openurp.edu.eams.web.view.component
 
 import java.util.LinkedHashSet
-import java.util.Set
+
 import org.beangle.commons.lang.Arrays
 import org.beangle.commons.lang.Strings
 import org.beangle.struts2.view.component.ClosingUIBean
 import com.opensymphony.xwork2.util.ValueStack
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConversions._
+
+
 
 class Script(stack: ValueStack) extends ClosingUIBean(stack) {
 
@@ -28,10 +28,10 @@ class Script(stack: ValueStack) extends ClosingUIBean(stack) {
 
   protected var requireJs: Set[String] = new LinkedHashSet[String]()
 
-  @BooleanBeanProperty
+  
   var compressed: Boolean = true
 
-  @BooleanBeanProperty
+  
   var compressBody: Boolean = false
 
   protected override def evaluateParams() {

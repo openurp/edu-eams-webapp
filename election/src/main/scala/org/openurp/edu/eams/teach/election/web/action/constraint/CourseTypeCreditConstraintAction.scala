@@ -1,21 +1,19 @@
 package org.openurp.edu.eams.teach.election.web.action.constraint
 
-import java.util.Collection
-import java.util.Collections
 import java.util.Date
-import java.util.List
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.Operation
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.beangle.commons.entity.Entity
-import org.openurp.edu.eams.base.Semester
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.beangle.data.model.Entity
+import org.openurp.base.Semester
 import org.openurp.edu.teach.code.CourseType
 import org.openurp.edu.eams.teach.election.CourseTypeCreditConstraint
 import org.openurp.edu.eams.teach.election.model.Enum.ConstraintType
 import org.openurp.edu.eams.teach.election.model.constraint.ConstraintLogger
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class CourseTypeCreditConstraintAction extends SemesterSupportAction {
 
@@ -91,7 +89,7 @@ class CourseTypeCreditConstraintAction extends SemesterSupportAction {
     forward()
   }
 
-  protected def removeAndForward(entities: Collection[_]): String = {
+  protected def removeAndForward(entities: Iterable[_]): String = {
     try {
       val loggers = CollectUtils.newArrayList()
       val createdAt = new Date()

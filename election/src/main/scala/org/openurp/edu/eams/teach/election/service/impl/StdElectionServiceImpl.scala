@@ -1,18 +1,16 @@
 package org.openurp.edu.eams.teach.election.service.impl
 
-import java.util.Collection
-import java.util.Collections
 import java.util.Date
 import java.util.LinkedHashSet
-import java.util.List
-import java.util.Map
-import java.util.Set
+
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.Operation
 import org.beangle.commons.dao.Operation.Builder
 import org.beangle.commons.dao.impl.BaseServiceImpl
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.beangle.commons.entity.Entity
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.beangle.data.model.Entity
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.lang.Throwables
 import org.beangle.commons.text.i18n.Message
@@ -50,7 +48,7 @@ import org.openurp.edu.teach.lesson.CourseTake
 import org.openurp.edu.teach.lesson.Lesson
 import StdElectionServiceImpl._
 
-import scala.collection.JavaConversions._
+
 
 object StdElectionServiceImpl {
 
@@ -118,18 +116,18 @@ class StdElectionServiceImpl extends BaseServiceImpl with StdElectionService {
   }
 
   private def isSuitable(profile: ElectionProfile, std: Student): Boolean = {
-    (profile.majors.isEmpty || profile.majors.contains(std.major.getId)) && 
+    (profile.majors.isEmpty || profile.majors.contains(std.major.id)) && 
       (profile.directions.isEmpty || 
       (null != std.direction && 
-      profile.directions.contains(std.direction.getId))) && 
+      profile.directions.contains(std.direction.id))) && 
       (profile.grades.isEmpty || profile.grades.contains(std.grade)) && 
       (profile.stdTypes.isEmpty || 
-      (null != std.getType && profile.stdTypes.contains(std.getType.getId))) && 
+      (null != std.getType && profile.stdTypes.contains(std.getType.id))) && 
       (profile.getDeparts.isEmpty || 
-      profile.getDeparts.contains(std.department.getId)) && 
+      profile.getDeparts.contains(std.department.id)) && 
       (profile.educations.isEmpty || 
-      profile.educations.contains(std.education.getId)) && 
-      (profile.getStds.isEmpty || profile.getStds.contains(std.getId))
+      profile.educations.contains(std.education.id)) && 
+      (profile.getStds.isEmpty || profile.getStds.contains(std.id))
   }
 
   def generalCheck(profile: ElectionProfile, context: ElectionCourseContext): List[Message] = {
@@ -149,7 +147,7 @@ class StdElectionServiceImpl extends BaseServiceImpl with StdElectionService {
   }
 
   private def profileKey(profile: ElectionProfile): String = {
-    classOf[ElectionProfile].getName + profile.getId.toString
+    classOf[ElectionProfile].getName + profile.id.toString
   }
 
   private def profileKey(profileId: java.lang.Long): String = {
@@ -241,7 +239,7 @@ class StdElectionServiceImpl extends BaseServiceImpl with StdElectionService {
 
   def prepare(profile: ElectionProfile, context: PrepareContext) {
     for (take <- context.getTakes) {
-      context.getState.getElectedCourseIds.put(take.getLesson.getCourse.getId, take.getLesson.getId)
+      context.getState.getElectedCourseIds.put(take.getLesson.getCourse.id, take.getLesson.id)
     }
     val executors = prepares.get(profileKey(profile))
     for (executor <- executors) {
@@ -297,7 +295,7 @@ class StdElectionServiceImpl extends BaseServiceImpl with StdElectionService {
     }
   }
 
-  def batchOperator(contextMap: Map[ElectRuleType, List[ElectionCourseContext]]): Collection[List[Message]] = {
+  def batchOperator(contextMap: Map[ElectRuleType, List[ElectionCourseContext]]): Iterable[List[Message]] = {
     val all_toBeSavedObjectByOperation = CollectUtils.newArrayList()
     val all_toBeRemovedObjectByOperation = CollectUtils.newArrayList()
     val withdrawLessonIds = CollectUtils.newHashSet()
@@ -321,7 +319,7 @@ class StdElectionServiceImpl extends BaseServiceImpl with StdElectionService {
           all_toBeSavedObjectByOperation.addAll(context.getToBeSaved)
           all_toBeRemovedObjectByOperation.add(context.getCourseTake)
           all_toBeRemovedObjectByOperation.addAll(context.getToBeRemoved)
-          withdrawLessonIds.add(context.getCourseTake.getLesson.getId)
+          withdrawLessonIds.add(context.getCourseTake.getLesson.id)
           withdrawSuccess.add(context.getLesson)
           withdrawTakes.add(context.getCourseTake)
           context.addMessage(new ElectMessage(null, ElectRuleType.WITHDRAW, true, context.getLesson))
@@ -352,7 +350,7 @@ class StdElectionServiceImpl extends BaseServiceImpl with StdElectionService {
         }
         context.getParams.put(Params.CONFLICT_COURSE_TAKES.toString, conflictCourseTakes)
       }
-      val courseId = context.getLesson.getCourse.getId
+      val courseId = context.getLesson.getCourse.id
       val electedLessonId = state.getElectedCourseIds.get(courseId)
       if (null != electedLessonId && !withdrawLessonIds.contains(electedLessonId)) {
         context.addMessage(new ElectMessage("你已经选过" + context.getLesson.getCourse.getName, ElectRuleType.ELECTION, 
@@ -365,7 +363,7 @@ class StdElectionServiceImpl extends BaseServiceImpl with StdElectionService {
           context.addMessage(msg)
         } else {
           val isRetake = true != state.getParams.get(ElectableLessonNoRetakeFilter.PARAM) && 
-            state.isRetakeCourse(context.getLesson.getCourse.getId)
+            state.isRetakeCourse(context.getLesson.getCourse.id)
           if (isRetake && retakeEventSource == null) {
             retakeEventSource = context.getCourseTake
           }
@@ -393,19 +391,19 @@ class StdElectionServiceImpl extends BaseServiceImpl with StdElectionService {
         resultMessages.add(messages)
         var sql = "update t_lessons set std_count=std_count+1 where id=?"
         for (lesson <- withdrawSuccess) {
-          electionDao.updateStdCount(sql, lesson.getId)
+          electionDao.updateStdCount(sql, lesson.id)
         }
         sql = "update t_lessons set std_count=std_count-1 where id=?"
         for (lesson <- electSuccess) {
-          electionDao.updateStdCount(sql, lesson.getId)
+          electionDao.updateStdCount(sql, lesson.id)
         }
         sql = "update t_course_limit_groups  set cur_count=cur_count+1 where id=?"
         for (take <- withdrawTakes if null != take.getLimitGroup) {
-          electionDao.updateStdCount(sql, take.getLimitGroup.getId)
+          electionDao.updateStdCount(sql, take.getLimitGroup.id)
         }
         sql = "update t_course_limit_groups  set cur_count=cur_count-1 where id=?"
         for (take <- electTakes if null != take.getLimitGroup) {
-          electionDao.updateStdCount(sql, take.getLimitGroup.getId)
+          electionDao.updateStdCount(sql, take.getLimitGroup.id)
         }
         return resultMessages
       }
@@ -429,7 +427,7 @@ class StdElectionServiceImpl extends BaseServiceImpl with StdElectionService {
   protected def tryElectAndFillLog(context: ElectionCourseContext): Message = {
     val state = context.getState
     val isRetake = true != state.getParams.get(ElectableLessonNoRetakeFilter.PARAM) && 
-      state.isRetakeCourse(context.getLesson.getCourse.getId)
+      state.isRetakeCourse(context.getLesson.getCourse.id)
     val lesson = context.getLesson
     val turn = state.getProfile(entityDao).getTurn
     val take = context.getCourseTake
@@ -448,17 +446,17 @@ class StdElectionServiceImpl extends BaseServiceImpl with StdElectionService {
         return new ElectMessage("找不到匹配的授课对象组", ElectRuleType.ELECTION, false, lesson)
       }
       var sql = "update t_lessons set std_count=std_count+1 where id=?"
-      var update = electionDao.updateStdCount(sql, lesson.getId)
+      var update = electionDao.updateStdCount(sql, lesson.id)
       if (update == 0) {
         return new ElectMessage("选课失败", ElectRuleType.ELECTION, false, lesson)
       }
       if (limitGroup != null) {
         take.setLimitGroup(limitGroup)
         sql = "update t_course_limit_groups  set cur_count=cur_count+1 where id=?"
-        update = electionDao.updateStdCount(sql, limitGroup.getId)
+        update = electionDao.updateStdCount(sql, limitGroup.id)
         if (update == 0) {
           sql = "update t_lessons set std_count=std_count-1 where id=?"
-          electionDao.updateStdCount(sql, lesson.getId)
+          electionDao.updateStdCount(sql, lesson.id)
           return new ElectMessage("选课失败", ElectRuleType.ELECTION, false, lesson)
         }
       }
@@ -474,13 +472,13 @@ class StdElectionServiceImpl extends BaseServiceImpl with StdElectionService {
     val updateCount = !context.getState.isCheckMinLimitCount
     if (updateCount) {
       var sql = "update t_lessons  set std_count= std_count-1 where  id=?"
-      val update = electionDao.updateStdCount(sql, lesson.getId)
+      val update = electionDao.updateStdCount(sql, lesson.id)
       if (update == 0) {
         return new ElectMessage("退课失败,请稍后重试", ElectRuleType.WITHDRAW, false, lesson)
       }
       if (courseTake.getLimitGroup != null) {
         sql = "update t_course_limit_groups  set cur_count=cur_count-1 where  id=?"
-        electionDao.updateStdCount(sql, courseTake.getLimitGroup.getId)
+        electionDao.updateStdCount(sql, courseTake.getLimitGroup.id)
       }
     }
     context.getToBeSaved.add(lesson)

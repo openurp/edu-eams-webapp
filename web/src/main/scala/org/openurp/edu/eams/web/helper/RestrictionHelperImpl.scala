@@ -1,10 +1,8 @@
 package org.openurp.edu.eams.web.helper
 
-import java.util.Collection
-import java.util.Collections
 import java.util.Date
-import java.util.Iterator
-import java.util.List
+
+
 import javax.servlet.http.HttpSession
 import org.apache.commons.collections.CollectionUtils
 import org.apache.commons.collections.Predicate
@@ -12,7 +10,7 @@ import org.apache.struts2.ServletActionContext
 import org.beangle.commons.bean.comparators.PropertyComparator
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.EntityDao
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Objects
 import org.beangle.commons.lang.Strings
 import org.beangle.ems.web.helper.SecurityHelper
@@ -40,11 +38,11 @@ import org.openurp.edu.eams.system.security.StdTypeAuthorityException
 import com.opensymphony.xwork2.ActionContext
 import RestrictionHelperImpl._
 
-import scala.collection.JavaConversions._
+
 
 object RestrictionHelperImpl {
 
-  private def getIds(clazz: Class[_], entityDao: EntityDao): String = {
+  private def ids(clazz: Class[_], entityDao: EntityDao): String = {
     val date = new java.util.Date()
     val query = OqlBuilder.from(clazz, "entity")
     query.where("entity.effectiveAt <= :now", date)
@@ -237,7 +235,7 @@ class RestrictionHelperImpl extends RestrictionHelper {
         var iter2 = col.iterator()
         while (iter2.hasNext) {
           temp = iter2.next()
-          departIdsTemp.append(temp.getId.longValue()).append(",")
+          departIdsTemp.append(temp.id.longValue()).append(",")
         }
         realm.setDepartmentIdSeq(departIdsTemp.toString)
       }
@@ -251,7 +249,7 @@ class RestrictionHelperImpl extends RestrictionHelper {
         var iter2 = col.iterator()
         while (iter2.hasNext) {
           temp = iter2.next()
-          stdTypeIdsTemp.append(temp.getId.longValue()).append(",")
+          stdTypeIdsTemp.append(temp.id.longValue()).append(",")
         }
         realm.setStudentTypeIdSeq(stdTypeIdsTemp.toString)
       }
@@ -260,7 +258,7 @@ class RestrictionHelperImpl extends RestrictionHelper {
 
   def getDepartmentIdSeq(): String = {
     if (null == SecurityUtils.getUserId || SecurityUtils.getUserId == 1l) {
-      return getIds(classOf[Department], entityDao)
+      return ids(classOf[Department], entityDao)
     }
     val profiles = securityHelper.getProfiles
     if (profiles.isEmpty) {
@@ -271,7 +269,7 @@ class RestrictionHelperImpl extends RestrictionHelper {
 
   def getStdTypeIdSeq(): String = {
     if (null == SecurityUtils.getUserId || SecurityUtils.getUserId == 1l) {
-      return getIds(classOf[StdType], entityDao)
+      return ids(classOf[StdType], entityDao)
     }
     val profiles = securityHelper.getProfiles
     if (profiles.isEmpty) {
@@ -282,7 +280,7 @@ class RestrictionHelperImpl extends RestrictionHelper {
 
   def getEducationIdSeq(): String = {
     if (null == SecurityUtils.getUserId || SecurityUtils.getUserId == 1l) {
-      return getIds(classOf[Education], entityDao)
+      return ids(classOf[Education], entityDao)
     }
     val profiles = securityHelper.getProfiles
     if (profiles.isEmpty) {
@@ -312,7 +310,7 @@ class RestrictionHelperImpl extends RestrictionHelper {
     }
     if (CollectUtils.isEmpty(profiles)) {
       val currentRoleId = ActionContext.getContext.getSession.get("security.userCategoryId").asInstanceOf[java.lang.Integer]
-      if (user.getId == 1L) {
+      if (user.id == 1L) {
         if ("directions" == name || "majors" == name) {
           CollectUtils.newArrayList()
         } else {

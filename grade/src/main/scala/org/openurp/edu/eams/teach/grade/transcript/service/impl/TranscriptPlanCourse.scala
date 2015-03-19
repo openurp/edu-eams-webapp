@@ -1,18 +1,18 @@
 package org.openurp.edu.eams.teach.grade.transcript.service.impl
 
-import java.util.ArrayList
-import java.util.List
-import java.util.Map
+
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.openurp.edu.base.Student
 import org.openurp.edu.eams.teach.grade.transcript.service.TranscriptDataProvider
-import org.openurp.edu.eams.teach.program.CourseGroup
+import org.openurp.edu.teach.plan.CourseGroup
 import org.openurp.edu.teach.plan.CoursePlan
-import org.openurp.edu.eams.teach.program.PlanCourse
+import org.openurp.edu.teach.plan.PlanCourse
 import org.openurp.edu.eams.teach.program.service.CoursePlanProvider
 
-import scala.collection.JavaConversions._
+
 
 class TranscriptPlanCourse extends BaseServiceImpl with TranscriptDataProvider {
 

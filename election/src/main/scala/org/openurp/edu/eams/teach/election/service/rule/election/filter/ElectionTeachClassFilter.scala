@@ -15,9 +15,9 @@ import org.openurp.edu.eams.teach.election.service.rule.ElectRulePrepare
 import org.openurp.edu.teach.lesson.CourseLimitGroup
 import org.openurp.edu.teach.lesson.Lesson
 import ElectionTeachClassFilter._
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConversions._
+
+
 
 object ElectionTeachClassFilter {
 
@@ -30,13 +30,13 @@ object ElectionTeachClassFilter {
 
 class ElectionTeachClassFilter extends AbstractElectableLessonFilter() with ElectRulePrepare {
 
-  @BooleanBeanProperty
+  
   var checkLessonLimit: Boolean = false
 
-  @BooleanBeanProperty
+  
   var checkGroupLimit: Boolean = false
 
-  @BooleanBeanProperty
+  
   var checkTeachClass: Boolean = false
 
   order = java.lang.Integer.MAX_VALUE
@@ -45,7 +45,7 @@ class ElectionTeachClassFilter extends AbstractElectableLessonFilter() with Elec
     if (!this.checkTeachClass) {
       return true
     }
-    if (retakeService.isRetakeCourse(state, lesson.getCourse.getId) && 
+    if (retakeService.isRetakeCourse(state, lesson.getCourse.id) && 
       !retakeService.isCheckTeachClass(state.getProfile(entityDao).getElectConfigs)) {
       return true
     }
@@ -71,18 +71,18 @@ class ElectionTeachClassFilter extends AbstractElectableLessonFilter() with Elec
     var sb: StringBuilder = null
     if (checkLessonLimit) {
       sb = new StringBuilder("update t_lessons set std_count=std_count+1 where std_count<(limit_count-reserved_count) and id=?")
-      val update = electionDao.updateStdCount(sb.toString, context.getLesson.getId)
+      val update = electionDao.updateStdCount(sb.toString, context.getLesson.id)
       if (update == 0) {
         context.addMessage(new ElectMessage("人数已满", ElectRuleType.ELECTION, false, context.getLesson))
         return false
       }
     } else {
       sb = new StringBuilder("update t_lessons set std_count=std_count+1 where id=?")
-      electionDao.updateStdCount(sb.toString, context.getLesson.getId)
+      electionDao.updateStdCount(sb.toString, context.getLesson.id)
     }
     if (limitGroup != null) {
       sb = new StringBuilder("update t_course_limit_groups set cur_count = cur_count+1 where id=?")
-      electionDao.updateStdCount(sb.toString, limitGroup.getId)
+      electionDao.updateStdCount(sb.toString, limitGroup.id)
       entityDao.refresh(limitGroup)
       context.getCourseTake.setLimitGroup(limitGroup)
     }

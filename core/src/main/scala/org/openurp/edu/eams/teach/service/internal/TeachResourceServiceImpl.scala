@@ -1,34 +1,34 @@
 package org.openurp.edu.eams.teach.service.internal
 
 import java.io.Serializable
-import java.util.Collection
+
 import java.util.Date
-import java.util.List
-import java.util.Map
-import java.util.Set
+
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
 import org.beangle.commons.collection.page.Page
 import org.beangle.commons.collection.page.PageLimit
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.beangle.commons.dao.query.builder.Condition
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
-import org.openurp.edu.eams.base.Classroom
+import org.openurp.base.Room
 import org.openurp.base.Department
 import org.openurp.base.Semester
 import org.openurp.edu.eams.classroom.Occupancy
-import org.openurp.edu.eams.classroom.TimeUnit
+import 
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.base.Project
 import org.openurp.edu.base.Student
 import org.openurp.edu.base.Teacher
 import org.openurp.edu.eams.system.security.DataRealm
 import org.openurp.edu.eams.teach.code.industry.ExamType
-import org.openurp.edu.eams.teach.lesson.CourseActivity
+import org.openurp.edu.teach.schedule.CourseActivity
 import org.openurp.edu.teach.lesson.CourseLimitMeta.Operator
 import org.openurp.edu.eams.teach.lesson.CourseTime
-import org.openurp.edu.eams.teach.lesson.ExamActivity
+import org.openurp.edu.teach.exam.ExamActivity
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.teach.lesson.service.CourseLimitUtils
 import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnum
@@ -36,46 +36,46 @@ import org.openurp.edu.base.Program
 import org.openurp.edu.eams.teach.service.TeachResourceService
 import org.openurp.edu.eams.util.DataRealmLimit
 
-import scala.collection.JavaConversions._
+
 
 class TeachResourceServiceImpl extends BaseServiceImpl with TeachResourceService {
 
-  def isStdOccupied(time: TimeUnit, stdId: java.lang.Long): Boolean = false
+  def isStdOccupied(time: YearWeekTime, stdId: java.lang.Long): Boolean = false
 
-  def isStdsOccupied(time: TimeUnit, stdIds: Collection[_]): Boolean = false
+  def isStdsOccupied(time: YearWeekTime, stdIds: Iterable[_]): Boolean = false
 
-  def isStdsOccupied(time: TimeUnit, stdIds: Collection[_], expect: Lesson): Boolean = false
+  def isStdsOccupied(time: YearWeekTime, stdIds: Iterable[_], expect: Lesson): Boolean = false
 
-  def isRoomOccupied(time: TimeUnit, roomId: Serializable): Boolean = false
+  def isRoomOccupied(time: YearWeekTime, roomId: Serializable): Boolean = false
 
   def isCourseActivityRoomOccupied(activity: CourseActivity): Boolean = false
 
-  def isTeacherOccupied(time: TimeUnit, teacherId: java.lang.Long): Boolean = false
+  def isTeacherOccupied(time: YearWeekTime, teacherId: java.lang.Long): Boolean = false
 
-  def isAdminclassOccupied(time: TimeUnit, adminClassId: java.lang.Long): Boolean = false
+  def isAdminclassOccupied(time: YearWeekTime, adminClassId: java.lang.Long): Boolean = false
 
-  def isAdminclassesOccupied(time: TimeUnit, adminClasses: Collection[_]): Boolean = false
+  def isAdminclassesOccupied(time: YearWeekTime, adminClasses: Iterable[_]): Boolean = false
 
-  def getFreeRoomIn(roomIds: Collection[_], 
-      times: Array[TimeUnit], 
-      room: Classroom, 
-      activityClass: Class[_]): Classroom = null
+  def getFreeRoomIn(roomIds: Iterable[_], 
+      times: Array[YearWeekTime], 
+      room: Room, 
+      activityClass: Class[_]): Room = null
 
-  def getFreeRoomsIn(roomIds: Collection[_], 
-      times: Array[TimeUnit], 
-      room: Classroom, 
-      activityClass: Class[_]): Collection[_] = null
+  def getFreeRoomsIn(roomIds: Iterable[_], 
+      times: Array[YearWeekTime], 
+      room: Room, 
+      activityClass: Class[_]): Iterable[_] = null
 
-  def getFreeRoomsOf(query: OqlBuilder[Classroom], 
+  def getFreeRoomsOf(query: OqlBuilder[Room], 
       params: Map[String, Any], 
       departs: List[Department], 
-      unit: TimeUnit, 
-      rooms: List[Classroom]): OqlBuilder[Classroom] = {
+      unit: YearWeekTime, 
+      rooms: List[Room]): OqlBuilder[Room] = {
     query.where("not exists(select 1 from org.openurp.edu.eams.classroom.Occupancy occupancy where occupancy.room = classroom " + 
       "and (occupancy.time.year = :year) " + 
-      "and (occupancy.time.weekState = :weekState) " + 
-      "and (occupancy.time.weekday = :weekday) " + 
-      "and (:startTime <= occupancy.time.endTime and :endTime > occupancy.time.startTime)" + 
+      "and (occupancy.time.state = :weekState) " + 
+      "and (occupancy.time.day = :weekday) " + 
+      "and (:startTime <= occupancy.time.end and :endTime > occupancy.time.start)" + 
       ")")
     query.where("classroom.effectiveAt <= :now and (classroom.invalidAt is null or classroom.invalidAt >= :now)")
     query.join("classroom.departments", "depart")
@@ -85,10 +85,10 @@ class TeachResourceServiceImpl extends BaseServiceImpl with TeachResourceService
       query.where("classroom not in (:rooms)")
     }
     params.put("year", unit.year)
-    params.put("weekState", unit.weekState)
-    params.put("weekday", unit.getWeekday)
-    params.put("startTime", unit.getStartTime)
-    params.put("endTime", unit.getEndTime)
+    params.put("weekState", unit.state)
+    params.put("weekday", unit.day)
+    params.put("startTime", unit.start)
+    params.put("endTime", unit.end)
     params.put("now", new Date())
     params.put("departs", departs)
     if (!rooms.isEmpty) {
@@ -99,11 +99,11 @@ class TeachResourceServiceImpl extends BaseServiceImpl with TeachResourceService
   }
 
   def getFreeRoomsOf(departIds: Array[Long], 
-      times: Array[TimeUnit], 
+      times: Array[YearWeekTime], 
       pageNo: Int, 
       pageSize: Int, 
-      order: Order): Collection[_] = {
-    val query = OqlBuilder.from(classOf[Classroom], "room")
+      order: Order): Iterable[_] = {
+    val query = OqlBuilder.from(classOf[Room], "room")
     query.where("room.building.department.id in (:departs)", departIds)
     query.where("not exists (select 1 from org.openurp.edu.eams.classroom.Occupancy occ where occ.time in (:times) and room = occ.room)", 
       times)
@@ -113,14 +113,14 @@ class TeachResourceServiceImpl extends BaseServiceImpl with TeachResourceService
   }
 
   def getFreeRoomsOf(departIds: Array[Long], 
-      times: Array[TimeUnit], 
-      room: Classroom, 
+      times: Array[YearWeekTime], 
+      room: Room, 
       activityClass: Class[_], 
       pageNo: Int, 
       pageSize: Int): Page = null
 
   def getFreeRoomsOf(departIds: Array[Long], 
-      times: Array[TimeUnit], 
+      times: Array[YearWeekTime], 
       roomOccupation: Occupancy, 
       pageNo: Int, 
       pageSize: Int): Page = null
@@ -131,7 +131,7 @@ class TeachResourceServiceImpl extends BaseServiceImpl with TeachResourceService
       teacher: Teacher, 
       replaceTeacher: Teacher, 
       pageLimit: PageLimit, 
-      order: String): Collection[Teacher] = {
+      order: String): Iterable[Teacher] = {
     val builder = OqlBuilder.from(classOf[Teacher], "teacher")
     if (CollectUtils.isNotEmpty(departments)) {
       builder.where("teacher.department in (:departments)", departments)
@@ -153,18 +153,18 @@ class TeachResourceServiceImpl extends BaseServiceImpl with TeachResourceService
     val hql = new StringBuilder("not exists (from org.openurp.edu.teach.lesson.Lesson lesson join lesson.courseSchedule.activities activity " + 
       "join activity.teachers actTeacher where actTeacher=teacher ")
     if (semester != null) {
-      hql.append("and lesson.semester.id = " + semester.getId + " ")
+      hql.append("and lesson.semester.id = " + semester.id + " ")
     }
     var occupy = ""
     for (i <- 0 until times.length) {
-      occupy = "(bitand(activity.time.weekStateNum," + new java.lang.Long(times(i).getWeekStateNum) + 
-        ")>0 and activity.time.weekday = " + 
-        times(i).getWeekday + 
+      occupy = "(bitand(activity.time.state," + new java.lang.Long(times(i).state) + 
+        ")>0 and activity.time.day = " + 
+        times(i).day + 
         " and " + 
-        times(i).getStartTime + 
-        " <= activity.time.endTime and " + 
-        times(i).getEndTime + 
-        " > activity.time.startTime)"
+        times(i).start + 
+        " <= activity.time.end and " + 
+        times(i).end + 
+        " > activity.time.start)"
       if (i > 0) {
         hql.append(" or ")
       } else if (i == 0) {
@@ -185,16 +185,16 @@ class TeachResourceServiceImpl extends BaseServiceImpl with TeachResourceService
       teacher: Teacher, 
       replaceTeacher: Teacher, 
       pageLimit: PageLimit, 
-      order: String): Collection[Teacher] = {
+      order: String): Iterable[Teacher] = {
     getFreeTeachersOf(null, departments, times, teacher, replaceTeacher, pageLimit, order)
   }
 
-  def getFreeTeachersIn(teacherIds: Collection[_], 
-      times: Array[TimeUnit], 
+  def getFreeTeachersIn(teacherIds: Iterable[_], 
+      times: Array[YearWeekTime], 
       teacher: Teacher, 
-      activityClass: Class[_]): Collection[_] = null
+      activityClass: Class[_]): Iterable[_] = null
 
-  def getAdminclassActivities(adminClassId: Serializable, time: TimeUnit, activityClass: Class[_]): List[_] = {
+  def getAdminclassActivities(adminClassId: Serializable, time: YearWeekTime, activityClass: Class[_]): List[_] = {
     null
   }
 
@@ -202,7 +202,7 @@ class TeachResourceServiceImpl extends BaseServiceImpl with TeachResourceService
     val builder = OqlBuilder.from(classOf[CourseActivity], "activity")
     builder.where("activity.lesson.semester =:semester", semester)
     setTimeQuery(time, builder)
-    val con = CourseLimitUtils.build(CourseLimitMetaEnum.ADMINCLASS.getMetaId, "lgi", adminclass.getId.toString)
+    val con = CourseLimitUtils.build(CourseLimitMetaEnum.ADMINCLASS.getMetaId, "lgi", adminclass.id.toString)
     val params = con.getParams
     builder.where("exists(from activity.lesson.teachClass.limitGroups lg join lg.items as lgi where (lgi.operator='" + 
       Operator.EQUAL.name() + 
@@ -218,7 +218,7 @@ class TeachResourceServiceImpl extends BaseServiceImpl with TeachResourceService
     val builder = OqlBuilder.from(classOf[CourseActivity], "activity")
     builder.where("activity.lesson.semester =:semester", semester)
     setTimeQuery(time, builder)
-    val con = CourseLimitUtils.build(CourseLimitMetaEnum.PROGRAM.getMetaId, "lgi", program.getId.toString)
+    val con = CourseLimitUtils.build(CourseLimitMetaEnum.PROGRAM.getMetaId, "lgi", program.id.toString)
     val params = con.getParams
     builder.where("exists(from activity.lesson.teachClass.limitGroups lg join lg.items as lgi where (lgi.operator='" + 
       Operator.EQUAL.name() + 
@@ -232,8 +232,8 @@ class TeachResourceServiceImpl extends BaseServiceImpl with TeachResourceService
 
   protected def setTimeQuery(time: CourseTime, builder: OqlBuilder[CourseActivity]) {
     if (time != null) {
-      if (null != time.getWeekday) {
-        builder.where("activity.time.weekday =:weekday", time.getWeekday)
+      if (null != time.day) {
+        builder.where("activity.time.day =:weekday", time.day)
       }
       if (null != time.getEndUnit) {
         builder.where("activity.time.endUnit =:endUnit", time.getEndUnit)
@@ -241,8 +241,8 @@ class TeachResourceServiceImpl extends BaseServiceImpl with TeachResourceService
       if (null != time.getStartUnit) {
         builder.where("activity.time.startUnit =:startUnit", time.getStartUnit)
       }
-      if (null != time.getWeekStateNum && 0 < time.getWeekStateNum) {
-        builder.where("bitand(activity.time.weekStateNum," + time.getWeekStateNum + 
+      if (null != time.state && 0 < time.state) {
+        builder.where("bitand(activity.time.state," + time.state + 
           ")>0")
       }
     }
@@ -257,7 +257,7 @@ class TeachResourceServiceImpl extends BaseServiceImpl with TeachResourceService
     entityDao.search(builder)
   }
 
-  def getRoomActivities(room: Classroom, time: CourseTime, semester: Semester): List[CourseActivity] = {
+  def getRoomActivities(room: Room, time: CourseTime, semester: Semester): List[CourseActivity] = {
     val builder = OqlBuilder.from(classOf[CourseActivity], "activity")
     builder.join("activity.rooms", "room")
     builder.where("activity.lesson.semester =:semester", semester)
@@ -266,7 +266,7 @@ class TeachResourceServiceImpl extends BaseServiceImpl with TeachResourceService
     entityDao.search(builder)
   }
 
-  def getRoomActivities(room: Classroom, 
+  def getRoomActivities(room: Room, 
       time: CourseTime, 
       semester: Semester, 
       departments: List[Department], 
@@ -295,12 +295,12 @@ class TeachResourceServiceImpl extends BaseServiceImpl with TeachResourceService
   }
 
   def getRoomActivities(roomId: Serializable, 
-      time: TimeUnit, 
+      time: YearWeekTime, 
       activityClass: Class[_], 
       semester: Semester): List[_] = null
 
   def getStdActivities(stdId: java.lang.Long, 
-      time: TimeUnit, 
+      time: YearWeekTime, 
       activityClass: Class[_], 
       semester: Semester): List[_] = null
 
@@ -316,18 +316,18 @@ class TeachResourceServiceImpl extends BaseServiceImpl with TeachResourceService
     null
   }
 
-  def getClassrooms(roomIds: Collection[_]): List[_] = null
+  def getRooms(roomIds: Iterable[_]): List[_] = null
 
-  def getTeachers(teacherIds: Collection[_]): List[_] = null
+  def getTeachers(teacherIds: Iterable[_]): List[_] = null
 
-  def getClassrooms(roomIdSeq: String): List[_] = null
+  def getRooms(roomIdSeq: String): List[_] = null
 
-  def getClassrooms(roomIds: Array[Integer]): List[_] = null
+  def getRooms(roomIds: Array[Integer]): List[_] = null
 
   def getRoomUtilizationsOfExam(semester: Semester, 
       examType: ExamType, 
       limit: DataRealmLimit, 
-      ratio: java.lang.Float): Collection[_] = {
+      ratio: java.lang.Float): Iterable[_] = {
     val query = OqlBuilder.from(classOf[ExamActivity], "activity")
     query.where("activity.semester = :semester", semester)
     query.where("activity.examType = :examType", examType)
@@ -401,30 +401,30 @@ class TeachResourceServiceImpl extends BaseServiceImpl with TeachResourceService
       startUnit: java.lang.Integer, 
       endUnit: java.lang.Integer, 
       busy: Boolean, 
-      dataRealm: DataRealm): Collection[Adminclass] = null
+      dataRealm: DataRealm): Iterable[Adminclass] = null
 
   def getTeacherActivities(teacherId: Serializable, 
-      time: TimeUnit, 
+      time: YearWeekTime, 
       activityClass: Class[_], 
       semester: Semester): List[_] = null
 
   def getAdminclassActivities(adminClassId: Serializable, 
-      time: TimeUnit, 
+      time: YearWeekTime, 
       activityClass: Class[_], 
       semester: Semester): List[_] = null
 
   def getFreeTeachersOf(departIds: Array[Long], 
-      times: Array[TimeUnit], 
+      times: Array[YearWeekTime], 
       teacher: Teacher, 
       activityClass: Class[_], 
-      limit: PageLimit): Collection[_] = null
+      limit: PageLimit): Iterable[_] = null
 
   def getTeacherPeriod(lesson: Lesson, teacher: Teacher): Int = {
     val courseActivities = lesson.getCourseSchedule.getActivities
     var period = 0
     for (courseActivity <- courseActivities if courseActivity.getTeachers.contains(teacher)) {
       val time = courseActivity.getTime
-      period += (time.getEndUnit - time.getStartUnit + 1) * Strings.count(time.getWeekState, "1")
+      period += (time.getEndUnit - time.getStartUnit + 1) * Strings.count(time.state, "1")
     }
     period
   }

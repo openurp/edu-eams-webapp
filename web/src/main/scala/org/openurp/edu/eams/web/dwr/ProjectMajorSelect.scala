@@ -1,14 +1,12 @@
 package org.openurp.edu.eams.web.dwr
-
-import java.util.Collections
 import java.util.Date
-import java.util.List
+
 import javax.servlet.http.HttpServletRequest
 import org.apache.commons.collections.CollectionUtils
 import org.beangle.commons.bean.comparators.PropertyComparator
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.EntityDao
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.beangle.security.blueprint.Profile
 import org.beangle.security.blueprint.User
@@ -25,7 +23,7 @@ import org.openurp.code.edu.Education
 import org.openurp.edu.base.code.StdType
 import org.openurp.edu.eams.web.helper.RestrictionHelper
 
-import scala.collection.JavaConversions._
+
 
 class ProjectMajorSelect {
 
@@ -59,7 +57,7 @@ class ProjectMajorSelect {
     }
     val departInfos = CollectUtils.newArrayList()
     for (depart <- departs) {
-      departInfos.add(Array(depart.getId, depart.getName))
+      departInfos.add(Array(depart.id, depart.getName))
     }
     val educations1 = project.educations
     var educations2: List[Education] = null
@@ -69,7 +67,7 @@ class ProjectMajorSelect {
     Collections.sort(educations, new PropertyComparator("code"))
     val educationInfos = CollectUtils.newArrayList()
     for (education <- educations) {
-      educationInfos.add(Array(education.getId, education.getName))
+      educationInfos.add(Array(education.id, education.getName))
     }
     val stdTypes1 = project.getTypes
     var stdTypes2: List[StdType] = null
@@ -78,7 +76,7 @@ class ProjectMajorSelect {
     Collections.sort(stdTypes, new PropertyComparator("code"))
     val stdTypeInfos = CollectUtils.newArrayList()
     for (stdType <- stdTypes) {
-      stdTypeInfos.add(Array(stdType.getId, stdType.getName))
+      stdTypeInfos.add(Array(stdType.id, stdType.getName))
     }
     Array(educationInfos, departInfos, stdTypeInfos)
   }
@@ -88,7 +86,7 @@ class ProjectMajorSelect {
     if (scontext == null) {
     }
     val userToken = scontext.getAuthentication.getPrincipal.asInstanceOf[UserToken]
-    val user = entityDao.get(classOf[User], userToken.getId)
+    val user = entityDao.get(classOf[User], userToken.id)
     user
   }
 

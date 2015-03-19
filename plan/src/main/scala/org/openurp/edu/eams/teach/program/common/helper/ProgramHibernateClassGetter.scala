@@ -1,14 +1,14 @@
 package org.openurp.edu.eams.teach.program.common.helper
 
-import org.openurp.edu.eams.teach.program.CourseGroup
+import org.openurp.edu.teach.plan.CourseGroup
 import org.openurp.edu.eams.teach.program.CoursePlan
-import org.openurp.edu.eams.teach.program.PlanCourse
+import org.openurp.edu.teach.plan.PlanCourse
 import org.openurp.edu.eams.teach.program.major.MajorPlan
 import org.openurp.edu.teach.plan.MajorPlanCourse
-import org.openurp.edu.teach.plan.MajorPlanCourseGroup
+import org.openurp.edu.teach.plan.MajorCourseGroup
 import org.openurp.edu.eams.teach.program.major.model.MajorPlanBean
 import org.openurp.edu.eams.teach.program.major.model.MajorPlanCourseBean
-import org.openurp.edu.eams.teach.program.major.model.MajorPlanCourseGroupBean
+import org.openurp.edu.eams.teach.program.major.model.MajorCourseGroupBean
 import org.openurp.edu.eams.teach.program.original.OriginalPlan
 import org.openurp.edu.eams.teach.program.original.OriginalPlanCourse
 import org.openurp.edu.eams.teach.program.original.OriginalPlanCourseGroup
@@ -22,7 +22,7 @@ import org.openurp.edu.eams.teach.program.personal.model.PersonalPlanBean
 import org.openurp.edu.eams.teach.program.personal.model.PersonalPlanCourseBean
 import org.openurp.edu.eams.teach.program.personal.model.PersonalPlanCourseGroupBean
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 object ProgramHibernateClassGetter {
 
@@ -33,8 +33,8 @@ object ProgramHibernateClassGetter {
     if (classOf[PersonalPlanCourseGroupBean].isAssignableFrom(planGroup.getClass)) {
       return classOf[PersonalPlanCourseGroup]
     }
-    if (classOf[MajorPlanCourseGroupBean].isAssignableFrom(planGroup.getClass)) {
-      return classOf[MajorPlanCourseGroup]
+    if (classOf[MajorCourseGroupBean].isAssignableFrom(planGroup.getClass)) {
+      return classOf[MajorCourseGroup]
     }
     null
   }

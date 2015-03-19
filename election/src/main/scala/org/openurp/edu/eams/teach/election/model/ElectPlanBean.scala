@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.election.model
 
 import java.util.Date
-import java.util.Set
+
 import javax.persistence.Entity
 import javax.persistence.ManyToMany
 import javax.validation.constraints.NotNull
@@ -10,9 +10,9 @@ import org.beangle.commons.entity.pojo.NumberIdTimeObject
 import org.beangle.ems.rule.model.RuleConfig
 import org.openurp.edu.eams.teach.election.ElectPlan
 import ElectPlanBean._
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConversions._
+
+
 
 object ElectPlanBean {
 
@@ -32,14 +32,14 @@ object ElectPlanBean {
 class ElectPlanBean extends NumberIdTimeObject[Long]() with ElectPlan {
 
   @NotNull
-  @BeanProperty
+  
   var name: String = _
 
-  @BeanProperty
+  
   var description: String = _
 
   @ManyToMany
-  @BeanProperty
+  
   var ruleConfigs: Set[RuleConfig] = CollectUtils.newHashSet()
 
   private def this(name: String, description: String, ruleConfigs: Set[RuleConfig]) {

@@ -1,24 +1,22 @@
 package org.openurp.edu.eams.teach.grade.lesson.web.action
 
-import java.util.Collection
-import java.util.Collections
-import java.util.List
-import java.util.Map
-import java.util.Set
+
+
+
 import org.apache.commons.collections.CollectionUtils
 import org.beangle.commons.bean.comparators.PropertyComparator
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Objects
 import org.beangle.commons.lang.Strings
 import org.beangle.struts2.convention.route.Action
-import org.openurp.edu.eams.base.Semester
-import org.openurp.edu.teach.Course
+import org.openurp.base.Semester
+import org.openurp.edu.base.Course
 import org.openurp.edu.eams.teach.Grade
-import org.openurp.edu.eams.teach.code.industry.ExamStatus
+import org.openurp.edu.teach.code.ExamStatus
 import org.openurp.edu.eams.teach.code.industry.ExamType
-import org.openurp.edu.eams.teach.code.industry.GradeType
+import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.eams.teach.grade.course.service.CourseGradeComparator
 import org.openurp.edu.eams.teach.grade.course.service.MakeupStdStrategy
 import org.openurp.edu.eams.teach.grade.course.web.action.AdminAction
@@ -30,17 +28,17 @@ import org.openurp.edu.eams.teach.grade.model.GradeRateConfig
 import org.openurp.edu.eams.teach.grade.service.CourseGradeService
 import org.openurp.edu.eams.teach.grade.service.CourseGradeSettings
 import org.openurp.edu.teach.grade.CourseGrade
-import org.openurp.edu.teach.grade.CourseGradeState
+import org.openurp.edu.teach.grade.model.CourseGradeState
 import org.openurp.edu.teach.lesson.CourseTake
-import org.openurp.edu.eams.teach.lesson.ExamGrade
-import org.openurp.edu.eams.teach.lesson.ExamTake
+import org.openurp.edu.teach.grade.ExamGrade
+import org.openurp.edu.teach.exam.ExamTake
 import org.openurp.edu.eams.teach.lesson.GradeTypeConstants
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.teach.lesson.helper.LessonSearchHelper
 import org.openurp.edu.eams.teach.lesson.service.LessonService
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class ReportAction extends SemesterSupportAction {
 
@@ -134,7 +132,7 @@ class ReportAction extends SemesterSupportAction {
       .where("config.project=:project", getProject)
     val gradeConfigMap = CollectUtils.newHashMap()
     for (config <- entityDao.search(query)) {
-      gradeConfigMap.put(String.valueOf(config.getScoreMarkStyle.getId), config)
+      gradeConfigMap.put(String.valueOf(config.getScoreMarkStyle.id), config)
     }
     put("MIDDLE_ID", GradeTypeConstants.MIDDLE_ID)
     put("NORMAL", ExamStatus.NORMAL)
@@ -168,7 +166,7 @@ class ReportAction extends SemesterSupportAction {
       }
       val setting = settings.getSetting(getProject)
       for (gradeType <- setting.getGaElementTypes) {
-        val freshedGradeType = entityDao.get(classOf[GradeType], gradeType.getId)
+        val freshedGradeType = entityDao.get(classOf[GradeType], gradeType.id)
         if (null != freshedGradeType) gradeTypes.add(freshedGradeType)
       }
       val ga = entityDao.get(classOf[GradeType], GradeTypeConstants.GA_ID)
@@ -191,7 +189,7 @@ class ReportAction extends SemesterSupportAction {
     val stdExamTypeMap = CollectUtils.newHashMap()
     val examTakes = entityDao.search(query)
     for (examTake <- examTakes) {
-      stdExamTypeMap.put(examTake.getLesson.getId + "_" + examTake.getStd.getId, examTake)
+      stdExamTypeMap.put(examTake.getLesson.id + "_" + examTake.getStd.id, examTake)
     }
     stdExamTypeMap
   }
@@ -230,7 +228,7 @@ class ReportAction extends SemesterSupportAction {
     forward(new Action(classOf[AdminAction], "reportForExam"))
   }
 
-  protected def getExportDatas(): Collection[_] = {
+  protected def getExportDatas(): Iterable[_] = {
     val lessonIdSeq = get("lessonIds")
     if (Strings.isEmpty(lessonIdSeq)) {
       val builder = lessonSearchHelper.buildQuery()

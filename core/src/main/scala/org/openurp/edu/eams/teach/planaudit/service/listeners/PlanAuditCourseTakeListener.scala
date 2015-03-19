@@ -1,34 +1,34 @@
 package org.openurp.edu.eams.teach.planaudit.service.listeners
 
-import java.util.ArrayList
+
 import java.util.Date
-import java.util.Map
-import java.util.Set
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.EntityDao
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.lang.tuple.Pair
-import org.openurp.edu.teach.Course
+import org.openurp.edu.base.Course
 import org.openurp.edu.eams.teach.Grade
 import org.openurp.edu.teach.code.CourseType
 import org.openurp.edu.teach.grade.CourseGrade
 import org.openurp.edu.teach.lesson.CourseTake
-import org.openurp.edu.eams.teach.planaudit.CourseAuditResult
-import org.openurp.edu.eams.teach.planaudit.GroupAuditResult
-import org.openurp.edu.eams.teach.planaudit.PlanAuditResult
-import org.openurp.edu.eams.teach.planaudit.model.CourseAuditResultBean
-import org.openurp.edu.eams.teach.planaudit.model.GroupAuditResultBean
+import org.openurp.edu.teach.planaudit.CourseAuditResult
+import org.openurp.edu.teach.planaudit.GroupAuditResult
+import org.openurp.edu.teach.planaudit.PlanAuditResult
+import org.openurp.edu.teach.planaudit.model.CourseAuditResultBean
+import org.openurp.edu.teach.planaudit.model.GroupAuditResultBean
 import org.openurp.edu.eams.teach.planaudit.service.PlanAuditContext
 import org.openurp.edu.eams.teach.planaudit.service.PlanAuditListener
-import org.openurp.edu.eams.teach.program.CourseGroup
+import org.openurp.edu.teach.plan.CourseGroup
 import org.openurp.edu.eams.teach.program.GroupRelation
-import org.openurp.edu.eams.teach.program.PlanCourse
+import org.openurp.edu.teach.plan.PlanCourse
 import org.openurp.edu.eams.teach.program.model.ExpressionGroupRelation
 import PlanAuditCourseTakeListener._
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConversions._
+
+
 
 object PlanAuditCourseTakeListener {
 
@@ -41,7 +41,7 @@ class PlanAuditCourseTakeListener extends PlanAuditListener {
 
   private var entityDao: EntityDao = _
 
-  @BooleanBeanProperty
+  
   var defaultPassed: Boolean = true
 
   def startPlanAudit(context: PlanAuditContext): Boolean = {

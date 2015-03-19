@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.web.action.common
 
 
-import scala.collection.JavaConversions._
+
 
 abstract class SemesterSupportAction extends ProjectSupportAction {
 

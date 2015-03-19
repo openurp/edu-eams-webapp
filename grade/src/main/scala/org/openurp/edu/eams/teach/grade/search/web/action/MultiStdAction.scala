@@ -1,20 +1,18 @@
 package org.openurp.edu.eams.teach.grade.search.web.action
 
-import java.util.Collections
-import java.util.List
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.bean.comparators.PropertyComparator
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
 import org.beangle.commons.lang.Strings
 import org.openurp.edu.base.Adminclass
-import org.openurp.edu.eams.teach.code.industry.GradeType
+import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.eams.teach.grade.service.GpaStatService
 import org.openurp.edu.eams.teach.grade.service.impl.MultiStdGpa
 import org.openurp.edu.eams.web.action.common.RestrictionSupportAction
 import org.openurp.edu.eams.web.helper.BaseInfoSearchHelper
 
-import scala.collection.JavaConversions._
+
 
 class MultiStdAction extends RestrictionSupportAction {
 

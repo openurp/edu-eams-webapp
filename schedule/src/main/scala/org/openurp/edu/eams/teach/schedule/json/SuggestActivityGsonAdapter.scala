@@ -17,31 +17,31 @@ import com.google.gson.JsonParseException
 import com.google.gson.JsonSerializationContext
 import com.google.gson.JsonSerializer
 
-import scala.collection.JavaConversions._
+
 
 class SuggestActivityGsonAdapter extends JsonSerializer[SuggestActivityBean] with JsonDeserializer[SuggestActivityBean] {
 
   def serialize(activity: SuggestActivityBean, typeOfSrc: Type, context: JsonSerializationContext): JsonElement = {
     val activityJson = new JsonObject()
-    activityJson.addProperty("id", activity.getId)
+    activityJson.addProperty("id", activity.id)
     if (activity.getArrangeSuggest != null) {
-      activityJson.addProperty("arrangeSuggestId", activity.getArrangeSuggest.getId)
+      activityJson.addProperty("arrangeSuggestId", activity.getArrangeSuggest.id)
     } else {
       activityJson.add("arrangeSuggestId", JsonNull.INSTANCE)
     }
     val timeJson = new JsonObject()
-    timeJson.addProperty("startTime", activity.getTime.getStartTime)
+    timeJson.addProperty("startTime", activity.getTime.start)
     timeJson.addProperty("startUnit", activity.getTime.getStartUnit)
-    timeJson.addProperty("endTime", activity.getTime.getEndTime)
+    timeJson.addProperty("endTime", activity.getTime.end)
     timeJson.addProperty("endUnit", activity.getTime.getEndUnit)
-    timeJson.addProperty("weekday", activity.getTime.getWeekday)
+    timeJson.addProperty("weekday", activity.getTime.day)
     timeJson.addProperty("weekState", activity.getTime.getWeekState)
-    timeJson.addProperty("weekStateNum", activity.getTime.getWeekStateNum)
+    timeJson.addProperty("weekStateNum", activity.getTime.state)
     activityJson.add("time", timeJson)
     val teacherJsonArray = new JsonArray()
     for (teacher <- activity.getTeachers) {
       val teacherJson = new JsonObject()
-      teacherJson.addProperty("id", teacher.getId)
+      teacherJson.addProperty("id", teacher.id)
       teacherJson.addProperty("code", teacher.getCode)
       teacherJson.addProperty("name", teacher.getName)
       teacherJsonArray.add(teacherJson)

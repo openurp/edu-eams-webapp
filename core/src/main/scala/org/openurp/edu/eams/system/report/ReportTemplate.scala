@@ -1,10 +1,10 @@
 package org.openurp.edu.eams.system.report
 
 import org.openurp.edu.base.Project
+import org.beangle.data.model.LongIdEntity
 
-import scala.collection.JavaConversions._
 
-trait ReportTemplate {
+trait ReportTemplate extends LongIdEntity{
 
   def getProject(): Project
 

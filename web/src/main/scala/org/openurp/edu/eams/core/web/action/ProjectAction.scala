@@ -1,11 +1,11 @@
 package org.openurp.edu.eams.core.web.action
 
 import java.sql.BatchUpdateException
-import java.util.Collection
-import java.util.Map
+
+
 import javax.persistence.EntityExistsException
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.lang.Objects
 import org.beangle.commons.lang.Strings
@@ -13,17 +13,17 @@ import org.beangle.struts2.helper.Params
 import org.hibernate.exception.ConstraintViolationException
 import org.springframework.dao.DataIntegrityViolationException
 import org.openurp.edu.eams.base.Calendar
-import org.openurp.edu.eams.base.Campus
+import org.openurp.base.Campus
 import org.openurp.base.Department
 import org.openurp.edu.eams.base.School
-import org.openurp.edu.eams.base.TimeSetting
+import org.openurp.base.TimeSetting
 import org.openurp.edu.base.Project
 import org.openurp.code.edu.Education
 import org.openurp.edu.base.code.StdLabel
 import org.openurp.edu.base.code.StdType
 import org.openurp.edu.eams.web.action.BaseAction
 
-import scala.collection.JavaConversions._
+
 
 class ProjectAction extends BaseAction {
 

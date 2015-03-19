@@ -1,16 +1,16 @@
 package org.openurp.edu.eams.system.security
 
 import java.io.Serializable
-import java.util.Iterator
-import java.util.List
-import java.util.Set
+
+
+
 import org.beangle.data.model.Component
 import org.beangle.commons.lang.Objects
 import org.beangle.commons.lang.Strings
 import DataRealm._
 
 
-import scala.collection.JavaConversions._
+
 
 object DataRealm {
 
@@ -44,7 +44,7 @@ object DataRealm {
 @Deprecated
 class DataRealm(var studentTypeIdSeq: String, var departmentIdSeq: String) extends Component with Serializable {
 
-  def getId(): java.lang.Long = null
+  def id(): java.lang.Long = null
 
   def getIsValid(): java.lang.Boolean = null
 

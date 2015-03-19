@@ -3,7 +3,7 @@ package org.openurp.edu.eams.teach.lesson.task.service.helper
 import org.apache.commons.collections.Predicate
 import org.openurp.edu.teach.lesson.CourseTake
 
-import scala.collection.JavaConversions._
+
 
 class CourseTakeOfGenderPredicate(private var gender: String) extends Predicate {
 

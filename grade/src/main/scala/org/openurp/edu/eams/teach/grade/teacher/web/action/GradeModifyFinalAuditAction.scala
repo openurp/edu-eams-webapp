@@ -1,21 +1,21 @@
 package org.openurp.edu.eams.teach.grade.teacher.web.action
 
 import java.util.Date
-import java.util.List
-import java.util.Map
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.security.blueprint.User
-import org.openurp.edu.eams.teach.code.industry.ExamStatus
+import org.openurp.edu.teach.code.ExamStatus
 import org.openurp.edu.eams.teach.grade.course.GradeModifyApply
 import org.openurp.edu.eams.teach.grade.course.model.GradeModifyApplyBean.GradeModifyStatus
 import org.openurp.edu.eams.teach.grade.service.CourseGradeCalculator
 import org.openurp.edu.eams.teach.grade.service.CourseGradeService
 import org.openurp.edu.eams.teach.grade.service.event.CourseGradeModifyEvent
 import org.openurp.edu.teach.grade.CourseGrade
-import org.openurp.edu.teach.grade.CourseGradeState
-import org.openurp.edu.eams.teach.lesson.ExamGrade
+import org.openurp.edu.teach.grade.model.CourseGradeState
+import org.openurp.edu.teach.grade.ExamGrade
 
-import scala.collection.JavaConversions._
+
 
 class GradeModifyFinalAuditAction extends GradeModifyAuditSearchAction {
 
@@ -54,7 +54,7 @@ class GradeModifyFinalAuditAction extends GradeModifyAuditSearchAction {
           gradeModifyApply.setStatus(GradeModifyStatus.GRADE_DELETED)
           //continue
         }
-        val courseGradeId = courseGrade.getId
+        val courseGradeId = courseGrade.id
         if (courseGrades.keySet.contains(courseGradeId)) {
           courseGrade = courseGrades.get(courseGradeId)
         } else {
@@ -63,7 +63,7 @@ class GradeModifyFinalAuditAction extends GradeModifyAuditSearchAction {
         val examGrade = courseGrade.getExamGrade(gradeModifyApply.gradeType)
         val state = courseGradeService.getState(courseGrade.getLesson)
         examGrade.setExamStatus(gradeModifyApply.getExamStatus)
-        if (examGrade.getExamStatus != null && ExamStatus.NORMAL == examGrade.getExamStatus.getId) {
+        if (examGrade.getExamStatus != null && ExamStatus.NORMAL == examGrade.getExamStatus.id) {
           examGrade.setScore(gradeModifyApply.getScore)
         }
         examGrade.setOperator(user.getName)

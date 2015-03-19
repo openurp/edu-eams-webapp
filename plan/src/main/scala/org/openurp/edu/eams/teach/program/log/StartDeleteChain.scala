@@ -1,11 +1,11 @@
 package org.openurp.edu.eams.teach.program.log
 
-import java.util.Map
+
 import org.openurp.edu.eams.teach.program.major.MajorPlan
 import org.openurp.edu.teach.plan.MajorPlanCourse
-import org.openurp.edu.teach.plan.MajorPlanCourseGroup
+import org.openurp.edu.teach.plan.MajorCourseGroup
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class StartDeleteChain(informations: Map[String, String]) extends PhaseChain(informations) {
 
@@ -16,7 +16,7 @@ class StartDeleteChain(informations: Map[String, String]) extends PhaseChain(inf
     new BeforeChain(informations)
   }
 
-  def start(courseGroup: MajorPlanCourseGroup): BeforeChain = {
+  def start(courseGroup: MajorCourseGroup): BeforeChain = {
     initialLogInfo(courseGroup)
     new BeforeChain(informations)
   }

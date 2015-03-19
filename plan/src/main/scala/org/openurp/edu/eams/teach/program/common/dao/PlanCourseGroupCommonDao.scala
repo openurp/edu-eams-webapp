@@ -1,14 +1,14 @@
 package org.openurp.edu.eams.teach.program.common.dao
 
-import java.util.List
-import java.util.Set
+
+
 import com.ekingstar.eams.teach.Course
-import org.openurp.edu.eams.teach.program.CourseGroup
+import org.openurp.edu.teach.plan.CourseGroup
 import org.openurp.edu.eams.teach.program.CoursePlan
 import org.openurp.edu.teach.plan.MajorPlanCourse
-import org.openurp.edu.teach.plan.MajorPlanCourseGroup
+import org.openurp.edu.teach.plan.MajorCourseGroup
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 trait PlanCourseGroupCommonDao {
 
@@ -32,9 +32,9 @@ trait PlanCourseGroupCommonDao {
   @Deprecated
   def updateCourseGroupParent(group: CourseGroup, newParent: CourseGroup, plan: CoursePlan): Unit
 
-  def extractCourseInCourseGroup(group: MajorPlanCourseGroup, terms: String): List[Course]
+  def extractCourseInCourseGroup(group: MajorCourseGroup, terms: String): List[Course]
 
-  def extractPlanCourseInCourseGroup(group: MajorPlanCourseGroup, terms: Set[String]): List[MajorPlanCourse]
+  def extractPlanCourseInCourseGroup(group: MajorCourseGroup, terms: Set[String]): List[MajorPlanCourse]
 
   def updateGroupTreeCredits(group: CourseGroup): Unit
 

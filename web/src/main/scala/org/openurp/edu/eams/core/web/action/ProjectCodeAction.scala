@@ -1,10 +1,10 @@
 package org.openurp.edu.eams.core.web.action
 
-import java.util.ArrayList
-import java.util.List
+
+
 import org.apache.commons.lang3.ClassUtils
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.pojo.BaseCode
 import org.beangle.commons.lang.Strings
 import org.beangle.ems.dictionary.model.CodeCategory
@@ -13,7 +13,7 @@ import org.openurp.edu.base.Project
 import org.openurp.edu.eams.core.model.ProjectCodeBean
 import org.openurp.edu.eams.web.action.common.ProjectSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class ProjectCodeAction extends ProjectSupportAction {
 
@@ -26,7 +26,7 @@ class ProjectCodeAction extends ProjectSupportAction {
   def edit(): String = {
     var projectId = getIntId("projectx")
     if (projectId == null) {
-      projectId = getProject.getId
+      projectId = getProject.id
     }
     try {
       val className = get("className")
@@ -85,7 +85,7 @@ class ProjectCodeAction extends ProjectSupportAction {
         ") and pc.project.id = " + 
         projectId + 
         " and pc.meta.id=" + 
-        codeMeta.getId, delCodeIds)
+        codeMeta.id, delCodeIds)
     }
     redirect("edit", "info.action.success")
   }

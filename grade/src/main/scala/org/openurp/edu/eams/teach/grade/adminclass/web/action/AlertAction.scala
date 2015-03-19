@@ -1,19 +1,19 @@
 package org.openurp.edu.eams.teach.grade.adminclass.web.action
 
-import java.util.List
-import java.util.Map
-import java.util.Set
+
+
+
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.openurp.edu.eams.base.Semester
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.openurp.base.Semester
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.base.Student
-import org.openurp.edu.teach.Course
+import org.openurp.edu.base.Course
 import org.openurp.edu.eams.teach.Grade
 import org.openurp.edu.teach.grade.CourseGrade
 import org.openurp.edu.eams.web.action.common.ProjectSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class AlertAction extends ProjectSupportAction {
 

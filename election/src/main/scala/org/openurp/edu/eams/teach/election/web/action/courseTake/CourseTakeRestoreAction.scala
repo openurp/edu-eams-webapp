@@ -1,13 +1,13 @@
 package org.openurp.edu.eams.teach.election.web.action.courseTake
 
 import java.util.Date
-import java.util.Iterator
-import java.util.List
-import java.util.Map
+
+
+
 import org.apache.commons.lang3.ArrayUtils
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.lang.Strings
 import org.openurp.edu.base.Student
@@ -17,7 +17,7 @@ import org.openurp.edu.teach.lesson.CourseTake
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class CourseTakeRestoreAction extends SemesterSupportAction {
 

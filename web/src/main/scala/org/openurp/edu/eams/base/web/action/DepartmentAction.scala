@@ -1,11 +1,11 @@
 package org.openurp.edu.eams.base.web.action
 
-import java.util.Collection
-import java.util.List
-import java.util.Map
+
+
+
 import javax.persistence.EntityExistsException
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.util.HierarchyEntityUtils
 import org.beangle.commons.lang.Strings
 import org.beangle.struts2.helper.Params
@@ -13,7 +13,7 @@ import org.springframework.dao.DataIntegrityViolationException
 import org.openurp.base.Department
 import org.openurp.edu.eams.base.model.DepartmentBean
 
-import scala.collection.JavaConversions._
+
 
 class DepartmentAction extends DepartmentSearchAction {
 
@@ -78,7 +78,7 @@ class DepartmentAction extends DepartmentSearchAction {
   }
 
   protected def builderDepartmentParamForPage(department: Department) {
-    if (null == department.getId) {
+    if (null == department.id) {
       department.setTeaching(true)
       department.setCollege(true)
     }
@@ -103,7 +103,7 @@ class DepartmentAction extends DepartmentSearchAction {
     redirect("search", "info.action.success")
   }
 
-  protected override def getExportDatas(): Collection[Department] = {
+  protected override def getExportDatas(): Iterable[Department] = {
     val departmentIds = Strings.splitToInt(get("departmentIds"))
     if (departmentIds.length > 0) {
       val builder = OqlBuilder.from(classOf[Department], "department")

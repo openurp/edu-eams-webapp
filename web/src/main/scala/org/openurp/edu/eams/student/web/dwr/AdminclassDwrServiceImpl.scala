@@ -1,13 +1,13 @@
 package org.openurp.edu.eams.student.web.dwr
 
-import java.util.HashMap
-import java.util.List
+
+
 import org.beangle.commons.dao.impl.BaseServiceImpl
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.openurp.edu.base.Adminclass
 
-import scala.collection.JavaConversions._
+
 
 class AdminclassDwrServiceImpl extends BaseServiceImpl {
 

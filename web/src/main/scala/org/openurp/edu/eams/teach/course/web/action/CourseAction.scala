@@ -1,12 +1,12 @@
-package org.openurp.edu.teach.Course.web.action
+package org.openurp.edu.base.Course.web.action
 
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.net.URL
-import java.util.Collection
+
 import java.util.Date
-import java.util.List
-import java.util.Map
+
+
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
@@ -15,7 +15,7 @@ import org.apache.poi.ss.usermodel.Row
 import org.apache.poi.ss.usermodel.Sheet
 import org.apache.poi.ss.usermodel.Workbook
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.EntityType
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.entity.metadata.ObjectAndType
@@ -30,10 +30,10 @@ import org.beangle.struts2.convention.route.Action
 import org.springframework.dao.DataIntegrityViolationException
 import org.openurp.edu.base.Major
 import org.openurp.edu.base.Project
-import org.openurp.edu.teach.Course
-import org.openurp.edu.teach.CourseCodeStandard
-import org.openurp.edu.teach.CourseExtInfo
-import org.openurp.edu.teach.CourseHour
+import org.openurp.edu.base.Course
+import org.openurp.edu.base.CourseCodeStandard
+import org.openurp.edu.base.CourseExtInfo
+import org.openurp.edu.base.CourseHour
 import org.openurp.edu.eams.teach.code.industry.ExamMode
 import org.openurp.edu.eams.teach.code.school.CourseAbilityRate
 import org.openurp.edu.eams.teach.code.school.CourseCategory
@@ -44,7 +44,7 @@ import org.openurp.edu.eams.teach.service.impl.CourseImportListener
 import org.openurp.edu.eams.web.util.DownloadHelper
 import com.opensymphony.xwork2.util.ClassLoaderUtil
 
-import scala.collection.JavaConversions._
+
 
 class CourseAction extends CourseSearchAction {
 
@@ -53,7 +53,7 @@ class CourseAction extends CourseSearchAction {
     if (null == course.getProject) {
       course.setProject(getProject)
     }
-    put("extInfo", if (course.getId == null) null else courseService.getCourseExtInfo(course.getId))
+    put("extInfo", if (course.id == null) null else courseService.getCourseExtInfo(course.id))
     put("departments", getDeparts)
     put("educations", getEducations)
     put("courseCategories", baseCodeService.getCodes(classOf[CourseCategory]))
@@ -70,7 +70,7 @@ class CourseAction extends CourseSearchAction {
 
   def save(): String = {
     val course = populateEntity(classOf[Course], "course").asInstanceOf[Course]
-    if (entityDao.duplicate(classOf[Course], course.getId, "code", course.getCode)) {
+    if (entityDao.duplicate(classOf[Course], course.id, "code", course.getCode)) {
       return forward(new Action("", "edit"), "error.code.existed")
     }
     course.setUpdatedAt(new Date())
@@ -265,7 +265,7 @@ class CourseAction extends CourseSearchAction {
     courseService.saveOrUpdate(course)
   }
 
-  protected override def getExportDatas(): Collection[Course] = {
+  protected override def getExportDatas(): Iterable[Course] = {
     val courseIds = Strings.transformToLong(Strings.split(get("courseIds")))
     if (courseIds.length > 0) {
       val builder = OqlBuilder.from(classOf[Course], "course")

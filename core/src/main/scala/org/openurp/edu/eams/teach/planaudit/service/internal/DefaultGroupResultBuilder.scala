@@ -1,18 +1,18 @@
 package org.openurp.edu.eams.teach.planaudit.service.internal
 
-import java.util.Set
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.lang.Strings
-import org.openurp.edu.teach.Course
-import org.openurp.edu.eams.teach.planaudit.GroupAuditResult
-import org.openurp.edu.eams.teach.planaudit.model.GroupAuditResultBean
+import org.openurp.edu.base.Course
+import org.openurp.edu.teach.planaudit.GroupAuditResult
+import org.openurp.edu.teach.planaudit.model.GroupAuditResultBean
 import org.openurp.edu.eams.teach.planaudit.service.PlanAuditContext
-import org.openurp.edu.eams.teach.program.CourseGroup
-import org.openurp.edu.eams.teach.program.PlanCourse
+import org.openurp.edu.teach.plan.CourseGroup
+import org.openurp.edu.teach.plan.PlanCourse
 import org.openurp.edu.eams.teach.program.util.PlanUtils
 import org.openurp.edu.eams.teach.time.util.TermCalculator
 
-import scala.collection.JavaConversions._
+
 
 class DefaultGroupResultBuilder extends GroupResultBuilder {
 

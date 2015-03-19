@@ -1,13 +1,13 @@
 package org.openurp.edu.eams.web.action.util
 
-import java.util.Collection
-import java.util.HashMap
-import java.util.List
-import java.util.Map
+
+
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.openurp.edu.eams.util.DataAuthorityPredicate
 
-import scala.collection.JavaConversions._
+
 
 object DataAuthorityUtil {
 
@@ -70,7 +70,7 @@ object DataAuthorityUtil {
     predicate
   }
 
-  def filter(entities: Collection[_], 
+  def filter(entities: Iterable[_], 
       category: String, 
       stdTypeIdSeq: String, 
       departIdSeq: String) {
@@ -79,7 +79,7 @@ object DataAuthorityUtil {
   }
 
   def filter(predicateName: String, 
-      entities: Collection[_], 
+      entities: Iterable[_], 
       stdTypeIdSeq: String, 
       departIdSeq: String) {
     if (null == entities || entities.isEmpty) return

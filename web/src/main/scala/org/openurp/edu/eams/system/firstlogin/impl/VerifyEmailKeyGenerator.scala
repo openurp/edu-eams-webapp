@@ -2,7 +2,7 @@ package org.openurp.edu.eams.system.firstlogin.impl
 
 import org.beangle.security.codec.EncryptUtil
 
-import scala.collection.JavaConversions._
+
 
 class VerifyEmailKeyGenerator {
 

@@ -1,15 +1,15 @@
 package org.openurp.edu.eams.teach.web.action
 
-import java.util.List
+
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.edu.base.Project
 import org.openurp.edu.base.Teacher
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.web.action.common.MultiProjectSupportAction
 import org.openurp.edu.eams.web.helper.RestrictionHelper
 
-import scala.collection.JavaConversions._
+
 
 abstract class AbstractTeacherLessonAction extends MultiProjectSupportAction {
 

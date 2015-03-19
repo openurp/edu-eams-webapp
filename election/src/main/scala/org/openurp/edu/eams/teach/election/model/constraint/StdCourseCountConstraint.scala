@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.election.model.constraint
 
 import java.io.Serializable
-import java.util.Map
+
 import javax.persistence.CollectionTable
 import javax.persistence.Column
 import javax.persistence.ElementCollection
@@ -14,12 +14,12 @@ import javax.validation.constraints.NotNull
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.entity.pojo.LongIdObject
 import org.hibernate.annotations.NaturalId
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Student
 import org.openurp.edu.teach.code.CourseType
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConversions._
+
+
 
 @SerialVersionUID(-8807239284763266997L)
 @Entity(name = "org.openurp.edu.eams.teach.election.model.constraint.StdCourseCountConstraint")
@@ -29,22 +29,22 @@ class StdCourseCountConstraint extends LongIdObject with Serializable {
   @NotNull
   @NaturalId
   @ManyToOne(fetch = FetchType.LAZY)
-  @BeanProperty
+  
   var std: Student = _
 
   @NotNull
   @NaturalId
   @ManyToOne(fetch = FetchType.LAZY)
-  @BeanProperty
+  
   var semester: Semester = _
 
-  @BeanProperty
+  
   var maxCourseCount: java.lang.Integer = _
 
   @ElementCollection
   @MapKeyJoinColumn(name = "COURSE_TYPE_ID")
   @Column(name = "COURSE_COUNT")
   @CollectionTable(name = "T_CONS_COURS_TYPE_MAX_COUNT")
-  @BeanProperty
+  
   var courseTypeMaxCourseCount: Map[CourseType, Integer] = CollectUtils.newHashMap()
 }

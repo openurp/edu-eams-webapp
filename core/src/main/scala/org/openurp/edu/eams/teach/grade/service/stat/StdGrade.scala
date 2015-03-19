@@ -1,17 +1,15 @@
 package org.openurp.edu.eams.teach.grade.service.stat
-
-import java.util.Collections
 import java.util.Comparator
-import java.util.Iterator
-import java.util.List
-import java.util.Map
+
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.openurp.edu.base.Student
 import org.openurp.edu.eams.teach.grade.model.StdGpa
 import org.openurp.edu.eams.teach.grade.service.impl.GradeFilter
 import org.openurp.edu.teach.grade.CourseGrade
 
-import scala.collection.JavaConversions._
+
 
 class StdGrade {
 
@@ -31,7 +29,7 @@ class StdGrade {
       var iter = grades.iterator()
       while (iter.hasNext) {
         val courseGrade = iter.next()
-        gradeMap.put(courseGrade.getCourse.getId.toString, courseGrade)
+        gradeMap.put(courseGrade.getCourse.id.toString, courseGrade)
       }
       gradeMap
     }

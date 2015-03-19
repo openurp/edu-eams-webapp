@@ -1,18 +1,18 @@
 package org.openurp.edu.eams.teach.grade.course.service.impl
 
-import java.util.List
+
 import org.beangle.commons.dao.EntityDao
 import org.beangle.commons.entity.metadata.Model
-import org.openurp.edu.eams.teach.code.industry.GradeType
+import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.eams.teach.code.industry.ScoreMarkStyle
 import org.openurp.edu.eams.teach.grade.course.service.MarkStyleStrategy
 import org.openurp.edu.eams.teach.grade.model.CourseGradeSetting
 import org.openurp.edu.eams.teach.grade.service.CourseGradeSettings
-import org.openurp.edu.teach.grade.CourseGradeState
-import org.openurp.edu.eams.teach.lesson.ExamGradeState
+import org.openurp.edu.teach.grade.model.CourseGradeState
+import org.openurp.edu.teach.grade.model.ExamGradeState
 import org.openurp.edu.eams.teach.lesson.GradeTypeConstants
 
-import scala.collection.JavaConversions._
+
 
 class DefaultMarkStyleStrategy extends MarkStyleStrategy() {
 
@@ -21,7 +21,7 @@ class DefaultMarkStyleStrategy extends MarkStyleStrategy() {
   private var settings: CourseGradeSettings = _
 
   private def isDefault(style: ScoreMarkStyle): Boolean = {
-    null == style || style.getId == ScoreMarkStyle.PERCENT
+    null == style || style.id == ScoreMarkStyle.PERCENT
   }
 
   def configMarkStyle(gradeState: CourseGradeState, gradeTypes: List[GradeType]) {
@@ -47,7 +47,7 @@ class DefaultMarkStyleStrategy extends MarkStyleStrategy() {
     if (setting.getFinalCandinateTypes.contains(typeState.gradeType)) {
       typeState.gradeState.getScoreMarkStyle
     } else {
-      if (typeState.gradeType.getId == GradeTypeConstants.DELAY_ID) {
+      if (typeState.gradeType.id == GradeTypeConstants.DELAY_ID) {
         val endGradeState = typeState.gradeState.getState(new GradeType(GradeTypeConstants.END_ID))
         if (null == endGradeState) typeState.gradeState.getScoreMarkStyle else endGradeState.getScoreMarkStyle
       } else {

@@ -3,9 +3,9 @@ package org.openurp.edu.eams.system.validate.model
 import java.io.Serializable
 import java.util.Date
 import Challenge._
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConversions._
+
+
 
 object Challenge {
 
@@ -15,10 +15,10 @@ object Challenge {
 }
 
 @SerialVersionUID(-1761415667964522353L)
-class Challenge(@BeanProperty val challenge: String, @BeanProperty val effectiveAt: Date, @BeanProperty val invalidAt: Date)
+class Challenge( val challenge: String,  val effectiveAt: Date,  val invalidAt: Date)
     extends Serializable() {
 
-  @BooleanBeanProperty
+  
   var valid: Boolean = _
 
   def isExpired(): Boolean = {

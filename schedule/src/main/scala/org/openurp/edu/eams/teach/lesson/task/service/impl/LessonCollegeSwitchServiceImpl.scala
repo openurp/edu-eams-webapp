@@ -1,15 +1,15 @@
 package org.openurp.edu.eams.teach.lesson.task.service.impl
 
-import java.util.List
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.impl.BaseServiceImpl
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.openurp.edu.eams.base.Semester
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.openurp.base.Semester
 import org.openurp.edu.base.Project
 import org.openurp.edu.eams.teach.lesson.task.model.LessonCollegeSwitch
 import org.openurp.edu.eams.teach.lesson.task.service.LessonCollegeSwitchService
 
-import scala.collection.JavaConversions._
+
 
 class LessonCollegeSwitchServiceImpl extends BaseServiceImpl with LessonCollegeSwitchService {
 

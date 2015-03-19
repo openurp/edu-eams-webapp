@@ -1,8 +1,8 @@
 package org.openurp.edu.eams.teach.election.web.action.courseTake
 
-import java.util.Collection
-import java.util.List
-import org.beangle.commons.dao.query.builder.OqlBuilder
+
+
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.transfer.exporter.PropertyExtractor
 import org.openurp.base.Department
@@ -16,7 +16,7 @@ import org.openurp.edu.eams.teach.election.service.propertyExtractor.CourseTakeP
 import org.openurp.edu.teach.lesson.CourseTake
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class CourseTakeSearchAction extends SemesterSupportAction {
 
@@ -90,7 +90,7 @@ class CourseTakeSearchAction extends SemesterSupportAction {
     builder
   }
 
-  protected override def getExportDatas(): Collection[_] = {
+  protected override def getExportDatas(): Iterable[_] = {
     val builder = getQueryBuilder.asInstanceOf[OqlBuilder[CourseTake]]
     val courseTakeIds = getLongIds("courseTake")
     if (null != courseTakeIds && courseTakeIds.length > 0) {

@@ -4,7 +4,7 @@ import org.beangle.commons.dao.EntityDao
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-import scala.collection.JavaConversions._
+
 
 abstract class AbstractProfileLessonProvider {
 

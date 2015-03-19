@@ -5,7 +5,7 @@ import org.beangle.commons.lang.Objects
 import org.openurp.edu.teach.lesson.Lesson
 import LessonComparator._
 
-import scala.collection.JavaConversions._
+
 
 object LessonComparator {
 
@@ -18,7 +18,7 @@ class LessonComparator private () extends Comparator[Lesson]() {
     Objects.compareBuilder().add(o1.getCourseType.getCode, o2.getCourseType.getCode)
       .add(o1.getCourse.getCode, o2.getCourse.getCode)
       .add(o1.getNo, o2.getNo)
-      .add(o1.getId, o2.getId)
+      .add(o1.id, o2.id)
       .toComparison()
   }
 }

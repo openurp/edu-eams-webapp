@@ -1,9 +1,8 @@
 package org.openurp.edu.eams.classroom.util
 
-import org.beangle.commons.entity.Entity
+import org.beangle.data.model.Entity
 import org.beangle.commons.lang.Strings
-
-import scala.collection.JavaConversions._
+import org.openurp.base.code.RoomUsage
 
 object RoomUseridGenerator {
 
@@ -20,9 +19,11 @@ object RoomUseridGenerator {
     implicit def convertValue(v: Value): Usage = v.asInstanceOf[Usage]
   }
 
+  import Usage._
+  
   def gen(obj: AnyRef, usage: Usage): String = {
     var objId: AnyRef = null
-    objId = if (obj.isInstanceOf[Entity]) obj.asInstanceOf[Entity[_]].getId else obj
+    objId = if (obj.isInstanceOf[Entity[_]]) obj.asInstanceOf[Entity[AnyRef]].id else obj
     if (null == objId) {
       throw new RuntimeException("cannot find object id for room user")
     }

@@ -1,21 +1,21 @@
 package org.openurp.edu.eams.teach.planaudit.service.listeners
 
-import java.util.HashSet
-import java.util.Iterator
-import java.util.Set
-import org.openurp.edu.teach.Course
+
+
+
+import org.openurp.edu.base.Course
 import org.openurp.edu.teach.code.CourseType
 import org.openurp.edu.teach.grade.CourseGrade
-import org.openurp.edu.eams.teach.planaudit.GroupAuditResult
-import org.openurp.edu.eams.teach.planaudit.model.PlanAuditStandard
+import org.openurp.edu.teach.planaudit.GroupAuditResult
+import org.openurp.edu.teach.planaudit.model.PlanAuditStandard
 import org.openurp.edu.eams.teach.planaudit.service.PlanAuditContext
 import org.openurp.edu.eams.teach.planaudit.service.PlanAuditListener
-import org.openurp.edu.eams.teach.program.CourseGroup
+import org.openurp.edu.teach.plan.CourseGroup
 import org.openurp.edu.teach.plan.CoursePlan
-import org.openurp.edu.eams.teach.program.PlanCourse
+import org.openurp.edu.teach.plan.PlanCourse
 import org.openurp.edu.eams.teach.program.util.PlanUtils
 
-import scala.collection.JavaConversions._
+
 
 class PlanAuditSkipListener extends PlanAuditListener {
 

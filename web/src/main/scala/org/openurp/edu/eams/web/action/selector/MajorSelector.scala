@@ -1,11 +1,11 @@
 package org.openurp.edu.eams.web.action.selector
 
-import java.util.List
-import org.beangle.commons.dao.query.builder.OqlBuilder
+
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.edu.base.Major
 import org.openurp.edu.eams.web.action.BaseAction
 
-import scala.collection.JavaConversions._
+
 
 class MajorSelector extends BaseAction {
 

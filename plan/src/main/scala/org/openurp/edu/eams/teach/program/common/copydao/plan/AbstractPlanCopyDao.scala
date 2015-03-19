@@ -1,18 +1,18 @@
 package org.openurp.edu.eams.teach.program.common.copydao.plan
 
-import java.util.ArrayList
-import org.beangle.orm.hibernate.HibernateEntityDao
-import org.openurp.edu.eams.teach.program.CourseGroup
+
+import org.beangle.data.jpa.hibernate.HibernateEntityDao
+import org.openurp.edu.teach.plan.CourseGroup
 import org.openurp.edu.eams.teach.program.CoursePlan
 import org.openurp.edu.eams.teach.program.Program
 import org.openurp.edu.eams.teach.program.common.copydao.coursegroup.IPlanCourseGroupCopyDao
 import org.openurp.edu.eams.teach.program.common.dao.PlanCommonDao
 import org.openurp.edu.eams.teach.program.major.MajorPlan
-import org.openurp.edu.teach.plan.MajorPlanCourseGroup
+import org.openurp.edu.teach.plan.MajorCourseGroup
 import org.openurp.edu.eams.teach.program.major.service.MajorPlanGenParameter
 import org.openurp.edu.eams.teach.program.original.OriginalPlan
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 abstract class AbstractPlanCopyDao extends HibernateEntityDao with IPlanCopyDao {
 
@@ -40,7 +40,7 @@ abstract class AbstractPlanCopyDao extends HibernateEntityDao with IPlanCopyDao 
     saveOrUpdate(newPlan)
     if (sourcePlan != null) {
       for (sourceCourseGroup <- sourcePlan.getTopCourseGroups) {
-        courseGroupCopyDao.copyCourseGroup(sourceCourseGroup.asInstanceOf[MajorPlanCourseGroup], null, 
+        courseGroupCopyDao.copyCourseGroup(sourceCourseGroup.asInstanceOf[MajorCourseGroup], null, 
           newPlan)
       }
     }

@@ -1,15 +1,15 @@
 package org.openurp.edu.eams.teach.program.common.copydao.coursegroup
 
-import java.util.List
-import org.beangle.orm.hibernate.HibernateEntityDao
-import org.openurp.edu.eams.teach.program.CourseGroup
+
+import org.beangle.data.jpa.hibernate.HibernateEntityDao
+import org.openurp.edu.teach.plan.CourseGroup
 import org.openurp.edu.eams.teach.program.CoursePlan
 import org.openurp.edu.eams.teach.program.common.copydao.plancourse.IPlanCourseCopyDao
 import org.openurp.edu.eams.teach.program.common.dao.PlanCourseGroupCommonDao
 import org.openurp.edu.eams.teach.program.helper.PlanTermCreditTool
-import org.openurp.edu.teach.plan.MajorPlanCourseGroup
+import org.openurp.edu.teach.plan.MajorCourseGroup
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 abstract class AbstractPlanCourseGroupCopyDao extends HibernateEntityDao with IPlanCourseGroupCopyDao {
 
@@ -26,14 +26,14 @@ abstract class AbstractPlanCourseGroupCopyDao extends HibernateEntityDao with IP
     if (parentAttachTo == null) {
       planCourseGroupCommonDao.addCourseGroupToPlan(cloneGroup, planAttachTo)
     } else {
-      if (parentAttachTo.getPlan.getId != planAttachTo.getId) {
+      if (parentAttachTo.getPlan.id != planAttachTo.id) {
         throw new RuntimeException("parentAttachTo.coursePlan must be same with planAttachTo")
       }
       planCourseGroupCommonDao.addCourseGroupToPlan(cloneGroup, parentAttachTo, planAttachTo)
     }
     planCourseCopyDao.copyPlanCourses(sourceCourseGroup.getPlanCourses.asInstanceOf[List[_]], cloneGroup)
     for (child <- sourceCourseGroup.getChildren) {
-      copyCourseGroup(child.asInstanceOf[MajorPlanCourseGroup], cloneGroup, planAttachTo)
+      copyCourseGroup(child.asInstanceOf[MajorCourseGroup], cloneGroup, planAttachTo)
     }
     saveOrUpdate(cloneGroup)
     cloneGroup

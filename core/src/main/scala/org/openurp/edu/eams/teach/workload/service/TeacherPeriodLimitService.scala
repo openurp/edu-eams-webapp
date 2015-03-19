@@ -5,7 +5,7 @@ import org.openurp.edu.base.Teacher
 import org.openurp.edu.eams.core.code.industry.TeacherType
 import org.openurp.edu.eams.core.code.nation.TeacherTitleLevel
 
-import scala.collection.JavaConversions._
+
 
 trait TeacherPeriodLimitService {
 

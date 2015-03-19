@@ -1,9 +1,9 @@
 package org.openurp.edu.eams.teach.lesson.service
 
 import java.io.Serializable
-import java.util.Collection
-import java.util.List
-import org.beangle.commons.entity.Entity
+
+
+import org.beangle.data.model.Entity
 import org.openurp.base.Department
 import org.openurp.base.Semester
 import org.openurp.edu.base.Project
@@ -11,7 +11,7 @@ import org.openurp.edu.base.Teacher
 import org.openurp.edu.teach.code.CourseType
 import org.openurp.edu.teach.lesson.Lesson
 
-import scala.collection.JavaConversions._
+
 
 trait LessonService {
 
@@ -25,7 +25,7 @@ trait LessonService {
 
   def getProjectsForTeacher(teacher: Teacher): List[Project]
 
-  def getLessonByCategory(id: Serializable, strategy: LessonFilterStrategy, semesters: Collection[Semester]): List[Lesson]
+  def getLessonByCategory(id: Serializable, strategy: LessonFilterStrategy, semesters: Iterable[Semester]): List[Lesson]
 
   def getLessonByCategory(id: Serializable, strategy: LessonFilterStrategy, semester: Semester): List[Lesson]
 

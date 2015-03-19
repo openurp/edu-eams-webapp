@@ -4,7 +4,7 @@ import org.apache.commons.collections.Predicate
 import org.beangle.commons.lang.Numbers
 import org.openurp.edu.teach.lesson.CourseTake
 
-import scala.collection.JavaConversions._
+
 
 class CourseTakeOfStdNoPredicate(var isOdd: Boolean) extends Predicate {
 

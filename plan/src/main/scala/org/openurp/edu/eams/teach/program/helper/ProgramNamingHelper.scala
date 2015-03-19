@@ -8,7 +8,7 @@ import com.ekingstar.eams.core.Student
 import org.openurp.edu.eams.teach.program.Program
 import org.openurp.edu.eams.teach.program.major.service.MajorPlanGenParameter
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 object ProgramNamingHelper {
 
@@ -27,10 +27,10 @@ object ProgramNamingHelper {
   }
 
   def name(genParameter: MajorPlanGenParameter, entityDao: EntityDao): String = {
-    val major = entityDao.get(classOf[Major], genParameter.getMajor.getId)
+    val major = entityDao.get(classOf[Major], genParameter.getMajor.id)
     var direction: Direction = null
-    if (genParameter.getDirection != null && genParameter.getDirection.getId != null) {
-      direction = entityDao.get(classOf[Direction], genParameter.getDirection.getId)
+    if (genParameter.getDirection != null && genParameter.getDirection.id != null) {
+      direction = entityDao.get(classOf[Direction], genParameter.getDirection.id)
     }
     MessageFormat.format(NAJOR_NAMING_FMT, genParameter.getGrade, major.getName, if (direction == null) "" else direction.getName)
   }

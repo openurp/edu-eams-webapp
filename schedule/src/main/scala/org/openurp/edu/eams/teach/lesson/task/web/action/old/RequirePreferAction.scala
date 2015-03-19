@@ -1,11 +1,9 @@
 package org.openurp.edu.eams.teach.lesson.task.web.action.old
 
-import java.util.Collections
-import java.util.List
 import org.beangle.commons.lang.Strings
 import org.beangle.struts2.convention.route.Action
-import org.openurp.edu.eams.base.Semester
-import org.openurp.edu.eams.base.code.school.ClassroomType
+import org.openurp.base.Semester
+import org.openurp.edu.eams.base.code.school.RoomType
 import org.openurp.edu.base.Teacher
 import org.openurp.edu.eams.core.service.SemesterService
 import org.openurp.edu.eams.core.service.TeacherService
@@ -20,7 +18,7 @@ import org.openurp.edu.eams.web.Constants
 import org.openurp.edu.eams.web.action.BaseAction
 import RequirePreferAction._
 
-import scala.collection.JavaConversions._
+
 
 object RequirePreferAction {
 
@@ -53,7 +51,7 @@ class RequirePreferAction extends BaseAction {
 
   private def getSemester(): Semester = {
     val semester = populate(classOf[Semester], Constants.CALENDAR).asInstanceOf[Semester]
-    if (null != semester.getId && 0 != semester.getId.intValue()) semesterService.getSemester(semester.getId) else if (null != semester.getCalendar && semester.getCalendar.isPersisted) {
+    if (null != semester.id && 0 != semester.id.intValue()) semesterService.getSemester(semester.id) else if (null != semester.getCalendar && semester.getCalendar.isPersisted) {
       semesterService.getSemester(semester.getCalendar, semester.getSchoolYear, semester.getName)
     } else {
       null
@@ -72,7 +70,7 @@ class RequirePreferAction extends BaseAction {
     if (null == teacherId) {
       val user = getUser
       val teacher = teacherService.getTeacherByNO(user)
-      teacherId = teacher.getId
+      teacherId = teacher.id
     }
     forward()
   }
@@ -86,7 +84,7 @@ class RequirePreferAction extends BaseAction {
     } else {
       val taskId = get(Constants.TEACHTASK_KEY)
     }
-    put("configTypeList", baseCodeService.getCodes(classOf[ClassroomType]))
+    put("configTypeList", baseCodeService.getCodes(classOf[RoomType]))
     addBaseCode("teachLangTypes", classOf[TeachLangType])
     forward()
   }
@@ -120,7 +118,7 @@ class RequirePreferAction extends BaseAction {
     } else {
       val taskId = getLong("task.id")
       val task = entityDao.get(classOf[Lesson], taskId).asInstanceOf[Lesson]
-      redirect(forward, "info.save.success", "&semester.id=" + task.getSemester.getId)
+      redirect(forward, "info.save.success", "&semester.id=" + task.getSemester.id)
     }
   }
 
@@ -138,7 +136,7 @@ class RequirePreferAction extends BaseAction {
       val taskId = getLong("task.id")
       val task = entityDao.get(classOf[Lesson], taskId).asInstanceOf[Lesson]
       entityDao.saveOrUpdate(task)
-      redirect(forward, "info.delete.success", "&semester.id=" + task.getSemester.getId)
+      redirect(forward, "info.delete.success", "&semester.id=" + task.getSemester.id)
     }
   }
 
@@ -156,7 +154,7 @@ class RequirePreferAction extends BaseAction {
     val taskId = getLong("lesson.id")
     val task = entityDao.get(classOf[Lesson], taskId)
     put(Constants.TEACHTASK, task)
-    put("configTypeList", baseCodeService.getCodes(classOf[ClassroomType]))
+    put("configTypeList", baseCodeService.getCodes(classOf[RoomType]))
     val teacher = getLoginTeacher
     if (null == teacher) return forwardError("error.parameters.illegal")
     var preference = preferenceService.getPreference(teacher, task.getCourse)

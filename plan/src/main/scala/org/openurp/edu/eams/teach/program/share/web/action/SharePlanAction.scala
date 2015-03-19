@@ -1,15 +1,15 @@
 package org.openurp.edu.eams.teach.program.share.web.action
 
-import java.util.ArrayList
+
 import java.util.Date
-import java.util.HashMap
-import java.util.List
-import java.util.Map
+
+
+
 import org.apache.struts2.ServletActionContext
 import org.beangle.commons.collection.Order
 import org.beangle.commons.dao.query.builder.Condition
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.beangle.commons.entity.Entity
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.beangle.data.model.Entity
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.text.seq.MultiLevelSeqGenerator
 import org.beangle.commons.text.seq.SeqNumStyle
@@ -17,14 +17,14 @@ import org.beangle.commons.text.seq.SeqPattern
 import org.beangle.commons.transfer.exporter.Context
 import org.beangle.commons.transfer.exporter.Exporter
 import com.ekingstar.eams.system.doc.service.DocPath
-import org.openurp.edu.eams.teach.program.PlanCourse
+import org.openurp.edu.teach.plan.PlanCourse
 import org.openurp.edu.eams.teach.program.exporter.FloatNumFormat
 import org.openurp.edu.eams.teach.program.share.SharePlan
 import org.openurp.edu.eams.teach.program.share.SharePlanCourseGroup
 import org.openurp.edu.eams.teach.program.share.model.SharePlanBean
 import com.ekingstar.eams.web.action.common.ProjectSupportAction
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class SharePlanAction extends ProjectSupportAction {
 
@@ -51,8 +51,8 @@ class SharePlanAction extends ProjectSupportAction {
     val params = new HashMap[String, Any]()
     params.put("name", plan.getName)
     params.put("education", plan.getEducation)
-    if (!entityDao.duplicate(classOf[SharePlan].getName, plan.getId, params)) {
-      return redirect("edit", "error.model.existed", "sharePlan.id=" + plan.getId)
+    if (!entityDao.duplicate(classOf[SharePlan].getName, plan.id, params)) {
+      return redirect("edit", "error.model.existed", "sharePlan.id=" + plan.id)
     }
     if (plan.isTransient) {
       plan.setCreatedAt(new Date())

@@ -1,18 +1,18 @@
 package org.openurp.edu.eams.teach.program.major.dao.hibernate
 
-import java.util.List
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.beangle.orm.hibernate.HibernateEntityDao
-import com.ekingstar.eams.teach.code.school.CourseType
-import org.openurp.edu.teach.plan.MajorPlanCourseGroup
-import org.openurp.edu.eams.teach.program.major.dao.MajorPlanCourseGroupDao
-//remove if not needed
-import scala.collection.JavaConversions._
 
-class MajorPlanCourseGroupDaoHibernate extends HibernateEntityDao with MajorPlanCourseGroupDao {
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.beangle.data.jpa.hibernate.HibernateEntityDao
+import com.ekingstar.eams.teach.code.school.CourseType
+import org.openurp.edu.teach.plan.MajorCourseGroup
+import org.openurp.edu.eams.teach.program.major.dao.MajorCourseGroupDao
+//remove if not needed
+
+
+class MajorCourseGroupDaoHibernate extends HibernateEntityDao with MajorCourseGroupDao {
 
   def getCourseType(planId: java.lang.Long, courseId: java.lang.Long): CourseType = {
-    val query = OqlBuilder.from(classOf[MajorPlanCourseGroup], "courseGroup")
+    val query = OqlBuilder.from(classOf[MajorCourseGroup], "courseGroup")
     query.select("select courseGroup.courseType").join("courseGroup.planCourses", "planCourse")
       .join("courseGroup.coursePlan", "plan")
       .where("plan.id=:planId", planId)

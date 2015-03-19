@@ -2,17 +2,17 @@ package org.openurp.edu.eams.teach.major.helper
 
 import java.util.Date
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.beangle.struts2.helper.Params
 import org.beangle.struts2.helper.QueryHelper
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.eams.core.CommonAuditState
 import org.openurp.edu.base.Program
 import org.openurp.edu.teach.plan.MajorPlan
 import org.openurp.edu.eams.web.helper.SearchHelper
 
-import scala.collection.JavaConversions._
+
 
 class MajorPlanSearchHelper extends SearchHelper {
 
@@ -32,7 +32,7 @@ class MajorPlanSearchHelper extends SearchHelper {
         .append("   where apply.majorPlan.id=(select plan.id from org.openurp.edu.teach.plan.MajorPlan plan where plan.program=program) and apply.flag= :flag\n")
         .append(") or \n")
         .append("exists(\n")
-        .append("   select apply.id from org.openurp.edu.eams.teach.program.majorapply.model.MajorPlanCourseGroupModifyBean apply \n")
+        .append("   select apply.id from org.openurp.edu.eams.teach.program.majorapply.model.MajorCourseGroupModifyBean apply \n")
         .append("   where apply.majorPlan.id=(select plan.id from org.openurp.edu.teach.plan.MajorPlan plan where plan.program=program) and apply.flag= :flag")
         .append(")")
         .append(")")
@@ -68,7 +68,7 @@ class MajorPlanSearchHelper extends SearchHelper {
         .append("	where apply.majorPlan.id=plan.id and apply.flag= :flag\n")
         .append(") or \n")
         .append("exists(\n")
-        .append("	select apply.id from org.openurp.edu.eams.teach.program.majorapply.model.MajorPlanCourseGroupModifyBean apply \n")
+        .append("	select apply.id from org.openurp.edu.eams.teach.program.majorapply.model.MajorCourseGroupModifyBean apply \n")
         .append("	where apply.majorPlan.id=plan.id and apply.flag= :flag")
         .append(")")
         .append(")")

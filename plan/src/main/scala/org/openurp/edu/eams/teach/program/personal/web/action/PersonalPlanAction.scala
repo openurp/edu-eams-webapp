@@ -1,12 +1,12 @@
 package org.openurp.edu.eams.teach.program.personal.web.action
 
-import java.util.ArrayList
-import java.util.HashMap
-import java.util.List
-import java.util.Map
+
+
+
+
 import org.apache.commons.lang3.ArrayUtils
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.beangle.struts2.convention.route.Action
 import com.ekingstar.eams.core.Student
@@ -22,7 +22,7 @@ import org.openurp.edu.eams.teach.program.personal.service.PersonalPlanService
 import org.openurp.edu.eams.teach.program.service.AmbiguousMajorProgramException
 import org.openurp.edu.eams.teach.program.service.NoMajorProgramException
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class PersonalPlanAction extends PersonalPlanSearchAction {
 
@@ -104,7 +104,7 @@ class PersonalPlanAction extends PersonalPlanSearchAction {
     for (std <- stds) {
       val personalPlan = coursePlanProvider.getPersonalPlan(std)
       val oneComparisonResult = new HashMap[String, Any]()
-      multiComparisonResult.put(personalPlan.getId.toString, oneComparisonResult)
+      multiComparisonResult.put(personalPlan.id.toString, oneComparisonResult)
       oneComparisonResult.put("personalPlan", personalPlan)
       try {
         val majorPlan = personalPlanService.getMajorPlanForDiff(std)
@@ -148,7 +148,7 @@ class PersonalPlanAction extends PersonalPlanSearchAction {
     for (std <- stds) {
       val personalPlan = coursePlanProvider.getPersonalPlan(std)
       val oneComparisonResult = new HashMap[String, Any]()
-      multiComparisonResult.put(personalPlan.getId.toString, oneComparisonResult)
+      multiComparisonResult.put(personalPlan.id.toString, oneComparisonResult)
       oneComparisonResult.put("personalPlan", personalPlan)
       val majorPlan = coursePlanProvider.getMajorPlan(std)
       oneComparisonResult.put("majorPlan", majorPlan)
@@ -161,9 +161,9 @@ class PersonalPlanAction extends PersonalPlanSearchAction {
     for (std <- ambiguousProgramStds) {
       val personalPlan = coursePlanProvider.getPersonalPlan(std)
       val oneComparisonResult = new HashMap[String, Any]()
-      multiComparisonResult.put(personalPlan.getId.toString, oneComparisonResult)
+      multiComparisonResult.put(personalPlan.id.toString, oneComparisonResult)
       oneComparisonResult.put("personalPlan", personalPlan)
-      val programId = getLong("student_program_" + std.getId)
+      val programId = getLong("student_program_" + std.id)
       val majorPlan = coursePlanProvider.getMajorPlan(new ProgramBean(programId))
       oneComparisonResult.put("majorPlan", majorPlan)
       oneComparisonResult.put("diffResult", personalPlanCompareService.diffPersonalAndMajorPlan(majorPlan, 
@@ -182,7 +182,7 @@ class PersonalPlanAction extends PersonalPlanSearchAction {
     var std: Student = null
     if (stdId != null) {
       std = entityDao.get(classOf[Student], stdId)
-      if (getProject.getId != std.getProject.getId || 
+      if (getProject.id != std.getProject.id || 
         (CollectUtils.isEmpty(getEducations) || !getEducations.contains(std.getEducation)) || 
         !getStdTypes.contains(std.getType) || 
         !getDeparts.contains(std.getDepartment)) {
@@ -191,7 +191,7 @@ class PersonalPlanAction extends PersonalPlanSearchAction {
       plan = coursePlanProvider.getPersonalPlan(std)
     } else if (planId != null) {
       plan = entityDao.get(classOf[PersonalPlan], planId)
-      if (getProject.getId != plan.getStd.getMajor.getProject.getId || 
+      if (getProject.id != plan.getStd.getMajor.getProject.id || 
         (CollectUtils.isEmpty(getEducations) || !getEducations.contains(plan.getStd.getEducation)) || 
         !getStdTypes.contains(plan.getStd.getType) || 
         !getDeparts.contains(plan.getStd.getDepartment)) {
@@ -220,14 +220,14 @@ class PersonalPlanAction extends PersonalPlanSearchAction {
       return forwardError("该生不存在")
     }
     val std = stds.get(0)
-    if (getProject.getId != std.getProject.getId || 
+    if (getProject.id != std.getProject.id || 
       (CollectUtils.isEmpty(getEducations) || !getEducations.contains(std.getEducation)) || 
       !getStdTypes.contains(std.getType) || 
       !getDeparts.contains(std.getDepartment)) {
       return redirect("search", "error.dataRealm.insufficient")
     }
     if (coursePlanProvider.getPersonalPlan(std) != null) {
-      return redirect("edit", "info.personalPlan.isExists", "&stdId=" + std.getId)
+      return redirect("edit", "info.personalPlan.isExists", "&stdId=" + std.id)
     }
     var plan: PersonalPlan = null
     try {
@@ -239,7 +239,7 @@ class PersonalPlanAction extends PersonalPlanSearchAction {
         return forward("problemGen")
       }
     }
-    redirect("edit", "info.success.genPersonalPlan", "&stdId=" + plan.getStd.getId)
+    redirect("edit", "info.success.genPersonalPlan", "&stdId=" + plan.getStd.id)
   }
 
   def assignedGen(): String = {
@@ -247,7 +247,7 @@ class PersonalPlanAction extends PersonalPlanSearchAction {
     val programId = getLong("student_program_" + stdId)
     val plan = personalPlanService.genPersonalPlan(entityDao.get(classOf[Student], stdId), entityDao.get(classOf[Program], 
       programId))
-    redirect("edit", "info.success.genPersonalPlan", "&planId=" + plan.getId)
+    redirect("edit", "info.success.genPersonalPlan", "&planId=" + plan.id)
   }
 
   def save(): String = {

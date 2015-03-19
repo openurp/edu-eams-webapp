@@ -1,17 +1,17 @@
 package org.openurp.edu.eams.teach.service.internal
 
 import java.sql.Date
-import java.util.Iterator
-import java.util.List
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.impl.BaseServiceImpl
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
-import org.openurp.edu.teach.Course
-import org.openurp.edu.teach.CourseExtInfo
+import org.openurp.edu.base.Course
+import org.openurp.edu.base.CourseExtInfo
 import org.openurp.edu.eams.teach.service.CourseService
 
-import scala.collection.JavaConversions._
+
 
 class CourseServiceImpl extends BaseServiceImpl with CourseService {
 

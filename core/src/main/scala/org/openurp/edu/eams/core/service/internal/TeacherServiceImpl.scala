@@ -1,19 +1,17 @@
 package org.openurp.edu.eams.core.service.internal
 
 import java.sql.Date
-import java.util.Collection
-import java.util.Collections
-import java.util.Iterator
-import java.util.List
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.impl.BaseServiceImpl
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.openurp.edu.base.Teacher
 import org.openurp.edu.eams.core.service.TeacherService
 import org.openurp.edu.eams.core.service.event.TeacherCreationEvent
 
-import scala.collection.JavaConversions._
+
 
 class TeacherServiceImpl extends BaseServiceImpl with TeacherService {
 
@@ -56,7 +54,7 @@ class TeacherServiceImpl extends BaseServiceImpl with TeacherService {
       "id", teacherIds)
   }
 
-  def getTeachersById(teacherIds: Collection[_]): List[Teacher] = {
+  def getTeachersById(teacherIds: Iterable[_]): List[Teacher] = {
     if (!teacherIds.isEmpty) entityDao.get(classOf[Teacher], "id", teacherIds) else Collections.emptyList()
   }
 

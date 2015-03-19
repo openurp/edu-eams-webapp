@@ -2,16 +2,16 @@ package org.openurp.edu.eams.teach.grade.teacher.web.action
 
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.openurp.edu.eams.teach.code.industry.ExamStatus
-import org.openurp.edu.eams.teach.code.industry.GradeType
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.openurp.edu.teach.code.ExamStatus
+import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.eams.teach.grade.course.model.GradeModifyApplyBean
 import org.openurp.edu.eams.teach.grade.course.model.GradeModifyApplyBean.GradeModifyStatus
 import org.openurp.edu.eams.teach.grade.course.service.GradeModifyApplyService
 import org.openurp.edu.eams.teach.lesson.GradeTypeConstants
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class GradeModifyAuditSearchAction extends SemesterSupportAction {
 

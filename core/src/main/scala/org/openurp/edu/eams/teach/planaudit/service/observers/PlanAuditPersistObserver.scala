@@ -1,21 +1,21 @@
 package org.openurp.edu.eams.teach.planaudit.service.observers
 
 import java.util.Date
-import java.util.List
-import java.util.Map
-import java.util.Set
+
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.impl.BaseServiceImpl
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.edu.base.Student
-import org.openurp.edu.teach.Course
-import org.openurp.edu.eams.teach.planaudit.CourseAuditResult
-import org.openurp.edu.eams.teach.planaudit.GroupAuditResult
-import org.openurp.edu.eams.teach.planaudit.PlanAuditResult
-import org.openurp.edu.eams.teach.planaudit.adapters.GroupResultAdapter
+import org.openurp.edu.base.Course
+import org.openurp.edu.teach.planaudit.CourseAuditResult
+import org.openurp.edu.teach.planaudit.GroupAuditResult
+import org.openurp.edu.teach.planaudit.PlanAuditResult
+import org.openurp.edu.teach.planaudit.adapters.GroupResultAdapter
 import org.openurp.edu.eams.teach.planaudit.service.PlanAuditContext
 
-import scala.collection.JavaConversions._
+
 
 class PlanAuditPersistObserver extends BaseServiceImpl with PlanAuditObserver {
 

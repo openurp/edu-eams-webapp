@@ -1,13 +1,13 @@
 package org.openurp.edu.eams.teach.planaudit.service.observers
 
-import java.util.ArrayList
-import java.util.Iterator
-import java.util.List
+
+
+
 import java.util.Observable
 import org.openurp.edu.eams.teach.planaudit.service.PlanAuditContext
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConversions._
+
+
 
 class PlanAuditObserverStack(initObersers: PlanAuditObserver*) extends Observable() with PlanAuditObserver {
 
@@ -15,7 +15,7 @@ class PlanAuditObserverStack(initObersers: PlanAuditObserver*) extends Observabl
     addObserver(ob)
   }
 
-  @BeanProperty
+  
   var observers: List[PlanAuditObserver] = new ArrayList[PlanAuditObserver]()
 
   def addObserver(observer: PlanAuditObserver) {

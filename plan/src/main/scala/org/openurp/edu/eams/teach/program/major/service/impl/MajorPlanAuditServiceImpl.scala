@@ -1,9 +1,9 @@
 package org.openurp.edu.eams.teach.program.major.service.impl
 
-import java.util.List
+
 import org.beangle.commons.dao.Operation
 import org.beangle.commons.dao.impl.BaseServiceImpl
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import com.ekingstar.eams.core.CommonAuditState
 import org.openurp.edu.eams.teach.program.Program
 import org.openurp.edu.eams.teach.program.major.MajorPlan
@@ -12,7 +12,7 @@ import org.openurp.edu.eams.teach.program.major.service.MajorPlanAuditService
 import org.openurp.edu.eams.teach.program.major.service.MajorPlanDuplicatedException
 import org.openurp.edu.eams.teach.program.original.OriginalPlan
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class MajorPlanAuditServiceImpl extends BaseServiceImpl with MajorPlanAuditService {
 

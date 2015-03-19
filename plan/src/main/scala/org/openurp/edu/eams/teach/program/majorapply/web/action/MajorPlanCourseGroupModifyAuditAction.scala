@@ -1,27 +1,27 @@
 package org.openurp.edu.eams.teach.program.majorapply.web.action
 
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.security.blueprint.User
 import org.beangle.struts2.convention.route.Action
 import org.openurp.edu.eams.teach.program.majorapply.exception.MajorPlanAuditException
-import org.openurp.edu.eams.teach.program.majorapply.model.MajorPlanCourseGroupModifyBean
-import org.openurp.edu.eams.teach.program.majorapply.service.MajorPlanCourseGroupModifyAuditService
+import org.openurp.edu.eams.teach.program.majorapply.model.MajorCourseGroupModifyBean
+import org.openurp.edu.eams.teach.program.majorapply.service.MajorCourseGroupModifyAuditService
 //remove if not needed
-import scala.collection.JavaConversions._
 
-class MajorPlanCourseGroupModifyAuditAction extends MajorPlanCourseGroupModifyApplyAction {
 
-  private var majorPlanCourseGroupModifyAuditService: MajorPlanCourseGroupModifyAuditService = _
+class MajorCourseGroupModifyAuditAction extends MajorCourseGroupModifyApplyAction {
+
+  private var MajorCourseGroupModifyAuditService: MajorCourseGroupModifyAuditService = _
 
   def approved(): String = {
     val applyId = getLong("applyId")
     if (null == applyId) {
       return forwardError("缺少参数")
     }
-    val apply = entityDao.get(classOf[MajorPlanCourseGroupModifyBean], applyId)
+    val apply = entityDao.get(classOf[MajorCourseGroupModifyBean], applyId)
     try {
-      majorPlanCourseGroupModifyAuditService.approved(apply, entityDao.get(classOf[User], getUserId))
+      MajorCourseGroupModifyAuditService.approved(apply, entityDao.get(classOf[User], getUserId))
     } catch {
       case e: MajorPlanAuditException => return forwardError(e.getMessage)
     }
@@ -39,8 +39,8 @@ class MajorPlanCourseGroupModifyAuditAction extends MajorPlanCourseGroupModifyAp
     if (null == applyId) {
       return forwardError("缺少参数")
     }
-    val apply = entityDao.get(classOf[MajorPlanCourseGroupModifyBean], applyId)
-    majorPlanCourseGroupModifyAuditService.rejected(apply, entityDao.get(classOf[User], getUserId))
+    val apply = entityDao.get(classOf[MajorCourseGroupModifyBean], applyId)
+    MajorCourseGroupModifyAuditService.rejected(apply, entityDao.get(classOf[User], getUserId))
     getFlash.put("params", get("params"))
     getFlash.put("backUrl", get("backUrl"))
     if (getBool("from_of_plan")) {
@@ -67,13 +67,13 @@ class MajorPlanCourseGroupModifyAuditAction extends MajorPlanCourseGroupModifyAp
       " and plan.program.major.project.id = :projectId" + 
       " and plan.program.department in (:departs)" + 
       " and plan.program.stdType in (:stdTypes)" + 
-      ")", getProject.getId, getDeparts, getStdTypes)
+      ")", getProject.id, getDeparts, getStdTypes)
     put("applications", entityDao.search(query))
     put("param", get("param"))
     forward()
   }
 
-  def setMajorPlanCourseGroupModifyAuditService(majorPlanCourseGroupModifyAuditService: MajorPlanCourseGroupModifyAuditService) {
-    this.majorPlanCourseGroupModifyAuditService = majorPlanCourseGroupModifyAuditService
+  def setMajorCourseGroupModifyAuditService(MajorCourseGroupModifyAuditService: MajorCourseGroupModifyAuditService) {
+    this.MajorCourseGroupModifyAuditService = MajorCourseGroupModifyAuditService
   }
 }

@@ -1,38 +1,36 @@
 package org.openurp.edu.eams.teach.schedule.web.action
 
-import java.util.Collection
-import java.util.Collections
 import java.util.Date
-import java.util.List
-import java.util.Map
-import java.util.Set
+
+
+
 import org.apache.commons.lang3.ArrayUtils
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
 import org.beangle.commons.dao.Operation
 import org.beangle.commons.dao.Operation.Builder
 import org.beangle.commons.dao.query.builder.Condition
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.beangle.commons.entity.Entity
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.beangle.data.model.Entity
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.lang.Strings
 import org.beangle.struts2.helper.Params
 import org.beangle.struts2.helper.QueryHelper
 import org.openurp.base.Department
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Teacher
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.teach.lesson.LessonGroup
 import org.openurp.edu.teach.lesson.LessonPlanRelation
 import org.openurp.edu.teach.lesson.LessonTag
-import org.openurp.edu.eams.teach.program.CourseGroup
-import org.openurp.edu.eams.teach.program.PlanCourse
+import org.openurp.edu.teach.plan.CourseGroup
+import org.openurp.edu.teach.plan.PlanCourse
 import org.openurp.edu.teach.plan.MajorPlan
 import org.openurp.edu.eams.teach.program.util.PlanUtils
 import org.openurp.edu.eams.teach.time.util.TermCalculator
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class LessonGroupAction extends SemesterSupportAction {
 
@@ -71,7 +69,7 @@ class LessonGroupAction extends SemesterSupportAction {
 
   protected def editSetting(entity: Entity[_]) {
     val semester = putSemester(null)
-    put("guaPai", Model.newInstance(classOf[LessonTag], LessonTag.PredefinedTags.GUAPAI.getId))
+    put("guaPai", Model.newInstance(classOf[LessonTag], LessonTag.PredefinedTags.GUAPAI.id))
     val departs = getDeparts
     val builder = OqlBuilder.from(classOf[Lesson], "lesson")
     builder.where("lesson.project=:project1", getProject)
@@ -191,7 +189,7 @@ class LessonGroupAction extends SemesterSupportAction {
 
   def remove(): String = {
     val entityId = getLongId(getShortName)
-    var entities: Collection[LessonGroup] = null
+    var entities: Iterable[LessonGroup] = null
     if (null == entityId) {
       val entityIds = getLongIds(getShortName)
       entities = if (ArrayUtils.isNotEmpty(entityIds)) entityDao.get(classOf[LessonGroup], entityIds) else Collections.emptyList()

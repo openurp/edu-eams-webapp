@@ -1,9 +1,9 @@
 package org.openurp.edu.eams.core.web.action
 
-import java.util.ArrayList
-import java.util.List
+
+
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.base.Student
@@ -11,7 +11,7 @@ import org.openurp.edu.eams.core.service.AdminclassService
 import org.openurp.edu.eams.core.service.StudentService
 import org.openurp.edu.eams.web.action.common.RestrictionSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class AdminclassStudentAction extends RestrictionSupportAction {
 

@@ -1,14 +1,12 @@
 package org.openurp.edu.eams.teach.schedule.web.action
 
-import java.util.ArrayList
-import java.util.Arrays
-import java.util.Collections
-import java.util.Comparator
+
+import java.util.Arraysimport java.util.Comparator
 import java.util.GregorianCalendar
-import java.util.HashSet
-import java.util.List
-import java.util.Map
-import java.util.Set
+
+
+
+
 import org.apache.commons.collections.CollectionUtils
 import org.apache.commons.collections.Transformer
 import org.apache.poi.ss.usermodel.DateUtil
@@ -16,7 +14,7 @@ import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
 import org.beangle.commons.dao.Operation
 import org.beangle.commons.dao.query.builder.Condition
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.lang.Numbers
 import org.beangle.commons.lang.Objects
@@ -24,27 +22,27 @@ import org.beangle.commons.lang.Strings
 import org.beangle.security.blueprint.User
 import org.openurp.base.Room
 import org.openurp.base.Department
-import org.openurp.edu.eams.base.Semester
-import org.openurp.edu.eams.base.TimeSetting
-import org.openurp.edu.eams.base.code.school.ClassroomType
+import org.openurp.base.Semester
+import org.openurp.base.TimeSetting
+import org.openurp.edu.eams.base.code.school.RoomType
 import org.openurp.edu.eams.classroom.Occupancy
-import org.openurp.edu.eams.classroom.TimeUnit
-import org.openurp.edu.eams.classroom.code.industry.RoomUsage
+import 
+import org.openurp.base.code.RoomUsage
 import org.openurp.edu.eams.classroom.model.OccupancyBean
-import org.openurp.edu.eams.classroom.service.ClassroomResourceService
+import org.openurp.edu.eams.classroom.service.RoomResourceService
 import org.openurp.edu.eams.classroom.util.RoomUseridGenerator
 import org.openurp.edu.eams.classroom.util.RoomUseridGenerator.Usage
 import org.openurp.edu.base.Project
 import org.openurp.edu.base.Teacher
-import org.openurp.edu.eams.core.service.ClassroomService
+import org.openurp.edu.eams.core.service.RoomService
 import org.openurp.edu.eams.core.service.TimeSettingService
-import org.openurp.edu.eams.teach.lesson.CourseActivity
+import org.openurp.edu.teach.schedule.CourseActivity
 import org.openurp.edu.eams.teach.lesson.CourseTime
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.teach.lesson.model.CourseActivityBean
 import org.openurp.edu.eams.teach.lesson.model.CourseScheduleBean.CourseStatusEnum
 import org.openurp.edu.eams.teach.lesson.util.CourseActivityDigestor
-import org.openurp.edu.eams.teach.lesson.util.TimeUnitUtil
+import org.openurp.edu.eams.teach.lesson.util.YearWeekTimeUtil
 import org.openurp.edu.eams.teach.schedule.log.ScheduleLogBuilder
 import org.openurp.edu.eams.teach.schedule.model.CourseArrangeAlteration
 import org.openurp.edu.eams.teach.schedule.service.CourseActivityService
@@ -52,13 +50,13 @@ import org.openurp.edu.eams.teach.schedule.service.ScheduleLogHelper
 import org.openurp.edu.eams.teach.schedule.service.ScheduleRoomService
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
-import scala.collection.JavaConversions._
 
-class ReplaceClassroomAction extends SemesterSupportAction {
 
-  protected var classroomService: ClassroomService = _
+class ReplaceRoomAction extends SemesterSupportAction {
 
-  protected var classroomResourceService: ClassroomResourceService = _
+  protected var classroomService: RoomService = _
+
+  protected var classroomResourceService: RoomResourceService = _
 
   protected var timeSettingService: TimeSettingService = _
 
@@ -101,8 +99,8 @@ class ReplaceClassroomAction extends SemesterSupportAction {
     val weekTimeMap = CollectUtils.newHashMap()
     for (courseActivity <- courseActivities) {
       val ct = courseActivity.getTime
-      val weekTimeStr = TimeUnitUtil.digest(ct.getWeekState, 2, 1, semester.getWeeks, null)
-      weekTimeMap.put(courseActivity.getId.toString, weekTimeStr)
+      val weekTimeStr = YearWeekTimeUtil.digest(ct.getWeekState, 2, 1, semester.getWeeks, null)
+      weekTimeMap.put(courseActivity.id.toString, weekTimeStr)
     }
     put("courseActivities", entityDao.search(query))
     put("weekTimeMap", weekTimeMap)
@@ -111,9 +109,9 @@ class ReplaceClassroomAction extends SemesterSupportAction {
 
   def freeRoomListBatch(): String = {
     val activityId = getLong("activityId")
-    val confilctClassroom = getBool("confilctClassroom")
-    put("configTypeList", baseCodeService.getCodes(classOf[ClassroomType]))
-    put("confilctClassroom", confilctClassroom)
+    val confilctRoom = getBool("confilctRoom")
+    put("configTypeList", baseCodeService.getCodes(classOf[RoomType]))
+    put("confilctRoom", confilctRoom)
     if (null == activityId) {
       put("classroomList", Collections.emptyList())
       return forward()
@@ -123,21 +121,21 @@ class ReplaceClassroomAction extends SemesterSupportAction {
       put("classroomList", Collections.emptyList())
       return forward()
     }
-    var room: Classroom = null
+    var room: Room = null
     if (getBool("default")) {
-      room = Model.newInstance(classOf[Classroom])
+      room = Model.newInstance(classOf[Room])
       room.setCapacity(activity.getLesson.getTeachClass.getLimitCount)
       room.setType(activity.getLesson.getCourseSchedule.getRoomType)
     } else {
-      room = populate(classOf[Classroom], "classroom")
+      room = populate(classOf[Room], "classroom")
     }
     val timeList = new ArrayList[CourseTime]()
     timeList.add(activity.getTime)
     val targetActivity = Model.newInstance(classOf[CourseActivity])
     targetActivity.getRooms.add(room)
     targetActivity.setLesson(activity.getLesson)
-    var builder: OqlBuilder[Classroom] = null
-    builder = if (confilctClassroom) scheduleRoomService.getOccupancyRoomsOf(getDeparts, timeList.toArray(Array.ofDim[CourseTime](timeList.size)), 
+    var builder: OqlBuilder[Room] = null
+    builder = if (confilctRoom) scheduleRoomService.getOccupancyRoomsOf(getDeparts, timeList.toArray(Array.ofDim[CourseTime](timeList.size)), 
       targetActivity)
       .orderBy("classroom.capacity,classroom.code")
       .limit(getPageLimit) else scheduleRoomService.getFreeRoomsOf(getDeparts, timeList.toArray(Array.ofDim[CourseTime](timeList.size)), 
@@ -149,7 +147,7 @@ class ReplaceClassroomAction extends SemesterSupportAction {
     forward()
   }
 
-  def batchReplaceClassroomSave(): String = {
+  def batchReplaceRoomSave(): String = {
     val activities = getModels(classOf[CourseActivity], getLongIds("courseActivity"))
     val successes = CollectUtils.newHashMap()
     val failures = CollectUtils.newHashMap()
@@ -157,7 +155,7 @@ class ReplaceClassroomAction extends SemesterSupportAction {
     for (courseActivity <- activities) {
       val lesson = courseActivity.getLesson
       val alterationBefore = digestor.digest(null, lesson)
-      val rooms = getModels(classOf[Classroom], Strings.splitToLong(get("courseActivity" + courseActivity.getId + ".classroom.id")))
+      val rooms = getModels(classOf[Room], Strings.splitToLong(get("courseActivity" + courseActivity.id + ".classroom.id")))
       var changeInfo = "变更前:"
       for (classroom <- courseActivity.getRooms) {
         changeInfo += classroom.getName + ";"
@@ -172,7 +170,7 @@ class ReplaceClassroomAction extends SemesterSupportAction {
       val toSaveOccupancies = CollectUtils.newHashSet()
       if (!rooms.isEmpty) {
         courseActivity.getRooms.addAll(rooms)
-        val timeUnits = TimeUnitUtil.convertToTimeUnits(lesson, courseActivity.getTime)
+        val timeUnits = YearWeekTimeUtil.convertToYearWeekTimes(lesson, courseActivity.getTime)
         for (classroom2 <- rooms) {
           changeInfo += classroom2.getName + ";"
           for (timeUnit <- timeUnits) {
@@ -198,7 +196,7 @@ class ReplaceClassroomAction extends SemesterSupportAction {
           CourseStatusEnum.ARRANGED == lesson.getCourseSchedule.getStatus) {
           entityDao.refresh(lesson)
           val alteration = new CourseArrangeAlteration()
-          alteration.setLessonId(lesson.getId)
+          alteration.setLessonId(lesson.id)
           alteration.setSemester(lesson.getSemester)
           alteration.setAlterationBefore(alterationBefore)
           val alterationAfter = digestor.digest(null, lesson)
@@ -221,11 +219,11 @@ class ReplaceClassroomAction extends SemesterSupportAction {
     forward("batchUpdateResult")
   }
 
-  def batchReplaceClassroom(): String = {
+  def batchReplaceRoom(): String = {
     val courseActivities = getModels(classOf[CourseActivity], getLongIds("courseActivity"))
     val weekTimeMap = CollectUtils.newHashMap()
     for (courseActivity <- courseActivities) {
-      weekTimeMap.put(courseActivity, TimeUnitUtil.digest(courseActivity.getTime.getWeekState, 2, 1, 
+      weekTimeMap.put(courseActivity, YearWeekTimeUtil.digest(courseActivity.getTime.getWeekState, 2, 1, 
         courseActivity.getLesson.getSemester.getWeeks, null))
     }
     put("weekTimeMap", weekTimeMap)
@@ -233,7 +231,7 @@ class ReplaceClassroomAction extends SemesterSupportAction {
     forward()
   }
 
-  def replaceClassroom(): String = {
+  def replaceRoom(): String = {
     val courseActivityId = getLongId("courseActivity")
     val courseActivity = entityDao.get(classOf[CourseActivity], courseActivityId)
     put("lesson", courseActivity.getLesson)
@@ -246,21 +244,21 @@ class ReplaceClassroomAction extends SemesterSupportAction {
     put("ca", courseActivity)
     val weekTimeMap = CollectUtils.newHashMap()
     val ct = courseActivity.getTime
-    val weekTimeStr = TimeUnitUtil.digest(ct.getWeekState, 2, 1, semester.getWeeks, null)
-    weekTimeMap.put(courseActivity.getId.toString, weekTimeStr)
+    val weekTimeStr = YearWeekTimeUtil.digest(ct.getWeekState, 2, 1, semester.getWeeks, null)
+    weekTimeMap.put(courseActivity.id.toString, weekTimeStr)
     put("weekTimeMap", weekTimeMap)
     put("weekStateArray", courseActivity.getTime.getWeekState.toCharArray())
     forward()
   }
 
-  def replaceClassroomSave(): String = {
+  def replaceRoomSave(): String = {
     val courseActivityId = getLongId("courseActivity")
     val courseActivity = entityDao.get(classOf[CourseActivity], courseActivityId)
     val lesson = courseActivity.getLesson
-    val lessonId = lesson.getId
+    val lessonId = lesson.id
     val activityList = CollectUtils.newArrayList()
     val roomIds = Strings.splitToInt(get("roomIds"))
-    val roomList = entityDao.get(classOf[Classroom], roomIds)
+    val roomList = entityDao.get(classOf[Room], roomIds)
     val weekStates = get("weekStates")
     val courseTimeOld = courseActivity.getTime
     val oldWeekState = courseTimeOld.getWeekState
@@ -309,7 +307,7 @@ class ReplaceClassroomAction extends SemesterSupportAction {
     val roomNameCollector = new Transformer() {
 
       def transform(input: AnyRef): AnyRef = {
-        return input.asInstanceOf[Classroom].getName
+        return input.asInstanceOf[Room].getName
       }
     }
     try {
@@ -317,18 +315,18 @@ class ReplaceClassroomAction extends SemesterSupportAction {
         lesson.getNo
       logHelper.info(beforeMsg)
       val toSaveOccupancies = CollectUtils.newHashSet()
-      val lessonOccupancyClassrooms = CollectUtils.newHashSet()
+      val lessonOccupancyRooms = CollectUtils.newHashSet()
       for (activity <- lesson.getCourseSchedule.getActivities; classroom <- activity.getRooms) {
-        lessonOccupancyClassrooms.add(classroom)
+        lessonOccupancyRooms.add(classroom)
       }
       var period = 0
       for (activity <- mergedActivityList) {
         val timeSetting = timeSettingService.getClosestTimeSetting(lesson.getProject, lesson.getSemester, 
           lesson.getCampus)
         activity.getTime.setStartTime(timeSetting.getDefaultUnits.get(activity.getTime.getStartUnit)
-          .getStartTime)
+          .start)
         activity.getTime.setEndTime(timeSetting.getDefaultUnits.get(activity.getTime.getEndUnit)
-          .getEndTime)
+          .end)
         activity.setLesson(lesson)
         val time = activity.getTime
         val coursePeriod = (time.getEndUnit - time.getStartUnit + 1) * lesson.getCourseSchedule.getWeeks
@@ -337,7 +335,7 @@ class ReplaceClassroomAction extends SemesterSupportAction {
           val errMsg = new StringBuilder()
           errMsg.append(Strings.join(CollectionUtils.collect(activity.getRooms, roomNameCollector), ","))
             .append(" 周")
-            .append(activity.getTime.getWeekday)
+            .append(activity.getTime.day)
             .append(" 第")
             .append(activity.getTime.getStartUnit)
             .append("小节-第")
@@ -347,10 +345,10 @@ class ReplaceClassroomAction extends SemesterSupportAction {
         }
         val rooms = activity.getRooms
         val courseTime = activity.getTime
-        val timeUnits = TimeUnitUtil.convertToTimeUnits(lesson, courseTime)
-        val freeClassrooms = entityDao.search(scheduleRoomService.getFreeRoomsOfConditions(timeUnits))
+        val timeUnits = YearWeekTimeUtil.convertToYearWeekTimes(lesson, courseTime)
+        val freeRooms = entityDao.search(scheduleRoomService.getFreeRoomsOfConditions(timeUnits))
         for (room <- rooms) {
-          if (!freeClassrooms.contains(room) && !lessonOccupancyClassrooms.contains(room)) {
+          if (!freeRooms.contains(room) && !lessonOccupancyRooms.contains(room)) {
             val errMsg = new StringBuilder()
             errMsg.append(room.getName + "被排考或者教室借用占用,请选择其他教室!")
             return forwardError(Array(getText("lesson.courseSchedule.roomIsOccupied"), errMsg.toString))
@@ -382,7 +380,7 @@ class ReplaceClassroomAction extends SemesterSupportAction {
     redirect("search", "info.action.success")
   }
 
-  def createNewCourseActivity(courseActivity: CourseActivity, roomList: List[Classroom], weekStates: String): CourseActivity = {
+  def createNewCourseActivity(courseActivity: CourseActivity, roomList: List[Room], weekStates: String): CourseActivity = {
     val activityNew = courseActivity.clone().asInstanceOf[CourseActivity]
     activityNew.getRooms.clear()
     activityNew.getRooms.addAll(roomList)
@@ -396,10 +394,10 @@ class ReplaceClassroomAction extends SemesterSupportAction {
     if (null == detectCollision) {
       detectCollision = true
     }
-    val room = populate(classOf[Classroom], "classroom")
+    val room = populate(classOf[Room], "classroom")
     val departments = getDeparts
     if (false == detectCollision) {
-      put("classroomList", scheduleRoomService.getClassrooms(room, departments, getPageLimit))
+      put("classroomList", scheduleRoomService.getRooms(room, departments, getPageLimit))
     } else {
       val taskWeekStart = getInt("taskWeekStart")
       val year = getInt("year")
@@ -409,12 +407,12 @@ class ReplaceClassroomAction extends SemesterSupportAction {
       var selectedWeekUnitSeq = ""
       val courseTime = courseActivity.getTime
       if (courseTime.getStartUnit == courseTime.getEndUnit) {
-        selectedWeekUnitSeq = courseTime.getWeekday + "," + courseTime.getStartUnit + 
+        selectedWeekUnitSeq = courseTime.day + "," + courseTime.getStartUnit + 
           ";"
       } else {
         var i = courseTime.getStartUnit
         while (i <= courseTime.getEndUnit) {
-          selectedWeekUnitSeq += courseTime.getWeekday + "," + i + ";"
+          selectedWeekUnitSeq += courseTime.day + "," + i + ";"
           i += 1
         }
       }
@@ -448,11 +446,11 @@ class ReplaceClassroomAction extends SemesterSupportAction {
       val timeSetting = timeSettingService.getClosestTimeSetting(project, semester, null)
       for (j <- 0 until timeList.size) {
         val unit = timeList.get(j)
-        unit.setStartTime(timeSetting.getDefaultUnits.get(unit.getStartUnit).getStartTime)
-        unit.setEndTime(timeSetting.getDefaultUnits.get(unit.getEndUnit).getEndTime)
+        unit.setStartTime(timeSetting.getDefaultUnits.get(unit.getStartUnit).start)
+        unit.setEndTime(timeSetting.getDefaultUnits.get(unit.getEndUnit).end)
       }
       val activity = Model.newInstance(classOf[CourseActivity])
-      activity.setRooms(new HashSet[Classroom]())
+      activity.setRooms(new HashSet[Room]())
       activity.getRooms.add(room)
       activity.setLesson(courseActivity.getLesson)
       val builder = scheduleRoomService.getFreeRoomsOf(getDeparts, timeList.toArray(Array.ofDim[CourseTime](timeList.size)), 
@@ -461,7 +459,7 @@ class ReplaceClassroomAction extends SemesterSupportAction {
         .limit(getPageLimit)
       put("classroomList", entityDao.search(builder))
     }
-    put("configTypeList", baseCodeService.getCodes(classOf[ClassroomType]))
+    put("configTypeList", baseCodeService.getCodes(classOf[RoomType]))
     put("detectCollision", detectCollision)
     forward()
   }
@@ -491,15 +489,15 @@ class ReplaceClassroomAction extends SemesterSupportAction {
     String.valueOf(oldWeekStateChar)
   }
 
-  def getClassroomService(): ClassroomService = classroomService
+  def getRoomService(): RoomService = classroomService
 
-  def setClassroomService(classroomService: ClassroomService) {
+  def setRoomService(classroomService: RoomService) {
     this.classroomService = classroomService
   }
 
-  def getClassroomResourceService(): ClassroomResourceService = classroomResourceService
+  def getRoomResourceService(): RoomResourceService = classroomResourceService
 
-  def setClassroomResourceService(classroomResourceService: ClassroomResourceService) {
+  def setRoomResourceService(classroomResourceService: RoomResourceService) {
     this.classroomResourceService = classroomResourceService
   }
 

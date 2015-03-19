@@ -1,6 +1,6 @@
 package org.openurp.edu.eams.teach.election.dao
 
-import java.util.Collection
+
 import org.beangle.commons.dao.EntityDao
 import org.openurp.edu.base.Student
 import org.openurp.edu.teach.code.CourseTakeType
@@ -8,7 +8,7 @@ import org.openurp.edu.eams.teach.election.service.context.ElectState
 import org.openurp.edu.teach.lesson.CourseTake
 import org.openurp.edu.teach.lesson.Lesson
 
-import scala.collection.JavaConversions._
+
 
 trait ElectionDao {
 
@@ -20,7 +20,7 @@ trait ElectionDao {
 
   def saveElection(courseTake: CourseTake, checkMaxLimit: Boolean): Int
 
-  def updatePitchOn(task: Lesson, stdIds: Collection[Long], isPitchOn: java.lang.Boolean): Unit
+  def updatePitchOn(task: Lesson, stdIds: Iterable[Long], isPitchOn: java.lang.Boolean): Unit
 
   def updateStdCount(sql: String, lessonId: java.lang.Long): Int
 

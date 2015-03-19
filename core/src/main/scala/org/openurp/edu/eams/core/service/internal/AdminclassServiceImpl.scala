@@ -1,12 +1,10 @@
 package org.openurp.edu.eams.core.service.internal
 
 import java.sql.Date
-import java.util.Collection
-import java.util.Collections
-import java.util.HashMap
-import java.util.Iterator
-import java.util.List
-import java.util.Set
+
+
+
+
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.lang.Throwables
 import org.openurp.edu.base.Adminclass
@@ -14,7 +12,7 @@ import org.openurp.edu.base.Project
 import org.openurp.edu.base.Student
 import org.openurp.edu.eams.core.service.AdminclassService
 
-import scala.collection.JavaConversions._
+
 
 class AdminclassServiceImpl extends BaseServiceImpl with AdminclassService {
 
@@ -136,7 +134,7 @@ class AdminclassServiceImpl extends BaseServiceImpl with AdminclassService {
     entityDao.saveOrUpdate(adminclasses)
   }
 
-  def updateStudentAdminclass(std: Student, adminclasses: Collection[_], project: Project) {
+  def updateStudentAdminclass(std: Student, adminclasses: Iterable[_], project: Project) {
     val orig = EntityUtils.extractIds(adminclasses)
     val dest = EntityUtils.extractIds(Collections.singleton(std.getAdminclass))
     val addClassList = CollectUtils.subtract(orig, dest)

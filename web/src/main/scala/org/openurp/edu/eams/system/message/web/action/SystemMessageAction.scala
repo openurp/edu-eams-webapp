@@ -1,15 +1,15 @@
 package org.openurp.edu.eams.system.message.web.action
 
 import java.util.Date
-import java.util.Iterator
-import java.util.List
-import java.util.Set
+
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
 import org.beangle.commons.collection.page.PageLimit
 import org.beangle.commons.dao.query.builder.Condition
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.beangle.commons.entity.Entity
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.beangle.data.model.Entity
 import org.beangle.commons.lang.Arrays
 import org.beangle.commons.lang.Strings
 import org.beangle.security.blueprint.User
@@ -25,14 +25,14 @@ import org.openurp.edu.eams.system.msg.service.SystemMessageService
 import org.openurp.edu.eams.system.security.EamsUserCategory
 import org.openurp.edu.eams.web.action.common.ProjectSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class SystemMessageAction extends ProjectSupportAction {
 
   private var userService: UserService = _
 
   override def edit(): String = {
-    if (!systemMessageConfigService.isOpened(getUserId, getProject.getId)) {
+    if (!systemMessageConfigService.isOpened(getUserId, getProject.id)) {
       return forwardError("当前不开放")
     }
     val entityId = getLongId("messageContent")
@@ -61,7 +61,7 @@ class SystemMessageAction extends ProjectSupportAction {
   }
 
   def saveDraft(): String = {
-    if (!systemMessageConfigService.isOpened(getUserId, getProject.getId)) {
+    if (!systemMessageConfigService.isOpened(getUserId, getProject.id)) {
       return forwardError("当前不开放")
     }
     val usernames = getAll("user.name", classOf[String])
@@ -106,7 +106,7 @@ class SystemMessageAction extends ProjectSupportAction {
   }
 
   override def save(): String = {
-    if (!systemMessageConfigService.isOpened(getUserId, getProject.getId)) {
+    if (!systemMessageConfigService.isOpened(getUserId, getProject.id)) {
       return forwardError("当前不开放")
     }
     val usernames = getAll("user.name", classOf[String])
@@ -179,7 +179,7 @@ class SystemMessageAction extends ProjectSupportAction {
   }
 
   def searchUsers(): String = {
-    if (!systemMessageConfigService.isOpened(getUserId, getProject.getId)) {
+    if (!systemMessageConfigService.isOpened(getUserId, getProject.id)) {
       return forwardError("当前不开放")
     }
     val builder = OqlBuilder.from(classOf[User], "user")
@@ -226,7 +226,7 @@ class SystemMessageAction extends ProjectSupportAction {
   }
 
   def addRecipientors(): String = {
-    if (!systemMessageConfigService.isOpened(getUserId, getProject.getId)) {
+    if (!systemMessageConfigService.isOpened(getUserId, getProject.id)) {
       return forwardError("当前不开放")
     }
     var recipientors = CollectUtils.newArrayList()
@@ -265,7 +265,7 @@ class SystemMessageAction extends ProjectSupportAction {
     val username = getUsername
     put("newlyCount", systemMessageService.countNewly(username))
     put("draftCount", systemMessageService.countDraft(username))
-    put("isOpened", systemMessageConfigService.isOpened(getUserId, getProject.getId))
+    put("isOpened", systemMessageConfigService.isOpened(getUserId, getProject.id))
     indexSetting()
     forward()
   }
@@ -327,7 +327,7 @@ class SystemMessageAction extends ProjectSupportAction {
   }
 
   def reply(): String = {
-    if (!systemMessageConfigService.isOpened(getUserId, getProject.getId)) {
+    if (!systemMessageConfigService.isOpened(getUserId, getProject.id)) {
       return forwardError("当前不开放")
     }
     val user = entityDao.get(classOf[User], getUserId)
@@ -356,7 +356,7 @@ class SystemMessageAction extends ProjectSupportAction {
   }
 
   def sendReply(): String = {
-    if (!systemMessageConfigService.isOpened(getUserId, getProject.getId)) {
+    if (!systemMessageConfigService.isOpened(getUserId, getProject.id)) {
       return forwardError("当前不开放")
     }
     val user = entityDao.get(classOf[User], getUserId)
@@ -412,7 +412,7 @@ class SystemMessageAction extends ProjectSupportAction {
       return forwardError("没有找到消息或者没有权限")
     }
     put("systemMessage", message)
-    put("isOpened", systemMessageConfigService.isOpened(getUserId, getProject.getId))
+    put("isOpened", systemMessageConfigService.isOpened(getUserId, getProject.id))
     putMessageType(getMessageType)
     forward()
   }

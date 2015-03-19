@@ -2,8 +2,8 @@ package org.openurp.edu.eams.system.web.action
 
 import java.io.Serializable
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.beangle.commons.entity.Entity
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.beangle.data.model.Entity
 import org.beangle.commons.entity.util.ValidEntityKeyPredicate
 import org.openurp.edu.base.Student
 import org.openurp.edu.eams.system.notice.model.ManagerNotice
@@ -13,7 +13,7 @@ import org.openurp.edu.eams.system.notice.model.TeacherNotice
 import org.openurp.edu.eams.system.security.EamsUserCategory
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class NoticeSearchAction extends SemesterSupportAction {
 

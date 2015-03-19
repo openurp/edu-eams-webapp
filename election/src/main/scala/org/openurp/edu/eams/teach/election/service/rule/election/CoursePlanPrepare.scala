@@ -1,8 +1,8 @@
 package org.openurp.edu.eams.teach.election.service.rule.election
 
-import java.util.ArrayList
-import java.util.List
-import org.openurp.edu.teach.Course
+
+
+import org.openurp.edu.base.Course
 import org.openurp.edu.eams.teach.election.service.context.ElectCourseGroup
 import org.openurp.edu.eams.teach.election.service.context.ElectCoursePlan
 import org.openurp.edu.eams.teach.election.service.context.ElectCourseSubstitution
@@ -10,13 +10,13 @@ import org.openurp.edu.eams.teach.election.service.context.ElectState
 import org.openurp.edu.eams.teach.election.service.context.PrepareContext
 import org.openurp.edu.eams.teach.election.service.context.PrepareContext.PreparedDataName
 import org.openurp.edu.eams.teach.election.service.rule.ElectRulePrepare
-import org.openurp.edu.eams.teach.program.CourseGroup
+import org.openurp.edu.teach.plan.CourseGroup
 import org.openurp.edu.teach.plan.CoursePlan
 import org.openurp.edu.teach.plan.CourseSubstitution
-import org.openurp.edu.eams.teach.program.PlanCourse
+import org.openurp.edu.teach.plan.PlanCourse
 import org.openurp.edu.eams.teach.program.service.CourseSubstitutionService
 
-import scala.collection.JavaConversions._
+
 
 class CoursePlanPrepare extends ElectRulePrepare {
 
@@ -45,21 +45,21 @@ class CoursePlanPrepare extends ElectRulePrepare {
       var courseTypeId: java.lang.Integer = null
       val electCourseSubstitution = new ElectCourseSubstitution()
       for (course <- substitution.getOrigins) {
-        electCourseSubstitution.getOrigins.add(course.getId)
+        electCourseSubstitution.getOrigins.add(course.id)
         if (null != courseTypeId) {
           //continue
         } else {
-          courseTypeId = electPlan.courseIds.get(course.getId)
+          courseTypeId = electPlan.courseIds.get(course.id)
         }
       }
       if (null != courseTypeId) {
         for (course <- substitution.getSubstitutes) {
-          electCourseSubstitution.getSubstitutes.add(course.getId)
-          electPlan.courseIds.put(course.getId, courseTypeId)
+          electCourseSubstitution.getSubstitutes.add(course.id)
+          electPlan.courseIds.put(course.id, courseTypeId)
         }
       } else {
         for (course <- substitution.getSubstitutes) {
-          electCourseSubstitution.getSubstitutes.add(course.getId)
+          electCourseSubstitution.getSubstitutes.add(course.id)
         }
       }
       state.addCourseSubsititution(electCourseSubstitution)
@@ -79,7 +79,7 @@ class CoursePlanPrepare extends ElectRulePrepare {
       addGroup(childGroup, electPlan, electGroup, state)
     }
     for (planCourse <- group.getPlanCourses) {
-      electPlan.courseIds.put(planCourse.getCourse.getId, group.getCourseType.getId)
+      electPlan.courseIds.put(planCourse.getCourse.id, group.getCourseType.id)
       electGroup.addCourse(planCourse.getCourse)
     }
   }

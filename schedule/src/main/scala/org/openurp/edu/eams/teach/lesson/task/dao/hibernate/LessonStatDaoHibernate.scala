@@ -1,13 +1,13 @@
 package org.openurp.edu.eams.teach.lesson.task.dao.hibernate
 
-import java.util.List
+
 import org.beangle.commons.entity.util.EntityUtils
-import org.beangle.orm.hibernate.HibernateEntityDao
+import org.beangle.data.jpa.hibernate.HibernateEntityDao
 import org.hibernate.SQLQuery
 import org.hibernate.`type`.StandardBasicTypes
 import org.openurp.edu.eams.teach.lesson.task.dao.LessonStatDao
 
-import scala.collection.JavaConversions._
+
 
 class LessonStatDaoHibernate extends HibernateEntityDao with LessonStatDao {
 

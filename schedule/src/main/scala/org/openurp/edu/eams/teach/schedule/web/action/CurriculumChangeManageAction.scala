@@ -1,12 +1,12 @@
 package org.openurp.edu.eams.teach.schedule.web.action
 
 import java.text.SimpleDateFormat
-import java.util.Collection
+
 import java.util.Date
-import java.util.List
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.transfer.exporter.PropertyExtractor
 import org.beangle.security.blueprint.User
@@ -14,7 +14,7 @@ import org.openurp.edu.eams.teach.schedule.model.CurriculumChangeApplication
 import org.openurp.edu.eams.teach.schedule.service.propertyExtractor.CurriculumChangePropertyExtractor
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class CurriculumChangeManageAction extends SemesterSupportAction {
 
@@ -44,7 +44,7 @@ class CurriculumChangeManageAction extends SemesterSupportAction {
     entityQuery
   }
 
-  protected def getExportDatas(): Collection[_] = entityDao.search(buildChangeQuery())
+  protected def getExportDatas(): Iterable[_] = entityDao.search(buildChangeQuery())
 
   def updateState(): String = {
     val passed = getBool("status")

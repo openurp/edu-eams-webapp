@@ -23,6 +23,16 @@
 			<version>${openurp.edu.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.openurp.edu.teach</groupId>
+			<artifactId>openurp-edu-teach-domain</artifactId>
+			<version>${openurp.edu.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openurp.edu.teach</groupId>
+			<artifactId>openurp-edu-teach-core</artifactId>
+			<version>${openurp.edu.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.openurp.base</groupId>
 			<artifactId>openurp-base-model</artifactId>
 			<version>${openurp.base.version}</version>

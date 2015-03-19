@@ -3,72 +3,72 @@ package org.openurp.edu.eams.teach.election.service.context
 import java.io.Serializable
 import org.openurp.edu.base.Student
 import org.openurp.edu.eams.teach.program.StudentProgram
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConversions._
+
+
 
 @SerialVersionUID(-3112324608473955370L)
 class SimpleStd(student: Student) extends Serializable() {
 
-  @BeanProperty
-  val id = student.getId
+  
+  val id = student.id
 
-  @BeanProperty
+  
   val code = student.getCode
 
-  @BeanProperty
+  
   val name = student.getName
 
-  @BeanProperty
+  
   val grade = student.grade
 
-  @BeanProperty
-  val genderId = student.getGender.getId
+  
+  val genderId = student.getGender.id
 
-  @BeanProperty
-  val projectId = student.getProject.getId
+  
+  val projectId = student.getProject.id
 
-  @BeanProperty
-  val educationId = student.education.getId
+  
+  val educationId = student.education.id
 
-  @BeanProperty
-  val stdTypeId = student.getType.getId
+  
+  val stdTypeId = student.getType.id
 
-  @BeanProperty
-  val departId = student.department.getId
+  
+  val departId = student.department.id
 
-  @BeanProperty
-  var majorId: java.lang.Integer = if ((student.major == null)) null else student.major.getId
+  
+  var majorId: java.lang.Integer = if ((student.major == null)) null else student.major.id
 
-  @BeanProperty
-  val directionId = if ((student.direction == null)) null else student.direction.getId
+  
+  val directionId = if ((student.direction == null)) null else student.direction.id
 
-  @BeanProperty
+  
   val programId = null
 
-  @BeanProperty
-  val adminclassId = if ((student.getAdminclass == null)) 0 else student.getAdminclass.getId
+  
+  val adminclassId = if ((student.getAdminclass == null)) 0 else student.getAdminclass.id
 
-  @BeanProperty
-  val campusId = if ((student.getCampus == null)) null else student.getCampus.getId
+  
+  val campusId = if ((student.getCampus == null)) null else student.getCampus.id
 
   def getAspectId(): java.lang.Integer = directionId
 
   def this(student: Student, stdProgram: StudentProgram) {
     super()
-    id = student.getId
+    id = student.id
     code = student.getCode
     name = student.getName
     grade = student.grade
-    genderId = student.getGender.getId
-    stdTypeId = student.getType.getId
-    departId = student.department.getId
-    majorId = if ((student.major == null)) null else student.major.getId
-    directionId = if ((student.direction == null)) null else student.direction.getId
-    campusId = if ((student.getCampus == null)) null else student.getCampus.getId
-    adminclassId = if ((student.getAdminclass == null)) 0 else student.getAdminclass.getId
-    educationId = student.education.getId
-    projectId = student.getProject.getId
-    programId = if (stdProgram == null) null else stdProgram.getProgram.getId
+    genderId = student.getGender.id
+    stdTypeId = student.getType.id
+    departId = student.department.id
+    majorId = if ((student.major == null)) null else student.major.id
+    directionId = if ((student.direction == null)) null else student.direction.id
+    campusId = if ((student.getCampus == null)) null else student.getCampus.id
+    adminclassId = if ((student.getAdminclass == null)) 0 else student.getAdminclass.id
+    educationId = student.education.id
+    projectId = student.getProject.id
+    programId = if (stdProgram == null) null else stdProgram.getProgram.id
   }
 }

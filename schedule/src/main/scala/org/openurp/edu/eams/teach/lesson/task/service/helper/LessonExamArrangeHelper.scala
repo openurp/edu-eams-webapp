@@ -2,24 +2,24 @@ package org.openurp.edu.eams.teach.lesson.task.service.helper
 
 import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.List
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.impl.BaseServiceImpl
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model
-import org.openurp.edu.eams.base.Semester
-import org.openurp.edu.eams.teach.code.industry.ExamStatus
+import org.openurp.base.Semester
+import org.openurp.edu.teach.code.ExamStatus
 import org.openurp.edu.eams.teach.code.industry.ExamType
 import org.openurp.edu.eams.teach.exam.ExamTurn
-import org.openurp.edu.eams.teach.exam.service.ExamTimeUnitUtil
+import org.openurp.edu.eams.teach.exam.service.ExamYearWeekTimeUtil
 import org.openurp.edu.teach.lesson.CourseTake
-import org.openurp.edu.eams.teach.lesson.ExamActivity
-import org.openurp.edu.eams.teach.lesson.ExamTake
+import org.openurp.edu.teach.exam.ExamActivity
+import org.openurp.edu.teach.exam.ExamTake
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.teach.lesson.model.ExamActivityBean
 import org.openurp.edu.eams.teach.lesson.model.ExamTakeBean
 
-import scala.collection.JavaConversions._
+
 
 class LessonExamArrangeHelper extends BaseServiceImpl {
 
@@ -29,11 +29,11 @@ class LessonExamArrangeHelper extends BaseServiceImpl {
       weekDay: Int, 
       turnId: java.lang.Long) {
     val examTurn = entityDao.get(classOf[ExamTurn], turnId)
-    val semester = entityDao.get(classOf[Semester], lesson.getSemester.getId)
-    val beginTimes = ExamTimeUnitUtil.convertTime(examTurn.getBeginTime)
-    val endTimes = ExamTimeUnitUtil.convertTime(examTurn.getEndTime)
-    val beginAt = ExamTimeUnitUtil.getDate(semester, weeks, weekDay, beginTimes)
-    val endAt = ExamTimeUnitUtil.getDate(semester, weeks, weekDay, endTimes)
+    val semester = entityDao.get(classOf[Semester], lesson.getSemester.id)
+    val beginTimes = ExamYearWeekTimeUtil.convertTime(examTurn.getBeginTime)
+    val endTimes = ExamYearWeekTimeUtil.convertTime(examTurn.end)
+    val beginAt = ExamYearWeekTimeUtil.getDate(semester, weeks, weekDay, beginTimes)
+    val endAt = ExamYearWeekTimeUtil.getDate(semester, weeks, weekDay, endTimes)
     val examType = Model.newInstance(classOf[ExamType], examTypeId)
     var activity = lesson.getExamSchedule.getActivity(examType)
     if (activity != null && activity.getState.isTimePublished) {

@@ -3,7 +3,7 @@ package org.openurp.edu.eams.teach.lesson.task.service
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.teach.lesson.task.splitter.AbstractTeachClassSplitter
 
-import scala.collection.JavaConversions._
+
 
 trait LessonMergeSplitService {
 

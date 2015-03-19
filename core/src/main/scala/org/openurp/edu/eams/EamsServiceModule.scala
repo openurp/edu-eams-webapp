@@ -8,10 +8,10 @@ import org.openurp.edu.eams.bootstrap.checker.DefaultRoleChecker
 import org.openurp.edu.eams.bootstrap.checker.ProjectChecker
 import org.openurp.edu.eams.bootstrap.checker.SchoolChecker
 import org.openurp.edu.eams.bootstrap.service.internal.BootstrapServiceImpl
-import org.openurp.edu.eams.classroom.service.internal.ClassroomResourceServiceImpl
+import org.openurp.edu.eams.classroom.service.internal.RoomResourceServiceImpl
 import org.openurp.edu.eams.core.service.internal.AdminclassServiceImpl
 import org.openurp.edu.eams.core.service.internal.BaseInfoServiceImpl
-import org.openurp.edu.eams.core.service.internal.ClassroomServiceImpl
+import org.openurp.edu.eams.core.service.internal.RoomServiceImpl
 import org.openurp.edu.eams.core.service.internal.DepartmentServiceImpl
 import org.openurp.edu.eams.core.service.internal.SemesterServiceImpl
 import org.openurp.edu.eams.core.service.internal.StudentServiceImpl
@@ -24,7 +24,7 @@ import org.openurp.edu.eams.system.msg.service.internal.SystemMessageServiceImpl
 import org.openurp.edu.eams.system.report.service.internal.ReportTemplateServiceImpl
 import org.openurp.edu.eams.system.security.service.inernal.EamsUserServiceImpl
 
-import scala.collection.JavaConversions._
+
 
 class EamsServiceModule extends AbstractBindModule {
 
@@ -36,9 +36,9 @@ class EamsServiceModule extends AbstractBindModule {
     bind("departmentService", classOf[DepartmentServiceImpl])
     bind("systemMessageConfigService", classOf[SystemMessageConfigServiceImpl])
     bind("systemMessageService", classOf[SystemMessageServiceImpl])
-    bind("classroomService", classOf[ClassroomServiceImpl])
+    bind("classroomService", classOf[RoomServiceImpl])
     bind("adminclassService", classOf[AdminclassServiceImpl])
-    bind("classroomResourceService", classOf[ClassroomResourceServiceImpl])
+    bind("classroomResourceService", classOf[RoomResourceServiceImpl])
     bind(classOf[ReportTemplateServiceImpl])
     bind(classOf[TuitionServiceImpl])
     bind("mailService", classOf[MailServiceImpl])

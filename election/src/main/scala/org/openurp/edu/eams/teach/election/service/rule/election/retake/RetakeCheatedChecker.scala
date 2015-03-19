@@ -1,15 +1,15 @@
 package org.openurp.edu.eams.teach.election.service.rule.election.retake
 
-import java.util.Map
-import java.util.Set
+
+
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.lang.Strings
 import org.beangle.ems.rule.model.RuleConfigParam
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.eams.core.service.SemesterService
-import org.openurp.edu.teach.Course
+import org.openurp.edu.base.Course
 import org.openurp.edu.eams.teach.election.model.Enum.ElectRuleType
 import org.openurp.edu.eams.teach.election.service.context.ElectCourseSubstitution
 import org.openurp.edu.eams.teach.election.service.context.ElectMessage
@@ -23,7 +23,7 @@ import org.openurp.edu.teach.grade.CourseGrade
 import org.openurp.edu.teach.lesson.Lesson
 import RetakeCheatedChecker._
 
-import scala.collection.JavaConversions._
+
 
 object RetakeCheatedChecker {
 
@@ -75,16 +75,16 @@ class RetakeCheatedChecker extends AbstractElectableLessonFilter with ElectRuleP
         }
         val cheatedCourseSet = CollectUtils.newHashSet(entityDao.search(builder))
         for (course <- cheatedCourseSet) {
-          for (courseSubstitution <- context.getState.getCourseSubstitutions if courseSubstitution.getOrigins.contains(course.getId)) {
+          for (courseSubstitution <- context.getState.getCourseSubstitutions if courseSubstitution.getOrigins.contains(course.id)) {
             cheatedCourseSubstitutionIds.addAll(courseSubstitution.getSubstitutes)
           }
-          val _course = Model.newInstance(classOf[Course], course.getId)
-          _course.setId(course.getId)
+          val _course = Model.newInstance(classOf[Course], course.id)
+          _course.setId(course.id)
           _course.setCode(course.getCode)
           _course.setName(course.getName)
           _course.setEngName(course.getEngName)
           _course.setCredits(course.getCredits)
-          cheatedCourses.put(course.getId, _course)
+          cheatedCourses.put(course.id, _course)
         }
       }
       context.getState.getParams.put(STATE_PARAM_CHECTED_COURSES, cheatedCourses)
@@ -96,8 +96,8 @@ class RetakeCheatedChecker extends AbstractElectableLessonFilter with ElectRuleP
   def isElectable(lesson: Lesson, state: ElectState): Boolean = {
     val cheatedCourses = state.getParams.get(STATE_PARAM_CHECTED_COURSES).asInstanceOf[Map[Long, Course]]
     val cheatedCourseSubstitutionIds = state.getParams.get(STATE_PARAM_CHECTED_SUB_COURSES).asInstanceOf[Set[Long]]
-    !cheatedCourses.containsKey(lesson.getCourse.getId) && 
-      !cheatedCourseSubstitutionIds.contains(lesson.getCourse.getId)
+    !cheatedCourses.containsKey(lesson.getCourse.id) && 
+      !cheatedCourseSubstitutionIds.contains(lesson.getCourse.id)
   }
 
   protected override def onExecuteRuleReturn(result: Boolean, context: ElectionCourseContext): Boolean = {

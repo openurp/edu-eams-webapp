@@ -2,15 +2,15 @@ package org.openurp.edu.eams.teach.grade.course.service.impl
 
 import org.openurp.edu.eams.teach.lesson.GradeTypeConstants.GA_ID
 import org.openurp.edu.eams.teach.lesson.GradeTypeConstants.MAKEUP_ID
-import java.util.List
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.entity.metadata.Model
 import org.openurp.edu.eams.teach.grade.service.GradeRateService
 import org.openurp.edu.eams.teach.grade.service.impl.GradeFilter
 import org.openurp.edu.teach.grade.CourseGrade
-import org.openurp.edu.eams.teach.lesson.ExamGrade
+import org.openurp.edu.teach.grade.ExamGrade
 
-import scala.collection.JavaConversions._
+
 
 class MakeupGradeFilter extends GradeFilter {
 
@@ -24,8 +24,8 @@ class MakeupGradeFilter extends GradeFilter {
         if (null == examGrade.gradeType) {
           //continue
         }
-        if (examGrade.gradeType.getId.longValue() == GA_ID.longValue() || 
-          examGrade.gradeType.getId.longValue() == MAKEUP_ID.longValue()) {
+        if (examGrade.gradeType.id.longValue() == GA_ID.longValue() || 
+          examGrade.gradeType.id.longValue() == MAKEUP_ID.longValue()) {
           val newGrade = Model.newInstance(classOf[CourseGrade])
           newGrade.setStd(courseGrade.getStd)
           newGrade.setSemester(courseGrade.getSemester)

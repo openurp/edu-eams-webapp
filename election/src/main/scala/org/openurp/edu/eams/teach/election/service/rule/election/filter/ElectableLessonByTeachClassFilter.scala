@@ -9,14 +9,14 @@ import org.openurp.edu.eams.teach.election.service.helper.CourseLimitGroupHelper
 import org.openurp.edu.eams.teach.election.service.rule.AbstractElectRuleExecutor
 import org.openurp.edu.teach.lesson.Lesson
 
-import scala.collection.JavaConversions._
+
 
 class ElectableLessonByTeachClassFilter extends AbstractElectableLessonFilter() {
 
   order = AbstractElectRuleExecutor.Priority.FIFTH.ordinal()
 
   def isElectable(lesson: Lesson, state: ElectState): Boolean = {
-    if (retakeService.isRetakeCourse(state, lesson.getCourse.getId) && 
+    if (retakeService.isRetakeCourse(state, lesson.getCourse.id) && 
       !retakeService.isCheckTeachClass(state.getProfile(entityDao).getElectConfigs)) {
       return true
     }

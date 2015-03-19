@@ -1,24 +1,22 @@
 package org.openurp.edu.eams.teach.election.web.action.constraint
 
-import java.util.Collection
-import java.util.Collections
 import java.util.Date
-import java.util.List
-import java.util.Map
-import java.util.Set
+
+
+
 import org.apache.commons.lang3.ArrayUtils
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
 import org.beangle.commons.dao.Operation
 import org.beangle.commons.dao.query.builder.Condition
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.beangle.commons.entity.Entity
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.beangle.data.model.Entity
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.lang.Arrays
 import org.beangle.commons.lang.Strings
 import org.beangle.struts2.helper.QueryHelper
 import org.openurp.base.Department
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Project
 import org.openurp.edu.base.Student
 import org.openurp.code.edu.Education
@@ -32,7 +30,7 @@ import org.openurp.edu.eams.teach.grade.service.impl.MultiStdGpa
 import org.openurp.edu.teach.lesson.CourseTake
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class StdCreditConstraintAction extends SemesterSupportAction {
 
@@ -170,7 +168,7 @@ class StdCreditConstraintAction extends SemesterSupportAction {
     put("electedCredits", getStdsElectedCredits(stds))
   }
 
-  private def getStdsElectedCredits(stds: Collection[Student]): Map[Student, Float] = {
+  private def getStdsElectedCredits(stds: Iterable[Student]): Map[Student, Float] = {
     val electedCredits = CollectUtils.newHashMap()
     if (!stds.isEmpty) {
       val semester = putSemester(null)
@@ -424,7 +422,7 @@ class StdCreditConstraintAction extends SemesterSupportAction {
     redirect("search", "info.save.failure")
   }
 
-  protected def removeAndForward(entities: Collection[_]): String = {
+  protected def removeAndForward(entities: Iterable[_]): String = {
     try {
       val loggers = CollectUtils.newArrayList()
       val createdAt = new Date()

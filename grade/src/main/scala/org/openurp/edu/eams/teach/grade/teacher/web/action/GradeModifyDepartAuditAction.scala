@@ -1,14 +1,14 @@
 package org.openurp.edu.eams.teach.grade.teacher.web.action
 
 import java.util.Date
-import java.util.List
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.security.blueprint.User
 import org.openurp.edu.eams.teach.grade.course.GradeModifyApply
 import org.openurp.edu.eams.teach.grade.course.model.GradeModifyApplyBean.GradeModifyStatus
 import org.openurp.edu.teach.grade.CourseGrade
 
-import scala.collection.JavaConversions._
+
 
 class GradeModifyDepartAuditAction extends GradeModifyAuditSearchAction {
 

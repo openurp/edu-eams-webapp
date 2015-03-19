@@ -2,7 +2,7 @@ package org.openurp.edu.eams.base.web.dwr
 
 import org.beangle.commons.dao.impl.BaseServiceImpl
 
-import scala.collection.JavaConversions._
+
 
 class BaseinfoUtilImpl extends BaseServiceImpl {
 

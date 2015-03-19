@@ -3,9 +3,9 @@ package org.openurp.edu.eams.teach.program.common.service.helper
 import org.beangle.commons.lang.functor.Transformer
 import com.ekingstar.eams.teach.code.school.CourseType
 import CourseTypeWrapper._
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
+
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 object CourseTypeWrapper {
 
@@ -36,7 +36,7 @@ object CourseTypeWrapper {
 
 class CourseTypeWrapper(`object`: CourseType) {
 
-  @BeanProperty
+  
   var courseType: CourseType = `object`
 
   override def hashCode(): Int = {
@@ -54,7 +54,7 @@ class CourseTypeWrapper(`object`: CourseType) {
     val other = obj.asInstanceOf[CourseTypeWrapper]
     if (courseType == null) {
       if (other.courseType != null) return false
-    } else if (courseType.getId != other.courseType.getId) return false
+    } else if (courseType.id != other.courseType.id) return false
     true
   }
 

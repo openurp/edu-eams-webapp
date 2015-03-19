@@ -1,9 +1,9 @@
 package org.openurp.edu.eams.teach.lesson.service.limit
 
-import java.util.List
+
 import org.beangle.commons.lang.tuple.Pair
 
-import scala.collection.JavaConversions._
+
 
 trait CourseLimitMetaEnumProvider {
 

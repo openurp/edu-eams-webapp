@@ -1,24 +1,24 @@
 package org.openurp.edu.eams.teach.schedule.web.action
 
 import java.util.Date
-import java.util.List
-import java.util.Map
+
+
 import org.apache.commons.collections.CollectionUtils
 import org.apache.commons.lang3.ArrayUtils
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
 import org.beangle.commons.dao.query.builder.Condition
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.beangle.security.blueprint.User
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.teach.schedule.model.CourseArrangeAlteration
 import org.openurp.edu.eams.teach.schedule.model.CourseMailSetting
 import org.openurp.edu.eams.teach.schedule.service.CourseTableMailService
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class CourseArrangeAlterationAction extends SemesterSupportAction {
 
@@ -96,7 +96,7 @@ class CourseArrangeAlterationAction extends SemesterSupportAction {
     builder.orderBy("courseMailSetting.updatedAt desc")
     val myCourseMailSettings = entityDao.search(mailBuilder)
     if (!myCourseMailSettings.isEmpty) {
-      put("courseMailSettingId", myCourseMailSettings.get(0).getId)
+      put("courseMailSettingId", myCourseMailSettings.get(0).id)
     }
     put("alterationMap", alterationMap)
     put("alterations", alterations)

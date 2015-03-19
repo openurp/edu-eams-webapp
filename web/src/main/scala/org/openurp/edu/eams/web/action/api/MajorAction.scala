@@ -1,12 +1,12 @@
 package org.openurp.edu.eams.web.action.api
 
 import java.io.IOException
-import java.util.ArrayList
-import java.util.List
-import java.util.Map
+
+
+
 import java.util.TreeMap
 import javax.servlet.http.HttpServletResponse
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Arrays
 import org.beangle.commons.lang.Strings
 import org.openurp.edu.base.Major
@@ -16,7 +16,7 @@ import org.openurp.edu.eams.web.action.api.internal.LessonGsonBuilderWorker
 import org.openurp.edu.eams.web.action.common.ProjectSupportAction
 import com.google.gson.Gson
 
-import scala.collection.JavaConversions._
+
 
 class MajorAction extends ProjectSupportAction {
 
@@ -33,7 +33,7 @@ class MajorAction extends ProjectSupportAction {
     var majors = new ArrayList[Major]()
     if (Strings.isBlank(warnings)) {
       val query = OqlBuilder.from(classOf[Major], "major")
-      query.where("major.project.id = :projectId", getProject.getId)
+      query.where("major.project.id = :projectId", getProject.id)
         .where("exists(from major.educations e where e.id in (:educationIds))", educationIds)
         .where("exists(from major.journals md where md.depart.id in (:departIds))", departmentIds)
         .orderBy("major.code, major.name")
@@ -51,7 +51,7 @@ class MajorAction extends ProjectSupportAction {
           }
           var entities = groups.get(groupName).asInstanceOf[List[Map[String, Any]]]
           var entity = new TreeMap[String, Any]()
-          entity.put("id", major.getId)
+          entity.put("id", major.id)
           entity.put("name", major.getName)
           entity.put("code", major.getCode)
           if (!entities.contains(entity)) {

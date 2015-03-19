@@ -1,12 +1,12 @@
 package org.openurp.edu.eams.teach.election.web.action.courseTake
 
-import java.util.List
+
 import org.apache.commons.lang3.ArrayUtils
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.query.builder.Condition
 import org.beangle.struts2.helper.Params
 import org.openurp.edu.eams.base.CourseUnit
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.eams.base.util.WeekDays
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.base.Teacher
@@ -17,7 +17,7 @@ import org.openurp.edu.eams.teach.lesson.service.CourseTableStyle
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 import org.openurp.edu.eams.web.helper.AdminclassSearchHelper
 
-import scala.collection.JavaConversions._
+
 
 class CourseTakeForTeacherAction extends SemesterSupportAction {
 

@@ -6,7 +6,7 @@ import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 import org.openurp.edu.eams.web.util.DownloadHelper
 
-import scala.collection.JavaConversions._
+
 
 class CalendarDownloadAction extends SemesterSupportAction {
 
@@ -25,7 +25,7 @@ class CalendarDownloadAction extends SemesterSupportAction {
       put("path", "")
       return "errorpath"
     }
-    val file = new File(Strings.concat(path, File.separator, lesson.getSemester.getId.toString, File.separator, 
+    val file = new File(Strings.concat(path, File.separator, lesson.getSemester.id.toString, File.separator, 
       lesson.getNo, ".doc"))
     if (!file.exists()) {
       "errorpath"

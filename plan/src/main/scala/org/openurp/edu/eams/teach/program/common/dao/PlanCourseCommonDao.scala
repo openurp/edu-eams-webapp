@@ -2,11 +2,11 @@ package org.openurp.edu.eams.teach.program.common.dao
 
 import com.ekingstar.eams.teach.Course
 import org.openurp.edu.eams.teach.program.CoursePlan
-import org.openurp.edu.eams.teach.program.PlanCourse
+import org.openurp.edu.teach.plan.PlanCourse
 import org.openurp.edu.eams.teach.program.major.MajorPlan
 import org.openurp.edu.teach.plan.MajorPlanCourse
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 trait PlanCourseCommonDao {
 

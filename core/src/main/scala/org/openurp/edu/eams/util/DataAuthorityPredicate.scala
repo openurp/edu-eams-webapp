@@ -6,7 +6,7 @@ import org.beangle.commons.lang.functor.Predicate
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-import scala.collection.JavaConversions._
+
 
 class DataAuthorityPredicate(stdTypeIdSeq: String, departIdSeq: String) extends Predicate[Any] {
 

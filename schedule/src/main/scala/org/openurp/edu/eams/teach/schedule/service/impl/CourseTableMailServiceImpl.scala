@@ -2,12 +2,12 @@ package org.openurp.edu.eams.teach.schedule.service.impl
 
 import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.List
-import java.util.Map
-import java.util.Set
+
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.impl.BaseServiceImpl
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.notification.mail.JavaMailSender
 import org.beangle.security.blueprint.User
@@ -19,16 +19,16 @@ import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.teach.schedule.model.CourseArrangeAlteration
 import org.openurp.edu.eams.teach.schedule.model.CourseMailSetting
 import org.openurp.edu.eams.teach.schedule.service.CourseTableMailService
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConversions._
+
+
 
 class CourseTableMailServiceImpl extends BaseServiceImpl with CourseTableMailService {
 
-  @BeanProperty
+  
   var mailService: MailService = _
 
-  @BeanProperty
+  
   var userService: UserService = _
 
   def sendCourseTableChangeMsg(courseArrangeAlteration: CourseArrangeAlteration, courseMailSetting: CourseMailSetting, userIds: Array[Long]): String = {

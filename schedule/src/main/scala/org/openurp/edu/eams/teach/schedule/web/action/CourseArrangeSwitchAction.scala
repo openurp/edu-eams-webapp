@@ -1,18 +1,18 @@
 package org.openurp.edu.eams.teach.schedule.web.action
 
-import java.util.Collection
-import java.util.List
-import java.util.Set
+
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Project
 import org.openurp.edu.eams.teach.schedule.model.CourseArrangeSwitch
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class CourseArrangeSwitchAction extends SemesterSupportAction {
 
@@ -39,8 +39,8 @@ class CourseArrangeSwitchAction extends SemesterSupportAction {
       val switches = CollectUtils.newArrayList()
       val project = getProject
       for (semester <- semesters) {
-        val semesterProjectId = "semesterId:" + semester.getId.toString + ";projectId:" + 
-          project.getId.toString
+        val semesterProjectId = "semesterId:" + semester.id.toString + ";projectId:" + 
+          project.id.toString
         if (!semesterProjectIds.contains(semesterProjectId)) {
           semesterProjectIds.add(semesterProjectId)
           switches.add(new CourseArrangeSwitch(semester, project))

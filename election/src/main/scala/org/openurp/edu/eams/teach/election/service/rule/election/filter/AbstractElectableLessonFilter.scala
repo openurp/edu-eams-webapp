@@ -5,7 +5,7 @@ import org.openurp.edu.eams.teach.election.service.ElectableLessonFilter
 import org.openurp.edu.eams.teach.election.service.context.ElectionCourseContext
 import org.openurp.edu.eams.teach.election.service.rule.AbstractElectRuleExecutor
 
-import scala.collection.JavaConversions._
+
 
 abstract class AbstractElectableLessonFilter extends AbstractElectRuleExecutor with ElectableLessonFilter {
 

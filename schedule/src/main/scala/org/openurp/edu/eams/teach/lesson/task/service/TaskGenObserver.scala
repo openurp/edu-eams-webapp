@@ -5,7 +5,7 @@ import org.openurp.edu.teach.plan.MajorPlan
 import org.openurp.edu.eams.web.util.OutputMessage
 import org.openurp.edu.eams.web.util.OutputWebObserver
 
-import scala.collection.JavaConversions._
+
 
 class TaskGenObserver extends OutputWebObserver() {
 

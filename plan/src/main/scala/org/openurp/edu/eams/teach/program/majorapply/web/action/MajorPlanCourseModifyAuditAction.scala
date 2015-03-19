@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.program.majorapply.web.action
 
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.security.blueprint.User
 import org.beangle.struts2.convention.route.Action
 import com.ekingstar.eams.core.Project
@@ -9,7 +9,7 @@ import org.openurp.edu.eams.teach.program.majorapply.exception.MajorPlanAuditExc
 import org.openurp.edu.eams.teach.program.majorapply.model.MajorPlanCourseModifyBean
 import org.openurp.edu.eams.teach.program.majorapply.service.MajorPlanCourseModifyAuditService
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class MajorPlanCourseModifyAuditAction extends MajorPlanCourseModifyApplyAction {
 

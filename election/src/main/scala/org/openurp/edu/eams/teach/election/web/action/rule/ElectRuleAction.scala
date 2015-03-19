@@ -2,10 +2,10 @@ package org.openurp.edu.eams.teach.election.web.action.rule
 
 import java.io.IOException
 import java.util.Date
-import java.util.Iterator
-import java.util.Set
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.beangle.commons.entity.Entity
+
+
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.beangle.data.model.Entity
 import org.beangle.commons.lang.Strings
 import org.beangle.ems.rule.Rule
 import org.beangle.ems.rule.RuleParameter
@@ -13,7 +13,7 @@ import org.openurp.edu.eams.rule.RuleParameterPopulator
 import org.openurp.edu.eams.teach.election.model.Enum.ElectRuleType
 import org.openurp.edu.eams.web.action.BaseAction
 
-import scala.collection.JavaConversions._
+
 
 class ElectRuleAction extends BaseAction {
 

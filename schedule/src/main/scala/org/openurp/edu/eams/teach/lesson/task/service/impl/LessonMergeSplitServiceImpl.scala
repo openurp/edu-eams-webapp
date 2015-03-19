@@ -1,8 +1,8 @@
 package org.openurp.edu.eams.teach.lesson.task.service.impl
 
-import java.util.HashSet
-import java.util.List
-import java.util.Set
+
+
+
 import org.apache.commons.collections.CollectionUtils
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.impl.BaseServiceImpl
@@ -20,7 +20,7 @@ import org.openurp.edu.eams.teach.lesson.task.service.LessonMergeSplitService
 import org.openurp.edu.eams.teach.lesson.task.splitter.AbstractTeachClassSplitter
 import org.openurp.edu.eams.teach.lesson.util.LessonElectionUtil
 
-import scala.collection.JavaConversions._
+
 
 class LessonMergeSplitServiceImpl extends BaseServiceImpl with LessonMergeSplitService {
 

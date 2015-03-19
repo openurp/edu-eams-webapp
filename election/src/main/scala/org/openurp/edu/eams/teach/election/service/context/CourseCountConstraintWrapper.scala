@@ -2,7 +2,7 @@ package org.openurp.edu.eams.teach.election.service.context
 
 import org.openurp.edu.eams.teach.election.model.constraint.StdCourseCountConstraint
 
-import scala.collection.JavaConversions._
+
 
 @SerialVersionUID(6271661100769855121L)
 class CourseCountConstraintWrapper extends ElectConstraintWrapper[Integer]() {

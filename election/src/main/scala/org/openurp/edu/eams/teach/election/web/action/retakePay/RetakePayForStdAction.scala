@@ -1,16 +1,16 @@
 package org.openurp.edu.eams.teach.election.web.action.retakePay
 
 import java.util.Date
-import java.util.List
-import java.util.Map
-import java.util.Set
+
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.beangle.commons.entity.Entity
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.beangle.data.model.Entity
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.lang.Strings
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Project
 import org.openurp.edu.base.Student
 import org.openurp.edu.eams.fee.Bill
@@ -29,7 +29,7 @@ import org.openurp.edu.eams.teach.election.service.RetakeFeeCalculator
 import org.openurp.edu.eams.teach.election.service.RetakeFeeConfigService
 import org.openurp.edu.teach.lesson.CourseTake
 
-import scala.collection.JavaConversions._
+
 
 class RetakePayForStdAction extends PaymentSupportAction {
 
@@ -156,7 +156,7 @@ class RetakePayForStdAction extends PaymentSupportAction {
         return redirect("index", "info.save.failure")
       }
     }
-    redirect("payment", null, "bill.id=" + bill.getId)
+    redirect("payment", null, "bill.id=" + bill.id)
   }
 
   override def remove(): String = {
@@ -176,14 +176,14 @@ class RetakePayForStdAction extends PaymentSupportAction {
     for (courseTake <- courseTakes) {
       var unPaid: java.lang.Boolean = null
       var bill = courseTake.getBill
-      val saveBill = saveBills.get(bill.getId)
+      val saveBill = saveBills.get(bill.id)
       if (null != saveBill) {
         bill = saveBill
-        val state = bill.getState.getId
+        val state = bill.getState.id
         unPaid = PayState.UNPAID == state || PayState.CANCEL == state
       } else {
         try {
-          unPaid = if (PayState.PAID == bill.getState.getId || PayState.COMPLETED == bill.getState.getId) false else !paymentService.checkBillOnPurpose(bill)
+          unPaid = if (PayState.PAID == bill.getState.id || PayState.COMPLETED == bill.getState.id) false else !paymentService.checkBillOnPurpose(bill)
         } catch {
           case e: Exception => //continue
         }
@@ -200,7 +200,7 @@ class RetakePayForStdAction extends PaymentSupportAction {
             paidBills.add(bill)
           }
           bill.setUpdatedAt(date)
-          saveBills.put(bill.getId, bill)
+          saveBills.put(bill.id, bill)
         }
         courseTake.setPaid(!unPaid)
         courseTake.setUpdatedAt(date)

@@ -8,19 +8,19 @@ import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat
 import net.sourceforge.pinyin4j.format.HanyuPinyinToneType
 import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination
 import org.beangle.commons.lang.Strings
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConversions._
+
+
 
 class PinyinComparator extends Comparator[String]() {
 
-  @BooleanBeanProperty
+  
   var asc: Boolean = _
 
-  @BeanProperty
+  
   var collator: Collator = Collator.getInstance
 
-  @BeanProperty
+  
   var pinyinOutputFormat: HanyuPinyinOutputFormat = new HanyuPinyinOutputFormat()
 
   pinyinOutputFormat.setCaseType(HanyuPinyinCaseType.LOWERCASE)

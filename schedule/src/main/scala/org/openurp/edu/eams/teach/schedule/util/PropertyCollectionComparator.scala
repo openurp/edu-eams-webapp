@@ -1,14 +1,14 @@
 package org.openurp.edu.eams.teach.schedule.util
 
 import java.util.Comparator
-import java.util.List
+
 import org.apache.commons.beanutils.PropertyUtils
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.util.PinyinComparator
 import PropertyCollectionComparator._
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConversions._
+
+
 
 object PropertyCollectionComparator {
 
@@ -22,7 +22,7 @@ object PropertyCollectionComparator {
 
     class ArrangeOrder private () extends Val {
 
-      @BeanProperty
+      
       var fullName: String = _
 
       private def this(fullName: String) {
@@ -39,13 +39,13 @@ object PropertyCollectionComparator {
 
 class PropertyCollectionComparator[T] extends Comparator[T]() {
 
-  @BooleanBeanProperty
+  
   var asc: Boolean = true
 
-  @BeanProperty
+  
   var arrangeOrder: ArrangeOrder = ArrangeOrder.TEACHER
 
-  @BeanProperty
+  
   var pinyinComparator: PinyinComparator = new PinyinComparator(asc)
 
   private def genStr(lessonProperties: List[_]): String = {

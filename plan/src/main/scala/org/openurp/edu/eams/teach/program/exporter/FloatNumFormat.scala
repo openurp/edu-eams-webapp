@@ -3,7 +3,7 @@ package org.openurp.edu.eams.teach.program.exporter
 import java.text.NumberFormat
 import FloatNumFormat._
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 object FloatNumFormat {
 

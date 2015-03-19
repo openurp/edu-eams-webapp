@@ -1,8 +1,8 @@
 package org.openurp.edu.eams.teach.lesson.service.limit.impl
 
 import java.io.Serializable
-import java.util.List
-import java.util.Map
+
+
 import org.beangle.commons.collection.MapConverter
 import org.beangle.commons.collection.page.PageLimit
 import org.beangle.commons.conversion.impl.DefaultConversion
@@ -12,9 +12,9 @@ import org.beangle.commons.lang.Strings
 import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitItemContentProvider
 import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnum
 import AbstractCourseLimitContentProvider._
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConversions._
+
+
 
 object AbstractCourseLimitContentProvider {
 
@@ -23,7 +23,7 @@ object AbstractCourseLimitContentProvider {
 
 abstract class AbstractCourseLimitContentProvider[T] extends BaseServiceImpl with CourseLimitItemContentProvider[T] {
 
-  @BeanProperty
+  
   var metaEnum: CourseLimitMetaEnum = _
 
   protected def getContentValues(content: String): Array[Serializable] = {

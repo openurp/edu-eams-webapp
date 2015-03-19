@@ -1,10 +1,8 @@
 package org.openurp.edu.eams.teach.grade.course.web.action
 
-import java.util.Collection
-import java.util.Collections
-import java.util.List
+
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.base.Department
 import org.openurp.edu.base.Project
 import org.openurp.edu.base.Student
@@ -14,7 +12,7 @@ import org.openurp.edu.eams.teach.grade.service.CourseGradeService
 import org.openurp.edu.teach.grade.CourseGrade
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class StdGradeSearchAction extends SemesterSupportAction {
 
@@ -66,7 +64,7 @@ class StdGradeSearchAction extends SemesterSupportAction {
     query
   }
 
-  protected def getExportDatas(): Collection[CourseGrade] = {
+  protected def getExportDatas(): Iterable[CourseGrade] = {
     entityDao.search(buildGradeQuery().limit(null))
   }
 

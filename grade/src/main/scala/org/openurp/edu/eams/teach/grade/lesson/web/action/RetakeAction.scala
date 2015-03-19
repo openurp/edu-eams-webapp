@@ -1,22 +1,20 @@
 package org.openurp.edu.eams.teach.grade.lesson.web.action
 
-import java.util.ArrayList
-import java.util.Collections
 import java.util.Date
-import java.util.List
-import java.util.Map
+
+
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.bean.comparators.PropertyComparator
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
 import org.beangle.commons.collection.page.PagedList
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.openurp.edu.eams.base.Semester
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.openurp.base.Semester
 import org.openurp.edu.eams.base.util.WeekStates
 import org.openurp.edu.eams.core.CommonAuditState
 import org.openurp.edu.base.Project
 import org.openurp.edu.base.StudentJournal
-import org.openurp.edu.teach.Course
+import org.openurp.edu.base.Course
 import org.openurp.edu.eams.teach.Grade
 import org.openurp.edu.teach.grade.CourseGrade
 import org.openurp.edu.eams.teach.lesson.CourseSchedule
@@ -27,7 +25,7 @@ import org.openurp.edu.eams.teach.lesson.model.LessonBean
 import org.openurp.edu.teach.lesson.model.TeachClassBean
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class RetakeAction extends SemesterSupportAction {
 
@@ -79,7 +77,7 @@ class RetakeAction extends SemesterSupportAction {
     val statList = entityDao.search(builder).asInstanceOf[List[RetakeCourseStat]]
     val stats = CollectUtils.newHashMap()
     for (stat <- statList) {
-      stats.put(stat.getCourse.getId, stat)
+      stats.put(stat.getCourse.id, stat)
     }
     val semesterId = getIntId("semester")
     builder = OqlBuilder.from(classOf[Lesson], "l")

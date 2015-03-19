@@ -7,7 +7,7 @@ import org.openurp.edu.eams.teach.program.majorapply.exception.MajorPlanAuditExc
 import org.openurp.edu.eams.teach.program.majorapply.model.MajorPlanCourseModifyBean
 import org.openurp.edu.eams.teach.program.majorapply.service.MajorPlanCourseModifyAuditService
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class MajorPlanCourseModifyAuditServiceImpl extends BaseServiceImpl with MajorPlanCourseModifyAuditService {
 

@@ -2,22 +2,20 @@ package org.openurp.edu.eams.dataQuery.web.action
 
 import java.io.IOException
 import java.io.Writer
-import java.util.Collections
-import java.util.Iterator
-import java.util.List
-import java.util.Map
+
+
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 import org.apache.commons.lang3.StringUtils
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.beangle.commons.entity.Entity
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.beangle.data.model.Entity
 import org.beangle.commons.lang.Strings
 import org.beangle.ems.dictionary.model.CodeMeta
 import org.beangle.security.access.AccessDeniedException
 import org.openurp.edu.eams.base.Building
 import org.openurp.base.Department
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Direction
 import org.openurp.edu.base.Major
 import org.openurp.edu.base.Project
@@ -29,7 +27,7 @@ import com.opensymphony.xwork2.util.ValueStack
 import freemarker.core.Environment
 import DataQueryAction._
 
-import scala.collection.JavaConversions._
+
 
 object DataQueryAction {
 
@@ -93,12 +91,12 @@ class DataQueryAction extends RestrictionSupportAction {
       projectId = getRequest.getSession.getAttribute("projectId").asInstanceOf[java.lang.Integer]
       if (null == projectId) {
         if (!projects.isEmpty) {
-          projectId = projects.get(0).getId
+          projectId = projects.get(0).id
         }
       }
       getRequest.getSession.setAttribute("projectId", projectId)
     } else {
-      for (project <- projects if project.getId == projectId) {
+      for (project <- projects if project.id == projectId) {
         getRequest.getSession.setAttribute("projectId", projectId)
         //break
       }
@@ -141,7 +139,7 @@ class DataQueryAction extends RestrictionSupportAction {
             if (null != teacher) {
               val depart = teacher.department
               val builder = OqlBuilder.from(classOf[Project], "p")
-              builder.where(":departmet in elements(p.departments)", depart.getId)
+              builder.where(":departmet in elements(p.departments)", depart.id)
               projects = entityDao.search(builder)
               if (projects.isEmpty) {
                 throw e

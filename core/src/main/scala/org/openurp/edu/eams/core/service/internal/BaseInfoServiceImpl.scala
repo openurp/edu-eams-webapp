@@ -2,11 +2,11 @@ package org.openurp.edu.eams.core.service.internal
 
 import java.lang.reflect.Method
 import org.beangle.commons.dao.impl.BaseServiceImpl
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.edu.eams.base.BaseInfo
 import org.openurp.edu.eams.core.service.BaseInfoService
 
-import scala.collection.JavaConversions._
+
 
 class BaseInfoServiceImpl extends BaseServiceImpl with BaseInfoService {
 

@@ -1,11 +1,11 @@
 package org.openurp.edu.eams.web.view.component.semester.ui
 
-import java.util.ArrayList
-import java.util.List
-import java.util.Map
-import org.openurp.edu.eams.base.Semester
 
-import scala.collection.JavaConversions._
+
+
+import org.openurp.base.Semester
+
+
 
 class MenuSemesterCalendar extends SemesterCalendarUI {
 
@@ -19,7 +19,7 @@ class MenuSemesterCalendar extends SemesterCalendarUI {
         val hierarchySemesters = new ArrayList[HierarchySemester](semesters.size)
         for (semester <- semesters) {
           val term = new HierarchySemester()
-          term.setId(semester.getId)
+          term.setId(semester.id)
           term.setParent(year)
           term.setName(semester.getName)
           hierarchySemesters.add(term)

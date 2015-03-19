@@ -1,13 +1,13 @@
 package org.openurp.edu.eams.teach.lesson.task.experiment
 
 import org.beangle.commons.lang.tuple.Pair
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConversions._
+
+
 
 class LessonGenProgressBar extends AbstractAjaxProgressBar {
 
-  @BeanProperty
+  
   var planCount: Int = _
 
   def start() {

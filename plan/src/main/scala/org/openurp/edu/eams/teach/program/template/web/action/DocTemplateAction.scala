@@ -1,14 +1,14 @@
 package org.openurp.edu.eams.teach.program.template.web.action
 
-import java.util.ArrayList
+
 import java.util.Date
-import java.util.HashMap
-import java.util.List
+
+
 import java.util.Locale
-import java.util.Map
+
 import javax.servlet.http.HttpServletRequest
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.struts2.convention.route.Action
 import com.ekingstar.eams.core.Project
 import com.ekingstar.eams.core.code.school.StdType
@@ -18,7 +18,7 @@ import org.openurp.edu.eams.teach.program.doc.model.ProgramDocMetaBean
 import org.openurp.edu.eams.teach.program.doc.model.ProgramDocTemplateBean
 import com.ekingstar.eams.web.action.common.ProjectSupportAction
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class DocTemplateAction extends ProjectSupportAction {
 
@@ -101,7 +101,7 @@ class DocTemplateAction extends ProjectSupportAction {
       }
       val docMetaBeans = template.getMetas
       for (i <- 0 until docMetaBeans.size; j <- 0 until ids.size) {
-        if (ids.get(j) == docMetaBeans.get(i).getId) {
+        if (ids.get(j) == docMetaBeans.get(i).id) {
           docMetaBeans.get(i).setName(names(j))
           docMetaBeans.get(i).setMaxlength(java.lang.Integer.parseInt(lengths(j)))
           docMetaBeans.get(i).setIndexno(java.lang.Integer.parseInt(indexnos(j)))
@@ -124,7 +124,7 @@ class DocTemplateAction extends ProjectSupportAction {
       } else {
         val len = docMetaBeans.size
         for (i <- 0 until ids.size; j <- 0 until len) {
-          if (ids.get(i) == docMetaBeans.get(j).getId) {
+          if (ids.get(i) == docMetaBeans.get(j).id) {
             //break
           }
           if (j >= len - 1) {
@@ -136,7 +136,7 @@ class DocTemplateAction extends ProjectSupportAction {
           }
         }
       }
-      if (template.getId != null) {
+      if (template.id != null) {
         for (i <- 0 until docMetaBeans.size) {
           docMetaBeans.get(i).setTemplate(template)
         }

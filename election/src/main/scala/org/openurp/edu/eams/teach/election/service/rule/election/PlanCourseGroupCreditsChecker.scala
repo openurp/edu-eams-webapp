@@ -12,7 +12,7 @@ import org.openurp.edu.eams.teach.election.service.rule.election.filter.Electabl
 import org.openurp.edu.eams.teach.election.service.rule.election.retake.RetakeCheckByCoursePrepare
 import org.openurp.edu.teach.lesson.Lesson
 
-import scala.collection.JavaConversions._
+
 
 class PlanCourseGroupCreditsChecker extends AbstractElectRuleExecutor with ElectRulePrepare {
 

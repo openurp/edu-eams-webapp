@@ -1,18 +1,18 @@
 package org.openurp.edu.eams.teach.election.service.impl
 
 import java.text.SimpleDateFormat
-import java.util.ArrayList
+
 import java.util.Date
-import java.util.HashMap
-import java.util.List
-import java.util.Map
-import java.util.Map.Entry
+
+
+
+.Entry
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.impl.BaseServiceImpl
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.tuple.Pair
 import org.beangle.security.blueprint.User
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Project
 import org.openurp.edu.base.Teacher
 import org.openurp.edu.eams.system.msg.service.SystemMessageService
@@ -23,7 +23,7 @@ import org.openurp.edu.eams.teach.election.model.Enum.ElectRuleType
 import org.openurp.edu.eams.teach.election.service.FilterMessageService
 import org.openurp.edu.teach.lesson.Lesson
 
-import scala.collection.JavaConversions._
+
 
 class FilterMessageServiceImpl extends BaseServiceImpl with FilterMessageService {
 

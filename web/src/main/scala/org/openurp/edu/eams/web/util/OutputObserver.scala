@@ -4,7 +4,7 @@ import java.io.IOException
 import java.io.PrintWriter
 import OutputObserver._
 
-import scala.collection.JavaConversions._
+
 
 object OutputObserver {
 

@@ -1,11 +1,11 @@
 package org.openurp.edu.eams.teach.grade.interceptor
 
-import java.util.List
+
 import org.apache.commons.collections.CollectionUtils
 import org.apache.struts2.ServletActionContext
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.EntityDao
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.inject.Container
 import org.beangle.commons.inject.ContainerAware
@@ -15,16 +15,16 @@ import org.beangle.struts2.helper.ContextHelper
 import org.beangle.struts2.helper.Params
 import org.openurp.edu.eams.system.validate.model.Challenge
 import org.openurp.edu.eams.system.validate.service.ChallengeGenerator
-import org.openurp.edu.eams.teach.code.industry.GradeType
+import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.eams.teach.grade.lesson.model.GradeInputSwitch
 import org.openurp.edu.eams.teach.grade.service.CourseGradeService
-import org.openurp.edu.teach.grade.CourseGradeState
+import org.openurp.edu.teach.grade.model.CourseGradeState
 import org.openurp.edu.teach.lesson.Lesson
 import com.opensymphony.xwork2.ActionContext
 import com.opensymphony.xwork2.ActionInvocation
 import com.opensymphony.xwork2.interceptor.MethodFilterInterceptor
 
-import scala.collection.JavaConversions._
+
 
 @SerialVersionUID(806584405241063674L)
 class GradeInputMethodInterceptor extends MethodFilterInterceptor with ContainerAware {

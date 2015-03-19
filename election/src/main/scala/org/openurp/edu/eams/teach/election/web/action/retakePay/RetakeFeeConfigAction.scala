@@ -1,17 +1,17 @@
 package org.openurp.edu.eams.teach.election.web.action.retakePay
 
-import java.util.Collection
+
 import java.util.Date
-import java.util.HashMap
-import java.util.concurrent.TimeUnit
-import org.beangle.commons.entity.Entity
+
+import java.util.concurrent.YearWeekTime
+import org.beangle.data.model.Entity
 import org.openurp.edu.eams.fee.code.school.FeeType
 import org.openurp.edu.eams.fee.service.PaymentService
 import org.openurp.edu.eams.teach.election.RetakeFeeConfig
 import org.openurp.edu.eams.teach.election.service.RetakeFeeConfigService
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class RetakeFeeConfigAction extends SemesterSupportAction {
 
@@ -29,7 +29,7 @@ class RetakeFeeConfigAction extends SemesterSupportAction {
     put("project", getProject)
     put("semester", putSemester(null))
     put("feeTypes", baseCodeService.getCodes(classOf[FeeType]))
-    put("timeUnits", TimeUnit.values)
+    put("timeUnits", YearWeekTime.values)
   }
 
   def calPayDuration(): String = {
@@ -47,16 +47,16 @@ class RetakeFeeConfigAction extends SemesterSupportAction {
     if (null == duration) {
       return duration
     }
-    val fromTimeUnit = TimeUnit.valueOf(fromUnit)
-    val toTimeUnit = TimeUnit.valueOf(toUnit)
-    toTimeUnit match {
-      case DAYS => fromTimeUnit.toDays(duration)
-      case HOURS => fromTimeUnit.toHours(duration)
-      case MINUTES => fromTimeUnit.toMinutes(duration)
-      case SECONDS => fromTimeUnit.toSeconds(duration)
-      case MICROSECONDS => fromTimeUnit.toMicros(duration)
-      case NANOSECONDS => fromTimeUnit.toNanos(duration)
-      case _ => fromTimeUnit.toMillis(duration)
+    val fromYearWeekTime = YearWeekTime.valueOf(fromUnit)
+    val toYearWeekTime = YearWeekTime.valueOf(toUnit)
+    toYearWeekTime match {
+      case DAYS => fromYearWeekTime.toDays(duration)
+      case HOURS => fromYearWeekTime.toHours(duration)
+      case MINUTES => fromYearWeekTime.toMinutes(duration)
+      case SECONDS => fromYearWeekTime.toSeconds(duration)
+      case MICROSECONDS => fromYearWeekTime.toMicros(duration)
+      case NANOSECONDS => fromYearWeekTime.toNanos(duration)
+      case _ => fromYearWeekTime.toMillis(duration)
     }
   }
 
@@ -79,7 +79,7 @@ class RetakeFeeConfigAction extends SemesterSupportAction {
       config.setCreatedAt(date)
     }
     config.setUpdatedAt(date)
-    val payDuration = calPayDuration(get("timeUnit"), TimeUnit.MILLISECONDS.toString, getLong("duration"))
+    val payDuration = calPayDuration(get("timeUnit"), YearWeekTime.MILLISECONDS.toString, getLong("duration"))
     if (payDuration > 0) {
       config.setPayDuration(payDuration)
     }
@@ -94,7 +94,7 @@ class RetakeFeeConfigAction extends SemesterSupportAction {
     }
   }
 
-  protected override def removeAndForward(entities: Collection[_]): String = {
+  protected override def removeAndForward(entities: Iterable[_]): String = {
     try {
       remove(entities)
     } catch {

@@ -1,20 +1,18 @@
 package org.openurp.edu.eams.teach.lesson.task.web.action
 
-import java.util.Collection
-import java.util.Collections
-import java.util.HashMap
-import java.util.Iterator
-import java.util.List
-import java.util.Map
-import java.util.Set
+
+
+
+
+
 import org.apache.commons.lang3.ArrayUtils
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.transfer.exporter.PropertyExtractor
-import org.openurp.edu.eams.base.Campus
+import org.openurp.base.Campus
 import org.openurp.base.Department
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.eams.base.util.WeekDays
 import org.openurp.edu.eams.base.util.WeekStates
 import org.openurp.edu.base.Project
@@ -35,7 +33,7 @@ import org.openurp.edu.eams.teach.lesson.task.util.TeachTaskPropertyExtractor
 import org.openurp.edu.eams.teach.lesson.util.CourseActivityDigestor
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class TeachTaskSearchAction extends SemesterSupportAction {
 
@@ -71,14 +69,14 @@ class TeachTaskSearchAction extends SemesterSupportAction {
     val guapaiStatus = new HashMap[Lesson, Boolean]()
     for (lesson <- lessons) {
       guapaiStatus.put(lesson, false)
-      for (tag <- lesson.getTags if tag.getId == LessonTag.PredefinedTags.GUAPAI.getId) {
+      for (tag <- lesson.getTags if tag.id == LessonTag.PredefinedTags.GUAPAI.id) {
         guapaiStatus.put(lesson, true)
       }
     }
     val digestor = CourseActivityDigestor.getInstance.setDelimeter("<br>")
     val arrangeInfo = new HashMap[String, String]()
     for (oneTask <- lessons) {
-      arrangeInfo.put(oneTask.getId.toString, digestor.digest(getTextResource, oneTask, ":teacher+ :day :units :weeks :room"))
+      arrangeInfo.put(oneTask.id.toString, digestor.digest(getTextResource, oneTask, ":teacher+ :day :units :weeks :room"))
     }
     put("arrangeInfo", arrangeInfo)
     put("guapaiStatus", guapaiStatus)
@@ -95,7 +93,7 @@ class TeachTaskSearchAction extends SemesterSupportAction {
     var iter = tasks.iterator()
     while (iter.hasNext) {
       val task = iter.next().asInstanceOf[Lesson]
-      arrangeInfo.put(task.getId.toString, digestor.digest(getTextResource, task))
+      arrangeInfo.put(task.id.toString, digestor.digest(getTextResource, task))
     }
     put("arrangeInfo", arrangeInfo)
     forward()
@@ -104,7 +102,7 @@ class TeachTaskSearchAction extends SemesterSupportAction {
   def info(): String = {
     val lessonId = getLongId("lesson")
     val lesson = entityDao.get(classOf[Lesson], lessonId)
-    put("guapaiTagId", LessonTag.PredefinedTags.GUAPAI.getId)
+    put("guapaiTagId", LessonTag.PredefinedTags.GUAPAI.id)
     put("fakeGender", courseLimitService.extractGender(lesson.getTeachClass))
     put("educationLimit", courseLimitService.xtractEducationLimit(lesson.getTeachClass))
     put("adminclassLimit", courseLimitService.xtractAdminclassLimit(lesson.getTeachClass))
@@ -124,7 +122,7 @@ class TeachTaskSearchAction extends SemesterSupportAction {
     forward()
   }
 
-  protected override def getExportDatas(): Collection[_] = {
+  protected override def getExportDatas(): Iterable[_] = {
     val lessonIds = Strings.splitToLong(get("lessonIds"))
     if (lessonIds == null || lessonIds.length == 0) {
       val query = lessonSearchHelper.buildQuery().limit(null)
@@ -151,7 +149,7 @@ class TeachTaskSearchAction extends SemesterSupportAction {
     for (lesson <- lessons) {
       val hql = CollectUtils.newArrayList()
       val query = OqlBuilder.from(classOf[CourseLimitGroup], "coursegroup")
-      query.where("coursegroup.lesson.id =:lessonId", lesson.getId)
+      query.where("coursegroup.lesson.id =:lessonId", lesson.id)
       val group = entityDao.search(query)
       for (courseLimitGroup2 <- group; item <- courseLimitGroup2.getItems) {
         val hqlString = getConditionByItem(item)
@@ -204,7 +202,7 @@ class TeachTaskSearchAction extends SemesterSupportAction {
     if (null == item || null == item.getMeta) {
       return null
     }
-    metaName = if (item.getMeta.getId == CourseLimitMetaEnum.GRADE.getMetaId) item.getMeta.getName else if (item.getMeta.getId == CourseLimitMetaEnum.STDTYPE.getMetaId) "type.id" else item.getMeta.getName + ".id"
+    metaName = if (item.getMeta.id == CourseLimitMetaEnum.GRADE.getMetaId) item.getMeta.getName else if (item.getMeta.id == CourseLimitMetaEnum.STDTYPE.getMetaId) "type.id" else item.getMeta.getName + ".id"
     if (null != item.getOperator) item.getOperator match {
       case EQUAL => hql = hql + "std." + metaName.toLowerCase() + "=" + item.getContentForHql
       case NOT_EQUAL => hql = hql + "std." + metaName.toLowerCase() + "<>" + item.getContentForHql
@@ -236,7 +234,7 @@ class TeachTaskSearchAction extends SemesterSupportAction {
     for (lesson <- lessons) {
       val hql = CollectUtils.newArrayList()
       val query = OqlBuilder.from(classOf[CourseLimitGroup], "coursegroup")
-      query.where("coursegroup.lesson.id =:lessonId", lesson.getId)
+      query.where("coursegroup.lesson.id =:lessonId", lesson.id)
       val group = entityDao.search(query)
       for (courseLimitGroup2 <- group; item <- courseLimitGroup2.getItems) {
         val hqlString = getConditionByItem(item)
@@ -271,7 +269,7 @@ class TeachTaskSearchAction extends SemesterSupportAction {
       val std = value.asInstanceOf[List[Student]]
       for (lesson <- lessons) {
         var count = 0
-        if (lesson.getId == key.getId) {
+        if (lesson.id == key.id) {
           if (lesson.getTeachClass.getLimitCount == std.size) {
             equalCount.put(lesson, std.size)
           } else if (lesson.getTeachClass.getLimitCount > std.size) {

@@ -4,9 +4,9 @@ import org.beangle.commons.dao.EntityDao
 import org.beangle.commons.text.i18n.TextResource
 import org.beangle.commons.transfer.exporter.DefaultPropertyExtractor
 import org.openurp.edu.eams.teach.program.major.MajorPlan
-import org.openurp.edu.eams.teach.program.majorapply.model.MajorPlanCourseGroupModifyBean
+import org.openurp.edu.eams.teach.program.majorapply.model.MajorCourseGroupModifyBean
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class CourseGroupModifyPropertyExtractor(resource: TextResource) extends DefaultPropertyExtractor(resource) {
 
@@ -19,8 +19,8 @@ class CourseGroupModifyPropertyExtractor(resource: TextResource) extends Default
   }
 
   def getPropertyValue(target: AnyRef, property: String): AnyRef = {
-    val modify = target.asInstanceOf[MajorPlanCourseGroupModifyBean]
-    val plan = entityDao.get(classOf[MajorPlan], modify.getMajorPlan.getId)
+    val modify = target.asInstanceOf[MajorCourseGroupModifyBean]
+    val plan = entityDao.get(classOf[MajorPlan], modify.getMajorPlan.id)
     if (property == "flag") {
       return toString(modify.getFlag)
     } else if (property == "majorPlan.program.grade") {

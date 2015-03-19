@@ -1,19 +1,19 @@
 package org.openurp.edu.eams.teach.grade.course.web.action
 
-import java.util.List
-import java.util.Set
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.openurp.edu.teach.code.CourseTakeType
-import org.openurp.edu.eams.teach.code.industry.ExamStatus
-import org.openurp.edu.eams.teach.code.industry.GradeType
+import org.openurp.edu.teach.code.ExamStatus
+import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.eams.teach.code.industry.ScoreMarkStyle
 import org.openurp.edu.eams.teach.grade.lesson.model.GradeInputSwitch
-import org.openurp.edu.teach.grade.CourseGradeState
-import org.openurp.edu.eams.teach.lesson.ExamGradeState
+import org.openurp.edu.teach.grade.model.CourseGradeState
+import org.openurp.edu.teach.grade.model.ExamGradeState
 import org.openurp.edu.eams.teach.lesson.GradeTypeConstants
 import org.openurp.edu.teach.lesson.Lesson
 
-import scala.collection.JavaConversions._
+
 
 class TeacherGaAction extends TeacherAction {
 
@@ -24,7 +24,7 @@ class TeacherGaAction extends TeacherAction {
       val gis = getAttribute("gradeInputSwitch").asInstanceOf[GradeInputSwitch]
       val eles = settings.getSetting(getProject).getGaElementTypes
       for (`type` <- eles) {
-        val gradeType = baseCodeService.getCode(classOf[GradeType], `type`.getId).asInstanceOf[GradeType]
+        val gradeType = baseCodeService.getCode(classOf[GradeType], `type`.id).asInstanceOf[GradeType]
         val egs = gradeState.getState(gradeType)
         if (null != egs && (null == egs.getPercent || egs.getPercent <= 0)) //continue
         if (null != gis && gis.getTypes.contains(gradeType)) gradeTypes.add(gradeType)
@@ -44,7 +44,7 @@ class TeacherGaAction extends TeacherAction {
     val gradeTypes = settings.getSetting(getProject).getGaElementTypes
     var updatePercent = false
     for (gradeType <- gradeTypes) {
-      val prefix = "examGradeState" + gradeType.getId
+      val prefix = "examGradeState" + gradeType.id
       val percent = getFloat(prefix + ".percent")
       val egs = getState(gradeType)
       if (null != percent && 

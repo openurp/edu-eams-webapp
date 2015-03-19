@@ -1,14 +1,14 @@
 package org.openurp.edu.eams.teach.grade.lesson.web.action
 
-import org.openurp.edu.teach.Course
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
+import org.openurp.edu.base.Course
 
-import scala.collection.JavaConversions._
 
-class RetakeCourseStat(@BeanProperty val course: Course, @BeanProperty val unpassed: Number)
+
+
+class RetakeCourseStat( val course: Course,  val unpassed: Number)
     {
 
-  @BeanProperty
+  
   var freespace: Int = _
 
   private var newspace: Int = _

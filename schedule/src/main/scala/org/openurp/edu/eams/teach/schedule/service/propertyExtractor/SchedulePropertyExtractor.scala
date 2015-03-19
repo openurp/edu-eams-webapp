@@ -1,17 +1,17 @@
 package org.openurp.edu.eams.teach.schedule.service.propertyExtractor
 
-import java.util.List
+
 import org.beangle.commons.dao.EntityDao
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.text.i18n.TextResource
 import org.beangle.commons.transfer.exporter.DefaultPropertyExtractor
 import org.openurp.edu.base.Teacher
-import org.openurp.edu.eams.teach.lesson.CourseActivity
+import org.openurp.edu.teach.schedule.CourseActivity
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.teach.lesson.util.CourseActivityDigestor
 
-import scala.collection.JavaConversions._
+
 
 class SchedulePropertyExtractor(textResource: TextResource) extends DefaultPropertyExtractor(textResource) {
 
@@ -38,17 +38,17 @@ class SchedulePropertyExtractor(textResource: TextResource) extends DefaultPrope
     val digestor = CourseActivityDigestor.getInstance.setDelimeter(";")
     val builder = OqlBuilder.from(classOf[CourseActivity], "activity")
     builder.where("activity.lesson = :lesson", lesson)
-    if (null != weekday) builder.where("activity.time.weekday = " + weekday)
+    if (null != weekday) builder.where("activity.time.day = " + weekday)
     if (null != courseUnit) builder.where("activity.time.startUnit <= " + courseUnit + " and activity.time.endUnit >= " + 
       courseUnit)
-    if (null != weekState) builder.where("bitand(activity.time.weekStateNum," + weekState + ")>0")
+    if (null != weekState) builder.where("bitand(activity.time.state," + weekState + ")>0")
     if (null != buildingId) builder.where("exists(from courseActivity.rooms as cr where cr.building.id=" + 
       buildingId + 
       ")")
     if ("arrangeInfo" == property) {
       digestor.digest(textResource, lesson, ":day :units :weeks :room :roomCode")
     } else if ("monday" == property) {
-      builder.where("activity.time.weekday = 1")
+      builder.where("activity.time.day = 1")
       val activities = entityDao.search(builder)
       if (activities.isEmpty) {
         ""
@@ -56,7 +56,7 @@ class SchedulePropertyExtractor(textResource: TextResource) extends DefaultPrope
         digestor.digest(textResource, activities, format)
       }
     } else if ("tuesday" == property) {
-      builder.where("activity.time.weekday = 2")
+      builder.where("activity.time.day = 2")
       val activities = entityDao.search(builder)
       if (activities.isEmpty) {
         ""
@@ -64,7 +64,7 @@ class SchedulePropertyExtractor(textResource: TextResource) extends DefaultPrope
         digestor.digest(textResource, activities, format)
       }
     } else if ("wednesday" == property) {
-      builder.where("activity.time.weekday = 3")
+      builder.where("activity.time.day = 3")
       val activities = entityDao.search(builder)
       if (activities.isEmpty) {
         ""
@@ -72,7 +72,7 @@ class SchedulePropertyExtractor(textResource: TextResource) extends DefaultPrope
         digestor.digest(textResource, activities, format)
       }
     } else if ("thursday" == property) {
-      builder.where("activity.time.weekday = 4")
+      builder.where("activity.time.day = 4")
       val activities = entityDao.search(builder)
       if (activities.isEmpty) {
         ""
@@ -80,7 +80,7 @@ class SchedulePropertyExtractor(textResource: TextResource) extends DefaultPrope
         digestor.digest(textResource, activities, format)
       }
     } else if ("friday" == property) {
-      builder.where("activity.time.weekday = 5")
+      builder.where("activity.time.day = 5")
       val activities = entityDao.search(builder)
       if (activities.isEmpty) {
         ""
@@ -88,7 +88,7 @@ class SchedulePropertyExtractor(textResource: TextResource) extends DefaultPrope
         digestor.digest(textResource, activities, format)
       }
     } else if ("saturday" == property) {
-      builder.where("activity.time.weekday = 6")
+      builder.where("activity.time.day = 6")
       val activities = entityDao.search(builder)
       if (activities.isEmpty) {
         ""
@@ -96,7 +96,7 @@ class SchedulePropertyExtractor(textResource: TextResource) extends DefaultPrope
         digestor.digest(textResource, activities, format)
       }
     } else if ("sunday" == property) {
-      builder.where("activity.time.weekday = 7")
+      builder.where("activity.time.day = 7")
       val activities = entityDao.search(builder)
       if (activities.isEmpty) {
         ""

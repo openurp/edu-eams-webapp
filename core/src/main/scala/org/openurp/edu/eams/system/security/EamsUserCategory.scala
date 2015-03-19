@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.system.security
 
 
-import scala.collection.JavaConversions._
+
 
 object EamsUserCategory {
 

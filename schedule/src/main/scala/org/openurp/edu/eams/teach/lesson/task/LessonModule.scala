@@ -38,7 +38,7 @@ import org.openurp.edu.eams.teach.lesson.task.web.action.TeachTaskGenAction
 import org.openurp.edu.eams.teach.lesson.task.web.action.TeachTaskSearchAction
 import org.openurp.edu.eams.teach.lesson.task.web.action.parent.LessonPlanCheckAction
 
-import scala.collection.JavaConversions._
+
 
 class LessonModule extends AbstractBindModule {
 

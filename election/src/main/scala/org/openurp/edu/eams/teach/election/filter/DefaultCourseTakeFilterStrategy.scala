@@ -1,11 +1,11 @@
 package org.openurp.edu.eams.teach.election.filter
 
-import java.util.List
-import java.util.Map
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.openurp.edu.teach.lesson.CourseTake
 
-import scala.collection.JavaConversions._
+
 
 class DefaultCourseTakeFilterStrategy extends CourseTakeFilterStrategy {
 

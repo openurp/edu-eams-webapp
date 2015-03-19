@@ -1,16 +1,14 @@
 package org.openurp.edu.eams.system.message.web.action
-
-import java.util.Collections
 import java.util.Date
-import java.util.Iterator
-import java.util.List
-import java.util.Set
+
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
 import org.beangle.commons.collection.page.PageLimit
 import org.beangle.commons.dao.query.builder.Condition
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.beangle.commons.entity.Entity
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.beangle.data.model.Entity
 import org.beangle.commons.lang.Arrays
 import org.beangle.commons.lang.Strings
 import org.beangle.security.blueprint.User
@@ -26,7 +24,7 @@ import org.openurp.edu.eams.system.msg.service.SystemMessageService
 import org.openurp.edu.eams.system.security.EamsUserCategory
 import org.openurp.edu.eams.web.action.BaseAction
 
-import scala.collection.JavaConversions._
+
 
 class SystemMessageForTeacherAction extends BaseAction {
 

@@ -12,7 +12,7 @@ import org.openurp.edu.eams.teach.grade.lesson.web.action.RetakeAction
 import org.openurp.edu.eams.teach.grade.lesson.web.action.RevokeAction
 import org.openurp.edu.eams.teach.grade.lesson.web.action.TeacherReportAction
 
-import scala.collection.JavaConversions._
+
 
 class DefaultModule extends AbstractBindModule {
 

@@ -1,9 +1,7 @@
 package org.openurp.edu.eams.system.web.action
 
-import java.sql.Date
-import java.util.Collections
-import java.util.Comparator
-import java.util.List
+import java.sql.Dateimport java.util.Comparator
+
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 import org.apache.commons.lang3.exception.ExceptionUtils
@@ -11,7 +9,7 @@ import org.apache.struts2.ServletActionContext
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
 import org.beangle.commons.collection.page.PageLimit
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.util.HierarchyEntityUtils
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.web.util.CookieUtils
@@ -42,7 +40,7 @@ import org.openurp.edu.eams.system.security.EamsUserCategory
 import org.openurp.edu.eams.web.action.BaseAction
 import org.openurp.edu.eams.web.helper.RestrictionHelper
 
-import scala.collection.JavaConversions._
+
 
 class HomeAction extends BaseAction {
 
@@ -104,17 +102,17 @@ class HomeAction extends BaseAction {
     }
     Collections.sort(projectsOwnedByUser, new Comparator[Project]() {
 
-      def compare(arg0: Project, arg1: Project): Int = return arg0.getId.compareTo(arg1.getId)
+      def compare(arg0: Project, arg1: Project): Int = return arg0.id.compareTo(arg1.id)
     })
     var contextProjectIdValid = false
-    for (project <- projectsOwnedByUser if project.getId == contextProjectId) {
+    for (project <- projectsOwnedByUser if project.id == contextProjectId) {
       contextProjectIdValid = true
       //break
     }
     if (!contextProjectIdValid) {
       contextProjectId = null
       if (CollectUtils.isNotEmpty(projectsOwnedByUser)) {
-        contextProjectId = projectsOwnedByUser.get(0).getId
+        contextProjectId = projectsOwnedByUser.get(0).id
       }
     }
     if (null != contextProjectId && !projectsOwnedByUser.isEmpty) {
@@ -158,9 +156,9 @@ class HomeAction extends BaseAction {
         put("student", std)
         val query = OqlBuilder.from(classOf[StudentNotice], "stdNotice")
         query.join("stdNotice.stdTypes", "stdType")
-        query.where("stdType.id=:stdTs", std.getType.getId)
+        query.where("stdType.id=:stdTs", std.getType.id)
         query.join("stdNotice.departs", "depart")
-        query.where("depart.id=:dept", std.department.getId)
+        query.where("depart.id=:dept", std.department.id)
         query.orderBy("stdNotice.updatedAt")
         notices = entityDao.search(query)
         kind = "std"
@@ -197,7 +195,7 @@ class HomeAction extends BaseAction {
     val menuProfiles = menuService.getProfiles(user)
     Collections.sort(menuProfiles, new Comparator[MenuProfile]() {
 
-      def compare(arg0: MenuProfile, arg1: MenuProfile): Int = return arg0.getId.compareTo(arg1.getId)
+      def compare(arg0: MenuProfile, arg1: MenuProfile): Int = return arg0.id.compareTo(arg1.id)
     })
     put("menuProfiles", menuProfiles)
     var menuProfileId = getInt("menuProfileId")
@@ -210,7 +208,7 @@ class HomeAction extends BaseAction {
       menuProfile = entityDao.get(classOf[MenuProfile], menuProfileId)
     }
     if (null != menuProfile) {
-      menuProfileId = menuProfile.getId
+      menuProfileId = menuProfile.id
       getSession.put("menuProfileId", menuProfileId)
     }
     menuProfile

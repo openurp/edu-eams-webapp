@@ -1,19 +1,17 @@
 package org.openurp.edu.eams.teach.grade.lesson.service
 
-import java.util.Collections
-import java.util.Iterator
-import java.util.List
+
 import org.beangle.commons.collection.CollectUtils
 import org.openurp.edu.eams.teach.Grade
-import org.openurp.edu.eams.teach.code.industry.ExamStatus
-import org.openurp.edu.eams.teach.code.industry.GradeType
+import org.openurp.edu.teach.code.ExamStatus
+import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.teach.grade.CourseGrade
-import org.openurp.edu.eams.teach.lesson.ExamGrade
+import org.openurp.edu.teach.grade.ExamGrade
 import org.openurp.edu.eams.teach.lesson.GradeTypeConstants
 import org.openurp.edu.eams.util.stat.FloatSegment
 import GradeSegStats._
 
-import scala.collection.JavaConversions._
+
 
 object GradeSegStats {
 
@@ -69,18 +67,18 @@ class GradeSegStats {
     for (gradeType <- gradeTypes) {
       val grades = CollectUtils.newArrayList()
       for (courseGrade <- courseGrades) {
-        if (gradeType.getId == GradeTypeConstants.FINAL_ID) {
+        if (gradeType.id == GradeTypeConstants.FINAL_ID) {
           grades.add(courseGrade)
         } else {
           val examGrade = courseGrade.getExamGrade(gradeType)
           var examStatus: ExamStatus = null
           if (null != examGrade) examStatus = examGrade.getExamStatus
-          if (gradeType.getId == GradeTypeConstants.GA_ID) {
+          if (gradeType.id == GradeTypeConstants.GA_ID) {
             val endGrade = courseGrade.getExamGrade(endGradeType)
             if (null != endGrade) examStatus = endGrade.getExamStatus
           }
           if (null == examStatus) examStatus = normalStatus
-          if (null != examGrade && null != examGrade.getScore && examStatus.getId == normalStatus.getId) {
+          if (null != examGrade && null != examGrade.getScore && examStatus.id == normalStatus.id) {
             grades.add(examGrade)
           }
         }

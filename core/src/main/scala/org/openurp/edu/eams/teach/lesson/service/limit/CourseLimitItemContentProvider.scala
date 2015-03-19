@@ -1,10 +1,10 @@
 package org.openurp.edu.eams.teach.lesson.service.limit
 
-import java.util.List
-import java.util.Map
+
+
 import org.beangle.commons.collection.page.PageLimit
 
-import scala.collection.JavaConversions._
+
 
 trait CourseLimitItemContentProvider[T] {
 

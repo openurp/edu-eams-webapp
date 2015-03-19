@@ -1,20 +1,18 @@
 package org.openurp.edu.eams.teach.grade.course.web.action
 
-import java.util.ArrayList
-import java.util.Collection
-import java.util.Collections
-import java.util.List
-import java.util.Map
+
+
+
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.bean.comparators.PropertyComparator
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.base.Student
-import org.openurp.edu.eams.teach.code.industry.GradeType
+import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.eams.teach.grade.service.CourseGradeService
 import org.openurp.edu.eams.teach.grade.service.CourseGradeSettings
 import org.openurp.edu.eams.teach.grade.service.GpaService
@@ -26,7 +24,7 @@ import org.openurp.edu.eams.teach.lesson.GradeTypeConstants
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 import org.openurp.edu.eams.web.helper.BaseInfoSearchHelper
 
-import scala.collection.JavaConversions._
+
 
 class MultiStdReportAction extends SemesterSupportAction {
 
@@ -56,7 +54,7 @@ class MultiStdReportAction extends SemesterSupportAction {
       setting.setOrder(Order.desc("stdGpa.gpa"))
     }
     if (null != setting.gradeType) {
-      setting.setGradeType(entityDao.get(classOf[GradeType], setting.gradeType.getId))
+      setting.setGradeType(entityDao.get(classOf[GradeType], setting.gradeType.id))
     }
     if (setting.getPageSize == null || setting.getPageSize.intValue() < 0) {
       setting.setPageSize(new java.lang.Integer(20))
@@ -93,7 +91,7 @@ class MultiStdReportAction extends SemesterSupportAction {
     forward()
   }
 
-  private def getCourseGrades(semester: Semester, stds: Collection[Student]): Map[Student, List[CourseGrade]] = {
+  private def getCourseGrades(semester: Semester, stds: Iterable[Student]): Map[Student, List[CourseGrade]] = {
     val gradeMap = CollectUtils.newHashMap()
     for (std <- stds) {
       gradeMap.put(std, new ArrayList[CourseGrade]())

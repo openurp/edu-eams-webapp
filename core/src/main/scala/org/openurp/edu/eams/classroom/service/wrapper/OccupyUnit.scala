@@ -1,15 +1,12 @@
 package org.openurp.edu.eams.classroom.service.wrapper
 
-import java.util.Collection
-import org.openurp.base.Classroom
-import org.openurp.edu.eams.classroom.TimeUnit
-import org.openurp.edu.eams.classroom.code.industry.RoomUsage
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConversions._
+import org.openurp.base.Room
+import 
+import org.openurp.base.code.RoomUsage
 
-class OccupyUnit(@BeanProperty val rooms: Collection[Classroom], 
-    @BeanProperty val units: Array[TimeUnit], 
+class OccupyUnit( val rooms: Iterable[Room], 
+     val units: Array[YearWeekTime], 
     protected val usage: RoomUsage, 
     protected val userid: java.lang.Long) {
 

@@ -8,7 +8,7 @@ import org.openurp.edu.teach.lesson.CourseTake
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.teach.lesson.model.CourseTakeBean
 
-import scala.collection.JavaConversions._
+
 
 object CourseTakeHelper {
 

@@ -1,14 +1,14 @@
 package org.openurp.edu.eams.teach.lesson.task.web.action
 
-import java.util.Collection
-import java.util.List
-import java.util.Map
-import java.util.Map.Entry
-import java.util.Set
+
+
+
+.Entry
+
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.entity.Entity
+import org.beangle.data.model.Entity
 import org.beangle.commons.lang.Strings
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.eams.core.CommonAuditState
 import org.openurp.edu.teach.lesson.CourseLimitGroup
@@ -21,7 +21,7 @@ import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitItemContentPro
 import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnum
 import org.openurp.edu.eams.teach.lesson.task.web.action.parent.LessonManagerCoreAction
 
-import scala.collection.JavaConversions._
+
 
 class TeachTaskAction extends LessonManagerCoreAction {
 
@@ -60,9 +60,9 @@ class TeachTaskAction extends LessonManagerCoreAction {
             val courseLimitItems = groupItems.get(courseLimitGroup)
             for (courseLimitItem <- courseLimitItems) {
               val meta = courseLimitItem.getMeta
-              if (CourseLimitMetaEnum.ADMINCLASS.getMetaId == meta.getId) {
+              if (CourseLimitMetaEnum.ADMINCLASS.getMetaId == meta.id) {
                 if (courseLimitItem.getOperator == Operator.IN) {
-                  val adminclasses = provider.getContents(courseLimitItem.getContent).values.asInstanceOf[Collection[Adminclass]]
+                  val adminclasses = provider.getContents(courseLimitItem.getContent).values.asInstanceOf[Iterable[Adminclass]]
                   for (adminclass <- adminclasses) {
                     var count = adminclass.getStdCount
                     if (count == 0) {

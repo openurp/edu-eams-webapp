@@ -1,10 +1,10 @@
 package org.openurp.edu.eams.teach.program.major.web.action
 
 import java.sql.Date
-import java.util.List
+
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.beangle.commons.entity.Entity
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.beangle.data.model.Entity
 import org.beangle.commons.lang.Strings
 import org.beangle.struts2.helper.QueryHelper
 import com.ekingstar.eams.teach.Course
@@ -13,7 +13,7 @@ import com.ekingstar.eams.teach.code.school.CourseHourType
 import com.ekingstar.eams.teach.course.web.action.CourseSearchAction
 import com.ekingstar.eams.teach.model.CourseBean
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class CollegeCourseAction extends CourseSearchAction {
 
@@ -26,7 +26,7 @@ class CollegeCourseAction extends CourseSearchAction {
       val courseHourType = entityDao.get(classOf[CourseHourType], courseHourTypeId)
       val hours = getFloat("courseHourType_hours")
       if (null != hours && hours.longValue() > 0) {
-        builder.where("hours[" + courseHourType.getId.toString + "] =:hours", hours)
+        builder.where("hours[" + courseHourType.id.toString + "] =:hours", hours)
       }
     }
     val startDate = getDate("course.beginTime")
@@ -77,7 +77,7 @@ class CollegeCourseAction extends CourseSearchAction {
     val types = baseCodeService.getCodes(classOf[CourseHourType])
     var total = 0
     for (courseHourType <- types) {
-      val hour = getInt("hourTypeId" + courseHourType.getId)
+      val hour = getInt("hourTypeId" + courseHourType.id)
       if (hour != null) total += hour
     }
     if (total > 0) course.setPeriod(total)

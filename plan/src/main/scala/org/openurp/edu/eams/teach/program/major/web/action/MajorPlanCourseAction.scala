@@ -6,17 +6,17 @@ import org.beangle.commons.lang.tuple.Pair
 import org.beangle.struts2.convention.route.Action
 import com.ekingstar.eams.base.Department
 import com.ekingstar.eams.teach.Course
-import org.openurp.edu.eams.teach.program.CourseGroup
+import org.openurp.edu.teach.plan.CourseGroup
 import org.openurp.edu.eams.teach.program.helper.PlanTermCreditTool
 import org.openurp.edu.eams.teach.program.major.MajorPlan
 import org.openurp.edu.teach.plan.MajorPlanCourse
-import org.openurp.edu.teach.plan.MajorPlanCourseGroup
+import org.openurp.edu.teach.plan.MajorCourseGroup
 import org.openurp.edu.eams.teach.program.major.model.MajorPlanCourseBean
 import org.openurp.edu.eams.teach.program.major.service.MajorPlanCourseService
 import org.openurp.edu.eams.teach.program.major.service.MajorPlanService
 import com.ekingstar.eams.web.action.BaseAction
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class MajorPlanCourseAction extends BaseAction {
 
@@ -31,24 +31,24 @@ class MajorPlanCourseAction extends BaseAction {
     val planCourse = populateEntity(classOf[MajorPlanCourse], "planCourse")
     val terms = get("planCourse.terms")
     planCourse.setTerms(PlanTermCreditTool.normalizeTerms(terms))
-    val extra = "&courseGroup.id=" + group.getId + "&planId=" + plan.getId
+    val extra = "&courseGroup.id=" + group.id + "&planId=" + plan.id
     if (planCourse.isPersisted) {
       if (majorPlanService.hasCourse(group, planCourse.getCourse, planCourse)) {
         getFlash.put("params", get("params"))
-        return redirect(new Action(classOf[MajorPlanCourseGroupAction], "arrangeGroupCourses", extra), 
+        return redirect(new Action(classOf[MajorCourseGroupAction], "arrangeGroupCourses", extra), 
           "teachPlan.duplicate.course")
       }
       majorPlanCourseService.updatePlanCourse(planCourse, plan)
     } else {
       if (majorPlanService.hasCourse(group, planCourse.getCourse)) {
         getFlash.put("params", get("params"))
-        return redirect(new Action(classOf[MajorPlanCourseGroupAction], "arrangeGroupCourses", extra), 
+        return redirect(new Action(classOf[MajorCourseGroupAction], "arrangeGroupCourses", extra), 
           "teachPlan.duplicate.course")
       }
       majorPlanCourseService.addPlanCourse(planCourse, plan)
     }
     getFlash.put("params", get("params"))
-    redirect(new Action(classOf[MajorPlanCourseGroupAction], "arrangeGroupCourses", extra), "info.save.success")
+    redirect(new Action(classOf[MajorCourseGroupAction], "arrangeGroupCourses", extra), "info.save.success")
   }
 
   def batchAddCourses(): String = {
@@ -56,7 +56,7 @@ class MajorPlanCourseAction extends BaseAction {
     val o = extractMajorPlanAndGroup()
     val plan = o.getLeft
     val group = o.getRight
-    val extra = "&courseGroup.id=" + group.getId + "&planId=" + plan.getId
+    val extra = "&courseGroup.id=" + group.id + "&planId=" + plan.id
     val msg = new StringBuffer()
     var errorNum = 0
     for (courseId <- courseIds) {
@@ -84,7 +84,7 @@ class MajorPlanCourseAction extends BaseAction {
       ";失败 " + 
       errorNum) + 
       msg)
-    redirect(new Action(classOf[MajorPlanCourseGroupAction], "arrangeGroupCourses", extra), "")
+    redirect(new Action(classOf[MajorCourseGroupAction], "arrangeGroupCourses", extra), "")
   }
 
   def batchEditCourses(): String = {
@@ -92,7 +92,7 @@ class MajorPlanCourseAction extends BaseAction {
     val o = extractMajorPlanAndGroup()
     val plan = o.getLeft
     val group = o.getRight
-    val extra = "&courseGroup.id=" + group.getId + "&planId=" + plan.getId
+    val extra = "&courseGroup.id=" + group.id + "&planId=" + plan.id
     for (planCourseId <- planCourseIds) {
       val planCourse = entityDao.get(classOf[MajorPlanCourse], planCourseId)
       planCourse.setTerms(PlanTermCreditTool.normalizeTerms(get("planCourse_." + planCourseId + ".terms")))
@@ -101,7 +101,7 @@ class MajorPlanCourseAction extends BaseAction {
       majorPlanCourseService.updatePlanCourse(planCourse, plan)
     }
     getFlash.put("params", get("params"))
-    redirect(new Action(classOf[MajorPlanCourseGroupAction], "arrangeGroupCourses", extra), "info.save.success")
+    redirect(new Action(classOf[MajorCourseGroupAction], "arrangeGroupCourses", extra), "info.save.success")
   }
 
   def remove(): String = {
@@ -114,11 +114,11 @@ class MajorPlanCourseAction extends BaseAction {
       majorPlanCourseService.removePlanCourse(planCourse, plan)
     }
     getFlash.put("params", get("params"))
-    val extra = "&courseGroup.id=" + group.getId + "&planId=" + plan.getId
-    redirect(new Action(classOf[MajorPlanCourseGroupAction], "arrangeGroupCourses", extra), "info.delete.success")
+    val extra = "&courseGroup.id=" + group.id + "&planId=" + plan.id
+    redirect(new Action(classOf[MajorCourseGroupAction], "arrangeGroupCourses", extra), "info.delete.success")
   }
 
-  private def extractMajorPlanAndGroup(): Pair[MajorPlan, MajorPlanCourseGroup] = {
+  private def extractMajorPlanAndGroup(): Pair[MajorPlan, MajorCourseGroup] = {
     val planId = getLong("planId")
     var groupId = getLong("planCourse.courseGroup.id")
     if (null == groupId) {
@@ -128,8 +128,8 @@ class MajorPlanCourseAction extends BaseAction {
       throw new EntityNotFoundException("plan id or planCourse id")
     }
     val plan = entityDao.get(classOf[MajorPlan], planId)
-    val group = entityDao.get(classOf[MajorPlanCourseGroup], groupId)
-    new Pair[MajorPlan, MajorPlanCourseGroup](plan, group)
+    val group = entityDao.get(classOf[MajorCourseGroup], groupId)
+    new Pair[MajorPlan, MajorCourseGroup](plan, group)
   }
 
   def setMajorPlanCourseService(majorPlanCourseService: MajorPlanCourseService) {

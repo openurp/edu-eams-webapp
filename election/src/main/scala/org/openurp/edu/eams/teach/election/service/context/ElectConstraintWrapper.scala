@@ -2,7 +2,7 @@ package org.openurp.edu.eams.teach.election.service.context
 
 import java.io.Serializable
 
-import scala.collection.JavaConversions._
+
 
 trait ElectConstraintWrapper[T] extends Serializable {
 

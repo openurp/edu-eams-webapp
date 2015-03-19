@@ -1,17 +1,17 @@
-package org.openurp.edu.teach.Course.web.action
+package org.openurp.edu.base.Course.web.action
 
 import java.io.IOException
 import java.io.Writer
 import java.sql.Date
-import java.util.Collection
+
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.transfer.exporter.PropertyExtractor
 import org.beangle.struts2.helper.QueryHelper
-import org.openurp.edu.teach.Course
+import org.openurp.edu.base.Course
 import org.openurp.edu.eams.teach.code.industry.ExamMode
 import org.openurp.edu.eams.teach.code.school.CourseCategory
 import org.openurp.edu.eams.teach.code.school.CourseHourType
@@ -21,7 +21,7 @@ import org.openurp.edu.eams.teach.service.impl.CoursePropertyExtractor
 import org.openurp.edu.eams.web.action.common.ProjectSupportAction
 import org.openurp.edu.eams.web.helper.BaseInfoSearchHelper
 
-import scala.collection.JavaConversions._
+
 
 class CourseSearchAction extends ProjectSupportAction {
 
@@ -53,7 +53,7 @@ class CourseSearchAction extends ProjectSupportAction {
       val courseHourType = entityDao.get(classOf[CourseHourType], courseHourTypeId)
       val hours = getFloat("courseHourType_hours")
       if (null != hours && hours.longValue() > 0) {
-        builder.where("hours[" + courseHourType.getId.toString + "] =:hours", hours)
+        builder.where("hours[" + courseHourType.id.toString + "] =:hours", hours)
       }
     }
     val startDate = getDate("course.beginTime")
@@ -136,7 +136,7 @@ class CourseSearchAction extends ProjectSupportAction {
     forward("coursesJSON")
   }
 
-  protected def getExportDatas(): Collection[_] = {
+  protected def getExportDatas(): Iterable[_] = {
     val courseIds = get("courseIds")
     if (Strings.isNotBlank(courseIds)) {
       entityDao.get(classOf[Course], Strings.splitToLong(courseIds))

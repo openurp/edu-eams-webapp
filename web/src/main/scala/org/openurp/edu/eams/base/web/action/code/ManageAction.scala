@@ -1,10 +1,10 @@
 package org.openurp.edu.eams.base.web.action.code
 
-import java.util.ArrayList
-import java.util.Collection
-import java.util.List
+
+
+
 import org.apache.commons.lang3.ClassUtils
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.openurp.edu.eams.base.code.nation.Division
 import org.openurp.edu.eams.core.code.ministry.Discipline
@@ -15,7 +15,7 @@ import org.openurp.edu.base.code.StdLabelType
 import org.openurp.edu.eams.core.web.action.biz.Catalog
 import org.openurp.edu.eams.core.web.action.biz.Disc
 
-import scala.collection.JavaConversions._
+
 
 class ManageAction extends AbstractManageAction {
 
@@ -57,7 +57,7 @@ class ManageAction extends AbstractManageAction {
     }
     for (catalog <- catalogs) {
       val firstdiscsQry = OqlBuilder.from(classOf[Discipline], "disc")
-      firstdiscsQry.where("disc.parent is null").where("disc.catalog.id=:catalogid", catalog.getId)
+      firstdiscsQry.where("disc.parent is null").where("disc.catalog.id=:catalogid", catalog.id)
       val firstdiscs = entityDao.search(firstdiscsQry)
       for (firstdisc <- firstdiscs) {
         catalog.getFirstdiscs.add(new Disc(firstdisc))
@@ -75,7 +75,7 @@ class ManageAction extends AbstractManageAction {
       val shortName = Strings.uncapitalize(ClassUtils.getShortClassName(className))
       val divisions = entityDao.getAll(classOf[Division])
       val division = populateEntity(classOf[Division], shortName)
-      if (null != division.getId) {
+      if (null != division.id) {
         divisions.remove(division)
       }
       put("division", division)

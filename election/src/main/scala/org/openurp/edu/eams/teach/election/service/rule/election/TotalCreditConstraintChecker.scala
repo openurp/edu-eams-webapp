@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.election.service.rule.election
 
-import java.util.Iterator
-import org.beangle.commons.dao.query.builder.OqlBuilder
+
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.ems.rule.Context
 import org.openurp.edu.base.Student
 import org.openurp.edu.eams.teach.election.model.Enum.ElectRuleType
@@ -18,7 +18,7 @@ import org.openurp.edu.eams.teach.election.service.rule.ElectRulePrepare
 import org.openurp.edu.teach.lesson.CourseTake
 import org.openurp.edu.teach.lesson.Lesson
 
-import scala.collection.JavaConversions._
+
 
 class TotalCreditConstraintChecker extends AbstractElectRuleExecutor with ElectRulePrepare {
 

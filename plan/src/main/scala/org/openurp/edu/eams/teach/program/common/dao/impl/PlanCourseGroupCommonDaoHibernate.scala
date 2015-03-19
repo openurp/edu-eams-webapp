@@ -1,28 +1,26 @@
 package org.openurp.edu.eams.teach.program.common.dao.impl
 
-import java.util.ArrayList
-import java.util.Collections
-import java.util.HashSet
-import java.util.List
-import java.util.Set
+
+
+
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
-import org.beangle.orm.hibernate.HibernateEntityDao
+import org.beangle.data.jpa.hibernate.HibernateEntityDao
 import com.ekingstar.eams.teach.Course
-import org.openurp.edu.eams.teach.program.CourseGroup
+import org.openurp.edu.teach.plan.CourseGroup
 import org.openurp.edu.eams.teach.program.CoursePlan
-import org.openurp.edu.eams.teach.program.PlanCourse
+import org.openurp.edu.teach.plan.PlanCourse
 import org.openurp.edu.eams.teach.program.common.dao.PlanCommonDao
 import org.openurp.edu.eams.teach.program.common.dao.PlanCourseGroupCommonDao
 import org.openurp.edu.eams.teach.program.common.helper.ProgramHibernateClassGetter
 import org.openurp.edu.eams.teach.program.helper.PlanTermCreditTool
 import org.openurp.edu.teach.plan.MajorPlanCourse
-import org.openurp.edu.teach.plan.MajorPlanCourseGroup
+import org.openurp.edu.teach.plan.MajorCourseGroup
 import org.openurp.edu.eams.teach.program.util.PlanUtils
 import PlanCourseGroupCommonDaoHibernate._
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 object PlanCourseGroupCommonDaoHibernate {
 
@@ -100,7 +98,7 @@ class PlanCourseGroupCommonDaoHibernate extends HibernateEntityDao with PlanCour
     if (group.getChildren != null && group.getChildren.size > 0) {
       val t_children = new ArrayList[CourseGroup](group.getChildren)
       for (child <- t_children) {
-        removeCourseGroup(child.asInstanceOf[MajorPlanCourseGroup])
+        removeCourseGroup(child.asInstanceOf[MajorCourseGroup])
       }
     }
     if (parent != null) {
@@ -207,7 +205,7 @@ class PlanCourseGroupCommonDaoHibernate extends HibernateEntityDao with PlanCour
       if (meInTopIndex == plan.getTopCourseGroups.size - 1) {
         throw new RuntimeException("CourseGroup cannot be moved down, because it's already the last one")
       }
-      val meHindGroup = plan.getTopCourseGroups.get(meInTopIndex + 1).asInstanceOf[MajorPlanCourseGroup]
+      val meHindGroup = plan.getTopCourseGroups.get(meInTopIndex + 1).asInstanceOf[MajorCourseGroup]
       val meInPreOrderIndex = plan.getGroups.indexOf(courseGroup)
       val meHindGroupInPreOrderIndex = plan.getGroups.indexOf(meHindGroup)
       swap(plan.getGroups, meInPreOrderIndex, meHindGroupInPreOrderIndex)
@@ -231,7 +229,7 @@ class PlanCourseGroupCommonDaoHibernate extends HibernateEntityDao with PlanCour
       if (meInTopIndex == 0) {
         throw new RuntimeException("CourseGroup cannot be moved up, because it's already the first one")
       }
-      val meFrontGroup = plan.getTopCourseGroups.get(meInTopIndex - 1).asInstanceOf[MajorPlanCourseGroup]
+      val meFrontGroup = plan.getTopCourseGroups.get(meInTopIndex - 1).asInstanceOf[MajorCourseGroup]
       val meInPreOrderIndex = plan.getGroups.indexOf(courseGroup)
       val meFrontGroupInPreOrderIndex = plan.getGroups.indexOf(meFrontGroup)
       swap(plan.getGroups, meInPreOrderIndex, meFrontGroupInPreOrderIndex)
@@ -254,7 +252,7 @@ class PlanCourseGroupCommonDaoHibernate extends HibernateEntityDao with PlanCour
     anyList.set(index1, o2)
   }
 
-  def getCourseGroupByCourseType(planGroup: CourseGroup, planId: java.lang.Long, courseTypeId: java.lang.Integer): MajorPlanCourseGroup = {
+  def getCourseGroupByCourseType(planGroup: CourseGroup, planId: java.lang.Long, courseTypeId: java.lang.Integer): MajorCourseGroup = {
     val oql = OqlBuilder.from(ProgramHibernateClassGetter.hibernateClass(planGroup), "cgroup")
     oql.where("cgroup.courseType.id = :typeId", courseTypeId)
     oql.where("cgroup.plan.id = :planId", planId)
@@ -265,7 +263,7 @@ class PlanCourseGroupCommonDaoHibernate extends HibernateEntityDao with PlanCour
     null
   }
 
-  def extractCourseInCourseGroup(group: MajorPlanCourseGroup, terms: String): List[Course] = {
+  def extractCourseInCourseGroup(group: MajorCourseGroup, terms: String): List[Course] = {
     val courses = new HashSet[Course]()
     val findTerm = Strings.splitNumSeq(terms)
     if (null == findTerm || findTerm.length == 0) {
@@ -277,7 +275,7 @@ class PlanCourseGroupCommonDaoHibernate extends HibernateEntityDao with PlanCour
     new ArrayList[Course](courses)
   }
 
-  def extractPlanCourseInCourseGroup(group: MajorPlanCourseGroup, terms: Set[String]): List[MajorPlanCourse] = {
+  def extractPlanCourseInCourseGroup(group: MajorCourseGroup, terms: Set[String]): List[MajorPlanCourse] = {
     val result = CollectUtils.newHashSet()
     for (term <- terms) {
       result.addAll(PlanUtils.getPlanCourses(group, java.lang.Integer.valueOf(term.asInstanceOf[String])).asInstanceOf[List[_]])

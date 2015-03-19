@@ -7,7 +7,7 @@ import org.openurp.edu.base.Student
 import org.openurp.edu.eams.teach.schedule.service.StdCourseTablePermissionChecker
 import org.openurp.edu.eams.teach.schedule.util.CourseTable
 
-import scala.collection.JavaConversions._
+
 
 class DefaultStdCourseTablePermissionChecker extends BaseServiceImpl with StdCourseTablePermissionChecker {
 
@@ -22,7 +22,7 @@ class DefaultStdCourseTablePermissionChecker extends BaseServiceImpl with StdCou
     ids = Strings.trim(ids)
     if (CourseTable.STD == kind) {
       try {
-        if (ids != std.getId + "") {
+        if (ids != std.id + "") {
           return "没有权限"
         }
       } catch {
@@ -33,10 +33,10 @@ class DefaultStdCourseTablePermissionChecker extends BaseServiceImpl with StdCou
       try {
         var adminclass = std.getAdminclass
         if (null == adminclass) {
-          val student = entityDao.get(classOf[Student], std.getId)
+          val student = entityDao.get(classOf[Student], std.id)
           adminclass = student.getAdminclass
         }
-        if (null == adminclass.getId || ids == std.getAdminclass.getId + "") {
+        if (null == adminclass.id || ids == std.getAdminclass.id + "") {
           return "没有权限"
         }
       } catch {

@@ -1,17 +1,17 @@
 package org.openurp.edu.eams.core.web.action
 
-import java.util.Collection
-import java.util.List
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.openurp.base.Department
 import org.openurp.edu.base.Direction
 import org.openurp.edu.base.Project
 import org.openurp.edu.eams.web.action.common.ProjectSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class DirectionSearchAction extends ProjectSupportAction {
 
@@ -56,7 +56,7 @@ class DirectionSearchAction extends ProjectSupportAction {
     query
   }
 
-  protected def getExportDatas(): Collection[Direction] = {
+  protected def getExportDatas(): Iterable[Direction] = {
     val query = buildDirectionQuery()
     query.limit(null)
     entityDao.search(query)

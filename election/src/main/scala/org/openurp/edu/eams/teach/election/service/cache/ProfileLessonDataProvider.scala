@@ -1,13 +1,13 @@
 package org.openurp.edu.eams.teach.election.service.cache
 
-import java.util.List
-import java.util.Map
-import java.util.Set
+
+
+
 import org.apache.commons.lang3.ArrayUtils
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
-import org.openurp.edu.eams.base.Campus
+import org.openurp.base.Campus
 import org.openurp.base.Department
 import org.openurp.edu.eams.base.model.CampusBean
 import org.openurp.edu.eams.base.model.DepartmentBean
@@ -16,12 +16,12 @@ import org.openurp.edu.base.Project
 import org.openurp.code.edu.Education
 import org.openurp.edu.eams.core.model.MajorBean
 import org.openurp.edu.eams.core.model.ProjectBean
-import org.openurp.edu.teach.Course
+import org.openurp.edu.base.Course
 import org.openurp.edu.eams.teach.code.school.CourseAbilityRate
 import org.openurp.edu.teach.code.CourseType
 import org.openurp.edu.eams.teach.election.ElectionProfile
 import org.openurp.edu.eams.teach.election.model.ElectionProfileBean
-import org.openurp.edu.eams.teach.lesson.CourseActivity
+import org.openurp.edu.teach.schedule.CourseActivity
 import org.openurp.edu.teach.lesson.CourseLimitGroup
 import org.openurp.edu.teach.lesson.CourseLimitItem
 import org.openurp.edu.teach.lesson.CourseLimitMeta
@@ -35,7 +35,7 @@ import org.openurp.edu.teach.model.CourseBean
 import freemarker.template.utility.StringUtil
 import ProfileLessonDataProvider._
 
-import scala.collection.JavaConversions._
+
 
 object ProfileLessonDataProvider {
 
@@ -80,7 +80,7 @@ class ProfileLessonDataProvider extends AbstractProfileLessonProvider {
     }
   }
 
-  def getIdToJson(profileId: java.lang.Long): Map[Long, String] = profileId2LessonJson.get(profileId)
+  def idToJson(profileId: java.lang.Long): Map[Long, String] = profileId2LessonJson.get(profileId)
 
   def getLastUpdateTime(profileId: java.lang.Long): String = {
     String.valueOf(profileId2LastUpdateTime.get(profileId))
@@ -108,12 +108,12 @@ class ProfileLessonDataProvider extends AbstractProfileLessonProvider {
     for (i <- 0 until lessonsSize) {
       val lesson = lessons.get(i)
       val credits = lesson.getCourse.getCredits
-      val scheduled = activityInfoMap.containsKey(lesson.getId)
-      val withdrawable = profile.getWithdrawableLessons.contains(lesson.getId)
-      val teachers = lessonTeachers.get(lesson.getId)
+      val scheduled = activityInfoMap.containsKey(lesson.id)
+      val withdrawable = profile.getWithdrawableLessons.contains(lesson.id)
+      val teachers = lessonTeachers.get(lesson.id)
       val campus = lesson.getCampus
       val remark = lesson.getRemark
-      tmp_sb.append("{id:").append(lesson.getId).append(",no:'")
+      tmp_sb.append("{id:").append(lesson.id).append(",no:'")
         .append(lesson.getNo)
         .append("',name:'")
         .append(StringUtil.javaScriptStringEnc(lesson.getCourse.getName))
@@ -122,11 +122,11 @@ class ProfileLessonDataProvider extends AbstractProfileLessonProvider {
         .append("',")
         .append("credits:")
         .append(credits)
-      tmp_sb.append(",courseId:").append(lesson.getCourse.getId)
+      tmp_sb.append(",courseId:").append(lesson.getCourse.id)
       tmp_sb.append(",startWeek:").append(lesson.getCourseSchedule.getStartWeek)
         .append(",endWeek:")
         .append(lesson.getCourseSchedule.getEndWeek)
-      tmp_sb.append(",courseTypeId:").append(lesson.getCourseType.getId)
+      tmp_sb.append(",courseTypeId:").append(lesson.getCourseType.id)
         .append(",courseTypeName:'")
         .append(lesson.getCourseType.getName)
         .append('\'')
@@ -158,7 +158,7 @@ class ProfileLessonDataProvider extends AbstractProfileLessonProvider {
       }
       tmp_sb.append('\'')
       tmp_sb.append(",arrangeInfo:[")
-      val arranges = activityInfoMap.get(lesson.getId)
+      val arranges = activityInfoMap.get(lesson.id)
       if (arranges != null) {
         val arrangeSize = arranges.keySet.size
         var j = 0
@@ -183,7 +183,7 @@ class ProfileLessonDataProvider extends AbstractProfileLessonProvider {
       }
       tmp_sb.append("]")
       tmp_sb.append("}")
-      res.put(lesson.getId, tmp_sb.toString)
+      res.put(lesson.id, tmp_sb.toString)
       tmp_sb.delete(0, tmp_sb.length)
     }
     logger.debug("Render Lesson Json in " + (System.currentTimeMillis() - start) + 
@@ -198,7 +198,7 @@ class ProfileLessonDataProvider extends AbstractProfileLessonProvider {
     builder.where("lesson.semester=:semester", profile.getSemester)
     builder.where("exists (from " + classOf[ElectionProfile].getName + 
       " profile join profile.electableLessons electableLessonId where profile.id=:profile and electableLessonId=lesson.id)", 
-      profile.getId)
+      profile.id)
     builder.orderBy("lesson.campus.id,lesson.course.code")
     val lessons = entityDao.search(builder)
     buildDataInfos(data, lessons)
@@ -269,7 +269,7 @@ class ProfileLessonDataProvider extends AbstractProfileLessonProvider {
     val activityInfos = CollectUtils.newArrayList()
     val activityInfoBuilder = OqlBuilder.from(classOf[CourseActivity].getName + " activity")
     activityInfoBuilder.where("activity.lesson in (:lessons)")
-    activityInfoBuilder.select("activity.lesson.id,activity.id,activity.time.weekday,activity.time.weekState,activity.time.startUnit,activity.time.endUnit")
+    activityInfoBuilder.select("activity.lesson.id,activity.id,activity.time.day,activity.time.state,activity.time.startUnit,activity.time.endUnit")
     var k = 0
     while (k < lessons.size) {
       var end = k + 500
@@ -364,9 +364,9 @@ class ProfileLessonDataProvider extends AbstractProfileLessonProvider {
     for (l <- lessons) {
       val nl = new LessonBean()
       result.add(nl)
-      nl.setId(l.getId)
+      nl.setId(l.id)
       nl.setNo(l.getNo)
-      val courseTypeId = l.getCourseType.getId
+      val courseTypeId = l.getCourseType.id
       var courseType = courseTypes.get(courseTypeId)
       if (null == courseType) {
         courseType = new CourseType(courseTypeId)
@@ -375,7 +375,7 @@ class ProfileLessonDataProvider extends AbstractProfileLessonProvider {
       }
       nl.setCourseType(courseType)
       if (null != l.getCampus) {
-        val campusId = l.getCampus.getId
+        val campusId = l.getCampus.id
         var campus = campuses.get(campusId)
         if (null == campus) {
           campus = new CampusBean(campusId)
@@ -383,14 +383,14 @@ class ProfileLessonDataProvider extends AbstractProfileLessonProvider {
         }
         nl.setCampus(campus)
       }
-      val courseId = l.getCourse.getId
+      val courseId = l.getCourse.id
       var course = courses.get(courseId)
       if (null == course) {
         course = new CourseBean(courseId)
         course.setCode(l.getCourse.getCode)
         course.setCredits(l.getCourse.getCredits)
         if (null != l.getCourse.education) {
-          val educationId = l.getCourse.education.getId
+          val educationId = l.getCourse.education.id
           var education = educations.get(educationId)
           if (null == education) {
             education = new Education(educationId)
@@ -398,8 +398,8 @@ class ProfileLessonDataProvider extends AbstractProfileLessonProvider {
           }
           course.setEducation(education)
         }
-        if (courseRates.get(l.getCourse.getId) != null) {
-          for (orate <- courseRates.get(l.getCourse.getId)) {
+        if (courseRates.get(l.getCourse.id) != null) {
+          for (orate <- courseRates.get(l.getCourse.id)) {
             var rate = abilityRates.get(orate)
             if (null == rate) {
               rate = new CourseAbilityRate()
@@ -409,8 +409,8 @@ class ProfileLessonDataProvider extends AbstractProfileLessonProvider {
             course.getAbilityRates.add(rate)
           }
         }
-        if (courseXmajors.get(l.getCourse.getId) != null) {
-          for (omajor <- courseXmajors.get(l.getCourse.getId)) {
+        if (courseXmajors.get(l.getCourse.id) != null) {
+          for (omajor <- courseXmajors.get(l.getCourse.id)) {
             var major = majors.get(omajor)
             if (null == major) {
               major = new MajorBean(omajor)
@@ -422,7 +422,7 @@ class ProfileLessonDataProvider extends AbstractProfileLessonProvider {
         courses.put(courseId, course)
       }
       nl.setCourse(course)
-      val departId = l.getTeachDepart.getId
+      val departId = l.getTeachDepart.id
       var depart = departs.get(departId)
       if (null == depart) {
         depart = new DepartmentBean(departId)
@@ -430,7 +430,7 @@ class ProfileLessonDataProvider extends AbstractProfileLessonProvider {
         departs.put(departId, depart)
       }
       nl.setTeachDepart(depart)
-      val projectId = l.getProject.getId
+      val projectId = l.getProject.id
       var project = projects.get(projectId)
       if (null == project) {
         project = new ProjectBean(projectId)
@@ -443,18 +443,18 @@ class ProfileLessonDataProvider extends AbstractProfileLessonProvider {
       for (og <- l.getTeachClass.getLimitGroups) {
         val group = new CourseLimitGroupBean()
         teachclass.addLimitGroups(group)
-        group.setId(og.getId)
+        group.setId(og.id)
         group.setForClass(og.isForClass)
         for (oi <- og.getItems) {
           val item = new CourseLimitItemBean()
-          item.setId(oi.getId)
+          item.setId(oi.id)
           item.setOperator(oi.getOperator)
           item.setContent(oi.getContent)
-          var meta = metas.get(oi.getMeta.getId)
+          var meta = metas.get(oi.getMeta.id)
           if (null == meta) {
             meta = new CourseLimitMetaBean()
-            meta.setId(oi.getMeta.getId)
-            metas.put(oi.getMeta.getId, meta)
+            meta.setId(oi.getMeta.id)
+            metas.put(oi.getMeta.id, meta)
           }
           item.setMeta(meta)
           group.getItems.add(item)

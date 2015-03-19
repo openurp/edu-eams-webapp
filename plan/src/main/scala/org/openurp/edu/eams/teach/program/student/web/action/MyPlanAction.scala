@@ -1,8 +1,8 @@
 package org.openurp.edu.eams.teach.program.student.web.action
 
-import java.util.List
+
 import java.util.Locale
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.text.seq.SeqPattern
 import com.ekingstar.eams.core.CommonAuditState
 import com.ekingstar.eams.core.StdPerson
@@ -20,7 +20,7 @@ import org.openurp.edu.eams.teach.program.service.CoursePlanProvider
 import org.openurp.edu.eams.teach.program.service.CourseSubstitutionService
 import com.ekingstar.eams.web.action.common.AbstractStudentProjectSupportAction
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class MyPlanAction extends AbstractStudentProjectSupportAction {
 

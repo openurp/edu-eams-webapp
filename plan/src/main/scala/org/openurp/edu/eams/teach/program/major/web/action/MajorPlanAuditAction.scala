@@ -1,11 +1,11 @@
 package org.openurp.edu.eams.teach.program.major.web.action
 
 import java.util.Date
-import java.util.List
-import java.util.Map
+
+
 import org.apache.commons.lang3.ArrayUtils
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.security.blueprint.User
 import com.ekingstar.eams.core.CommonAuditState
 import org.openurp.edu.eams.teach.program.Program
@@ -17,7 +17,7 @@ import org.openurp.edu.eams.teach.program.major.guard.MajorProgramOperateType
 import org.openurp.edu.eams.teach.program.major.model.MajorPlanCommentBean
 import org.openurp.edu.eams.teach.program.major.service.MajorPlanAuditService
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class MajorPlanAuditAction extends MajorPlanSearchAction {
 

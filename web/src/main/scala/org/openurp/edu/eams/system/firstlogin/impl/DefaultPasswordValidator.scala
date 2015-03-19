@@ -3,7 +3,7 @@ package org.openurp.edu.eams.system.firstlogin.impl
 import org.beangle.commons.lang.Chars
 import org.openurp.edu.eams.system.firstlogin.PasswordValidator
 
-import scala.collection.JavaConversions._
+
 
 class DefaultPasswordValidator extends PasswordValidator {
 

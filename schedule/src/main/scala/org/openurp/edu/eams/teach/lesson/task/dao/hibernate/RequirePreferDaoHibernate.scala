@@ -1,10 +1,10 @@
 package org.openurp.edu.eams.teach.lesson.task.dao.hibernate
 
-import org.beangle.orm.hibernate.HibernateEntityDao
+import org.beangle.data.jpa.hibernate.HibernateEntityDao
 import org.openurp.edu.eams.teach.lesson.task.dao.RequirePreferDao
 import org.openurp.edu.eams.teach.lesson.task.model.RequirePrefer
 
-import scala.collection.JavaConversions._
+
 
 class RequirePreferDaoHibernate extends HibernateEntityDao with RequirePreferDao {
 

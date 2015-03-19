@@ -1,11 +1,11 @@
 package org.openurp.edu.eams.core.web.action
 
 import java.util.Date
-import java.util.Map
-import java.util.Set
+
+
 import javax.persistence.EntityExistsException
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.struts2.helper.Params
 import org.openurp.base.Department
@@ -13,7 +13,7 @@ import org.openurp.edu.base.Direction
 import org.openurp.edu.base.DirectionJournal
 import org.openurp.edu.base.Major
 
-import scala.collection.JavaConversions._
+
 
 class DirectionAction extends DirectionSearchAction {
 
@@ -23,7 +23,7 @@ class DirectionAction extends DirectionSearchAction {
     for (dd <- direction.getDeparts) {
       dds.add(dd.getDepart)
     }
-    if (getProject.getId != direction.major.getProject.getId || 
+    if (getProject.id != direction.major.getProject.id || 
       !getDeparts.containsAll(dds)) {
       return forwardError("error.dataRealm.insufficient")
     }
@@ -96,16 +96,16 @@ class DirectionAction extends DirectionSearchAction {
     var i = 0
     while (i <= count) {
       val md = populate(classOf[DirectionJournal], "md" + i)
-      if (md.education == null || md.education.getId == null || 
+      if (md.education == null || md.education.id == null || 
         md.getDepart == null || 
-        md.getDepart.getId == null || 
+        md.getDepart.id == null || 
         md.getEffectiveAt == null || 
-        mdCahe.contains((md.education.getId + "" + md.getDepart.getId).hashCode)) {
+        mdCahe.contains((md.education.id + "" + md.getDepart.id).hashCode)) {
         //continue
       }
       md.setDirection(direction)
       direction.getDeparts.add(md)
-      mdCahe.add((md.education.getId + "" + md.getDepart.getId).hashCode)
+      mdCahe.add((md.education.id + "" + md.getDepart.id).hashCode)
       i += 1
     }
     !direction.getDeparts.isEmpty

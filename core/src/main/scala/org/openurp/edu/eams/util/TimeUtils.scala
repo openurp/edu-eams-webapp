@@ -2,7 +2,7 @@ package org.openurp.edu.eams.util
 
 import org.beangle.commons.lang.Strings
 
-import scala.collection.JavaConversions._
+
 
 object TimeUtils {
 

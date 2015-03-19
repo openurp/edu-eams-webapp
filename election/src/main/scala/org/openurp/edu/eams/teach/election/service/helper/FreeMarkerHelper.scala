@@ -2,7 +2,7 @@ package org.openurp.edu.eams.teach.election.service.helper
 
 import java.io.StringWriter
 import java.io.Writer
-import java.util.Map
+
 import org.beangle.commons.collection.CollectUtils
 import org.openurp.edu.eams.teach.election.model.ElectMailTemplate
 import org.openurp.edu.teach.lesson.CourseTake
@@ -10,16 +10,16 @@ import freemarker.cache.StringTemplateLoader
 import freemarker.template.Configuration
 import freemarker.template.Template
 
-import scala.collection.JavaConversions._
+
 
 object FreeMarkerHelper {
 
   def dynamicCompileTemplate(template: ElectMailTemplate, courseTake: CourseTake): ElectMailTemplate = {
     val attrs = CollectUtils.newHashMap()
     attrs.put("courseTake", courseTake)
-    val title = dynamicCompile(classOf[ElectMailTemplate].getName + template.getId + 
+    val title = dynamicCompile(classOf[ElectMailTemplate].getName + template.id + 
       ".title", template.getTitle, attrs)
-    val content = dynamicCompile(classOf[ElectMailTemplate].getName + template.getId + 
+    val content = dynamicCompile(classOf[ElectMailTemplate].getName + template.id + 
       ".content", template.getContent, attrs)
     val result = new ElectMailTemplate()
     result.setContent(content)

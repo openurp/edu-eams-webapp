@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.web
 
 
-import scala.collection.JavaConversions._
+
 
 object Constants {
 

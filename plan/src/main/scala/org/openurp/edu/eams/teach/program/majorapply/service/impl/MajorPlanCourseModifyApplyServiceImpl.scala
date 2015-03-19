@@ -1,9 +1,9 @@
 package org.openurp.edu.eams.teach.program.majorapply.service.impl
 
-import java.util.List
+
 import org.beangle.commons.collection.Order
 import org.beangle.commons.dao.impl.BaseServiceImpl
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.edu.teach.plan.MajorPlanCourse
 import org.openurp.edu.eams.teach.program.majorapply.dao.MajorPlanCourseModifyApplyDao
 import org.openurp.edu.eams.teach.program.majorapply.model.MajorPlanCourseModifyBean
@@ -11,7 +11,7 @@ import org.openurp.edu.eams.teach.program.majorapply.model.MajorPlanCourseModify
 import org.openurp.edu.eams.teach.program.majorapply.model.MajorPlanCourseModifyDetailBeforeBean
 import org.openurp.edu.eams.teach.program.majorapply.service.MajorPlanCourseModifyApplyService
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class MajorPlanCourseModifyApplyServiceImpl extends BaseServiceImpl with MajorPlanCourseModifyApplyService {
 

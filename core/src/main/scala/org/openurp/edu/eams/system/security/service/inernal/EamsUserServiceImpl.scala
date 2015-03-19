@@ -11,7 +11,7 @@ import org.openurp.edu.base.Student
 import org.openurp.edu.base.Teacher
 import org.openurp.edu.eams.system.security.EamsUserService
 
-import scala.collection.JavaConversions._
+
 
 class EamsUserServiceImpl extends UserServiceImpl with EamsUserService {
 

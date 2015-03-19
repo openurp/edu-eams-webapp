@@ -2,7 +2,7 @@ package org.openurp.edu.eams.teach.election.service.context
 
 import org.openurp.edu.eams.teach.election.model.constraint.AbstractCreditConstraint
 
-import scala.collection.JavaConversions._
+
 
 @SerialVersionUID(-6797232529157151263L)
 class CreditConstraintWrapper(constraint: AbstractCreditConstraint, l_electedCredits: java.lang.Float)

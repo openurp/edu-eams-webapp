@@ -1,20 +1,18 @@
 package org.openurp.edu.eams.teach.schedule.web.action
 
-import java.util.Arrays
-import java.util.Collections
-import java.util.Date
-import java.util.List
-import java.util.Map
-import java.util.Set
+import java.util.Arraysimport java.util.Date
+
+
+
 import org.beangle.commons.bean.comparators.PropertyComparator
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
 import org.beangle.commons.conversion.impl.DefaultConversion
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.beangle.commons.entity.Entity
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.beangle.data.model.Entity
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.lang.Strings
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.eams.base.util.WeekDays
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.base.Student
@@ -29,7 +27,7 @@ import org.openurp.edu.eams.teach.lesson.service.CourseTableStyle
 import org.openurp.edu.eams.teach.lesson.service.LessonFilterStrategy
 import org.openurp.edu.eams.teach.lesson.service.LessonFilterStrategyFactory
 import org.openurp.edu.eams.teach.lesson.service.LessonService
-import org.openurp.edu.eams.teach.lesson.util.TimeUnitUtil
+import org.openurp.edu.eams.teach.lesson.util.YearWeekTimeUtil
 import org.openurp.edu.eams.teach.program.major.service.MajorPlanService
 import org.openurp.edu.eams.teach.schedule.model.CourseArrangeSwitch
 import org.openurp.edu.eams.teach.schedule.model.CourseTableCheck
@@ -40,7 +38,7 @@ import org.openurp.edu.eams.teach.schedule.util.MultiCourseTable
 import org.openurp.edu.eams.teach.service.TeachResourceService
 import org.openurp.edu.eams.web.action.common.AbstractStudentProjectSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class CourseTableForStdAction extends AbstractStudentProjectSupportAction {
 
@@ -112,7 +110,7 @@ class CourseTableForStdAction extends AbstractStudentProjectSupportAction {
       return forwardError(msg)
     }
     val clazz = CourseTable.getResourceClass(setting.getKind)
-    val idClazz = Model.getType(clazz).getIdType
+    val idClazz = Model.getType(clazz).idType
     val rsList = CollectUtils.newArrayList()
     for (a <- Strings.split(ids)) {
       rsList.add(DefaultConversion.Instance.convert(a, idClazz))
@@ -210,8 +208,8 @@ class CourseTableForStdAction extends AbstractStudentProjectSupportAction {
       if (setting.getIgnoreTask) {
         return table
       }
-      taskList = if (setting.getForSemester) lessonService.getLessonByCategory(resource.getId, lessonFilterStrategyFactory.getLessonFilterCategory(LessonFilterStrategy.STD), 
-        setting.getSemester) else lessonService.getLessonByCategory(resource.getId, lessonFilterStrategyFactory.getLessonFilterCategory(LessonFilterStrategy.STD), 
+      taskList = if (setting.getForSemester) lessonService.getLessonByCategory(resource.id, lessonFilterStrategyFactory.getLessonFilterCategory(LessonFilterStrategy.STD), 
+        setting.getSemester) else lessonService.getLessonByCategory(resource.id, lessonFilterStrategyFactory.getLessonFilterCategory(LessonFilterStrategy.STD), 
         semesterService.getSemestersOfOverlapped(setting.getSemester))
     }
     if (null == table.getLessons) table.setLessons(taskList)
@@ -267,7 +265,7 @@ class CourseTableForStdAction extends AbstractStudentProjectSupportAction {
     if (endWeek.intValue() > semester.getWeeks) endWeek = new java.lang.Integer(semester.getWeeks)
     put("startWeek", startWeek)
     put("endWeek", endWeek)
-    Array(TimeUnitUtil.buildTimeUnits(2, startWeek.intValue(), endWeek.intValue(), CourseTime.CONTINUELY))
+    Array(YearWeekTimeUtil.buildYearWeekTimes(2, startWeek.intValue(), endWeek.intValue(), CourseTime.CONTINUELY))
   }
 
   def getLessonService(): LessonService = lessonService

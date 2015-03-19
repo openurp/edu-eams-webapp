@@ -1,12 +1,12 @@
 package org.openurp.edu.eams.core.web.action
 
-import java.util.Collection
+
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.edu.base.Major
 import org.openurp.edu.eams.web.action.common.RestrictionSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class MajorStatAction extends RestrictionSupportAction {
 

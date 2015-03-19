@@ -1,32 +1,32 @@
 package org.openurp.edu.eams.teach.lesson.task.biz
 
-import java.util.ArrayList
-import java.util.List
-import java.util.Set
+
+
+
 import java.util.TreeSet
 import org.openurp.edu.teach.code.CourseType
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.teach.lesson.task.biz.comparator.LessonComparator
 import org.openurp.edu.teach.plan.MajorPlan
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConversions._
+
+
 
 class PlanPackage {
 
-  @BeanProperty
+  
   var term: Int = _
 
-  @BeanProperty
+  
   var plan: MajorPlan = _
 
-  @BeanProperty
+  
   var groupPackages: List[CourseGroupPackage] = new ArrayList[CourseGroupPackage]()
 
-  @BeanProperty
+  
   var classPackages: List[AdminclassPackage] = new ArrayList[AdminclassPackage]()
 
-  @BeanProperty
+  
   var otherClassPackage: AdminclassPackage = new AdminclassPackage()
 
   def getGroupPackage(courseType: CourseType): CourseGroupPackage = {

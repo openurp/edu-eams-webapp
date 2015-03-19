@@ -1,15 +1,15 @@
 package org.openurp.edu.eams.core.web.action
 
-import java.util.Collection
+
 import java.util.Date
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.openurp.edu.base.Major
 import org.openurp.edu.eams.core.code.ministry.DisciplineCatalog
 import org.openurp.edu.eams.web.action.common.ProjectSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class MajorSearchAction extends ProjectSupportAction {
 
@@ -52,7 +52,7 @@ class MajorSearchAction extends ProjectSupportAction {
     query
   }
 
-  protected def getExportDatas(): Collection[Major] = {
+  protected def getExportDatas(): Iterable[Major] = {
     val query = buildMajorQuery()
     val majorIds = getIntIds("major")
     if (majorIds != null && majorIds.length > 0) {

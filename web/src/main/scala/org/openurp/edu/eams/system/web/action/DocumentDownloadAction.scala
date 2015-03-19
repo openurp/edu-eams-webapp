@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.system.web.action
 
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.edu.base.Student
 import org.openurp.edu.eams.system.doc.model.Document
 import org.openurp.edu.eams.system.doc.model.ManagerDocument
@@ -11,7 +11,7 @@ import org.openurp.edu.eams.system.doc.service.DocPath
 import org.openurp.edu.eams.system.security.EamsUserCategory
 import org.openurp.edu.eams.web.action.common.FileAction
 
-import scala.collection.JavaConversions._
+
 
 class DocumentDownloadAction extends FileAction {
 

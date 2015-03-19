@@ -8,7 +8,7 @@ import org.openurp.edu.eams.teach.grade.teacher.web.action.GradeModifyAuditSearc
 import org.openurp.edu.eams.teach.grade.teacher.web.action.GradeModifyDepartAuditAction
 import org.openurp.edu.eams.teach.grade.teacher.web.action.GradeModifyFinalAuditAction
 
-import scala.collection.JavaConversions._
+
 
 class DefaultModule extends AbstractBindModule {
 

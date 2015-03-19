@@ -1,15 +1,15 @@
 package org.openurp.edu.eams.teach.election.service.rule.election
 
-import java.util.Map
+
 import org.beangle.commons.collection.CollectUtils
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.eams.core.service.SemesterService
 import org.openurp.edu.eams.teach.election.service.context.PrepareContext
 import org.openurp.edu.eams.teach.election.service.context.PrepareContext.PreparedDataName
 import org.openurp.edu.eams.teach.election.service.rule.ElectRulePrepare
 import org.openurp.edu.eams.teach.time.util.TermCalculator
 
-import scala.collection.JavaConversions._
+
 
 class CurrentTermPrepare extends ElectRulePrepare {
 

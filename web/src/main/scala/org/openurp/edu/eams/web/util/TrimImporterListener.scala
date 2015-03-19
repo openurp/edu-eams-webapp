@@ -1,11 +1,11 @@
 package org.openurp.edu.eams.web.util
 
-import java.util.Iterator
+
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.transfer.TransferResult
 import org.beangle.commons.transfer.importer.listener.ItemImporterListener
 
-import scala.collection.JavaConversions._
+
 
 class TrimImporterListener extends ItemImporterListener {
 

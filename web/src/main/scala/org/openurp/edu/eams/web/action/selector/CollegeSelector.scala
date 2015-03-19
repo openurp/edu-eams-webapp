@@ -1,12 +1,12 @@
 package org.openurp.edu.eams.web.action.selector
 
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.openurp.base.Department
 import org.openurp.edu.eams.core.service.DepartmentService
 import org.openurp.edu.eams.web.action.common.RestrictionSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class CollegeSelector extends RestrictionSupportAction {
 

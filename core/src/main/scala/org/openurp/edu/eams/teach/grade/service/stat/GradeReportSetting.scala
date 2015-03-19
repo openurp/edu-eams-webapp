@@ -4,9 +4,9 @@ import org.openurp.edu.eams.teach.lesson.GradeTypeConstants.FINAL_ID
 import java.util.Date
 import org.beangle.commons.collection.Order
 import org.openurp.edu.base.Project
-import org.openurp.edu.eams.teach.code.industry.GradeType
+import org.openurp.edu.teach.code.GradeType
 
-import scala.collection.JavaConversions._
+
 
 class GradeReportSetting {
 

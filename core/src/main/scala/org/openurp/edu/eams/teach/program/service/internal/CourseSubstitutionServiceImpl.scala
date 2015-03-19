@@ -1,15 +1,15 @@
 package org.openurp.edu.eams.teach.program.service.internal
 
-import java.util.List
+
 import org.beangle.commons.dao.impl.BaseServiceImpl
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.edu.base.Student
 import org.openurp.edu.teach.plan.CourseSubstitution
 import org.openurp.edu.teach.plan.MajorCourseSubstitution
 import org.openurp.edu.teach.plan.StdCourseSubstitution
 import org.openurp.edu.eams.teach.program.service.CourseSubstitutionService
 
-import scala.collection.JavaConversions._
+
 
 class CourseSubstitutionServiceImpl extends BaseServiceImpl with CourseSubstitutionService {
 

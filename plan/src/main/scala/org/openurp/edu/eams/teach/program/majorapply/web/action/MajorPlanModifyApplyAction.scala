@@ -5,16 +5,16 @@ import com.ekingstar.eams.core.Major
 import com.ekingstar.eams.teach.code.school.CourseCategory
 import org.openurp.edu.eams.teach.program.major.MajorPlan
 import org.openurp.edu.eams.teach.program.major.web.action.MajorPlanSearchAction
-import org.openurp.edu.eams.teach.program.majorapply.service.MajorPlanCourseGroupModifyApplyService
+import org.openurp.edu.eams.teach.program.majorapply.service.MajorCourseGroupModifyApplyService
 import org.openurp.edu.eams.teach.program.majorapply.service.MajorPlanCourseModifyApplyService
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class MajorPlanModifyApplyAction extends MajorPlanSearchAction {
 
   private var majorPlanCourseModifyApplyService: MajorPlanCourseModifyApplyService = _
 
-  private var majorPlanCourseGroupModifyApplyService: MajorPlanCourseGroupModifyApplyService = _
+  private var MajorCourseGroupModifyApplyService: MajorCourseGroupModifyApplyService = _
 
   def index(): String = {
     indexSetting()
@@ -43,10 +43,10 @@ class MajorPlanModifyApplyAction extends MajorPlanSearchAction {
       return forwardError("error.model.notExist")
     }
     put("plan", plan)
-    put("readyBeAuditedCourseGroups", majorPlanCourseGroupModifyApplyService.myReadyModifyApply(planId, 
+    put("readyBeAuditedCourseGroups", MajorCourseGroupModifyApplyService.myReadyModifyApply(planId, 
       getUserId))
     put("readyBeAuditedPlanCourses", majorPlanCourseModifyApplyService.myReadyModifyApply(planId, getUserId))
-    put("readyGroupAddApplies", majorPlanCourseGroupModifyApplyService.myReadyAddApplies(planId, getUserId))
+    put("readyGroupAddApplies", MajorCourseGroupModifyApplyService.myReadyAddApplies(planId, getUserId))
     put("readyCourseAddApplies", majorPlanCourseModifyApplyService.myReadyAddApplies(planId, getUserId))
     forward()
   }
@@ -55,7 +55,7 @@ class MajorPlanModifyApplyAction extends MajorPlanSearchAction {
     val userId = getUserId
     val planId = getLong("planId")
     put("planCourseModifyApplications", majorPlanCourseModifyApplyService.myApplies(planId, userId))
-    put("courseGroupModifyApplications", majorPlanCourseGroupModifyApplyService.myApplies(planId, userId))
+    put("courseGroupModifyApplications", MajorCourseGroupModifyApplyService.myApplies(planId, userId))
     forward()
   }
 
@@ -68,7 +68,7 @@ class MajorPlanModifyApplyAction extends MajorPlanSearchAction {
     this.majorPlanCourseModifyApplyService = majorPlanCourseModifyApplyService
   }
 
-  def setMajorPlanCourseGroupModifyApplyService(majorPlanCourseGroupModifyApplyService: MajorPlanCourseGroupModifyApplyService) {
-    this.majorPlanCourseGroupModifyApplyService = majorPlanCourseGroupModifyApplyService
+  def setMajorCourseGroupModifyApplyService(MajorCourseGroupModifyApplyService: MajorCourseGroupModifyApplyService) {
+    this.MajorCourseGroupModifyApplyService = MajorCourseGroupModifyApplyService
   }
 }

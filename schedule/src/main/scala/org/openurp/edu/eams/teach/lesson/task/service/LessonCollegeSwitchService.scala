@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.lesson.task.service
 
 
-import scala.collection.JavaConversions._
+
 
 trait LessonCollegeSwitchService {
 

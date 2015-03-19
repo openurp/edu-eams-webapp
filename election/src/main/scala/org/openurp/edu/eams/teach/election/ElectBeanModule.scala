@@ -66,7 +66,7 @@ import org.openurp.edu.eams.teach.election.web.action.rule.ElectRuleAction
 import org.openurp.edu.eams.teach.election.web.action.rule.ElectRuleConfigAction
 import org.openurp.edu.eams.teach.election.web.action.rule.ElectRuleParameterAction
 
-import scala.collection.JavaConversions._
+
 
 class ElectBeanModule extends AbstractBindModule {
 

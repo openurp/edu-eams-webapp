@@ -4,26 +4,26 @@ import org.beangle.commons.lang.Strings
 import org.beangle.struts2.view.component.Form
 import org.beangle.struts2.view.component.UIBean
 import com.opensymphony.xwork2.util.ValueStack
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConversions._
+
+
 
 class Code(stack: ValueStack) extends UIBean(stack) {
 
   protected var name: String = _
 
-  @BeanProperty
+  
   var value: AnyRef = _
 
-  @BeanProperty
+  
   var label: String = _
 
   protected var title: String = _
 
-  @BeanProperty
+  
   var keyName: String = _
 
-  @BeanProperty
+  
   var valueName: String = _
 
   protected var comment: String = _

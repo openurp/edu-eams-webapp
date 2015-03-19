@@ -7,7 +7,7 @@ import org.openurp.edu.base.Student
 import org.openurp.edu.base.StudentJournal
 import org.openurp.edu.eams.core.code.industry.StdStatus
 
-import scala.collection.JavaConversions._
+
 
 trait StudentService {
 

@@ -1,14 +1,14 @@
 package org.openurp.edu.eams.teach.lesson.task.splitter
 
-import java.util.Collection
-import java.util.HashSet
-import java.util.Set
+
+
+
 import org.openurp.edu.teach.lesson.CourseTake
-import org.openurp.edu.eams.teach.lesson.ExamTake
+import org.openurp.edu.teach.exam.ExamTake
 import org.openurp.edu.teach.lesson.TeachClass
 import org.openurp.edu.eams.teach.lesson.util.LessonElectionUtil
 
-import scala.collection.JavaConversions._
+
 
 class AdminclassSplitLonelyMode extends AbstractTeachClassSplitter() {
 

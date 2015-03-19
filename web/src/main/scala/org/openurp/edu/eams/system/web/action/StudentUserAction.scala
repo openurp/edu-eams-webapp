@@ -1,12 +1,12 @@
 package org.openurp.edu.eams.system.web.action
 
-import java.util.Collection
-import java.util.HashMap
-import java.util.Iterator
-import java.util.List
-import java.util.Map
+
+
+
+
+
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.beangle.security.blueprint.User
 import org.beangle.security.blueprint.model.UserBean
@@ -17,7 +17,7 @@ import org.openurp.edu.eams.system.security.EamsUserService
 import org.openurp.edu.eams.util.DataRealmUtils
 import org.openurp.edu.eams.web.action.common.RestrictionSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class StudentUserAction extends RestrictionSupportAction {
 
@@ -40,7 +40,7 @@ class StudentUserAction extends RestrictionSupportAction {
       val std = iter.next().asInstanceOf[Student]
       val user = eamsUserService.get(std.getCode)
       if (null != user) {
-        stdUserMap.put(std.getId.toString, user)
+        stdUserMap.put(std.id.toString, user)
       }
     }
     put("stds", stds)

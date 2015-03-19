@@ -1,28 +1,26 @@
 package org.openurp.edu.eams.teach.program.major.service.impl
 
-import java.util.ArrayList
-import java.util.Collection
-import java.util.Collections
-import java.util.Iterator
-import java.util.List
+
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import com.ekingstar.eams.core.Adminclass
 import com.ekingstar.eams.teach.Course
 import com.ekingstar.eams.teach.code.school.CourseType
 import org.openurp.edu.eams.teach.program.CoursePlan
-import org.openurp.edu.eams.teach.program.PlanCourse
+import org.openurp.edu.teach.plan.PlanCourse
 import org.openurp.edu.eams.teach.program.common.copydao.plan.IPlanCopyDao
 import org.openurp.edu.eams.teach.program.common.dao.PlanCommonDao
 import org.openurp.edu.eams.teach.program.helper.ProgramNamingHelper
 import org.openurp.edu.eams.teach.program.major.MajorPlan
 import org.openurp.edu.teach.plan.MajorPlanCourse
-import org.openurp.edu.teach.plan.MajorPlanCourseGroup
+import org.openurp.edu.teach.plan.MajorCourseGroup
 import org.openurp.edu.eams.teach.program.major.service.MajorPlanGenParameter
 import org.openurp.edu.eams.teach.program.major.service.MajorPlanService
 import com.ekingstar.eams.teach.util.MajorPlanQueryBuilder
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class MajorPlanServiceImpl extends BaseServiceImpl with MajorPlanService {
 
@@ -34,7 +32,7 @@ class MajorPlanServiceImpl extends BaseServiceImpl with MajorPlanService {
     majorPlanCopyDao.copyMajorPlan(sourcePlan, genParameter)
   }
 
-  def genMajorPlans(plans: Collection[MajorPlan], partialParams: MajorPlanGenParameter): List[MajorPlan] = {
+  def genMajorPlans(plans: Iterable[MajorPlan], partialParams: MajorPlanGenParameter): List[MajorPlan] = {
     val genedPlans = new ArrayList[MajorPlan](plans.size)
     for (plan <- plans) {
       val t_param = new MajorPlanGenParameter()
@@ -74,9 +72,9 @@ class MajorPlanServiceImpl extends BaseServiceImpl with MajorPlanService {
 
   def statPlanCredits(plan: MajorPlan): Float = planCommonDao.statPlanCredits(plan)
 
-  def hasCourse(cgroup: MajorPlanCourseGroup, course: Course): Boolean = planCommonDao.hasCourse(cgroup, course)
+  def hasCourse(cgroup: MajorCourseGroup, course: Course): Boolean = planCommonDao.hasCourse(cgroup, course)
 
-  def hasCourse(cgroup: MajorPlanCourseGroup, course: Course, planCourse: PlanCourse): Boolean = {
+  def hasCourse(cgroup: MajorCourseGroup, course: Course, planCourse: PlanCourse): Boolean = {
     planCommonDao.hasCourse(cgroup, course, planCourse)
   }
 
@@ -100,7 +98,7 @@ class MajorPlanServiceImpl extends BaseServiceImpl with MajorPlanService {
     val planCourses = new ArrayList[MajorPlanCourse]()
     var iter = plan.getGroups.iterator()
     while (iter.hasNext) {
-      val group = iter.next().asInstanceOf[MajorPlanCourseGroup]
+      val group = iter.next().asInstanceOf[MajorCourseGroup]
       planCourses.addAll(group.getPlanCourses.asInstanceOf[List[_]])
     }
     planCourses

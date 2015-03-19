@@ -6,7 +6,7 @@ import org.openurp.edu.eams.system.doc.model.Document
 import org.openurp.edu.eams.system.doc.service.DocPath
 import org.openurp.edu.eams.web.action.common.FileAction
 
-import scala.collection.JavaConversions._
+
 
 class DataTemplateAction extends FileAction {
 

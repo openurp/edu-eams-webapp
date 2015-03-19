@@ -4,7 +4,7 @@ import java.util.Comparator
 import org.beangle.commons.bean.PropertyUtils
 import org.beangle.commons.collection.Order
 
-import scala.collection.JavaConversions._
+
 
 class StatItemComparator(private var order: Order) extends Comparator {
 

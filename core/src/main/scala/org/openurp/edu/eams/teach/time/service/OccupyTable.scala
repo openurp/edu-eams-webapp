@@ -1,9 +1,9 @@
 package org.openurp.edu.eams.teach.time.service
 
-import java.util.List
+
 import OccupyTable._
 
-import scala.collection.JavaConversions._
+
 
 object OccupyTable {
 

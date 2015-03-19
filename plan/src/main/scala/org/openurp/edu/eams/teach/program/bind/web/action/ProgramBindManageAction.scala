@@ -1,10 +1,10 @@
 package org.openurp.edu.eams.teach.program.bind.web.action
 
 import java.util.Date
-import java.util.List
-import java.util.Map
+
+
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Objects
 import org.beangle.commons.lang.Strings
 import org.beangle.struts2.helper.QueryHelper
@@ -29,7 +29,7 @@ import org.openurp.edu.eams.teach.program.service.NoMajorProgramException
 import org.openurp.edu.eams.teach.program.service.StudentProgramBindService
 import com.ekingstar.eams.web.action.common.ProjectSupportAction
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class ProgramBindManageAction extends ProjectSupportAction {
 
@@ -49,7 +49,7 @@ class ProgramBindManageAction extends ProjectSupportAction {
     if (CollectUtils.isNotEmpty(students)) {
       val programs = entityDao.get(classOf[StudentProgram], "std", students)
       for (studentProgram <- programs) {
-        stdPrograms.put(studentProgram.getStd.getId, studentProgram)
+        stdPrograms.put(studentProgram.getStd.id, studentProgram)
       }
       put("studentPrograms", stdPrograms)
     }
@@ -129,20 +129,20 @@ class ProgramBindManageAction extends ProjectSupportAction {
     var campus = stds.get(0).getCampus
     for (i <- 0 until stds.size) {
       if (Objects.!=(stds.get(i).getGrade, grade)) program.setGrade(null)
-      if (stds.get(i).getEducation != null && education.getId != stds.get(i).getEducation.getId) {
+      if (stds.get(i).getEducation != null && education.id != stds.get(i).getEducation.id) {
         program.setEducation(null)
       }
-      if (stds.get(i).getType != null && stdType.getId != stds.get(i).getType.getId) {
+      if (stds.get(i).getType != null && stdType.id != stds.get(i).getType.id) {
         program.setStdType(null)
       }
       if (stds.get(i).getDepartment != null && 
-        department.getId != stds.get(i).getDepartment.getId) {
+        department.id != stds.get(i).getDepartment.id) {
         program.setDepartment(null)
       }
-      if (stds.get(i).getMajor != null && major.getId != stds.get(i).getMajor.getId) {
+      if (stds.get(i).getMajor != null && major.id != stds.get(i).getMajor.id) {
         program.setMajor(null)
       }
-      if (stds.get(i).getDirection != null && direction.getId != stds.get(i).getDirection.getId) {
+      if (stds.get(i).getDirection != null && direction.id != stds.get(i).getDirection.id) {
         program.setDirection(null)
       }
       if (Objects.!=(stds.get(i).getCampus, campus)) {

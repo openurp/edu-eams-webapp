@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.grade.course.service
 
-import java.util.List
-import java.util.Map
+
+
 import org.beangle.commons.lang.Numbers
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.EntityDao
@@ -9,7 +9,7 @@ import org.openurp.edu.eams.teach.code.industry.ScoreMarkStyle
 import org.openurp.edu.eams.teach.grade.model.GradeRateConfig
 import org.openurp.edu.eams.teach.grade.model.GradeRateItem
 
-import scala.collection.JavaConversions._
+
 
 class MarkStyleHelper private () {
 

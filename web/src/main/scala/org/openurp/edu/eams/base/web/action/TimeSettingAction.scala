@@ -2,15 +2,15 @@ package org.openurp.edu.eams.base.web.action
 
 import org.beangle.commons.entity.util.ValidEntityKeyPredicate
 import org.beangle.commons.lang.Strings
-import org.openurp.edu.eams.base.TimeSetting
+import org.openurp.base.TimeSetting
 import org.openurp.edu.eams.base.model.DefaultCourseUnitBean
 import org.openurp.edu.eams.base.model.TimeSettingBean
 import org.openurp.edu.eams.core.service.TimeSettingService
 import org.openurp.edu.eams.web.action.common.RestrictionSupportAction
 import TimeSettingAction._
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConversions._
+
+
 
 object TimeSettingAction {
 
@@ -26,7 +26,7 @@ object TimeSettingAction {
 
 class TimeSettingAction extends RestrictionSupportAction {
 
-  @BeanProperty
+  
   var timeSettingService: TimeSettingService = _
 
   def index(): String = forward()
@@ -87,7 +87,7 @@ class TimeSettingAction extends RestrictionSupportAction {
       unit.setStartTime(getTimeNumber(get(i + "startTime")))
       unit.setEndTime(getTimeNumber(get(i + "endTime")))
       unit.setColor(get(i + "color"))
-      if (unit.getId == null) {
+      if (unit.id == null) {
         setting.getDefaultUnits.put(unit.getIndexno, unit)
         unit.setTimeSetting(setting)
       }
@@ -95,9 +95,9 @@ class TimeSettingAction extends RestrictionSupportAction {
     setting.setName(get("timeSetting.name"))
     timeSettingService.saveTimeSetting(setting)
     if (isNew) {
-      redirect("list", "info.save.success", "settingId=" + setting.getId)
+      redirect("list", "info.save.success", "settingId=" + setting.id)
     } else {
-      redirect("list", "info.save.success", "settingId=" + setting.getId)
+      redirect("list", "info.save.success", "settingId=" + setting.id)
     }
   }
 

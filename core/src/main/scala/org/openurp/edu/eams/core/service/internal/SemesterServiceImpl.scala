@@ -1,24 +1,24 @@
 package org.openurp.edu.eams.core.service.internal
 
 import java.sql.Date
-import java.util.ArrayList
-import java.util.Collection
+
+
 import java.util.GregorianCalendar
-import java.util.HashMap
-import java.util.List
-import java.util.Map
+
+
+
 import javax.persistence.EntityNotFoundException
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.impl.BaseServiceImpl
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.openurp.edu.eams.base.Calendar
-import org.openurp.edu.eams.base.Semester
-import org.openurp.edu.eams.base.model.SemesterBean
+import org.openurp.base.Semester
+import org.openurp.base.model.SemesterBean
 import org.openurp.edu.base.Project
 import org.openurp.edu.eams.core.service.SemesterService
 
-import scala.collection.JavaConversions._
+
 
 class SemesterServiceImpl extends BaseServiceImpl with SemesterService {
 
@@ -110,7 +110,7 @@ class SemesterServiceImpl extends BaseServiceImpl with SemesterService {
   }
 
   def getCurSemester(calendar: Calendar): Semester = {
-    val builder = OqlBuilder.from(classOf[Calendar], "calender").where("calender.id = :calenderId", calendar.getId)
+    val builder = OqlBuilder.from(classOf[Calendar], "calender").where("calender.id = :calenderId", calendar.id)
     builder.join("calender.semesters", "semester").where("semester.beginOn <= :date and semester.endOn >= :date", 
       new java.util.Date())
     builder.select("semester")
@@ -170,7 +170,7 @@ class SemesterServiceImpl extends BaseServiceImpl with SemesterService {
     if (null == semester) return false
     val builder = OqlBuilder.from(classOf[Semester], "semester")
     builder.where("semester.calendar=:calendar", semester.getCalendar)
-    if (null != semester.getId) builder.where("id <> " + semester.getId)
+    if (null != semester.id) builder.where("id <> " + semester.id)
     val semesterList = entityDao.search(builder)
     for (one <- semesterList if semester.beginOn.before(one.getEndOn) && one.getBeginOn.before(semester.getEndOn)) return true
     false
@@ -229,7 +229,7 @@ class SemesterServiceImpl extends BaseServiceImpl with SemesterService {
     val query = OqlBuilder.from(classOf[Semester], "semester").where("semester.calendar = :calendar", 
       semester.getCalendar)
       .where("semester.endOn < (select cur.beginOn from " + classOf[Semester].getName + 
-      " cur where cur.id = :curId)", semester.getId)
+      " cur where cur.id = :curId)", semester.id)
       .orderBy("semester.endOn desc")
       .cacheable()
     val semesters = entityDao.search(query)

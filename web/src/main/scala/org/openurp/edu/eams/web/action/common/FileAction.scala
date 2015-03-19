@@ -11,7 +11,7 @@ import org.beangle.commons.web.io.StreamDownloader
 import org.beangle.security.codec.EncryptUtil
 import org.openurp.edu.eams.system.doc.service.DocPath
 
-import scala.collection.JavaConversions._
+
 
 class FileAction extends RestrictionSupportAction {
 

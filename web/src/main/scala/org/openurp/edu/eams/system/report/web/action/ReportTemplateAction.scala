@@ -1,12 +1,12 @@
 package org.openurp.edu.eams.system.report.web.action
 
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.beangle.commons.entity.Entity
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.beangle.data.model.Entity
 import org.openurp.edu.eams.system.report.ReportTemplate
 import org.openurp.edu.eams.web.action.common.ProjectSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class ReportTemplateAction extends ProjectSupportAction {
 

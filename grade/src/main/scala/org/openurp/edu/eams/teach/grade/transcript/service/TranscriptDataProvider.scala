@@ -1,10 +1,10 @@
 package org.openurp.edu.eams.teach.grade.transcript.service
 
-import java.util.List
-import java.util.Map
+
+
 import org.openurp.edu.base.Student
 
-import scala.collection.JavaConversions._
+
 
 trait TranscriptDataProvider {
 

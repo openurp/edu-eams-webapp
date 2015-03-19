@@ -1,9 +1,9 @@
 package org.openurp.edu.eams.teach.time.util
 
 import java.sql.Date
-import java.util.HashSet
-import java.util.Map
-import java.util.Set
+
+
+
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 import org.beangle.commons.collection.CollectUtils
@@ -15,7 +15,7 @@ import org.openurp.base.Semester
 import org.openurp.edu.eams.core.service.SemesterService
 import TermCalculator._
 
-import scala.collection.JavaConversions._
+
 
 object TermCalculator {
 
@@ -74,7 +74,7 @@ class TermCalculator(private var semesterService: SemesterService, private var s
 
   private var termCalcCache: Map[String, Integer] = CollectUtils.newHashMap()
 
-  this.semester.getCalendar.getId
+  this.semester.getCalendar.id
 
   def getTermBetween(pre: Semester, post: Semester, omitSmallTerm: Boolean): Int = {
     semesterService.getTermsBetween(pre, post, omitSmallTerm)

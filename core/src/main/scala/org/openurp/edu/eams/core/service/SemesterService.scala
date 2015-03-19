@@ -1,12 +1,12 @@
 package org.openurp.edu.eams.core.service
 
 import java.sql.Date
-import java.util.List
+
 import org.openurp.edu.eams.base.Calendar
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Project
 
-import scala.collection.JavaConversions._
+
 
 trait SemesterService {
 

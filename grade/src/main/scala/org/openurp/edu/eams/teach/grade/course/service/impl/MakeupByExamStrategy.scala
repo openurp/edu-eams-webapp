@@ -1,18 +1,18 @@
 package org.openurp.edu.eams.teach.grade.course.service.impl
 
-import java.util.List
-import java.util.Map
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.impl.BaseServiceImpl
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.edu.eams.teach.code.industry.ExamType
 import org.openurp.edu.eams.teach.grade.course.service.MakeupStdStrategy
 import org.openurp.edu.teach.lesson.CourseTake
-import org.openurp.edu.eams.teach.lesson.ExamTake
+import org.openurp.edu.teach.exam.ExamTake
 import org.openurp.edu.eams.teach.lesson.GradeTypeConstants
 import org.openurp.edu.teach.lesson.Lesson
 
-import scala.collection.JavaConversions._
+
 
 class MakeupByExamStrategy extends BaseServiceImpl with MakeupStdStrategy {
 
@@ -28,7 +28,7 @@ class MakeupByExamStrategy extends BaseServiceImpl with MakeupStdStrategy {
     if (lessons.isEmpty) return CollectUtils.newHashMap()
 
     val lessonMap = CollectUtils.newHashMap()
-    for (lesson <- lessons) lessonMap.put(lesson.getId, lesson)
+    for (lesson <- lessons) lessonMap.put(lesson.id, lesson)
     val query = OqlBuilder.from(classOf[CourseTake], "take")
     query.where("take.lesson in (:lessons)", lessons).where(" exists (from " + classOf[ExamTake].getName + " et " + 
       " where et.std = take.std and et.lesson = take.lesson and et.examType.id in(:examTypeIds))", CollectUtils.newArrayList(ExamType.MAKEUP, 

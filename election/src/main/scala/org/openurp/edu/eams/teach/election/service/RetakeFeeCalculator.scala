@@ -5,7 +5,7 @@ import bsh.Interpreter
 import org.openurp.edu.eams.teach.election.RetakeFeeConfig
 import org.openurp.edu.teach.lesson.CourseTake
 
-import scala.collection.JavaConversions._
+
 
 class RetakeFeeCalculator {
 

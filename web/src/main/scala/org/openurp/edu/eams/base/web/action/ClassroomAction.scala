@@ -1,33 +1,33 @@
 package org.openurp.edu.eams.base.web.action
 
 import java.util.Date
-import java.util.List
-import java.util.Set
+
+
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.transfer.TransferListener
 import org.beangle.commons.transfer.importer.listener.ImporterForeignerListener
 import org.springframework.dao.DataIntegrityViolationException
 import org.openurp.edu.eams.base.Building
-import org.openurp.edu.eams.base.Campus
+import org.openurp.base.Campus
 import org.openurp.base.Room
 import org.openurp.base.Department
-import org.openurp.edu.eams.base.code.school.ClassroomType
-import org.openurp.edu.eams.base.model.ClassroomBean
+import org.openurp.edu.eams.base.code.school.RoomType
+import org.openurp.edu.eams.base.model.RoomBean
 import org.openurp.edu.eams.classroom.RoomUsageCapacity
-import org.openurp.edu.eams.classroom.code.industry.RoomUsage
-import org.openurp.edu.eams.core.service.listener.ClassroomImportListener
+import org.openurp.base.code.RoomUsage
+import org.openurp.edu.eams.core.service.listener.RoomImportListener
 
-import scala.collection.JavaConversions._
 
-class ClassroomAction extends ClassroomSearchAction {
+
+class RoomAction extends RoomSearchAction {
 
   def edit(): String = {
-    put("classroomTypes", baseCodeService.getCodes(classOf[ClassroomType]))
+    put("classroomTypes", baseCodeService.getCodes(classOf[RoomType]))
     put("buildings", baseInfoService.getBaseInfos(classOf[Building]))
     put("campuses", baseInfoService.getBaseInfos(classOf[Campus]))
     put("usages", baseCodeService.getCodes(classOf[RoomUsage]))
-    val classroom = getEntity(classOf[Classroom], "classroom")
+    val classroom = getEntity(classOf[Room], "classroom")
     put("classroom", classroom)
     val departments = baseInfoService.getBaseInfos(classOf[Department])
     val classroomDepartments = classroom.departments
@@ -40,10 +40,10 @@ class ClassroomAction extends ClassroomSearchAction {
   }
 
   def save(): String = {
-    val room = populateEntity(classOf[ClassroomBean], "classroom")
-    val query = OqlBuilder.from(classOf[Classroom], "room")
+    val room = populateEntity(classOf[RoomBean], "classroom")
+    val query = OqlBuilder.from(classOf[Room], "room")
     query.where("room.code = :code", room.getCode)
-    if (null != room.getId) {
+    if (null != room.id) {
       query.where("room != :room", room)
     }
     if (CollectUtils.isNotEmpty(entityDao.search(query))) {
@@ -62,20 +62,20 @@ class ClassroomAction extends ClassroomSearchAction {
         room.getUsages.add(roomUsage)
       }
     }
-    if (null == room.getId) room.setCreatedAt(new Date())
+    if (null == room.id) room.setCreatedAt(new Date())
     room.setUpdatedAt(new Date())
     if (null == room.getSchool) room.setSchool(getSchool)
     room.departments.clear()
     room.departments.addAll(entityDao.get(classOf[Department], getAll("selectDepartment.id", classOf[Integer])))
     entityDao.saveOrUpdate(room)
-    logHelper.info((if (null == room.getId) "Create" else "Update") + " a classroom with name: " + 
+    logHelper.info((if (null == room.id) "Create" else "Update") + " a classroom with name: " + 
       room.getName)
     redirect("search", "info.save.success")
   }
 
   def remove(): String = {
     try {
-      entityDao.remove(entityDao.get(classOf[Classroom], getIntIds("classroom")))
+      entityDao.remove(entityDao.get(classOf[Room], getIntIds("classroom")))
       redirect("search", "info.action.success")
     } catch {
       case e: DataIntegrityViolationException => {
@@ -88,14 +88,14 @@ class ClassroomAction extends ClassroomSearchAction {
   }
 
   def checkDuplicated(): String = {
-    put("duplicated", CollectUtils.isNotEmpty(entityDao.get(classOf[Classroom], "code", get("code"))))
+    put("duplicated", CollectUtils.isNotEmpty(entityDao.get(classOf[Room], "code", get("code"))))
     forward()
   }
 
   protected def getImporterListeners(): List[TransferListener] = {
     val listeners = CollectUtils.newArrayList()
     listeners.add(new ImporterForeignerListener(entityDao))
-    listeners.add(new ClassroomImportListener(entityDao, "code", getProject.getSchool))
+    listeners.add(new RoomImportListener(entityDao, "code", getProject.getSchool))
     listeners
   }
 }

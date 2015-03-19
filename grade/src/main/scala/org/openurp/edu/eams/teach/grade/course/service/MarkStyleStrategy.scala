@@ -1,10 +1,10 @@
 package org.openurp.edu.eams.teach.grade.course.service
 
-import java.util.List
-import org.openurp.edu.eams.teach.code.industry.GradeType
-import org.openurp.edu.teach.grade.CourseGradeState
 
-import scala.collection.JavaConversions._
+import org.openurp.edu.teach.code.GradeType
+import org.openurp.edu.teach.grade.model.CourseGradeState
+
+
 
 trait MarkStyleStrategy {
 

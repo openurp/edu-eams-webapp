@@ -2,14 +2,14 @@ package org.openurp.edu.eams.teach.lesson.service.limit.impl
 
 import java.io.Serializable
 import java.util.LinkedHashMap
-import java.util.List
-import java.util.Map
+
+
 import org.beangle.commons.collection.page.PageLimit
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Arrays
 import org.openurp.edu.base.Program
 
-import scala.collection.JavaConversions._
+
 
 class CourseLimitGradeProvider extends AbstractCourseLimitContentProvider[String] {
 

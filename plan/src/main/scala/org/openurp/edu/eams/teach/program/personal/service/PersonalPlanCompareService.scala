@@ -1,14 +1,14 @@
 package org.openurp.edu.eams.teach.program.personal.service
 
-import java.util.List
-import java.util.Map
+
+
 import com.ekingstar.eams.teach.code.school.CourseType
-import org.openurp.edu.eams.teach.program.PlanCourse
+import org.openurp.edu.teach.plan.PlanCourse
 import org.openurp.edu.eams.teach.program.major.MajorPlan
 import org.openurp.edu.eams.teach.program.personal.PersonalPlan
 import org.openurp.edu.eams.teach.program.personal.exception.PersonalPlanSyncException
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 trait PersonalPlanCompareService {
 

@@ -1,9 +1,9 @@
 package org.openurp.edu.eams.teach.lesson.task.splitter
 
-import java.util.Collection
-import java.util.HashSet
-import java.util.List
-import java.util.Set
+
+
+
+
 import org.apache.commons.collections.CollectionUtils
 import org.apache.commons.lang3.ArrayUtils
 import org.beangle.commons.collection.CollectUtils
@@ -11,14 +11,14 @@ import org.openurp.code.person.Gender
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.base.Student
 import org.openurp.edu.teach.lesson.CourseTake
-import org.openurp.edu.eams.teach.lesson.ExamTake
+import org.openurp.edu.teach.exam.ExamTake
 import org.openurp.edu.teach.lesson.TeachClass
 import org.openurp.edu.eams.teach.lesson.model.CourseLimitMetaBean
 import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnum
 import org.openurp.edu.eams.teach.lesson.task.service.helper.CourseTakeOfGenderPredicate
 import org.openurp.edu.eams.teach.lesson.util.LessonElectionUtil
 
-import scala.collection.JavaConversions._
+
 
 class GenderMode extends AbstractTeachClassSplitter() {
 

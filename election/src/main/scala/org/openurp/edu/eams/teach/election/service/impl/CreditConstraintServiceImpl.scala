@@ -1,24 +1,24 @@
 package org.openurp.edu.eams.teach.election.service.impl
 
-import java.util.Collection
+
 import java.util.Date
-import java.util.Iterator
-import java.util.List
-import java.util.Map
-import java.util.Map.Entry
-import java.util.Set
+
+
+
+.Entry
+
 import org.apache.commons.lang3.ArrayUtils
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.Operation
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.beangle.commons.dao.query.builder.Condition
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.lang.Strings
 import org.beangle.security.blueprint.SecurityUtils
 import org.beangle.struts2.helper.Params
 import org.beangle.struts2.helper.QueryHelper
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Project
 import org.openurp.edu.base.Student
 import org.openurp.edu.eams.core.service.SemesterService
@@ -33,9 +33,9 @@ import org.openurp.edu.eams.teach.major.helper.MajorPlanSearchHelper
 import org.openurp.edu.teach.plan.CoursePlan
 import org.openurp.edu.eams.teach.program.service.CoursePlanProvider
 import org.openurp.edu.eams.web.helper.RestrictionHelper
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConversions._
+
+
 
 class CreditConstraintServiceImpl extends BaseServiceImpl with CreditConstraintService {
 
@@ -45,7 +45,7 @@ class CreditConstraintServiceImpl extends BaseServiceImpl with CreditConstraintS
 
   private var majorPlanSearchHelper: MajorPlanSearchHelper = _
 
-  @BeanProperty
+  
   var coursePlanProvider: CoursePlanProvider = _
 
   def getCourseCountConstraint(semester: Semester, std: Student): StdCourseCountConstraint = {
@@ -144,7 +144,7 @@ class CreditConstraintServiceImpl extends BaseServiceImpl with CreditConstraintS
       students.remove(std)
     }
     for (std <- students) {
-      val plan = plans.get(std.getId)
+      val plan = plans.get(std.id)
       val stdTotalCreditConstraint = Model.newInstance(classOf[StdTotalCreditConstraint])
       stdTotalCreditConstraint.setStd(std)
       stdTotalCreditConstraint.setMaxCredit(if (null == plan) 0 else plan.getCredits)
@@ -177,11 +177,11 @@ class CreditConstraintServiceImpl extends BaseServiceImpl with CreditConstraintS
     this.restrictionHelper = restrictionHelper
   }
 
-  def getCoursePlans(students: Collection[Student]): Map[Long, CoursePlan] = {
+  def getCoursePlans(students: Iterable[Student]): Map[Long, CoursePlan] = {
     val plans = CollectUtils.newHashMap()
     val stdPlans = coursePlanProvider.getCoursePlans(students)
     for ((key, value) <- stdPlans) {
-      plans.put(key.getId, value)
+      plans.put(key.id, value)
     }
     plans
   }

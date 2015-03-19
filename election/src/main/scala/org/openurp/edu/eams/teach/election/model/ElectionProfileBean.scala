@@ -2,8 +2,8 @@ package org.openurp.edu.eams.teach.election.model
 
 import java.text.ParseException
 import java.util.Date
-import java.util.List
-import java.util.Set
+
+
 import javax.persistence.Cacheable
 import javax.persistence.Column
 import javax.persistence.ElementCollection
@@ -22,15 +22,15 @@ import org.beangle.commons.lang.Objects
 import org.beangle.ems.rule.model.RuleConfig
 import org.hibernate.annotations.Cache
 import org.hibernate.annotations.CacheConcurrencyStrategy
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Project
 import org.openurp.edu.base.ProjectBasedObject
 import org.openurp.edu.eams.teach.election.ElectionProfile
 import org.openurp.edu.eams.teach.election.model.Enum.ElectRuleType
 import org.openurp.edu.eams.teach.election.model.Enum.ElectionProfileType
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConversions._
+
+
 
 @SerialVersionUID(-6606179153423814495L)
 @Entity(name = "org.openurp.edu.eams.teach.election.ElectionProfile")
@@ -43,32 +43,32 @@ class ElectionProfileBean extends ProjectBasedObject[Long]() with ElectionProfil
   @Column(name = "PROJECT_ID", nullable = false)
   @JoinTable(name = "T_ELECT_PROFILES_PROJECTS")
   @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = "eams.teach")
-  @BeanProperty
+  
   var projects: Set[Project] = CollectUtils.newHashSet()
 
   @NotNull
   @Enumerated(EnumType.STRING)
-  @BeanProperty
+  
   var profileType: ElectionProfileType = ElectionProfileType.STD
 
   @NotNull
-  @BeanProperty
+  
   var name: String = ""
 
   @NotNull
-  @BeanProperty
+  
   var turn: Int = 1
 
   @NotNull
   @ManyToOne(fetch = FetchType.LAZY)
-  @BeanProperty
+  
   var semester: Semester = _
 
   @ElementCollection(fetch = FetchType.EAGER)
   @JoinColumn(name = "ELECTION_PROFILE_ID")
   @Column(name = "STD_TYPE_ID", nullable = false)
   @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = "eams.teach")
-  @BeanProperty
+  
   var stdTypes: Set[Integer] = CollectUtils.newHashSet()
 
   @ElementCollection(fetch = FetchType.EAGER)
@@ -76,74 +76,74 @@ class ElectionProfileBean extends ProjectBasedObject[Long]() with ElectionProfil
   @Column(name = "EDUCATION_ID", nullable = false)
   @JoinTable(name = "T_ELECT_PROFILES_EDUCATIONS")
   @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = "eams.teach")
-  @BeanProperty
+  
   var educations: Set[Integer] = CollectUtils.newHashSet()
 
   @ElementCollection(fetch = FetchType.EAGER)
   @JoinColumn(name = "ELECTION_PROFILE_ID")
   @Column(name = "DEPART_ID", nullable = false)
   @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = "eams.teach")
-  @BeanProperty
+  
   var departs: Set[Integer] = CollectUtils.newHashSet()
 
   @ElementCollection(fetch = FetchType.EAGER)
   @JoinColumn(name = "ELECTION_PROFILE_ID")
   @Column(name = "MAJOR_ID", nullable = false)
   @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = "eams.teach")
-  @BeanProperty
+  
   var majors: Set[Integer] = CollectUtils.newHashSet()
 
   @ElementCollection(fetch = FetchType.EAGER)
   @JoinColumn(name = "ELECTION_PROFILE_ID")
   @Column(name = "DIRECTION_ID", nullable = false)
   @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = "eams.teach")
-  @BeanProperty
+  
   var directions: Set[Integer] = CollectUtils.newHashSet()
 
   @ElementCollection(fetch = FetchType.EAGER)
   @JoinColumn(name = "ELECTION_PROFILE_ID")
   @Column(name = "GRADE", nullable = false)
   @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = "eams.teach")
-  @BeanProperty
+  
   var grades: Set[String] = CollectUtils.newHashSet()
 
   @ElementCollection(fetch = FetchType.EAGER)
   @JoinColumn(name = "ELECTION_PROFILE_ID")
   @Column(name = "STD_ID", nullable = false)
   @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = "eams.teach")
-  @BeanProperty
+  
   var stds: Set[Long] = CollectUtils.newHashSet()
 
   @NotNull
-  @BeanProperty
+  
   var beginAt: Date = _
 
   @NotNull
-  @BeanProperty
+  
   var endAt: Date = _
 
-  @BeanProperty
+  
   var electBeginAt: Date = _
 
-  @BeanProperty
+  
   var electEndAt: Date = _
 
-  @BeanProperty
+  
   var withdrawBeginAt: Date = _
 
-  @BeanProperty
+  
   var withdrawEndAt: Date = _
 
   @NotNull
-  @BooleanBeanProperty
+  
   var openElection: Boolean = _
 
   @NotNull
-  @BooleanBeanProperty
+  
   var openWithdraw: Boolean = _
 
   @NotNull
-  @BeanProperty
+  
   var notice: String = _
 
   @ManyToMany(fetch = FetchType.EAGER)
@@ -151,7 +151,7 @@ class ElectionProfileBean extends ProjectBasedObject[Long]() with ElectionProfil
   @Column(name = "RULE_CONFIG_ID", nullable = false)
   @JoinTable(name = "T_ELECT_PROFIES_GENERAL_CFGS")
   @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = "eams.teach")
-  @BeanProperty
+  
   var generalConfigs: Set[RuleConfig] = CollectUtils.newHashSet()
 
   @ManyToMany(fetch = FetchType.EAGER)
@@ -159,7 +159,7 @@ class ElectionProfileBean extends ProjectBasedObject[Long]() with ElectionProfil
   @Column(name = "RULE_CONFIG_ID", nullable = false)
   @JoinTable(name = "T_ELECT_PROFIES_ELECT_CFGS")
   @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = "eams.teach")
-  @BeanProperty
+  
   var electConfigs: Set[RuleConfig] = CollectUtils.newHashSet()
 
   @ElementCollection(fetch = FetchType.LAZY)
@@ -167,7 +167,7 @@ class ElectionProfileBean extends ProjectBasedObject[Long]() with ElectionProfil
   @Column(name = "LESSON_ID", nullable = false)
   @JoinTable(name = "T_ELECT_PROFIES_ELECT_LESSONS")
   @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = "eams.teach")
-  @BeanProperty
+  
   var electableLessons: Set[Long] = CollectUtils.newHashSet()
 
   @ManyToMany(fetch = FetchType.EAGER)
@@ -175,7 +175,7 @@ class ElectionProfileBean extends ProjectBasedObject[Long]() with ElectionProfil
   @Column(name = "RULE_CONFIG_ID", nullable = false)
   @JoinTable(name = "T_ELECT_PROFIES_WITHDRAW_CFGS")
   @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = "eams.teach")
-  @BeanProperty
+  
   var withdrawConfigs: Set[RuleConfig] = CollectUtils.newHashSet()
 
   @ElementCollection(fetch = FetchType.LAZY)
@@ -183,7 +183,7 @@ class ElectionProfileBean extends ProjectBasedObject[Long]() with ElectionProfil
   @Column(name = "LESSON_ID", nullable = false)
   @JoinTable(name = "T_ELECT_PROFIES_WD_LESSONS")
   @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = "eams.teach")
-  @BeanProperty
+  
   var withdrawableLessons: Set[Long] = CollectUtils.newHashSet()
 
   def this(beginDate: String, endDate: String) {

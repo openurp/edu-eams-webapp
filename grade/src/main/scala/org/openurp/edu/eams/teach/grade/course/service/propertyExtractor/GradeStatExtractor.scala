@@ -1,14 +1,14 @@
 package org.openurp.edu.eams.teach.grade.course.service.propertyExtractor
 
-import java.util.List
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.text.i18n.TextResource
 import org.beangle.commons.transfer.exporter.DefaultPropertyExtractor
 import org.openurp.edu.base.Teacher
-import org.openurp.edu.teach.grade.CourseGradeState
+import org.openurp.edu.teach.grade.model.CourseGradeState
 import org.openurp.edu.teach.lesson.Lesson
 
-import scala.collection.JavaConversions._
+
 
 class GradeStatExtractor(textResource: TextResource) extends DefaultPropertyExtractor(textResource) {
 

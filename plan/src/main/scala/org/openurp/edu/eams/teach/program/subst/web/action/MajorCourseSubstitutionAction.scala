@@ -1,13 +1,13 @@
 package org.openurp.edu.eams.teach.program.subst.web.action
 
 import java.sql.Date
-import java.util.ArrayList
-import java.util.Iterator
-import java.util.List
-import java.util.Set
+
+
+
+
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.beangle.commons.entity.Entity
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.beangle.data.model.Entity
 import org.beangle.commons.lang.Strings
 import com.ekingstar.eams.base.Department
 import com.ekingstar.eams.teach.Course
@@ -17,7 +17,7 @@ import org.openurp.edu.eams.teach.program.model.MajorCourseSubstitutionBean
 import com.ekingstar.eams.teach.service.CourseService
 import com.ekingstar.eams.web.action.common.RestrictionSupportAction
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class MajorCourseSubstitutionAction extends RestrictionSupportAction {
 
@@ -110,28 +110,28 @@ class MajorCourseSubstitutionAction extends RestrictionSupportAction {
     } else {
       val builder = OqlBuilder.from(classOf[MajorCourseSubstitution], "majorCourseSubstitution")
       builder.where("majorCourseSubstitution.grades=:grades", majorCourseSubstitution.getGrades)
-        .where("majorCourseSubstitution.education.id=:educationId", majorCourseSubstitution.getEducation.getId)
-        .where("majorCourseSubstitution.project.id=:projectId", majorCourseSubstitution.getProject.getId)
+        .where("majorCourseSubstitution.education.id=:educationId", majorCourseSubstitution.getEducation.id)
+        .where("majorCourseSubstitution.project.id=:projectId", majorCourseSubstitution.getProject.id)
       if (majorCourseSubstitution.isPersisted) {
-        builder.where("majorCourseSubstitution.id != :majorCourseSubstitutionId", majorCourseSubstitution.getId)
+        builder.where("majorCourseSubstitution.id != :majorCourseSubstitutionId", majorCourseSubstitution.id)
       }
       if (getLong("majorCourseSubstitution.department.id") != null) {
-        builder.where("majorCourseSubstitution.department.id=:departmentId", majorCourseSubstitution.getDepartment.getId)
+        builder.where("majorCourseSubstitution.department.id=:departmentId", majorCourseSubstitution.getDepartment.id)
       } else {
         builder.where("majorCourseSubstitution.department.id is null")
       }
       if (getLong("majorCourseSubstitution.stdType.id") != null) {
-        builder.where("majorCourseSubstitution.stdType.id=:stdTypeId", majorCourseSubstitution.getStdType.getId)
+        builder.where("majorCourseSubstitution.stdType.id=:stdTypeId", majorCourseSubstitution.getStdType.id)
       } else {
         builder.where("majorCourseSubstitution.stdType.id is null")
       }
       if (getLong("majorCourseSubstitution.major.id") != null) {
-        builder.where("majorCourseSubstitution.major.id=:majorId", majorCourseSubstitution.getMajor.getId)
+        builder.where("majorCourseSubstitution.major.id=:majorId", majorCourseSubstitution.getMajor.id)
       } else {
         builder.where("majorCourseSubstitution.major.id is null")
       }
       if (getLong("majorCourseSubstitution.direction.id") != null) {
-        builder.where("majorCourseSubstitution.direction.id=:directionId", majorCourseSubstitution.getDirection.getId)
+        builder.where("majorCourseSubstitution.direction.id=:directionId", majorCourseSubstitution.getDirection.id)
       } else {
         builder.where("majorCourseSubstitution.direction.id is null")
       }

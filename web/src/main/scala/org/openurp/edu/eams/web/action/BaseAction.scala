@@ -1,11 +1,11 @@
 package org.openurp.edu.eams.web.action
 
-import java.util.Iterator
-import java.util.List
-import java.util.Map
+
+
+
 import javax.servlet.http.HttpServletResponse
 import org.apache.struts2.ServletActionContext
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.pojo.BaseCode
 import org.beangle.commons.event.Event
 import org.beangle.commons.event.EventMulticaster
@@ -17,7 +17,7 @@ import org.beangle.ems.web.action.SecurityActionSupport
 import org.beangle.security.blueprint.nav.MenuProfile
 import org.beangle.struts2.convention.route.Action
 import org.openurp.edu.eams.base.BaseInfo
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Project
 import org.openurp.edu.base.Student
 import org.openurp.edu.base.Teacher
@@ -31,7 +31,7 @@ import org.openurp.edu.eams.web.util.OutputProcessObserver
 import org.openurp.edu.eams.web.util.OutputWebObserver
 import com.opensymphony.xwork2.ActionContext
 
-import scala.collection.JavaConversions._
+
 
 abstract class BaseAction extends SecurityActionSupport {
 
@@ -99,7 +99,7 @@ abstract class BaseAction extends SecurityActionSupport {
         val it = entityDao.search(query).iterator()
         if (it.hasNext) it.next() else null
       } else {
-        getSession.put("projectId", std.getProject.getId)
+        getSession.put("projectId", std.getProject.id)
         std
       }
     } else {

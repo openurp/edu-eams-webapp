@@ -1,23 +1,23 @@
 package org.openurp.edu.eams.teach.grade.bonus.web.action
 
 import java.util.Date
-import java.util.List
-import java.util.Map
+
+
 import org.beangle.commons.lang.Strings
 import org.apache.commons.lang3.ArrayUtils
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.beangle.commons.entity.Entity
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.beangle.data.model.Entity
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.security.blueprint.User
 import org.openurp.base.Department
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Project
 import org.openurp.edu.base.Student
 import org.openurp.edu.eams.teach.Grade
-import org.openurp.edu.eams.teach.code.industry.ExamStatus
-import org.openurp.edu.eams.teach.code.industry.GradeType
+import org.openurp.edu.teach.code.ExamStatus
+import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.eams.teach.code.industry.ScoreMarkStyle
 import org.openurp.edu.teach.code.CourseType
 import org.openurp.edu.eams.teach.grade.lesson.model.GradeInputSwitch
@@ -25,10 +25,10 @@ import org.openurp.edu.eams.teach.grade.service.CourseGradeCalculator
 import org.openurp.edu.eams.teach.grade.service.CourseGradeService
 import org.openurp.edu.eams.teach.grade.service.event.CourseGradeModifyEvent
 import org.openurp.edu.teach.grade.CourseGrade
-import org.openurp.edu.teach.grade.CourseGradeState
+import org.openurp.edu.teach.grade.model.CourseGradeState
 import org.openurp.edu.teach.lesson.CourseTake
-import org.openurp.edu.eams.teach.lesson.ExamGrade
-import org.openurp.edu.eams.teach.lesson.ExamGradeState
+import org.openurp.edu.teach.grade.ExamGrade
+import org.openurp.edu.teach.grade.model.ExamGradeState
 import org.openurp.edu.eams.teach.lesson.GradeTypeConstants
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.teach.lesson.model.CourseGradeBean
@@ -37,7 +37,7 @@ import org.openurp.edu.eams.teach.lesson.model.ExamGradeBean
 import org.openurp.edu.eams.teach.lesson.model.ExamGradeStateBean
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class CollegeAction extends SemesterSupportAction {
 
@@ -164,7 +164,7 @@ class CollegeAction extends SemesterSupportAction {
       }
       val courseTake = courseTakes.get(0)
       var gradeState = courseGradeService.getState(lesson)
-      val bonusScore = getFloat("bonus_score_" + lesson.getId)
+      val bonusScore = getFloat("bonus_score_" + lesson.id)
       if (null == gradeState) {
         gradeState = new CourseGradeStateBean(lesson)
       }

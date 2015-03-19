@@ -1,18 +1,16 @@
 package org.openurp.edu.eams.teach.election.web.action
 
 import java.util.Arrays
-import java.util.Calendar
-import java.util.Collections
-import java.util.Date
-import java.util.List
-import java.util.Map
-import java.util.Set
+import java.util.Calendarimport java.util.Date
+
+
+
 import org.apache.commons.beanutils.PropertyUtils
 import org.apache.commons.lang3.time.DateUtils
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.beangle.commons.entity.Entity
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.beangle.data.model.Entity
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.lang.Throwables
@@ -20,7 +18,7 @@ import org.beangle.ems.rule.RuleParameter
 import org.beangle.ems.rule.model.RuleConfig
 import org.beangle.ems.rule.model.RuleConfigParam
 import org.openurp.base.Department
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Direction
 import org.openurp.edu.base.Major
 import org.openurp.edu.base.Project
@@ -41,7 +39,7 @@ import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 import com.opensymphony.xwork2.util.ArrayUtils
 import ElectionProfileAction._
 
-import scala.collection.JavaConversions._
+
 
 object ElectionProfileAction {
 
@@ -242,7 +240,7 @@ class ElectionProfileAction extends SemesterSupportAction {
       } else {
         profile.getStds.clear()
         for (student <- stds) {
-          profile.getStds.add(student.getId)
+          profile.getStds.add(student.id)
         }
       }
     }
@@ -338,9 +336,9 @@ class ElectionProfileAction extends SemesterSupportAction {
       if (null != guapai) {
         if (guapai) {
           builder.join("lesson.tags", "lessonTag")
-          builder.where("lessonTag.id=:guapaiTagId", LessonTag.PredefinedTags.GUAPAI.getId)
+          builder.where("lessonTag.id=:guapaiTagId", LessonTag.PredefinedTags.GUAPAI.id)
         } else {
-          builder.where("not exists(from lesson.tags lessonTag where lessonTag.id=:guapaiTagId)", LessonTag.PredefinedTags.GUAPAI.getId)
+          builder.where("not exists(from lesson.tags lessonTag where lessonTag.id=:guapaiTagId)", LessonTag.PredefinedTags.GUAPAI.id)
         }
       }
       var electable = getBoolean("electable")
@@ -354,10 +352,10 @@ class ElectionProfileAction extends SemesterSupportAction {
       if (null != electable) {
         if (electable) {
           builder.join("lesson.tags", "lessonTag")
-          builder.where("lessonTag.id=:electableTagId", LessonTag.PredefinedTags.ELECTABLE.getId)
+          builder.where("lessonTag.id=:electableTagId", LessonTag.PredefinedTags.ELECTABLE.id)
         } else {
           builder.where("not exists(from lesson.tags lessonTag where lessonTag.id=:electableTagId)", 
-            LessonTag.PredefinedTags.ELECTABLE.getId)
+            LessonTag.PredefinedTags.ELECTABLE.id)
         }
       }
       builder.where("lesson.project=:project", getProject)
@@ -375,8 +373,8 @@ class ElectionProfileAction extends SemesterSupportAction {
       builder.orderBy(get(Order.ORDER_STR)).limit(getPageLimit)
     }
     put("lessons", entityDao.search(builder))
-    put("guapaiTag", Model.newInstance(classOf[LessonTag], LessonTag.PredefinedTags.GUAPAI.getId))
-    put("electableTag", Model.newInstance(classOf[LessonTag], LessonTag.PredefinedTags.ELECTABLE.getId))
+    put("guapaiTag", Model.newInstance(classOf[LessonTag], LessonTag.PredefinedTags.GUAPAI.id))
+    put("electableTag", Model.newInstance(classOf[LessonTag], LessonTag.PredefinedTags.ELECTABLE.id))
   }
 
   def addOrRemoveLesson(): String = {
@@ -399,12 +397,12 @@ class ElectionProfileAction extends SemesterSupportAction {
       builder.where("lesson.project=:project", getProject)
       if ("guapai" == actionType) {
         builder.join("lesson.tags", "lessonTag")
-        builder.where("lessonTag.id=:guapaiTagId", LessonTag.PredefinedTags.GUAPAI.getId)
+        builder.where("lessonTag.id=:guapaiTagId", LessonTag.PredefinedTags.GUAPAI.id)
           .select("lesson.id")
         ids = entityDao.search(builder).toArray(Array.ofDim[Long](0))
       } else if ("electable" == actionType) {
         builder.join("lesson.tags", "lessonTag")
-        builder.where("lessonTag.id=:electableTagId", LessonTag.PredefinedTags.ELECTABLE.getId)
+        builder.where("lessonTag.id=:electableTagId", LessonTag.PredefinedTags.ELECTABLE.id)
           .select("lesson.id")
         ids = entityDao.search(builder).toArray(Array.ofDim[Long](0))
       } else if ("all" == actionType) {
@@ -414,14 +412,14 @@ class ElectionProfileAction extends SemesterSupportAction {
           val lessons = entityDao.get(classOf[Lesson], profile.getWithdrawableLessons)
           val departSet = CollectUtils.newHashSet(departments)
           for (lesson <- lessons if departSet.contains(lesson.getTeachDepart)) {
-            profile.getWithdrawableLessons.remove(lesson.getId)
+            profile.getWithdrawableLessons.remove(lesson.id)
           }
         }
         if (!profile.getWithdrawableLessons.isEmpty) {
           val lessons = entityDao.get(classOf[Lesson], profile.getWithdrawableLessons)
           val departSet = CollectUtils.newHashSet(departments)
           for (lesson <- lessons if departSet.contains(lesson.getTeachDepart)) {
-            profile.getWithdrawableLessons.remove(lesson.getId)
+            profile.getWithdrawableLessons.remove(lesson.id)
           }
         }
         val idsList = CollectUtils.newArrayList()
@@ -429,7 +427,7 @@ class ElectionProfileAction extends SemesterSupportAction {
           val lessons = entityDao.get(classOf[Lesson], profile.getElectableLessons)
           val departSet = CollectUtils.newHashSet(departments)
           for (lesson <- lessons if departSet.contains(lesson.getTeachDepart)) {
-            idsList.add(lesson.getId)
+            idsList.add(lesson.id)
           }
         }
         ids = idsList.toArray(Array.ofDim[Long](0))
@@ -438,7 +436,7 @@ class ElectionProfileAction extends SemesterSupportAction {
           val lessons = entityDao.get(classOf[Lesson], profile.getWithdrawableLessons)
           val departSet = CollectUtils.newHashSet(departments)
           for (lesson <- lessons if departSet.contains(lesson.getTeachDepart)) {
-            profile.getWithdrawableLessons.remove(lesson.getId)
+            profile.getWithdrawableLessons.remove(lesson.id)
           }
         }
         ids = Array.ofDim[Long](0)
@@ -447,7 +445,7 @@ class ElectionProfileAction extends SemesterSupportAction {
           val lessons = entityDao.get(classOf[Lesson], profile.getElectableLessons)
           val departSet = CollectUtils.newHashSet(departments)
           for (lesson <- lessons if departSet.contains(lesson.getTeachDepart)) {
-            profile.getElectableLessons.remove(lesson.getId)
+            profile.getElectableLessons.remove(lesson.id)
           }
         }
         ids = Array.ofDim[Long](0)
@@ -458,7 +456,7 @@ class ElectionProfileAction extends SemesterSupportAction {
           val lessons = entityDao.get(classOf[Lesson], lessonIds)
           val departSet = CollectUtils.newHashSet(departments)
           for (lesson <- lessons if departSet.contains(lesson.getTeachDepart)) {
-            idsList.add(lesson.getId)
+            idsList.add(lesson.id)
           }
         }
         ids = idsList.toArray(Array.ofDim[Long](0))
@@ -515,18 +513,18 @@ class ElectionProfileAction extends SemesterSupportAction {
     if (null != guapai) {
       if (true == guapai) {
         builder.join("lesson.tags", "lessonTag")
-        builder.where("lessonTag.id=:guapaiTagId", LessonTag.PredefinedTags.GUAPAI.getId)
+        builder.where("lessonTag.id=:guapaiTagId", LessonTag.PredefinedTags.GUAPAI.id)
       } else {
-        builder.where("not exists (select tag.id from lesson.tags tag where tag.id=:guapaiTagId)", LessonTag.PredefinedTags.GUAPAI.getId)
+        builder.where("not exists (select tag.id from lesson.tags tag where tag.id=:guapaiTagId)", LessonTag.PredefinedTags.GUAPAI.id)
       }
     }
     if (null != electable) {
       if (true == electable) {
         builder.join("lesson.tags", "lessonTag")
-        builder.where("lessonTag.id=:electableTagId", LessonTag.PredefinedTags.ELECTABLE.getId)
+        builder.where("lessonTag.id=:electableTagId", LessonTag.PredefinedTags.ELECTABLE.id)
       } else {
         builder.where("not exists (select tag.id from lesson.tags tag where tag.id=:electableTagId)", 
-          LessonTag.PredefinedTags.ELECTABLE.getId)
+          LessonTag.PredefinedTags.ELECTABLE.id)
       }
     }
     populateConditions(builder)

@@ -1,19 +1,11 @@
 package org.openurp.edu.eams.teach.planaudit.service.internal
 
-import java.util.ArrayList
-import java.util.Collection
-import java.util.Collections
-import java.util.HashMap
-import java.util.HashSet
-import java.util.List
-import java.util.Map
-import java.util.Set
 import org.beangle.commons.collection.CollectUtils
-import org.openurp.edu.teach.Course
+import org.openurp.edu.base.Course
 import org.openurp.edu.teach.grade.CourseGrade
 import org.openurp.edu.eams.teach.planaudit.service.StdGrade
 
-import scala.collection.JavaConversions._
+
 
 class StdGradeImpl(courseGrades: List[CourseGrade]) extends StdGrade {
 
@@ -56,7 +48,7 @@ class StdGradeImpl(courseGrades: List[CourseGrade]) extends StdGrade {
     courseGrades
   }
 
-  def getRestCourses(): Collection[Course] = {
+  def getRestCourses(): Iterable[Course] = {
     CollectUtils.subtract(gradeMap.keySet, usedCourses)
   }
 
@@ -78,7 +70,7 @@ class StdGradeImpl(courseGrades: List[CourseGrade]) extends StdGrade {
       val grades = gradeMap.get(course)
       if (!grades.isEmpty) {
         val g = grades.get(0)
-        passedMap.put(course.getId, g.isPassed)
+        passedMap.put(course.id, g.isPassed)
       }
     }
     passedMap

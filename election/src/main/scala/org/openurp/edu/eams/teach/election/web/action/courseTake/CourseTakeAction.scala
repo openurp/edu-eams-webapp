@@ -3,14 +3,12 @@ package org.openurp.edu.eams.teach.election.web.action.courseTake
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.net.URL
-import java.util.ArrayList
-import java.util.Arrays
-import java.util.Collections
-import java.util.Comparator
+
+import java.util.Arraysimport java.util.Comparator
 import java.util.Date
-import java.util.List
-import java.util.Map
-import java.util.Set
+
+
+
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 import org.apache.commons.lang3.ArrayUtils
@@ -22,7 +20,7 @@ import org.apache.poi.ss.usermodel.Workbook
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
 import org.beangle.commons.collection.page.PageLimit
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.text.i18n.Message
 import org.beangle.commons.transfer.importer.listener.ItemImporterListener
@@ -30,7 +28,7 @@ import org.beangle.commons.web.util.RequestUtils
 import org.beangle.security.blueprint.User
 import org.beangle.security.blueprint.service.UserService
 import org.beangle.struts2.helper.QueryHelper
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.eams.base.util.WeekDays
 import org.openurp.edu.base.Student
 import org.openurp.edu.eams.system.msg.service.SystemMessageService
@@ -47,14 +45,14 @@ import org.openurp.edu.eams.teach.election.service.context.ConflictStatWrapper
 import org.openurp.edu.eams.teach.election.service.event.ElectCourseEvent
 import org.openurp.edu.eams.teach.election.service.helper.FreeMarkerHelper
 import org.openurp.edu.eams.teach.election.service.impl.CourseTakeImportListener
-import org.openurp.edu.eams.teach.lesson.CourseActivity
+import org.openurp.edu.teach.schedule.CourseActivity
 import org.openurp.edu.teach.lesson.CourseTake
 import org.openurp.edu.eams.teach.lesson.CourseTime
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.web.util.DownloadHelper
 import com.opensymphony.xwork2.util.ClassLoaderUtil
 
-import scala.collection.JavaConversions._
+
 
 class CourseTakeAction extends CourseTakeSearchAction {
 
@@ -324,10 +322,10 @@ class CourseTakeAction extends CourseTakeSearchAction {
       .where("courseTake.std=courseTake2.std")
       .where("courseTake.lesson.semester=courseTake2.lesson.semester")
       .where("courseTake.lesson.semester=:semestrer", semester)
-      .where("BITAND(courseActivity.time.weekStateNum,courseActivity2.time.weekStateNum)>0")
-      .where("courseActivity.time.weekday=courseActivity2.time.weekday")
-      .where("courseActivity.time.startTime <= courseActivity2.time.endTime ")
-      .where("courseActivity.time.endTime >= courseActivity2.time.startTime ")
+      .where("BITAND(courseActivity.time.state,courseActivity2.time.state)>0")
+      .where("courseActivity.time.day=courseActivity2.time.day")
+      .where("courseActivity.time.start <= courseActivity2.time.end ")
+      .where("courseActivity.time.end >= courseActivity2.time.start ")
       .where("courseTake.id <> courseTake2.id")
     val rows = entityDao.search(builder)
     val courseTakeIds = CollectUtils.newHashSet()
@@ -347,7 +345,7 @@ class CourseTakeAction extends CourseTakeSearchAction {
     val takes = entityDao.get(classOf[CourseTake], courseTakeIds)
     val courseTakes = CollectUtils.newHashMap()
     for (courseTake <- takes) {
-      courseTakes.put(courseTake.getId, courseTake)
+      courseTakes.put(courseTake.id, courseTake)
     }
     put("courseTakes", courseTakes)
     put("wrappers", wrapperMap.values)
@@ -411,7 +409,7 @@ class CourseTakeAction extends CourseTakeSearchAction {
       val lessons = CollectUtils.newArrayList(courseTake.getLesson, courseTake2.getLesson)
       Collections.sort(lessons, new Comparator[Lesson]() {
 
-        def compare(o1: Lesson, o2: Lesson): Int = return (o1.getId - o2.getId).toInt
+        def compare(o1: Lesson, o2: Lesson): Int = return (o1.id - o2.id).toInt
       })
       val lessonStr = lessons.get(0).getCourse.getName + "[" + lessons.get(0).getNo + 
         "]"
@@ -454,10 +452,10 @@ class CourseTakeAction extends CourseTakeSearchAction {
       val time = courseActivity.getTime
       for (courseActivity2 <- activities2) {
         val time2 = courseActivity2.getTime
-        if ((time.getWeekStateNum & time2.getWeekStateNum) > 0 && time.getWeekday == time2.getWeekday && 
+        if ((time.state & time2.state) > 0 && time.day == time2.day && 
           time.getStartUnit <= time2.getEndUnit && 
           time.getEndUnit >= time2.getStartUnit) {
-          result.add(WeekDays.get(time2.getWeekday).getName + "第" + time2.getStartUnit + 
+          result.add(WeekDays.get(time2.day).getName + "第" + time2.getStartUnit + 
             "-" + 
             time2.getEndUnit)
         }
@@ -475,7 +473,7 @@ class CourseTakeAction extends CourseTakeSearchAction {
       val time = courseActivity.getTime
       for (courseActivity2 <- activities2) {
         val time2 = courseActivity2.getTime
-        if ((time.getWeekStateNum & time2.getWeekStateNum) > 0 && time.getWeekday == time2.getWeekday && 
+        if ((time.state & time2.state) > 0 && time.day == time2.day && 
           time.getStartUnit <= time2.getEndUnit && 
           time.getEndUnit >= time2.getStartUnit) {
           return true

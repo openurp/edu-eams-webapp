@@ -5,20 +5,20 @@ import java.sql.Connection
 import java.sql.PreparedStatement
 import java.sql.SQLException
 import java.sql.Types
-import java.util.ArrayList
-import java.util.Collection
+
+
 import java.util.Date
-import java.util.List
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.EntityDao
 import org.beangle.commons.dao.Operation
-import org.beangle.commons.entity.Entity
+import org.beangle.data.model.Entity
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.lang.Throwables
-import org.beangle.orm.hibernate.HibernateEntityDao
+import org.beangle.data.jpa.hibernate.HibernateEntityDao
 import org.hibernate.Query
 import org.hibernate.engine.spi.SessionImplementor
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Student
 import org.openurp.edu.teach.code.CourseTakeType
 import org.openurp.edu.teach.code.ElectionMode
@@ -35,11 +35,11 @@ import org.openurp.edu.teach.lesson.CourseTake
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.teach.lesson.TeachClass
 
-import scala.collection.JavaConversions._
+
 
 class ElectionDaoHibernate extends HibernateEntityDao with ElectionDao {
 
-  def updatePitchOn(task: Lesson, stdIds: Collection[Long], isPitchOn: java.lang.Boolean) {
+  def updatePitchOn(task: Lesson, stdIds: Iterable[Long], isPitchOn: java.lang.Boolean) {
     if (stdIds.isEmpty) return
     val hql = "update ElectCourseLog set isPitchOn=:isPitchOn where task=:task and std.id in (:stdIds)"
     val query = getSession.createQuery(hql)
@@ -79,12 +79,12 @@ class ElectionDaoHibernate extends HibernateEntityDao with ElectionDao {
   }
 
   def removeElection(courseTake: CourseTake, updateStdCount: Boolean): Int = {
-    removeElection(courseTake.getLesson, courseTake.getLesson.getSemester, courseTake.getStd.getId, null, 
+    removeElection(courseTake.getLesson, courseTake.getLesson.getSemester, courseTake.getStd.id, null, 
       updateStdCount)
   }
 
   def removeElection(lesson: Lesson, state: ElectState): Int = {
-    removeElection(lesson, state.getProfile(this).getSemester, state.getStd.getId, state.getProfile(this).getTurn, 
+    removeElection(lesson, state.getProfile(this).getSemester, state.getStd.id, state.getProfile(this).getTurn, 
       !state.isCheckMinLimitCount)
   }
 
@@ -95,7 +95,7 @@ class ElectionDaoHibernate extends HibernateEntityDao with ElectionDao {
       updateStdCount: Boolean): Int = {
     try {
       val saveEntities = CollectUtils.newArrayList()
-      val courseTakes = get(classOf[CourseTake], Array("lesson.id", "std.id"), lesson.getId, stdId)
+      val courseTakes = get(classOf[CourseTake], Array("lesson.id", "std.id"), lesson.id, stdId)
       val taked = courseTakes.size
       if (taked > 0) {
         buildRemoveEntities(lesson, semester, stdId, turn, saveEntities, courseTakes, updateStdCount)
@@ -108,7 +108,7 @@ class ElectionDaoHibernate extends HibernateEntityDao with ElectionDao {
     } catch {
       case e: Exception => {
         logger.error("exec function is failed" + "in delete election task:" + 
-          lesson.getId + 
+          lesson.id + 
           " std:" + 
           stdId)
         throw new RuntimeException(e)
@@ -126,7 +126,7 @@ class ElectionDaoHibernate extends HibernateEntityDao with ElectionDao {
     if (updateCount) {
       val hql = "update " + classOf[Lesson].getName + 
         " set teachClass.stdCount=teachClass.stdCount - 1 where id=?1"
-      val update = executeUpdate(hql, lesson.getId)
+      val update = executeUpdate(hql, lesson.id)
       if (update == 0) {
         val no = lesson.getNo
         val name = lesson.getCourse.getName
@@ -184,7 +184,7 @@ class ElectionDaoHibernate extends HibernateEntityDao with ElectionDao {
     if (updateStdCount) {
       val hql = "update " + classOf[Lesson].getName + 
         "  set teachClass.stdCount= teachClass.stdCount+1 where id=?1"
-      val update = executeUpdate(hql, task.getId)
+      val update = executeUpdate(hql, task.id)
       if (update == 0) {
         throw new Exception(task.getCourse.getName + "[" + task.getNo + "] 人数已满")
       }
@@ -222,7 +222,7 @@ class ElectionDaoHibernate extends HibernateEntityDao with ElectionDao {
     try {
       cstmt = con.prepareCall(strProcedure)
       cstmt.registerOutParameter(1, Types.INTEGER)
-      cstmt.setLong(2, task.getId.longValue())
+      cstmt.setLong(2, task.id.longValue())
       cstmt.setLong(3, semesterId.longValue())
       cstmt.setLong(4, 1l)
       cstmt.setString(5, "127.0.0.1")

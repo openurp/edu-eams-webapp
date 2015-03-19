@@ -1,10 +1,8 @@
 package org.openurp.edu.eams.teach.grade.course.web.helper
 
-import java.util.Collection
-import java.util.Collections
 import java.util.Date
-import java.util.List
-import java.util.Set
+
+
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.EntityDao
@@ -16,22 +14,22 @@ import org.beangle.struts2.helper.ContextHelper
 import org.beangle.struts2.helper.Params
 import org.openurp.edu.eams.teach.Grade
 import org.openurp.edu.teach.code.CourseTakeType
-import org.openurp.edu.eams.teach.code.industry.ExamStatus
-import org.openurp.edu.eams.teach.code.industry.GradeType
+import org.openurp.edu.teach.code.ExamStatus
+import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.eams.teach.code.industry.ScoreMarkStyle
 import org.openurp.edu.teach.code.CourseType
 import org.openurp.edu.eams.teach.grade.service.CourseGradeCalculator
 import org.openurp.edu.eams.teach.grade.service.CourseGradeService
 import org.openurp.edu.eams.teach.grade.service.GradeRateService
 import org.openurp.edu.teach.grade.CourseGrade
-import org.openurp.edu.teach.grade.CourseGradeState
-import org.openurp.edu.eams.teach.lesson.ExamGrade
-import org.openurp.edu.eams.teach.lesson.ExamGradeState
+import org.openurp.edu.teach.grade.model.CourseGradeState
+import org.openurp.edu.teach.grade.ExamGrade
+import org.openurp.edu.teach.grade.model.ExamGradeState
 import org.openurp.edu.eams.teach.lesson.GradeTypeConstants
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.teach.lesson.model.CourseGradeStateBean
 
-import scala.collection.JavaConversions._
+
 
 class CourseGradeHelper {
 
@@ -62,7 +60,7 @@ class CourseGradeHelper {
     ContextHelper.put("gradeState", courseGradeService.getState(courseGrade.getLesson))
     val allTypes = baseCodeService.getCodes(classOf[GradeType])
     for (`type` <- allTypes) {
-      if (`type`.getId == GradeTypeConstants.FINAL_ID) {
+      if (`type`.id == GradeTypeConstants.FINAL_ID) {
         //continue
       }
       if (null == courseGrade.getExamGrade(`type`)) {

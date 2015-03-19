@@ -1,12 +1,12 @@
 package org.openurp.edu.eams.web.action.api
 
 import java.util.Date
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.eams.web.action.common.ProjectSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class AdminclassAction extends ProjectSupportAction {
 
@@ -14,7 +14,7 @@ class AdminclassAction extends ProjectSupportAction {
     var codeOrNames = get("term")
     val query = OqlBuilder.from(classOf[Adminclass], "adminclass")
     populateConditions(query, "adminclass.grade")
-    query.where("adminclass.major.project.id = :projectId", getProject.getId)
+    query.where("adminclass.major.project.id = :projectId", getProject.id)
     val grade = get("adminclass.grade")
     if (Strings.isNotEmpty(grade)) {
       query.where("adminclass.grade in (:grades)", Strings.split(grade))

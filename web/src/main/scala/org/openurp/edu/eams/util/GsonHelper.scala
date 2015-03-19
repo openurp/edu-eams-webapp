@@ -3,7 +3,7 @@ package org.openurp.edu.eams.util
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 
-import scala.collection.JavaConversions._
+
 
 object GsonHelper {
 

@@ -2,7 +2,7 @@ package org.openurp.edu.eams.teach.lesson.task.dao
 
 import org.openurp.edu.eams.teach.lesson.task.model.RequirePrefer
 
-import scala.collection.JavaConversions._
+
 
 trait RequirePreferDao {
 

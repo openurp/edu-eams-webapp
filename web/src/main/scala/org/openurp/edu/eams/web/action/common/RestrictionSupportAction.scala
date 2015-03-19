@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.web.action.common
 
-import java.util.List
-import java.util.Set
+
+
 import org.apache.commons.collections.CollectionUtils
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.lang.Strings
@@ -16,7 +16,7 @@ import org.openurp.edu.eams.web.action.BaseAction
 import org.openurp.edu.eams.web.helper.RestrictionHelper
 import RestrictionSupportAction._
 
-import scala.collection.JavaConversions._
+
 
 object RestrictionSupportAction {
 
@@ -70,7 +70,7 @@ abstract class RestrictionSupportAction extends BaseAction {
       val data = CollectUtils.newHashSet(Strings.split(restrictionHelper.educationIdSeq))
       if (data.contains("*")) return project.educations
       val rs = CollectUtils.newArrayList()
-      for (d <- project.educations if data.contains(d.getId.toString)) rs.add(d)
+      for (d <- project.educations if data.contains(d.id.toString)) rs.add(d)
       rs
     } else {
       restrictionHelper.educations.asInstanceOf[List[Education]]
@@ -83,7 +83,7 @@ abstract class RestrictionSupportAction extends BaseAction {
       val data = CollectUtils.newHashSet(Strings.split(restrictionHelper.stdTypeIdSeq))
       if (data.contains("*")) return project.getTypes
       val rs = CollectUtils.newArrayList()
-      for (d <- project.getTypes if data.contains(d.getId.toString)) rs.add(d)
+      for (d <- project.getTypes if data.contains(d.id.toString)) rs.add(d)
       rs
     } else {
       restrictionHelper.stdTypes.asInstanceOf[List[StdType]]
@@ -96,7 +96,7 @@ abstract class RestrictionSupportAction extends BaseAction {
       val data = CollectUtils.newHashSet(Strings.split(restrictionHelper.departmentIdSeq))
       if (data.contains("*")) return project.departments
       val rs = CollectUtils.newArrayList()
-      for (d <- project.departments if data.contains(d.getId.toString)) rs.add(d)
+      for (d <- project.departments if data.contains(d.id.toString)) rs.add(d)
       rs
     } else {
       restrictionHelper.getDeparts.asInstanceOf[List[Department]]

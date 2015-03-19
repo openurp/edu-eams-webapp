@@ -1,18 +1,18 @@
 package org.openurp.edu.eams.teach.grade.lesson.web.action
 
-import java.util.List
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.beangle.commons.entity.Entity
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.beangle.data.model.Entity
 import org.beangle.commons.lang.Strings
-import org.openurp.edu.eams.base.Semester
-import org.openurp.edu.eams.teach.code.industry.GradeType
+import org.openurp.base.Semester
+import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.eams.teach.grade.lesson.model.GradeInputSwitch
 import org.openurp.edu.eams.teach.lesson.GradeTypeConstants
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class InputSwitchAction extends SemesterSupportAction {
 
@@ -39,10 +39,10 @@ class InputSwitchAction extends SemesterSupportAction {
     val gradeInputSwitch = populateEntity(classOf[GradeInputSwitch], "gradeInputSwitch")
     gradeInputSwitch.setProject(getProject)
     val query = OqlBuilder.from(classOf[GradeInputSwitch], "gradeInputSwitch")
-    query.where("gradeInputSwitch.project.id = :projectId", gradeInputSwitch.getProject.getId)
-    query.where("gradeInputSwitch.semester.id = :semesterId", gradeInputSwitch.getSemester.getId)
+    query.where("gradeInputSwitch.project.id = :projectId", gradeInputSwitch.getProject.id)
+    query.where("gradeInputSwitch.semester.id = :semesterId", gradeInputSwitch.getSemester.id)
     if (gradeInputSwitch.isPersisted) {
-      query.where("gradeInputSwitch.id != :switchId", gradeInputSwitch.getId)
+      query.where("gradeInputSwitch.id != :switchId", gradeInputSwitch.id)
     }
     if (CollectUtils.isNotEmpty(entityDao.search(query))) {
       redirect("search", "info.save.failure.overlapAcross")

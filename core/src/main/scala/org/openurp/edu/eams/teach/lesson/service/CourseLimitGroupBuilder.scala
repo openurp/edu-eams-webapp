@@ -1,10 +1,10 @@
 package org.openurp.edu.eams.teach.lesson.service
 
-import org.beangle.commons.entity.Entity
+import org.beangle.data.model.Entity
 import org.openurp.edu.teach.lesson.CourseLimitGroup
 import org.openurp.edu.teach.lesson.CourseLimitMeta
 
-import scala.collection.JavaConversions._
+
 
 trait CourseLimitGroupBuilder {
 

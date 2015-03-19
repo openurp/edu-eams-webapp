@@ -6,7 +6,7 @@ import org.openurp.edu.eams.teach.program.major.MajorPlan
 import org.openurp.edu.teach.plan.MajorPlanCourse
 import org.openurp.edu.eams.teach.program.major.service.MajorPlanCourseService
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class MajorPlanCourseServiceImpl extends BaseServiceImpl with MajorPlanCourseService {
 

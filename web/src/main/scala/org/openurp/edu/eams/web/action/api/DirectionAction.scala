@@ -1,12 +1,12 @@
 package org.openurp.edu.eams.web.action.api
 
 import java.io.IOException
-import java.util.ArrayList
-import java.util.List
-import java.util.Map
+
+
+
 import java.util.TreeMap
 import javax.servlet.http.HttpServletResponse
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Arrays
 import org.beangle.commons.lang.Strings
 import org.openurp.edu.base.Direction
@@ -15,7 +15,7 @@ import org.openurp.edu.eams.web.action.api.internal.LessonGsonBuilderWorker
 import org.openurp.edu.eams.web.action.common.ProjectSupportAction
 import com.google.gson.Gson
 
-import scala.collection.JavaConversions._
+
 
 class DirectionAction extends ProjectSupportAction {
 
@@ -52,7 +52,7 @@ class DirectionAction extends ProjectSupportAction {
         }
         var entities = groups.get(groupName).asInstanceOf[List[Map[String, Any]]]
         var entity = new TreeMap[String, Any]()
-        entity.put("id", rawEntity.getId)
+        entity.put("id", rawEntity.id)
         entity.put("name", rawEntity.getName)
         entity.put("code", rawEntity.getCode)
         entities.add(entity)

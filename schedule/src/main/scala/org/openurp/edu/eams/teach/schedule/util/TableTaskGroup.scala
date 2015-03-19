@@ -1,11 +1,11 @@
 package org.openurp.edu.eams.teach.schedule.util
 
-import java.util.ArrayList
-import java.util.List
+
+
 import org.openurp.edu.teach.code.CourseType
 import org.openurp.edu.teach.lesson.Lesson
 
-import scala.collection.JavaConversions._
+
 
 class TableTaskGroup {
 

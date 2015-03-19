@@ -1,24 +1,24 @@
 package org.openurp.edu.eams.teach.grade.lesson.web.action
 
-import java.util.List
-import java.util.Map
+
+
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.base.Department
 import org.openurp.edu.base.Student
-import org.openurp.edu.teach.Course
-import org.openurp.edu.eams.teach.code.industry.ExamStatus
+import org.openurp.edu.base.Course
+import org.openurp.edu.teach.code.ExamStatus
 import org.openurp.edu.eams.teach.code.industry.ExamType
-import org.openurp.edu.eams.teach.code.industry.GradeType
+import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.eams.teach.code.industry.ScoreMarkStyle
 import org.openurp.edu.eams.teach.grade.service.CourseGradeCalculator
 import org.openurp.edu.eams.teach.grade.service.CourseGradeService
 import org.openurp.edu.teach.grade.CourseGrade
-import org.openurp.edu.eams.teach.lesson.ExamActivity
-import org.openurp.edu.eams.teach.lesson.ExamGrade
-import org.openurp.edu.eams.teach.lesson.ExamTake
+import org.openurp.edu.teach.exam.ExamActivity
+import org.openurp.edu.teach.grade.ExamGrade
+import org.openurp.edu.teach.exam.ExamTake
 import org.openurp.edu.eams.teach.lesson.GradeTypeConstants
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.teach.lesson.model.ExamGradeBean
@@ -26,7 +26,7 @@ import org.openurp.edu.eams.teach.lesson.service.LessonService
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 import MakeupAction._
 
-import scala.collection.JavaConversions._
+
 
 object MakeupAction {
 
@@ -118,10 +118,10 @@ class MakeupAction extends SemesterSupportAction {
     for (examTake <- examTakes) {
       val grade = getCourseGrade(examTake.getLesson, examTake.getStd)
       var gradeType: GradeType = null
-      gradeType = if (examTake.getExamType.getId == ExamType.DELAY) new GradeType(GradeTypeConstants.DELAY_ID) else new GradeType(GradeTypeConstants.MAKEUP_ID)
+      gradeType = if (examTake.getExamType.id == ExamType.DELAY) new GradeType(GradeTypeConstants.DELAY_ID) else new GradeType(GradeTypeConstants.MAKEUP_ID)
       if (null != grade) {
         val examGrade = grade.getExamGrade(gradeType)
-        examGradeMap.put(examTake.getId.toString, examGrade)
+        examGradeMap.put(examTake.id.toString, examGrade)
       }
     }
     put("examTakeList", examTakes)
@@ -146,18 +146,18 @@ class MakeupAction extends SemesterSupportAction {
     val examTakes = getMakeupTakes(semesterId, java.lang.Long.valueOf(params(0)), java.lang.Long.valueOf(params(1)))
     val grades = CollectUtils.newArrayList()
     for (examTake <- examTakes) {
-      val score = getFloat(examTake.getId.toString)
+      val score = getFloat(examTake.id.toString)
       if (null != score) {
         val grade = getCourseGrade(examTake.getLesson, examTake.getStd)
         if (null != grade) {
-          val gradeType = new GradeType(if (examTake.getExamType.getId == ExamType.DELAY) GradeTypeConstants.DELAY_ID else GradeTypeConstants.MAKEUP_ID)
+          val gradeType = new GradeType(if (examTake.getExamType.id == ExamType.DELAY) GradeTypeConstants.DELAY_ID else GradeTypeConstants.MAKEUP_ID)
           var examGrade = grade.getExamGrade(gradeType)
           if (null == examGrade) {
             examGrade = new ExamGradeBean()
             examGrade.setGradeType(gradeType)
             examGrade.setExamStatus(new ExamStatus(ExamStatus.NORMAL))
             var style = grade.getMarkStyle
-            if (gradeType.getId == GradeTypeConstants.DELAY_ID) {
+            if (gradeType.id == GradeTypeConstants.DELAY_ID) {
               val end = grade.getExamGrade(new GradeType(GradeTypeConstants.END_ID))
               if (null != end) style = end.getMarkStyle
             }

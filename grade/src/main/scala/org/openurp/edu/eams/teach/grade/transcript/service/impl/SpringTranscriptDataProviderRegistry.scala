@@ -1,8 +1,6 @@
 package org.openurp.edu.eams.teach.grade.transcript.service.impl
 
-import java.util.Collections
-import java.util.List
-import java.util.Map
+
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.lang.Strings
@@ -12,7 +10,7 @@ import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationContextAware
 import org.openurp.edu.eams.teach.grade.transcript.service.TranscriptDataProvider
 
-import scala.collection.JavaConversions._
+
 
 class SpringTranscriptDataProviderRegistry extends ApplicationContextAware with InitializingBean {
 

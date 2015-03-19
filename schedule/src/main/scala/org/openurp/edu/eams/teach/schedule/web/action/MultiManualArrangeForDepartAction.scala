@@ -1,11 +1,11 @@
 package org.openurp.edu.eams.teach.schedule.web.action
 
 import java.util.Date
-import java.util.List
+
 import org.beangle.commons.dao.query.builder.Condition
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.eams.core.CommonAuditState
 import org.openurp.edu.base.Project
@@ -15,7 +15,7 @@ import org.openurp.edu.eams.teach.lesson.model.CourseScheduleBean.CourseStatusEn
 import org.openurp.edu.eams.teach.lesson.service.CourseLimitUtils
 import org.openurp.edu.eams.teach.schedule.util.PropertyCollectionComparator.ArrangeOrder
 
-import scala.collection.JavaConversions._
+
 
 class MultiManualArrangeForDepartAction extends MultiManualArrangeAction {
 
@@ -75,9 +75,9 @@ class MultiManualArrangeForDepartAction extends MultiManualArrangeAction {
     if (null != guapai) {
       if (true == guapai) {
         builder.join("lesson.tags", "tag")
-        builder.where("tag.id = :guapaiId", LessonTag.PredefinedTags.GUAPAI.getId)
+        builder.where("tag.id = :guapaiId", LessonTag.PredefinedTags.GUAPAI.id)
       } else {
-        builder.where("not exists (from lesson.tags tag where tag.id = :guapaiId)", LessonTag.PredefinedTags.GUAPAI.getId)
+        builder.where("not exists (from lesson.tags tag where tag.id = :guapaiId)", LessonTag.PredefinedTags.GUAPAI.id)
       }
     }
     builder.where("lesson.auditStatus = :auditStatus", CommonAuditState.ACCEPTED)

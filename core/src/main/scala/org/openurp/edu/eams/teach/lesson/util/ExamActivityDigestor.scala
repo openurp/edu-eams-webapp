@@ -4,16 +4,14 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.GregorianCalendar
-import java.util.Iterator
+
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.text.i18n.TextResource
 import org.openurp.edu.eams.base.util.WeekDays
 import org.openurp.edu.eams.date.EamsDateUtil
-import org.openurp.edu.eams.teach.lesson.ExamActivity
-import org.openurp.edu.eams.teach.lesson.ExamRoom
+import org.openurp.edu.teach.exam.ExamActivity
+import org.openurp.edu.teach.exam.ExamRoom
 import ExamActivityDigestor._
-
-import scala.collection.JavaConversions._
 
 object ExamActivityDigestor {
 

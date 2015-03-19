@@ -2,18 +2,18 @@ package org.openurp.edu.eams.teach.lesson.task.service.impl
 
 import java.sql.Date
 import java.text.MessageFormat
-import java.util.ArrayList
-import java.util.HashSet
-import java.util.List
-import java.util.Set
+
+
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.beangle.commons.lang.Strings
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.eams.base.util.WeekStates
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.eams.core.service.SemesterService
-import org.openurp.edu.teach.Course
+import org.openurp.edu.base.Course
 import org.openurp.edu.eams.teach.lesson.CourseSchedule
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.teach.lesson.LessonPlanRelation
@@ -30,14 +30,14 @@ import org.openurp.edu.eams.teach.lesson.task.service.LessonPlanRelationService
 import org.openurp.edu.eams.teach.lesson.task.service.TaskGenObserver
 import org.openurp.edu.eams.teach.lesson.task.service.TaskGenParams
 import org.openurp.edu.eams.teach.lesson.task.service.TeachTaskGenService
-import org.openurp.edu.eams.teach.program.PlanCourse
+import org.openurp.edu.teach.plan.PlanCourse
 import org.openurp.edu.teach.plan.MajorPlan
 import org.openurp.edu.teach.plan.MajorPlanCourse
 import org.openurp.edu.eams.teach.program.util.PlanUtils
 import org.openurp.edu.eams.teach.time.util.TermCalculator
 import org.openurp.edu.eams.teach.util.AdminclassQueryBuilder
 
-import scala.collection.JavaConversions._
+
 
 class TeachTaskGenServiceImpl extends BaseServiceImpl with TeachTaskGenService {
 

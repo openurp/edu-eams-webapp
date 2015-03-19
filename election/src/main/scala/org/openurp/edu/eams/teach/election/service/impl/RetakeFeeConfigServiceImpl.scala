@@ -2,20 +2,18 @@ package org.openurp.edu.eams.teach.election.service.impl
 
 import java.io.Writer
 import java.text.ParseException
-import java.text.SimpleDateFormat
-import java.util.Collections
-import java.util.Date
-import java.util.List
-import java.util.Map
+import java.text.SimpleDateFormatimport java.util.Date
+
+
 import org.apache.commons.io.output.StringBuilderWriter
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.beangle.ems.dictionary.service.impl.BaseCodeServiceImpl
 import org.beangle.struts2.freemarker.BeangleClassTemplateLoader
 import org.beangle.struts2.helper.Params
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Project
 import org.openurp.edu.base.Student
 import org.openurp.edu.teach.code.CourseTakeType
@@ -26,7 +24,7 @@ import org.openurp.edu.teach.lesson.CourseTake
 import freemarker.template.Configuration
 import freemarker.template.Template
 
-import scala.collection.JavaConversions._
+
 
 class RetakeFeeConfigServiceImpl extends BaseCodeServiceImpl with RetakeFeeConfigService {
 

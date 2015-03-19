@@ -1,10 +1,10 @@
 package org.openurp.edu.eams.teach.program.service.internal
 
-import java.util.Collection
-import java.util.Map
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.impl.BaseServiceImpl
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.edu.base.Student
 import org.openurp.edu.teach.plan.CoursePlan
 import org.openurp.edu.base.Program
@@ -12,7 +12,7 @@ import org.openurp.edu.teach.plan.MajorPlan
 import org.openurp.edu.teach.plan.StdPlan
 import org.openurp.edu.eams.teach.program.service.CoursePlanProvider
 
-import scala.collection.JavaConversions._
+
 
 class CoursePlanProviderImpl extends BaseServiceImpl with CoursePlanProvider {
 
@@ -23,7 +23,7 @@ class CoursePlanProviderImpl extends BaseServiceImpl with CoursePlanProvider {
   def getMajorPlan(program: Program): MajorPlan = {
     if (null == program) return null
     val query = OqlBuilder.from(classOf[MajorPlan], "plan")
-    query.where("plan.program.id = :programId", program.getId)
+    query.where("plan.program.id = :programId", program.id)
       .cacheable()
     entityDao.uniqueResult(query)
   }
@@ -34,7 +34,7 @@ class CoursePlanProviderImpl extends BaseServiceImpl with CoursePlanProvider {
     entityDao.uniqueResult(query)
   }
 
-  def getCoursePlans(students: Collection[Student]): Map[Student, CoursePlan] = {
+  def getCoursePlans(students: Iterable[Student]): Map[Student, CoursePlan] = {
     val result = CollectUtils.newHashMap()
     for (student <- students) result.put(student, getCoursePlan(student))
     result

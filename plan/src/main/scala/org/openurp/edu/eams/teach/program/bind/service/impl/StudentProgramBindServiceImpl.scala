@@ -1,10 +1,10 @@
 package org.openurp.edu.eams.teach.program.bind.service.impl
 
 import java.util.Date
-import java.util.Iterator
-import java.util.List
+
+
 import org.beangle.commons.dao.impl.BaseServiceImpl
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model
 import com.ekingstar.eams.core.CommonAuditState
 import com.ekingstar.eams.core.Student
@@ -16,7 +16,7 @@ import org.openurp.edu.eams.teach.program.service.BindWrongMajorProgramException
 import org.openurp.edu.eams.teach.program.service.NoMajorProgramException
 import org.openurp.edu.eams.teach.program.service.StudentProgramBindService
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class StudentProgramBindServiceImpl extends BaseServiceImpl with StudentProgramBindService {
 

@@ -1,18 +1,16 @@
 package org.openurp.edu.eams.teach.grade.adminclass.web.action
-
-import java.util.Collections
 import java.util.Date
-import java.util.List
-import java.util.Set
+
+
 import org.beangle.commons.bean.comparators.PropertyComparator
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.security.blueprint.SecurityUtils
 import org.openurp.base.Department
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class IndexAction extends SemesterSupportAction {
 

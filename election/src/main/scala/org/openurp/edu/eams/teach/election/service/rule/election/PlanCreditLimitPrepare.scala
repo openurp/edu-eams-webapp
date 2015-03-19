@@ -1,11 +1,11 @@
 package org.openurp.edu.eams.teach.election.service.rule.election
 
-import java.util.ArrayList
-import java.util.List
-import java.util.Map
+
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.EntityDao
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.edu.teach.code.CourseType
 import org.openurp.edu.eams.teach.election.CourseTypeCreditConstraint
 import org.openurp.edu.eams.teach.election.service.context.ElectCourseGroup
@@ -15,16 +15,16 @@ import org.openurp.edu.eams.teach.election.service.context.PrepareContext
 import org.openurp.edu.eams.teach.election.service.context.PrepareContext.PreparedDataName
 import org.openurp.edu.eams.teach.election.service.rule.ElectRulePrepare
 import org.openurp.edu.teach.lesson.CourseTake
-import org.openurp.edu.eams.teach.planaudit.GroupAuditResult
-import org.openurp.edu.eams.teach.planaudit.PlanAuditResult
-import org.openurp.edu.eams.teach.planaudit.model.PlanAuditStandard
+import org.openurp.edu.teach.planaudit.GroupAuditResult
+import org.openurp.edu.teach.planaudit.PlanAuditResult
+import org.openurp.edu.teach.planaudit.model.PlanAuditStandard
 import org.openurp.edu.eams.teach.planaudit.service.PlanAuditContext
 import org.openurp.edu.eams.teach.planaudit.service.PlanAuditService
-import org.openurp.edu.eams.teach.program.CourseGroup
+import org.openurp.edu.teach.plan.CourseGroup
 import org.openurp.edu.teach.plan.CoursePlan
 import org.openurp.edu.eams.teach.program.util.PlanUtils
 
-import scala.collection.JavaConversions._
+
 
 class PlanCreditLimitPrepare extends ElectRulePrepare {
 
@@ -64,7 +64,7 @@ class PlanCreditLimitPrepare extends ElectRulePrepare {
     for (take <- context.getTakes) {
       val group = electCoursePlan.getOrCreateGroup(take.getLesson.getCourse, take.getLesson.getCourseType)
       if (null == group.getCourseType.getName) {
-        group.getCourseType.setName(entityDao.get(classOf[CourseType], group.getCourseType.getId)
+        group.getCourseType.setName(entityDao.get(classOf[CourseType], group.getCourseType.id)
           .getName)
       }
       group.addElectCourse(take.getLesson.getCourse)
@@ -73,7 +73,7 @@ class PlanCreditLimitPrepare extends ElectRulePrepare {
   }
 
   private def flatGroup(groupResult: GroupAuditResult, results: Map[Integer, GroupAuditResult]) {
-    results.put(groupResult.getCourseType.getId, groupResult)
+    results.put(groupResult.getCourseType.id, groupResult)
     for (childGroup <- groupResult.getChildren) {
       flatGroup(childGroup, results)
     }
@@ -87,7 +87,7 @@ class PlanCreditLimitPrepare extends ElectRulePrepare {
       courseTypeCredits: Map[CourseType, Float], 
       extraCredits: Float, 
       state: ElectState): ElectCourseGroup = {
-    var me = electCoursePlan.groups.get(courseGroup.getCourseType.getId)
+    var me = electCoursePlan.groups.get(courseGroup.getCourseType.id)
     if (null == me) {
       me = new ElectCourseGroup(courseGroup.getCourseType)
       me.setParent(parent)
@@ -108,7 +108,7 @@ class PlanCreditLimitPrepare extends ElectRulePrepare {
     if (null != typeCredit) {
       me.setLimitCredits(Math.min(typeCredit, me.getLimitCredits))
     }
-    val gar = groupResults.get(courseGroup.getCourseType.getId)
+    val gar = groupResults.get(courseGroup.getCourseType.id)
     if (null != gar) {
       me.setCompleteCredits(gar.getAuditStat.getCreditsCompleted)
     }

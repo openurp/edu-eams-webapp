@@ -8,7 +8,7 @@ import org.openurp.edu.eams.teach.election.service.rule.election.CourseGradePrep
 import org.openurp.edu.eams.teach.election.service.rule.election.filter.ElectableLessonNoRetakeFilter
 import RetakeCourseBuildInPrepare._
 
-import scala.collection.JavaConversions._
+
 
 object RetakeCourseBuildInPrepare {
 

@@ -3,12 +3,10 @@ package org.openurp.edu.eams.teach.schedule.service.impl
 import java.lang.reflect.InvocationTargetException
 import java.sql.Date
 import java.util.Calendar
-import java.util.Collection
-import java.util.Collections
-import java.util.Iterator
-import java.util.List
-import java.util.Map
-import java.util.Set
+
+
+
+
 import org.apache.commons.beanutils.BeanUtils
 import org.apache.commons.lang3.ArrayUtils
 import org.beangle.commons.bean.transformers.PropertyTransformer
@@ -17,8 +15,8 @@ import org.beangle.commons.conversion.impl.DefaultConversion
 import org.beangle.commons.dao.Operation
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.beangle.commons.dao.query.builder.Condition
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.beangle.commons.entity.Entity
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.beangle.data.model.Entity
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.lang.BitStrings
 import org.beangle.commons.lang.Objects
@@ -26,12 +24,12 @@ import org.beangle.commons.lang.Strings
 import org.beangle.security.blueprint.User
 import org.openurp.base.Room
 import org.openurp.edu.eams.base.CourseUnit
-import org.openurp.edu.eams.base.Semester
-import org.openurp.edu.eams.base.TimeSetting
+import org.openurp.base.Semester
+import org.openurp.base.TimeSetting
 import org.openurp.edu.eams.base.util.WeekStates
 import org.openurp.edu.eams.classroom.Occupancy
-import org.openurp.edu.eams.classroom.TimeUnit
-import org.openurp.edu.eams.classroom.code.industry.RoomUsage
+import 
+import org.openurp.base.code.RoomUsage
 import org.openurp.edu.eams.classroom.util.RoomUseridGenerator
 import org.openurp.edu.eams.classroom.util.RoomUseridGenerator.Usage
 import org.openurp.edu.base.Adminclass
@@ -41,20 +39,20 @@ import org.openurp.edu.eams.core.service.TimeSettingService
 import org.openurp.edu.eams.system.msg.SystemMessage
 import org.openurp.edu.eams.system.msg.SystemMessageType
 import org.openurp.edu.eams.system.msg.model.MessageContentBean
-import org.openurp.edu.eams.teach.lesson.CourseActivity
+import org.openurp.edu.teach.schedule.CourseActivity
 import org.openurp.edu.teach.lesson.CourseLimitItem
 import org.openurp.edu.teach.lesson.CourseLimitMeta.Operator
 import org.openurp.edu.teach.lesson.CourseTake
 import org.openurp.edu.eams.teach.lesson.CourseTime
 import org.openurp.edu.eams.teach.lesson.ExamMonitor
-import org.openurp.edu.eams.teach.lesson.ExamRoom
+import org.openurp.edu.teach.exam.ExamRoom
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.teach.lesson.model.CourseScheduleBean.CourseStatusEnum
 import org.openurp.edu.eams.teach.lesson.service.LessonService
 import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnum
 import org.openurp.edu.eams.teach.lesson.util.CourseActivityDigestor
 import org.openurp.edu.eams.teach.lesson.util.SemesterUtil
-import org.openurp.edu.eams.teach.lesson.util.TimeUnitUtil
+import org.openurp.edu.eams.teach.lesson.util.YearWeekTimeUtil
 import org.openurp.edu.eams.teach.schedule.dao.CourseActivityDao
 import org.openurp.edu.eams.teach.schedule.model.CollisionInfo
 import org.openurp.edu.eams.teach.schedule.model.CollisionResource.ResourceType
@@ -62,7 +60,7 @@ import org.openurp.edu.eams.teach.schedule.model.CourseArrangeAlteration
 import org.openurp.edu.eams.teach.schedule.service.CourseActivityService
 import org.openurp.edu.eams.teach.schedule.service.ScheduleLogHelper
 
-import scala.collection.JavaConversions._
+
 
 class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityService {
 
@@ -76,13 +74,13 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
 
   protected var scheduleLogHelper: ScheduleLogHelper = _
 
-  def saveActivities(lessons: Collection[Lesson]) {
+  def saveActivities(lessons: Iterable[Lesson]) {
     if (CollectUtils.isNotEmpty(lessons)) {
       entityDao.saveOrUpdate(lessons)
     }
   }
 
-  def removeActivities(lessons: Collection[Lesson]) {
+  def removeActivities(lessons: Iterable[Lesson]) {
     if (!lessons.isEmpty) {
       courseActivityDao.removeActivities(lessons)
     }
@@ -137,14 +135,14 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
     }
   }
 
-  def detectCollision[T](semester: Semester, `type`: ResourceType, timeSetting: TimeSetting): Collection[CollisionInfo] = {
+  def detectCollision[T](semester: Semester, `type`: ResourceType, timeSetting: TimeSetting): Iterable[CollisionInfo] = {
     detectCollision(semester, `type`, timeSetting, null)
   }
 
   def detectCollision[T](semester: Semester, 
       `type`: ResourceType, 
       timeSetting: TimeSetting, 
-      lessonId: java.lang.Long): Collection[CollisionInfo] = {
+      lessonId: java.lang.Long): Iterable[CollisionInfo] = {
     var entityClass: Class[_ <: Entity[_ <: Number]] = null
     var query: OqlBuilder[_] = null
     val collisionInfos = CollectUtils.newHashMap()
@@ -161,9 +159,9 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
           classOf[CourseActivity].getName + 
           " activity1 " + 
           "where activity.lesson.semester = :semester and activity1.lesson.semester=activity.lesson.semester " + 
-          "and activity.lesson <> activity1.lesson and activity1.time.weekday=activity.time.weekday and " + 
+          "and activity.lesson <> activity1.lesson and activity1.time.day=activity.time.day and " + 
           "activity1.time.startUnit <= activity.time.endUnit and activity1.time.endUnit >= activity.time.startUnit and " + 
-          "bitand(activity1.time.weekStateNum,activity.time.weekStateNum)>0 "
+          "bitand(activity1.time.state,activity.time.state)>0 "
         params.put("semester", semester)
         if (lessonId != null) {
           hql += "and activity.lesson.id = :lessonId"
@@ -187,42 +185,42 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
         fillCollisionEntities(entityClass, semester, collisionInfos)
 
       case CLASSROOM => 
-        entityClass = classOf[Classroom]
+        entityClass = classOf[Room]
         var timeAndRooms = getActivityTimes(semester, timeSetting, lessonId)
         for (objs <- timeAndRooms) {
           val courseTime = objs(0).asInstanceOf[CourseTime]
-          val occupancyRoom = objs(1).asInstanceOf[Classroom]
-          val timeUnits = TimeUnitUtil.convertToTimeUnits(semester, courseTime)
+          val occupancyRoom = objs(1).asInstanceOf[Room]
+          val timeUnits = YearWeekTimeUtil.convertToYearWeekTimes(semester, courseTime)
           params = CollectUtils.newHashMap()
           for (timeUnit <- timeUnits) {
             hql = "exists(select occupancy.room.id from org.openurp.edu.eams.classroom.Occupancy occupancy " + 
-              "where bitand(occupancy.time.weekStateNum," + 
-              new java.lang.Long(timeunit.weekStateNum) + 
-              ")>0 and occupancy.time.weekday = :weekday" + 
-              " and occupancy.time.year = :year and occupancy.time.startTime < :endTime" + 
-              " and occupancy.time.endTime > :startTime and occupancy.room=classroom and occupancy.userid like '%" + 
+              "where bitand(occupancy.time.state," + 
+              new java.lang.Long(timeunit.state) + 
+              ")>0 and occupancy.time.day = :weekday" + 
+              " and occupancy.time.year = :year and occupancy.time.start < :endTime" + 
+              " and occupancy.time.end > :startTime and occupancy.room=classroom and occupancy.userid like '%" + 
               Usage.COURSE.toString + 
               "%'" + 
               " and occupancy.room = :occupancyRoom group by occupancy.room.id having count(*)>1)"
             val hql2 = "exists(select occupancy.room.id from org.openurp.edu.eams.classroom.Occupancy occupancy " + 
-              "where bitand(occupancy.time.weekStateNum," + 
-              new java.lang.Long(timeunit.weekStateNum) + 
-              ")>0 and occupancy.time.weekday = :weekday" + 
-              " and occupancy.time.year = :year and occupancy.time.startTime < :endTime" + 
-              " and occupancy.time.endTime > :startTime and occupancy.room=occupancy1.room and occupancy.userid like '%" + 
+              "where bitand(occupancy.time.state," + 
+              new java.lang.Long(timeunit.state) + 
+              ")>0 and occupancy.time.day = :weekday" + 
+              " and occupancy.time.year = :year and occupancy.time.start < :endTime" + 
+              " and occupancy.time.end > :startTime and occupancy.room=occupancy1.room and occupancy.userid like '%" + 
               Usage.EXAM.toString + 
               "%'" + 
               " and occupancy.room = :occupancyRoom)"
             val hql3 = "exists(select occupancy.room.id from org.openurp.edu.eams.classroom.Occupancy occupancy " + 
-              "where bitand(occupancy.time.weekStateNum," + 
-              new java.lang.Long(timeunit.weekStateNum) + 
-              ")>0 and occupancy.time.weekday = :weekday" + 
-              " and occupancy.time.year = :year and occupancy.time.startTime < :endTime" + 
-              " and occupancy.time.endTime > :startTime and occupancy.room=occupancy1.room and occupancy.userid like '%" + 
+              "where bitand(occupancy.time.state," + 
+              new java.lang.Long(timeunit.state) + 
+              ")>0 and occupancy.time.day = :weekday" + 
+              " and occupancy.time.year = :year and occupancy.time.start < :endTime" + 
+              " and occupancy.time.end > :startTime and occupancy.room=occupancy1.room and occupancy.userid like '%" + 
               Usage.OTHER.toString + 
               "%'" + 
               " and occupancy.room = :occupancyRoom group by occupancy.room.id)"
-            query = OqlBuilder.from(classOf[Classroom], "classroom")
+            query = OqlBuilder.from(classOf[Room], "classroom")
             query.where(hql)
             val query1 = OqlBuilder.from(classOf[Occupancy], "occupancy1")
             query1.where(hql2)
@@ -232,40 +230,40 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
             query2.where(hql3)
             query2.where("occupancy1.userid like '%" + Usage.COURSE.toString + 
               "'")
-            params.put("weekday", new java.lang.Integer(timeUnit.getWeekday))
-            params.put("endTime", new java.lang.Integer(timeUnit.getEndTime))
-            params.put("startTime", new java.lang.Integer(timeUnit.getStartTime))
+            params.put("weekday", new java.lang.Integer(timeUnit.day))
+            params.put("endTime", new java.lang.Integer(timeUnit.end))
+            params.put("startTime", new java.lang.Integer(timeUnit.start))
             params.put("year", new java.lang.Integer(timeunit.year))
             params.put("occupancyRoom", occupancyRoom)
             query.params(params)
             query1.params(params)
             query2.params(params)
-            val rooms = entityDao.search(query).asInstanceOf[List[Classroom]]
+            val rooms = entityDao.search(query).asInstanceOf[List[Room]]
             for (room <- rooms) {
-              var collisionInfo = collisionInfos.get(room.getId.toString)
+              var collisionInfo = collisionInfos.get(room.id.toString)
               if (null == collisionInfo) {
                 collisionInfo = new CollisionInfo(room, courseTime, "排课")
-                collisionInfos.put(room.getId.toString, collisionInfo)
+                collisionInfos.put(room.id.toString, collisionInfo)
               } else {
                 collisionInfo.add(courseTime)
               }
             }
             var occupancies = entityDao.search(query1).asInstanceOf[List[Occupancy]]
             for (occupancy <- occupancies) {
-              var collisionInfo = collisionInfos2.get(occupancy.getRoom.getId.toString)
+              var collisionInfo = collisionInfos2.get(occupancy.getRoom.id.toString)
               if (null == collisionInfo) {
                 collisionInfo = new CollisionInfo(occupancy.getRoom, courseTime, "排考")
-                collisionInfos2.put(occupancy.getRoom.getId.toString, collisionInfo)
+                collisionInfos2.put(occupancy.getRoom.id.toString, collisionInfo)
               } else {
                 collisionInfo.add(courseTime)
               }
             }
             occupancies = entityDao.search(query2).asInstanceOf[List[Occupancy]]
             for (occupancy <- occupancies) {
-              var collisionInfo = collisionInfos3.get(occupancy.getRoom.getId.toString)
+              var collisionInfo = collisionInfos3.get(occupancy.getRoom.id.toString)
               if (null == collisionInfo) {
                 collisionInfo = new CollisionInfo(occupancy.getRoom, courseTime, "教室借用")
-                collisionInfos3.put(occupancy.getRoom.getId.toString, collisionInfo)
+                collisionInfos3.put(occupancy.getRoom.id.toString, collisionInfo)
               } else {
                 collisionInfo.add(courseTime)
               }
@@ -280,14 +278,14 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
         query.select("select distinct teacher.id,activity.time")
         query.where("activity.lesson.semester = :semester")
         query.join("activity.teachers", "teacher")
-        query.where("exists(from org.openurp.edu.eams.teach.lesson.CourseActivity " + 
+        query.where("exists(from org.openurp.edu.teach.schedule.CourseActivity " + 
           "activity1 join activity1.teachers as teacher1 " + 
           "where activity1.lesson <> activity.lesson and " + 
           "teacher1 = teacher and " + 
-          "activity1.id <>activity.id and activity1.time.weekday=activity.time.weekday and " + 
+          "activity1.id <>activity.id and activity1.time.day=activity.time.day and " + 
           "activity1.time.startUnit <= activity.time.endUnit and activity1.time.endUnit >= activity.time.startUnit and " + 
           "activity1.lesson.semester = :semester and " + 
-          "bitand(activity1.time.weekStateNum,activity.time.weekStateNum)>0)")
+          "bitand(activity1.time.state,activity.time.state)>0)")
         if (lessonId != null) {
           query.where("activity.lesson.id = :lessonId")
           query.param("lessonId", lessonId)
@@ -316,17 +314,17 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
               teachers.add(monitor.getTeacher)
             }
             if (!teachers.isEmpty) {
-              val time = TimeUnitUtil.buildCourseTime(examRoom.getStartAt, examRoom.getEndAt, examRoom.getSemester)
+              val time = YearWeekTimeUtil.buildCourseTime(examRoom.getStartAt, examRoom.getEndAt, examRoom.getSemester)
               val builder = OqlBuilder.from(classOf[CourseActivity], "activity")
               builder.select("select distinct teacher.id,activity.time")
               builder.where("activity.lesson.semester = :semester", semester)
               builder.join("activity.teachers", "teacher")
               builder.where("teacher in (:teachers)", teachers)
-              builder.where("bitand(" + time.getWeekStateNum + ",activity.time.weekStateNum)>0")
-              builder.where("activity.time.weekday = :weekDay", time.getWeekday)
-              builder.where("activity.time.startTime < :endTime", time.getEndTime)
-              builder.where("activity.time.endTime > :startTime", time.getStartTime)
-              infos2.addAll(entityDao.search(builder).asInstanceOf[Collection[Array[Any]]])
+              builder.where("bitand(" + time.state + ",activity.time.state)>0")
+              builder.where("activity.time.day = :weekDay", time.day)
+              builder.where("activity.time.start < :endTime", time.end)
+              builder.where("activity.time.end > :startTime", time.start)
+              infos2.addAll(entityDao.search(builder).asInstanceOf[Iterable[Array[Any]]])
             }
           }
           for (info <- infos2) {
@@ -359,10 +357,10 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
     query.join("activity.rooms", "room")
     query.select(hql.toString)
     val orderBy = new StringBuilder()
-    orderBy.append("activity.time.weekday,")
+    orderBy.append("activity.time.day,")
     orderBy.append("activity.time.startUnit,")
     orderBy.append("activity.time.endUnit,")
-    orderBy.append("activity.time.weekState")
+    orderBy.append("activity.time.state")
     query.orderBy(orderBy.toString)
     entityDao.search(query).asInstanceOf[List[Array[Any]]]
   }
@@ -399,7 +397,7 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
     collisionResources
   }
 
-  private def fillCollisionEntities[T <: Entity[_ <: Number]](entityClass: Class[T], semester: Semester, collisionInfos: Map[String, CollisionInfo]*): Collection[CollisionInfo] = {
+  private def fillCollisionEntities[T <: Entity[_ <: Number]](entityClass: Class[T], semester: Semester, collisionInfos: Map[String, CollisionInfo]*): Iterable[CollisionInfo] = {
     if (ArrayUtils.isEmpty(collisionInfos)) {
       return CollectUtils.newArrayList()
     }
@@ -410,7 +408,7 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
         //continue
       }
       val idSet = collisionInfosMap.keySet
-      val idClazz = Model.getType(nClass).getIdType
+      val idClazz = Model.getType(nClass).idType
       val rsList = CollectUtils.newArrayList()
       for (a <- idSet) {
         rsList.add(DefaultConversion.Instance.convert(a, idClazz))
@@ -418,7 +416,7 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
       val collisionResources = entityDao.search(OqlBuilder.from(nClass, "clazz").where("clazz.id in (:ids)", 
         rsList))
       for (entity <- collisionResources) {
-        val collisionInfo = collisionInfosMap.get(entity.getId.toString)
+        val collisionInfo = collisionInfosMap.get(entity.id.toString)
         collisionInfo.setResource(entity)
         collisionInfo.mergeTimes()
         collisionInfoResults.add(collisionInfo)
@@ -427,7 +425,7 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
     collisionInfoResults
   }
 
-  def collisionTakes(lesson: Lesson, activities: Collection[CourseActivity]): Collection[CourseTake] = {
+  def collisionTakes(lesson: Lesson, activities: Iterable[CourseActivity]): Iterable[CourseTake] = {
     if (CollectUtils.isNotEmpty(lesson.getTeachClass.getCourseTakes)) {
       val stdIds = CollectUtils.collect(lesson.getTeachClass.getNormalCourseTakes, new PropertyTransformer("std.id"))
       if (!stdIds.isEmpty) {
@@ -435,7 +433,7 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
         for (courseActivity <- activities if isStdsOccupied(courseActivity.getTime, stdIds, lesson); 
              stdId <- stdIds) {
           val courseTakes = getCourseTakes(stdId, courseActivity.getTime, lesson.getSemester)
-          for (take <- courseTakes if take.getLesson.getId != lesson.getId && take.isAttend) {
+          for (take <- courseTakes if take.getLesson.id != lesson.id && take.isAttend) {
             collisionTakes.add(take)
           }
         }
@@ -445,12 +443,12 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
     CollectUtils.newArrayList()
   }
 
-  def isStdsOccupied(time: CourseTime, stdIds: Collection[Long], except: Lesson): Boolean = {
+  def isStdsOccupied(time: CourseTime, stdIds: Iterable[Long], except: Lesson): Boolean = {
     val builder = OqlBuilder.from(classOf[CourseActivity], "activity")
     builder.join("activity.lesson.teachClass.courseTakes", "take")
     builder.where("take.std.id in (:stdIds)", stdIds)
-    builder.where("bitand(activity.time.weekStateNum, :weekStateNum) > 0", time.getWeekStateNum)
-    builder.where("activity.time.weekday = :weekday", time.getWeekday)
+    builder.where("bitand(activity.time.state, :weekStateNum) > 0", time.state)
+    builder.where("activity.time.day = :weekday", time.day)
     builder.where("activity.time.startUnit <= :endUnit", time.getEndUnit)
     builder.where("activity.time.endUnit >= :startUnit", time.getStartUnit)
     builder.where("activity.lesson <> :lesson", except)
@@ -467,8 +465,8 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
     query.where("take.std.id = :stdId", stdId)
     val conditions = CollectUtils.newArrayList()
     if (null != time) {
-      if (0 != time.getWeekday) {
-        conditions.add(new Condition("activity.time.weekday = :weekday", time.getWeekday))
+      if (0 != time.day) {
+        conditions.add(new Condition("activity.time.day = :weekday", time.day))
       }
       if (0 != time.getEndUnit) {
         conditions.add(new Condition("activity.time.startUnit <= :endUnit", time.getEndUnit))
@@ -476,8 +474,8 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
       if (0 != time.getStartUnit) {
         conditions.add(new Condition("activity.time.endUnit >= :startUnit", time.getStartUnit))
       }
-      if (0 != time.getWeekStateNum) {
-        conditions.add(new Condition("bitand(activity.time.weekStateNum, :weekStateNum) > 0)", new java.lang.Long(time.getWeekStateNum)))
+      if (0 != time.state) {
+        conditions.add(new Condition("bitand(activity.time.state, :weekStateNum) > 0)", new java.lang.Long(time.state)))
       }
     }
     if (semester != null) {
@@ -501,7 +499,7 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
     if (Strings.isNotEmpty(alterationBeforeMsg)) {
       entityDao.refresh(lesson)
       val alteration = new CourseArrangeAlteration()
-      alteration.setLessonId(lesson.getId)
+      alteration.setLessonId(lesson.id)
       alteration.setSemester(lesson.getSemester)
       alteration.setAlterationBefore(alterationBeforeMsg)
       val alterationAfter = CourseActivityDigestor.getInstance.digest(null, lesson)
@@ -572,9 +570,9 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
     val query = OqlBuilder.from(classOf[CourseActivity], "activity")
     query.where("activity.lesson != :lesson", activity.getLesson)
     query.join("activity.rooms", "room").where("room in (:rooms)", activity.getRooms)
-    query.where("BITAND (activity.time.weekStateNum," + activity.getTime.getWeekStateNum + 
+    query.where("BITAND (activity.time.state," + activity.getTime.state + 
       ") > 0")
-    query.where("activity.time.weekday = :weekday", activity.getTime.getWeekday)
+    query.where("activity.time.day = :weekday", activity.getTime.day)
     query.where("activity.time.startUnit <= :endUnit", activity.getTime.getEndUnit)
     query.where("activity.time.endUnit >= :startUnit", activity.getTime.getStartUnit)
     query.where("exists(from org.openurp.edu.teach.lesson.Lesson lesson2 where activity.lesson=lesson2 and lesson2.semester=:semester)", 
@@ -590,9 +588,9 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
     val query = OqlBuilder.from(classOf[CourseActivity], "activity")
     query.where("activity.lesson != :lesson", activity.getLesson)
     query.join("activity.teachers", "teacher").where("teacher in (:teachers)", activity.getTeachers)
-    query.where("BITAND (activity.time.weekStateNum," + activity.getTime.getWeekStateNum + 
+    query.where("BITAND (activity.time.state," + activity.getTime.state + 
       ") > 0")
-    query.where("activity.time.weekday = :weekday", activity.getTime.getWeekday)
+    query.where("activity.time.day = :weekday", activity.getTime.day)
     query.where("activity.time.startUnit <= :endUnit", activity.getTime.getEndUnit)
     query.where("activity.time.endUnit >= :startUnit", activity.getTime.getStartUnit)
     query.where("exists(from org.openurp.edu.teach.lesson.Lesson lesson2 where activity.lesson=lesson2 and lesson2.semester=:semester)", 
@@ -632,14 +630,14 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
     entityDao.saveOrUpdate(lesson)
   }
 
-  def shift(activities: Collection[CourseActivity], 
+  def shift(activities: Iterable[CourseActivity], 
       fromYear: Int, 
       fromWeekStart: Int, 
       fromWeekEnd: Int, 
       toWeekStart: Int, 
       toWeekEnd: Int, 
       timeSetting: TimeSetting, 
-      to: Semester): Collection[Entity[Long]] = {
+      to: Semester): Iterable[Entity[Long]] = {
     val keeped = CollectUtils.newArrayList()
     for (activity <- activities) {
       processShift(keeped, activity, fromWeekStart, fromWeekEnd, toWeekStart, toWeekEnd, timeSetting, 
@@ -661,7 +659,7 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
     builder.where("occupancy.usage.id = :usageId", RoomUsage.COURSE)
     builder.where("occupancy.userid = :userid", RoomUseridGenerator.gen(activity.getLesson, Usage.COURSE))
     val occupancies = entityDao.search(builder)
-    val weekState = time.getWeekState
+    val weekState = time.state
     var weeks = Strings.substring(weekState, fromWeekStart, fromWeekEnd)
     if (weeks.length < toWeekEnd - toWeekStart) {
       weeks += Strings.repeat("0", toWeekEnd - toWeekStart - weeks.length)
@@ -681,11 +679,11 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
       time.newWeekState(toWeeks + 
         Strings.repeat("0", Semester.OVERALLWEEKS - toWeeks.length))
       if (null != timeSetting) {
-        time.setStartTime(timeSetting.getDefaultUnits.get(time.getStartUnit).getStartTime)
-        time.setEndTime(timeSetting.getDefaultUnits.get(time.getEndUnit).getEndTime)
+        time.setStartTime(timeSetting.getDefaultUnits.get(time.getStartUnit).start)
+        time.setEndTime(timeSetting.getDefaultUnits.get(time.getEndUnit).end)
       }
       keeped.add(activity)
-      val timeUnits2 = TimeUnitUtil.convertToTimeUnits(activity.getLesson, time)
+      val timeUnits2 = YearWeekTimeUtil.convertToYearWeekTimes(activity.getLesson, time)
       if (timeUnits2.length == 1 && occupancies.size == 1) {
         val occupancy = occupancies.get(0)
         occupancy.setTime(timeUnits2(0))
@@ -704,7 +702,7 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
         keeped.add(occupancy)
         keeped.add(occupancy2)
       } else if (timeUnits2.length == 2 && occupancies.size == 2) {
-        for (timeUnit <- timeUnits2; occupancy <- occupancies if timeunit.year == occupancy.getTime.getYear) {
+        for (timeUnit <- timeUnits2; occupancy <- occupancies if timeunit.year == occupancy.getTime.year) {
           occupancy.setTime(timeUnit)
           keeped.add(occupancy)
         }
@@ -731,19 +729,19 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
 
   private def mergeWith(toMerged: CourseActivity, activity: CourseActivity) {
     val builder = OqlBuilder.from(classOf[Occupancy], "occupancy")
-    builder.where("exists (from org.openurp.edu.eams.teach.lesson.CourseActivity activity " + 
+    builder.where("exists (from org.openurp.edu.teach.schedule.CourseActivity activity " + 
       "join activity.rooms room where room = occupancy.room and activity = :activity " + 
-      "and occupancy.time.weekday = activity.time.weekday " + 
-      "and occupancy.time.startTime = activity.time.startTime " + 
-      "and occupancy.time.endTime = activity.time.endTime " + 
-      "and activity.time.weekStateNum = occupancy.time.weekStateNum)", activity)
+      "and occupancy.time.day = activity.time.day " + 
+      "and occupancy.time.start = activity.time.start " + 
+      "and occupancy.time.end = activity.time.end " + 
+      "and activity.time.state = occupancy.time.state)", activity)
     val builder1 = OqlBuilder.from(classOf[Occupancy], "occupancy")
-    builder1.where("exists (from org.openurp.edu.eams.teach.lesson.CourseActivity activity " + 
+    builder1.where("exists (from org.openurp.edu.teach.schedule.CourseActivity activity " + 
       "join activity.rooms room where room = occupancy.room and activity = :activity " + 
-      "and occupancy.time.weekday = activity.time.weekday " + 
-      "and occupancy.time.startTime = activity.time.startTime " + 
-      "and occupancy.time.endTime = activity.time.endTime " + 
-      "and activity.time.weekStateNum = occupancy.time.weekStateNum)", toMerged)
+      "and occupancy.time.day = activity.time.day " + 
+      "and occupancy.time.start = activity.time.start " + 
+      "and occupancy.time.end = activity.time.end " + 
+      "and activity.time.state = occupancy.time.state)", toMerged)
     toMerged.getTime.newWeekState(BitStrings.or(toMerged.getTime.getWeekState, activity.getTime.getWeekState))
     val occupancies = entityDao.search(builder)
     val occupancies1 = entityDao.search(builder1)
@@ -760,7 +758,7 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
     if (toMerged.getRooms != activity.getRooms) {
       return false
     }
-    if (toMerged.getTime.getWeekday != activity.getTime.getWeekday) {
+    if (toMerged.getTime.day != activity.getTime.day) {
       return false
     }
     if (toMerged.getTime.getStartUnit != toMerged.getTime.getStartUnit) {

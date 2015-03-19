@@ -4,9 +4,9 @@ import javax.persistence.Entity
 import javax.validation.constraints.NotNull
 import org.beangle.commons.entity.pojo.LongIdObject
 import ElectMailTemplate._
-import scala.reflect.{BeanProperty, BooleanBeanProperty}
 
-import scala.collection.JavaConversions._
+
+
 
 object ElectMailTemplate {
 
@@ -18,10 +18,10 @@ object ElectMailTemplate {
 class ElectMailTemplate extends LongIdObject {
 
   @NotNull
-  @BeanProperty
+  
   var title: String = _
 
   @NotNull
-  @BeanProperty
+  
   var content: String = _
 }

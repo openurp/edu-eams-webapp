@@ -11,7 +11,7 @@ import org.openurp.edu.eams.web.view.component.SemesterBar
 import org.openurp.edu.eams.web.view.component.semester.SemesterCalendar
 import com.opensymphony.xwork2.util.ValueStack
 
-import scala.collection.JavaConversions._
+
 
 class WebModels(stack: ValueStack, req: HttpServletRequest, res: HttpServletResponse)
     extends AbstractModels(stack, req, res) {

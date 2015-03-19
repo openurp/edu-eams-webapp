@@ -1,14 +1,12 @@
 package org.openurp.edu.eams.teach.textbook.service.internal
 
-import java.util.Collection
-import java.util.Collections
 import java.util.Date
-import java.util.List
-import java.util.Map
-import java.util.Set
+
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.impl.BaseServiceImpl
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model
 import org.openurp.base.Semester
 import org.openurp.edu.base.Student
@@ -23,13 +21,13 @@ import org.openurp.edu.eams.teach.textbook.TextbookOrderLine
 import org.openurp.edu.eams.teach.textbook.service.TextbookOrderLineCodeGenerator
 import org.openurp.edu.eams.teach.textbook.service.TextbookOrderLineService
 
-import scala.collection.JavaConversions._
+
 
 class TextbookOrderLineServiceImpl extends BaseServiceImpl with TextbookOrderLineService {
 
   private var textbookOrderLineCodeGenerator: TextbookOrderLineCodeGenerator = _
 
-  def getLessonsHasTextbook(lessons: Collection[Lesson]): Set[Long] = {
+  def getLessonsHasTextbook(lessons: Iterable[Lesson]): Set[Long] = {
     if (CollectUtils.isEmpty(lessons)) {
       return Collections.emptySet()
     }
@@ -39,14 +37,14 @@ class TextbookOrderLineServiceImpl extends BaseServiceImpl with TextbookOrderLin
     CollectUtils.newHashSet(entityDao.search(builder))
   }
 
-  def getTextBookMapByLessons(lessons: Collection[Lesson]): Map[Long, List[Textbook]] = {
+  def getTextBookMapByLessons(lessons: Iterable[Lesson]): Map[Long, List[Textbook]] = {
     if (CollectUtils.isEmpty(lessons)) {
       return Collections.emptyMap()
     }
     val lessonMaterials = entityDao.get(classOf[LessonMaterial], "lesson", lessons)
     val result = CollectUtils.newHashMap()
     for (lessonMaterial <- lessonMaterials if !lessonMaterial.getBooks.isEmpty) {
-      result.put(lessonMaterial.getLesson.getId, lessonMaterial.getBooks)
+      result.put(lessonMaterial.getLesson.id, lessonMaterial.getBooks)
     }
     result
   }
@@ -74,7 +72,7 @@ class TextbookOrderLineServiceImpl extends BaseServiceImpl with TextbookOrderLin
     Collections.emptyList()
   }
 
-  def getLessonsHasOrderTextBook(lessons: Collection[Lesson]): Set[Long] = {
+  def getLessonsHasOrderTextBook(lessons: Iterable[Lesson]): Set[Long] = {
     if (CollectUtils.isEmpty(lessons)) {
       return Collections.emptySet()
     }

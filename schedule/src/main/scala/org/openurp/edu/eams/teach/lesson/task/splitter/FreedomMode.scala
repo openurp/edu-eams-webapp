@@ -1,17 +1,15 @@
 package org.openurp.edu.eams.teach.lesson.task.splitter
 
-import java.util.ArrayList
-import java.util.Collection
-import java.util.Collections
-import java.util.HashSet
-import java.util.Iterator
-import java.util.List
+
+
+
+
 import org.openurp.edu.teach.lesson.CourseTake
-import org.openurp.edu.eams.teach.lesson.ExamTake
+import org.openurp.edu.teach.exam.ExamTake
 import org.openurp.edu.teach.lesson.TeachClass
 import org.openurp.edu.eams.teach.lesson.util.LessonElectionUtil
 
-import scala.collection.JavaConversions._
+
 
 class FreedomMode extends AbstractTeachClassSplitter {
 

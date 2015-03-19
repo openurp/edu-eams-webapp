@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.program.major.guard
 
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 object MajorProgramOperateType extends Enumeration {
 

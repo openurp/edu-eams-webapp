@@ -6,7 +6,7 @@ import org.openurp.edu.eams.teach.program.personal.PersonalPlan
 import org.openurp.edu.eams.teach.program.personal.PersonalPlanCourse
 import org.openurp.edu.eams.teach.program.personal.service.PersonalPlanCourseService
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 class PersonalPlanCourseServiceImpl extends BaseServiceImpl with PersonalPlanCourseService {
 

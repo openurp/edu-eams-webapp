@@ -1,10 +1,8 @@
 package org.openurp.edu.eams.teach.schedule.service.impl
 
-import java.util.Collection
-import java.util.Collections
 import java.util.Comparator
-import java.util.List
-import java.util.Set
+
+
 import javax.servlet.http.HttpServletRequest
 import org.apache.commons.collections.CollectionUtils
 import org.apache.commons.collections.Predicate
@@ -17,16 +15,16 @@ import org.beangle.security.blueprint.SecurityUtils
 import org.beangle.security.blueprint.User
 import org.openurp.base.Room
 import org.openurp.edu.eams.classroom.Occupancy
-import org.openurp.edu.eams.classroom.TimeUnit
-import org.openurp.edu.eams.classroom.code.industry.RoomUsage
+import 
+import org.openurp.base.code.RoomUsage
 import org.openurp.edu.eams.classroom.model.OccupancyBean
 import org.openurp.edu.eams.classroom.util.RoomUseridGenerator
 import org.openurp.edu.eams.classroom.util.RoomUseridGenerator.Usage
-import org.openurp.edu.eams.teach.lesson.CourseActivity
+import org.openurp.edu.teach.schedule.CourseActivity
 import org.openurp.edu.teach.lesson.CourseTake
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.teach.lesson.util.CourseActivityDigestor
-import org.openurp.edu.eams.teach.lesson.util.TimeUnitUtil
+import org.openurp.edu.eams.teach.lesson.util.YearWeekTimeUtil
 import org.openurp.edu.eams.teach.schedule.log.ScheduleLogBuilder
 import org.openurp.edu.eams.teach.schedule.service.BruteForceArrangeContext
 import org.openurp.edu.eams.teach.schedule.service.BruteForceArrangeContext.CommonConflictInfo
@@ -35,7 +33,7 @@ import org.openurp.edu.eams.teach.schedule.service.CourseActivityService
 import org.openurp.edu.eams.teach.schedule.service.ScheduleLogHelper
 import org.openurp.edu.eams.teach.schedule.service.ScheduleRoomService
 
-import scala.collection.JavaConversions._
+
 
 class BruteForceArrangeServiceImpl extends BaseServiceImpl with BruteForceArrangeService {
 
@@ -45,19 +43,19 @@ class BruteForceArrangeServiceImpl extends BaseServiceImpl with BruteForceArrang
 
   protected var scheduleLogHelper: ScheduleLogHelper = _
 
-  def bruteForceArrange(context: BruteForceArrangeContext, rooms: Collection[Classroom]) {
+  def bruteForceArrange(context: BruteForceArrangeContext, rooms: Iterable[Room]) {
     val lesson = context.getLesson
     val filteredRooms = CollectUtils.newArrayList(CollectionUtils.select(rooms, new Predicate() {
 
       def evaluate(`object`: AnyRef): Boolean = {
-        var room = `object`.asInstanceOf[Classroom]
+        var room = `object`.asInstanceOf[Room]
         return room.getCampus == lesson.getCampus && 
           room.getCapacity >= lesson.getTeachClass.getLimitCount
       }
     }))
-    Collections.sort(filteredRooms, new Comparator[Classroom]() {
+    Collections.sort(filteredRooms, new Comparator[Room]() {
 
-      def compare(o1: Classroom, o2: Classroom): Int = return o1.getCapacity - o2.getCapacity
+      def compare(o1: Room, o2: Room): Int = return o1.getCapacity - o2.getCapacity
     })
     if (CollectUtils.isEmpty(filteredRooms)) {
       context.noSuitableRoom()
@@ -96,7 +94,7 @@ class BruteForceArrangeServiceImpl extends BaseServiceImpl with BruteForceArrang
     saveActivities(context, activities)
   }
 
-  private def saveActivities(context: BruteForceArrangeContext, activities: Collection[CourseActivity]) {
+  private def saveActivities(context: BruteForceArrangeContext, activities: Iterable[CourseActivity]) {
     val lesson = context.getLesson
     val isUpdateOperation = lesson.getCourseSchedule.getActivities.size > 1
     val alterationBefore = CourseActivityDigestor.getInstance.digest(null, lesson)
@@ -106,7 +104,7 @@ class BruteForceArrangeServiceImpl extends BaseServiceImpl with BruteForceArrang
       period += (activity.getTime.getEndUnit - activity.getTime.getStartUnit + 
         1) * 
         Strings.count(activity.getTime.getWeekState, "1")
-      val timeUnits = TimeUnitUtil.convertToTimeUnits(lesson, activity.getTime)
+      val timeUnits = YearWeekTimeUtil.convertToYearWeekTimes(lesson, activity.getTime)
       for (timeUnit <- timeUnits) {
         val occupancy = new OccupancyBean()
         for (room <- activity.getRooms) {
@@ -121,7 +119,7 @@ class BruteForceArrangeServiceImpl extends BaseServiceImpl with BruteForceArrang
       }
     }
     lesson.getCourseSchedule.getActivities.clear()
-    courseActivityService.removeActivities(Array(lesson.getId), lesson.getSemester)
+    courseActivityService.removeActivities(Array(lesson.id), lesson.getSemester)
     lesson.getCourseSchedule.getActivities.addAll(activities)
     lesson.getCourseSchedule.setPeriod(period)
     courseActivityService.saveOrUpdateActivity(lesson, occupancies, alterationBefore, false, entityDao.get(classOf[User], 
@@ -145,7 +143,7 @@ class BruteForceArrangeServiceImpl extends BaseServiceImpl with BruteForceArrang
     if (context.isDetectTeacher) {
       for (activity <- context.getTransientActivities if courseActivityService.isCourseActivityTeacherOccupied(activity)) {
         val errMsg = new StringBuilder()
-        errMsg.append(" 周").append(activity.getTime.getWeekday)
+        errMsg.append(" 周").append(activity.getTime.day)
           .append(" 第")
           .append(activity.getTime.getStartUnit)
           .append("小节-第")
@@ -156,12 +154,12 @@ class BruteForceArrangeServiceImpl extends BaseServiceImpl with BruteForceArrang
     }
   }
 
-  private def detectRoomConflict(context: BruteForceArrangeContext, activity: CourseActivity): CommonConflictInfo[Classroom] = {
+  private def detectRoomConflict(context: BruteForceArrangeContext, activity: CourseActivity): CommonConflictInfo[Room] = {
     val roomsConflictInfo = context.buildRoomsConflictInfo()
     if (context.isDetectRoom) {
       if (courseActivityService.isCourseActivityRoomOccupied(activity)) {
         val errMsg = new StringBuilder()
-        errMsg.append(" 周").append(activity.getTime.getWeekday)
+        errMsg.append(" 周").append(activity.getTime.day)
           .append(" 第")
           .append(activity.getTime.getStartUnit)
           .append("小节-第")
@@ -169,7 +167,7 @@ class BruteForceArrangeServiceImpl extends BaseServiceImpl with BruteForceArrang
           .append("小节")
         roomsConflictInfo.addConflictInfo(activity.getRooms, errMsg.toString)
       }
-      val timeUnits = TimeUnitUtil.convertToTimeUnits(activity.getLesson, activity.getTime)
+      val timeUnits = YearWeekTimeUtil.convertToYearWeekTimes(activity.getLesson, activity.getTime)
       val freerooms = entityDao.search(scheduleRoomService.getFreeRoomsOfConditions(timeUnits)
         .where("classroom in (:rooms)", activity.getRooms))
       for (room <- activity.getRooms if !freerooms.contains(room) && !context.getLessonOccupiedRooms.contains(room)) {

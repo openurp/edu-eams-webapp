@@ -1,19 +1,19 @@
 package org.openurp.edu.eams.teach.schedule.dao.hibernate
 
-import java.util.Collection
-import java.util.List
+
+
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.entity.util.EntityUtils
-import org.beangle.orm.hibernate.HibernateEntityDao
+import org.beangle.data.jpa.hibernate.HibernateEntityDao
 import org.hibernate.Query
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.teach.schedule.dao.CourseActivityDao
 
-import scala.collection.JavaConversions._
+
 
 class CourseActivityDaoHibernate extends HibernateEntityDao with CourseActivityDao {
 
-  def removeActivities(lessons: Collection[Lesson]) {
+  def removeActivities(lessons: Iterable[Lesson]) {
     val getJSZYHQL = "select jszy.id from RoomOccupation jszy where jszy.id in (select kchd.roomOccupation.id from CourseActivity kchd where kchd.task in (:tasks))"
     var query = getSession.createQuery(getJSZYHQL)
     query.setParameterList("tasks", lessons)

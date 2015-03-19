@@ -1,9 +1,9 @@
 package org.openurp.edu.eams.teach.lesson.task.service.genstrategy
 
-import java.util.Map
+
 import org.openurp.edu.eams.teach.lesson.task.service.TaskGenObserver
 
-import scala.collection.JavaConversions._
+
 
 trait LessonGenStrategy {
 

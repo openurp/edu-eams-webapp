@@ -1,12 +1,12 @@
 package org.openurp.edu.eams.teach.program.major.service
 
-import java.util.List
+
 import com.ekingstar.eams.core.CommonAuditState
 import org.openurp.edu.eams.teach.program.Program
 import org.openurp.edu.eams.teach.program.major.MajorPlan
 import org.openurp.edu.eams.teach.program.original.OriginalPlan
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 trait MajorPlanAuditService {
 

@@ -1,14 +1,14 @@
 package org.openurp.edu.eams.teach.grade.course
 
 import java.util.Date
-import org.beangle.commons.entity.Entity
-import org.openurp.edu.eams.base.Semester
+import org.beangle.data.model.Entity
+import org.openurp.base.Semester
 import org.openurp.edu.base.Student
-import org.openurp.edu.teach.Course
-import org.openurp.edu.eams.teach.code.industry.ExamStatus
-import org.openurp.edu.eams.teach.code.industry.GradeType
+import org.openurp.edu.base.Course
+import org.openurp.edu.teach.code.ExamStatus
+import org.openurp.edu.teach.code.GradeType
 
-import scala.collection.JavaConversions._
+
 
 trait CourseGradeLog extends Entity[Long] {
 

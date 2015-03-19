@@ -1,17 +1,17 @@
 package org.openurp.edu.eams.time.web.dwr
 
-import java.util.ArrayList
-import java.util.HashMap
-import java.util.HashSet
-import java.util.Iterator
-import java.util.List
-import java.util.Map
-import java.util.Set
+
+
+
+
+
+
+
 import org.beangle.commons.entity.metadata.Model
-import org.beangle.orm.hibernate.HibernateEntityDao
+import org.beangle.data.jpa.hibernate.HibernateEntityDao
 import org.openurp.edu.eams.base.Calendar
 
-import scala.collection.JavaConversions._
+
 
 class SemesterDaoDwrHibernate extends HibernateEntityDao with SemesterDaoDwr {
 

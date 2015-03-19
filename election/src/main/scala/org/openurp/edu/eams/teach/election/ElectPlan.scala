@@ -1,11 +1,11 @@
 package org.openurp.edu.eams.teach.election
 
-import java.util.Set
-import org.beangle.commons.entity.Entity
+
+import org.beangle.data.model.Entity
 import org.beangle.commons.entity.TimeEntity
 import org.beangle.ems.rule.model.RuleConfig
 
-import scala.collection.JavaConversions._
+
 
 trait ElectPlan extends Entity[Long] with TimeEntity {
 

@@ -4,7 +4,7 @@ import org.hibernate.Query
 import org.hibernate.Session
 import LessonFilterStrategy._
 
-import scala.collection.JavaConversions._
+
 
 object LessonFilterStrategy {
 

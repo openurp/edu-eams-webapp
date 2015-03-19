@@ -5,20 +5,20 @@ import javax.persistence.JoinColumn
 import javax.persistence.OneToOne
 import javax.persistence.Table
 //remove if not needed
-import scala.collection.JavaConversions._
+
 
 @SerialVersionUID(6587820760564688486L)
-@Entity(name = "org.openurp.edu.eams.teach.program.majorapply.model.MajorPlanCourseGroupModifyDetailBeforeBean")
+@Entity(name = "org.openurp.edu.eams.teach.program.majorapply.model.MajorCourseGroupModifyDetailBeforeBean")
 @Table(name = "T_MAJOR_PLAN_CG_MOD_BEFORS")
-class MajorPlanCourseGroupModifyDetailBeforeBean extends MajorPlanCourseGroupModifyDetailBean() {
+class MajorCourseGroupModifyDetailBeforeBean extends MajorCourseGroupModifyDetailBean() {
 
-  @OneToOne(optional = false, targetEntity = classOf[MajorPlanCourseGroupModifyBean], mappedBy = "oldPlanCourseGroup")
+  @OneToOne(optional = false, targetEntity = classOf[MajorCourseGroupModifyBean], mappedBy = "oldPlanCourseGroup")
   @JoinColumn(name = "MA_PLAN_CG_MOD_B_APPLY")
-  protected var apply: MajorPlanCourseGroupModifyBean = _
+  protected var apply: MajorCourseGroupModifyBean = _
 
-  def getApply(): MajorPlanCourseGroupModifyBean = apply
+  def getApply(): MajorCourseGroupModifyBean = apply
 
-  def setApply(apply: MajorPlanCourseGroupModifyBean) {
+  def setApply(apply: MajorCourseGroupModifyBean) {
     this.apply = apply
   }
 }

@@ -1,13 +1,13 @@
 package org.openurp.edu.eams.teach.grade.course.web.action
 
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.edu.eams.core.service.StudentService
 import org.openurp.edu.eams.teach.grade.course.model.NotPassCreditStats
 import org.openurp.edu.eams.teach.grade.course.model.TotalCreditStats
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class GradeFailCreditStatsAction extends SemesterSupportAction {
 

@@ -1,14 +1,14 @@
 package org.openurp.edu.eams.teach.grade.lesson.web.action
 
-import java.util.List
+
 import org.beangle.commons.collection.page.PageLimit
 import org.beangle.commons.dao.Operation
 import org.beangle.commons.dao.query.LimitQuery
 import org.beangle.commons.dao.query.QueryPage
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.struts2.convention.route.Action
 import org.openurp.edu.eams.teach.Grade
-import org.openurp.edu.eams.teach.code.industry.GradeType
+import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.eams.teach.grade.course.service.impl.ExamTakeGeneratePublishListener
 import org.openurp.edu.eams.teach.grade.service.CourseGradeService
 import org.openurp.edu.eams.teach.grade.service.CourseGradeSettings
@@ -16,7 +16,7 @@ import org.openurp.edu.teach.grade.CourseGrade
 import org.openurp.edu.eams.teach.lesson.GradeTypeConstants
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
-import scala.collection.JavaConversions._
+
 
 class PublishAction extends SemesterSupportAction {
 

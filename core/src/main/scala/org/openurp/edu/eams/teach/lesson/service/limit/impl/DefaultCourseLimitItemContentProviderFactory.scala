@@ -1,13 +1,13 @@
 package org.openurp.edu.eams.teach.lesson.service.limit.impl
 
-import java.util.HashMap
-import java.util.Map
+
+
 import org.openurp.edu.teach.lesson.CourseLimitMeta
 import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitItemContentProvider
 import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitItemContentProviderFactory
 import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnum
 
-import scala.collection.JavaConversions._
+
 
 class DefaultCourseLimitItemContentProviderFactory extends CourseLimitItemContentProviderFactory {
 
@@ -19,7 +19,7 @@ class DefaultCourseLimitItemContentProviderFactory extends CourseLimitItemConten
     provider
   }
 
-  def getProvider(courseLimitMeta: CourseLimitMeta): CourseLimitItemContentProvider = getProvider(courseLimitMeta.getId)
+  def getProvider(courseLimitMeta: CourseLimitMeta): CourseLimitItemContentProvider = getProvider(courseLimitMeta.id)
 
   def getProvider(courseLimitMetaId: Long): CourseLimitItemContentProvider = {
     val values = CourseLimitMetaEnum.values

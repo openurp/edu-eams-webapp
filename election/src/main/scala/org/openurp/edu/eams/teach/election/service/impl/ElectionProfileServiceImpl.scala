@@ -1,22 +1,22 @@
 package org.openurp.edu.eams.teach.election.service.impl
 
 import java.io.Serializable
-import java.util.Collection
+
 import java.util.Date
-import java.util.List
-import java.util.Map
-import java.util.Set
+
+
+
 import org.apache.commons.lang3.ArrayUtils
 import org.apache.commons.lang3.Validate
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.impl.BaseServiceImpl
-import org.beangle.commons.dao.query.builder.OqlBuilder
-import org.beangle.commons.entity.Entity
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.beangle.data.model.Entity
 import org.beangle.commons.lang.Strings
 import org.beangle.ems.rule.model.RuleConfig
 import org.springframework.beans.factory.InitializingBean
 import org.openurp.base.Department
-import org.openurp.edu.eams.base.Semester
+import org.openurp.base.Semester
 import org.openurp.edu.base.Direction
 import org.openurp.edu.base.Major
 import org.openurp.edu.base.Project
@@ -32,13 +32,13 @@ import org.openurp.edu.eams.teach.election.service.event.ElectionProfileChangeEv
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.web.helper.RestrictionHelper
 
-import scala.collection.JavaConversions._
+
 
 class ElectionProfileServiceImpl extends BaseServiceImpl with ElectionProfileService with InitializingBean {
 
   private var restrictionHelper: RestrictionHelper = _
 
-  def setLessonIds(ids: Collection[Long], lessonIds: Array[Any]) {
+  def setLessonIds(ids: Iterable[Long], lessonIds: Array[Any]) {
     if (lessonIds.length > 0) {
       val builder = OqlBuilder.from(classOf[Lesson].getName + " lesson")
       if (lessonIds.length > 500) {
@@ -54,10 +54,10 @@ class ElectionProfileServiceImpl extends BaseServiceImpl with ElectionProfileSer
     }
   }
 
-  private def addIds[T <: Serializable](ids: Collection[T], entities: Collection[_ <: Entity[T]]) {
+  private def addIds[T <: Serializable](ids: Iterable[T], entities: Iterable[_ <: Entity[T]]) {
     ids.clear()
     for (longIdEntity <- entities) {
-      ids.add(longIdEntity.getId)
+      ids.add(longIdEntity.id)
     }
   }
 
@@ -244,17 +244,17 @@ class ElectionProfileServiceImpl extends BaseServiceImpl with ElectionProfileSer
   private def getDataMap(entities: List[_ <: Entity[_]]): Map[Any, Entity[_]] = {
     val result = CollectUtils.newHashMap()
     for (longIdEntity <- entities) {
-      result.put(longIdEntity.getId, longIdEntity)
+      result.put(longIdEntity.id, longIdEntity)
     }
     result
   }
 
   def initDataByChance(profileId: java.lang.Long) {
-    profileLessonDataProvider.getIdToJson(profileId)
+    profileLessonDataProvider.idToJson(profileId)
   }
 
-  def getData(profileId: java.lang.Long, lessonIds: Collection[Long]): String = {
-    val id2json = profileLessonDataProvider.getIdToJson(profileId)
+  def getData(profileId: java.lang.Long, lessonIds: Iterable[Long]): String = {
+    val id2json = profileLessonDataProvider.idToJson(profileId)
     val tmp_sb = new StringBuilder(1024 * 1024 / 2)
     tmp_sb.append("var lessonJSONs = [")
     var in = false

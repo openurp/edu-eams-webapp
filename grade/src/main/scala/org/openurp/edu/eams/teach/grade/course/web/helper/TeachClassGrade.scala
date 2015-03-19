@@ -1,18 +1,16 @@
 package org.openurp.edu.eams.teach.grade.course.web.helper
 
-import java.util.Collections
-import java.util.List
 import org.beangle.commons.bean.comparators.PropertyComparator
 import org.beangle.commons.collection.CollectUtils
-import org.openurp.edu.eams.teach.code.industry.GradeType
+import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.teach.grade.CourseGrade
-import org.openurp.edu.teach.grade.CourseGradeState
-import org.openurp.edu.eams.teach.lesson.ExamGradeState
+import org.openurp.edu.teach.grade.model.CourseGradeState
+import org.openurp.edu.teach.grade.model.ExamGradeState
 import org.openurp.edu.eams.teach.lesson.GradeTypeConstants
 import org.openurp.edu.teach.lesson.Lesson
 import TeachClassGrade._
 
-import scala.collection.JavaConversions._
+
 
 object TeachClassGrade {
 
@@ -91,7 +89,7 @@ class TeachClassGrade {
     noPercentGradeTypes.add(GradeTypeConstants.BONUS_ID)
     for (gradeType <- gradeTypes) {
       val egs = courseGradeState.getState(gradeType)
-      if (!noPercentGradeTypes.contains(gradeType.getId) && 
+      if (!noPercentGradeTypes.contains(gradeType.id) && 
         (egs == null || null == egs.getPercent || egs.getPercent <= 0)) //continue
       this.gradeTypes.add(gradeType)
     }

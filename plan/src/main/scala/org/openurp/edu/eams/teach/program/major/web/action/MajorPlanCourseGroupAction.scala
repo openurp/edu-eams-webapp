@@ -1,15 +1,13 @@
 package org.openurp.edu.eams.teach.program.major.web.action
 
 import java.io.UnsupportedEncodingException
-import java.util.ArrayList
-import java.util.Collection
-import java.util.Collections
+
 import java.util.Comparator
-import java.util.List
+
 import org.beangle.commons.bean.comparators.MultiPropertyComparator
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.page.PageLimit
-import org.beangle.commons.dao.query.builder.OqlBuilder
+import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.beangle.struts2.convention.route.Action
 import com.ekingstar.eams.core.CommonAuditState
@@ -17,28 +15,28 @@ import com.ekingstar.eams.core.code.industry.HSKDegree
 import com.ekingstar.eams.teach.Course
 import com.ekingstar.eams.teach.code.school.CourseHourType
 import com.ekingstar.eams.teach.code.school.CourseType
-import org.openurp.edu.eams.teach.program.CourseGroup
+import org.openurp.edu.teach.plan.CourseGroup
 import org.openurp.edu.eams.teach.program.common.copydao.coursegroup.IPlanCourseGroupCopyDao
 import org.openurp.edu.eams.teach.program.common.dao.PlanCommonDao
 import org.openurp.edu.eams.teach.program.common.dao.PlanCourseGroupCommonDao
 import org.openurp.edu.eams.teach.program.major.MajorPlan
 import org.openurp.edu.teach.plan.MajorPlanCourse
-import org.openurp.edu.teach.plan.MajorPlanCourseGroup
-import org.openurp.edu.eams.teach.program.major.model.MajorPlanCourseGroupBean
+import org.openurp.edu.teach.plan.MajorCourseGroup
+import org.openurp.edu.eams.teach.program.major.model.MajorCourseGroupBean
 import org.openurp.edu.eams.teach.program.major.model.ReferenceGroupBean
-import org.openurp.edu.eams.teach.program.major.service.MajorPlanCourseGroupService
+import org.openurp.edu.eams.teach.program.major.service.MajorCourseGroupService
 import org.openurp.edu.eams.teach.program.major.service.MajorPlanCourseService
 import org.openurp.edu.eams.teach.program.major.service.MajorPlanService
 import org.openurp.edu.eams.teach.program.share.SharePlanCourseGroup
 import com.ekingstar.eams.web.action.common.RestrictionSupportAction
 //remove if not needed
-import scala.collection.JavaConversions._
 
-class MajorPlanCourseGroupAction extends RestrictionSupportAction {
+
+class MajorCourseGroupAction extends RestrictionSupportAction {
 
   protected var majorPlanCourseService: MajorPlanCourseService = _
 
-  protected var majorPlanCourseGroupService: MajorPlanCourseGroupService = _
+  protected var MajorCourseGroupService: MajorCourseGroupService = _
 
   protected var majorPlanService: MajorPlanService = _
 
@@ -46,11 +44,11 @@ class MajorPlanCourseGroupAction extends RestrictionSupportAction {
 
   protected var planCourseGroupCommonDao: PlanCourseGroupCommonDao = _
 
-  protected var majorPlanCourseGroupCopyDao: IPlanCourseGroupCopyDao = _
+  protected var MajorCourseGroupCopyDao: IPlanCourseGroupCopyDao = _
 
   def arrangeGroupCourses(): String = {
     val groupId = getLong("courseGroup.id")
-    val group = entityDao.get(classOf[MajorPlanCourseGroup], groupId)
+    val group = entityDao.get(classOf[MajorCourseGroup], groupId)
     val planCoursesList = new ArrayList(group.getPlanCourses)
     val propertry = new MultiPropertyComparator("terms,course.code")
     Collections.sort(planCoursesList, propertry)
@@ -96,14 +94,14 @@ class MajorPlanCourseGroupAction extends RestrictionSupportAction {
       var b = false
       if (CollectUtils.isNotEmpty(t)) {
         val course = t.get(0)
-        if (course.isEnabled && course.getProject.getId == projectId && 
+        if (course.isEnabled && course.getProject.id == projectId && 
           !courseList.contains(course)) {
           courseList.add(course)
           b = true
         }
       } else {
         val t1 = entityDao.search(OqlBuilder.from(classOf[Course], "c").where("c.name like :name", "%" + code.trim() + "%"))
-        for (course <- t1 if course.isEnabled && course.getProject.getId == projectId && 
+        for (course <- t1 if course.isEnabled && course.getProject.id == projectId && 
           !courseList.contains(course)) {
           courseList.add(course)
           b = true
@@ -136,7 +134,7 @@ class MajorPlanCourseGroupAction extends RestrictionSupportAction {
   }
 
   def advanceEdit(): String = {
-    val courseGroupId = getLong("majorPlanCourseGroupId")
+    val courseGroupId = getLong("MajorCourseGroupId")
     val majorPlanId = getLong("planId")
     if (null == courseGroupId || null == majorPlanId) {
       return forwardError("error.model.notExist")
@@ -148,7 +146,7 @@ class MajorPlanCourseGroupAction extends RestrictionSupportAction {
     val query = OqlBuilder.from(classOf[SharePlanCourseGroup], "sharePlanCourseGroup")
       .where("sharePlanCourseGroup.plan.education =:education", majorPlan.getProgram.getEducation)
     put("shareCourseGroups", entityDao.search(query))
-    val planCourseGroup = entityDao.get(classOf[MajorPlanCourseGroup], courseGroupId).asInstanceOf[MajorPlanCourseGroupBean]
+    val planCourseGroup = entityDao.get(classOf[MajorCourseGroup], courseGroupId).asInstanceOf[MajorCourseGroupBean]
     var excludeCourses = new ArrayList[Course]()
     var requiredCourses = new ArrayList[Course]()
     if (null != planCourseGroup) {
@@ -157,7 +155,7 @@ class MajorPlanCourseGroupAction extends RestrictionSupportAction {
     }
     put("excludeCourses", excludeCourses)
     put("requiredCourses", requiredCourses)
-    put("majorPlanCourseGroup", planCourseGroup)
+    put("MajorCourseGroup", planCourseGroup)
     put("plan", majorPlan)
     forward()
   }
@@ -171,10 +169,10 @@ class MajorPlanCourseGroupAction extends RestrictionSupportAction {
     val unusedCourseTypeList = baseCodeService.getCodes(classOf[CourseType])
     val courseGroupId = getLong("courseGroupId")
     if (null != courseGroupId) {
-      val group = entityDao.get(classOf[MajorPlanCourseGroup], courseGroupId)
+      val group = entityDao.get(classOf[MajorCourseGroup], courseGroupId)
       put("courseGroup", group)
     } else {
-      put("courseGroup", new MajorPlanCourseGroupBean())
+      put("courseGroup", new MajorCourseGroupBean())
     }
     put("unusedCourseTypeList", unusedCourseTypeList)
     put("parentCourseGroupList", plan.getGroups)
@@ -189,10 +187,10 @@ class MajorPlanCourseGroupAction extends RestrictionSupportAction {
       addMessage("error.model.notExist")
       return forward()
     }
-    val group = entityDao.get(classOf[MajorPlanCourseGroup], groupId).asInstanceOf[MajorPlanCourseGroupBean]
+    val group = entityDao.get(classOf[MajorCourseGroup], groupId).asInstanceOf[MajorCourseGroupBean]
     val extra = "&toGroupPane=1&planId=" + planId
     try {
-      val shareCourseGroupId = get("majorPlanCourseGroup.referenceGroup.shareCourseGroup.id")
+      val shareCourseGroupId = get("MajorCourseGroup.referenceGroup.shareCourseGroup.id")
       if (Strings.isNotEmpty(shareCourseGroupId)) {
         if (null == group.getReferenceGroup) {
           group.setReferenceGroup(new ReferenceGroupBean())
@@ -261,24 +259,24 @@ class MajorPlanCourseGroupAction extends RestrictionSupportAction {
     if (null == planId) {
       return redirect(new Action("majorPlan", "edit", extra), "error.model.notExist")
     }
-    val majorPlanCourseGroupId = getLong("majorPlanCourseGroupId")
+    val MajorCourseGroupId = getLong("MajorCourseGroupId")
     val majorPlanIds = Strings.splitToLong(get("majorPlanIds"))
     if (majorPlanIds.length == 0) {
       return redirect(new Action("majorPlan", "edit", extra), "info.save.failure")
     }
-    val majorPlanCourseGroup = entityDao.get(classOf[MajorPlanCourseGroup], majorPlanCourseGroupId)
+    val MajorCourseGroup = entityDao.get(classOf[MajorCourseGroup], MajorCourseGroupId)
     val majorPlans = entityDao.search(OqlBuilder.from(classOf[MajorPlan], "majorPlan").where("majorPlan.id in (:majorPlanIds)", 
       majorPlanIds))
     val newList = CollectUtils.newArrayList()
     val failure = CollectUtils.newArrayList()
     for (majorPlan <- majorPlans) {
-      if (majorPlanCourseGroupService.hasSameGroupInOneLevel(majorPlanCourseGroup, majorPlan, null)) {
+      if (MajorCourseGroupService.hasSameGroupInOneLevel(MajorCourseGroup, majorPlan, null)) {
         failure.add(majorPlan)
         //continue
       }
-      val clone = majorPlanCourseGroupCopyDao.copyCourseGroup(majorPlanCourseGroup, null, majorPlan)
-      majorPlanCourseGroupService.move(clone, null, majorPlan.getTopCourseGroups.size + 1)
-      planCourseGroupCommonDao.updateGroupTreeCredits(majorPlanCourseGroup)
+      val clone = MajorCourseGroupCopyDao.copyCourseGroup(MajorCourseGroup, null, majorPlan)
+      MajorCourseGroupService.move(clone, null, majorPlan.getTopCourseGroups.size + 1)
+      planCourseGroupCommonDao.updateGroupTreeCredits(MajorCourseGroup)
       majorPlan.setCredits(planCommonDao.statPlanCredits(majorPlan))
       newList.add(majorPlan)
     }
@@ -296,25 +294,25 @@ class MajorPlanCourseGroupAction extends RestrictionSupportAction {
       return redirect(new Action("majorPlan", "edit", extra), "error.model.notExist")
     }
     val plan = entityDao.get(classOf[MajorPlan], planId)
-    val group = populateEntity(classOf[MajorPlanCourseGroupBean], "courseGroup")
+    val group = populateEntity(classOf[MajorCourseGroupBean], "courseGroup")
     val oldParent = group.getParent
     val parentId = getLong("newParentId")
     var parent: CourseGroup = null
     var indexno = 0
     if (parentId != null) {
-      parent = entityDao.get(classOf[MajorPlanCourseGroup], parentId)
+      parent = entityDao.get(classOf[MajorCourseGroup], parentId)
       indexno = parent.getChildren.size + 1
     } else {
       indexno = plan.getTopCourseGroups.size + 1
     }
-    if (majorPlanCourseGroupService.hasSameGroupInOneLevel(group, plan, parent)) {
+    if (MajorCourseGroupService.hasSameGroupInOneLevel(group, plan, parent)) {
       return redirect(new Action("majorPlan", "edit", extra), "同层次下已有相同类别课程组")
     }
     if (group.isPersisted) {
-      if ((parent != null && oldParent != null && parentId != oldParent.getId) || 
+      if ((parent != null && oldParent != null && parentId != oldParent.id) || 
         (parent == null && oldParent != null) || 
         (parent != null && oldParent == null)) {
-        majorPlanCourseGroupService.move(group, parent, indexno)
+        MajorCourseGroupService.move(group, parent, indexno)
       }
       if (oldParent != null) {
         planCourseGroupCommonDao.updateGroupTreeCredits(oldParent)
@@ -323,7 +321,7 @@ class MajorPlanCourseGroupAction extends RestrictionSupportAction {
     } else {
       group.setIndexno("--")
       planCourseGroupCommonDao.addCourseGroupToPlan(group, parent, plan)
-      majorPlanCourseGroupService.move(group, parent, indexno)
+      MajorCourseGroupService.move(group, parent, indexno)
     }
     plan.setCredits(majorPlanService.statPlanCredits(plan))
     entityDao.saveOrUpdate(plan)
@@ -336,7 +334,7 @@ class MajorPlanCourseGroupAction extends RestrictionSupportAction {
     if (null == planId || null == groupId) {
       return forwardError("error.model.notExist")
     }
-    majorPlanCourseGroupService.removeCourseGroup(groupId)
+    MajorCourseGroupService.removeCourseGroup(groupId)
     getFlash.put("params", get("params"))
     val extra = "&toGroupPane=1&planId=" + planId
     redirect(new Action("majorPlan", "edit", extra), "info.save.success")
@@ -347,8 +345,8 @@ class MajorPlanCourseGroupAction extends RestrictionSupportAction {
     if (null == groupId) {
       return forwardError("error.model.notExist")
     }
-    val group = entityDao.get(classOf[MajorPlanCourseGroup], groupId)
-    majorPlanCourseGroupService.move(group, group.getParent, group.getIndex - 1)
+    val group = entityDao.get(classOf[MajorCourseGroup], groupId)
+    MajorCourseGroupService.move(group, group.getParent, group.getIndex - 1)
     getFlash.put("params", get("params"))
     val extra = "&toGroupPane=1&planId=" + get("planId")
     redirect(new Action(classOf[MajorPlanAction], "edit", extra), "info.save.success")
@@ -359,8 +357,8 @@ class MajorPlanCourseGroupAction extends RestrictionSupportAction {
     if (null == groupId) {
       return forwardError("error.model.notExist")
     }
-    val group = entityDao.get(classOf[MajorPlanCourseGroup], groupId)
-    majorPlanCourseGroupService.move(group, group.getParent, group.getIndex + 1)
+    val group = entityDao.get(classOf[MajorCourseGroup], groupId)
+    MajorCourseGroupService.move(group, group.getParent, group.getIndex + 1)
     getFlash.put("params", get("params"))
     val extra = "&toGroupPane=1&planId=" + get("planId")
     redirect(new Action(classOf[MajorPlanAction], "edit", extra), "info.save.success")
@@ -370,8 +368,8 @@ class MajorPlanCourseGroupAction extends RestrictionSupportAction {
     this.majorPlanCourseService = majorPlanCourseService
   }
 
-  def setMajorPlanCourseGroupService(majorPlanCourseGroupService: MajorPlanCourseGroupService) {
-    this.majorPlanCourseGroupService = majorPlanCourseGroupService
+  def setMajorCourseGroupService(MajorCourseGroupService: MajorCourseGroupService) {
+    this.MajorCourseGroupService = MajorCourseGroupService
   }
 
   def setMajorPlanService(majorPlanService: MajorPlanService) {
@@ -382,13 +380,13 @@ class MajorPlanCourseGroupAction extends RestrictionSupportAction {
     this.planCourseGroupCommonDao = planCourseGroupCommonDao
   }
 
-  def setMajorPlanCourseGroupCopyDao(majorPlanCourseGroupCopyDao: IPlanCourseGroupCopyDao) {
-    this.majorPlanCourseGroupCopyDao = majorPlanCourseGroupCopyDao
+  def setMajorCourseGroupCopyDao(MajorCourseGroupCopyDao: IPlanCourseGroupCopyDao) {
+    this.MajorCourseGroupCopyDao = MajorCourseGroupCopyDao
   }
 
   def setPlanCommonDao(planCommonDao: PlanCommonDao) {
     this.planCommonDao = planCommonDao
   }
 
-  def getEntityName(): String = classOf[MajorPlanCourseGroup].getName
+  def getEntityName(): String = classOf[MajorCourseGroup].getName
 }
