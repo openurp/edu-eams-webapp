@@ -17,7 +17,7 @@ class DataRealmLimit extends Limit() {
 
   def this(stdTypeIds: String, departIds: String) {
     this()
-    this.dataRealm.setStudentTypeIdSeq(stdTypeIds)
-    this.dataRealm.setDepartmentIdSeq(departIds)
+    this.dataRealm.studentTypeIdSeq=stdTypeIds
+    this.dataRealm.departmentIdSeq=departIds
   }
 }

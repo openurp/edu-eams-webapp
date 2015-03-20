@@ -73,9 +73,9 @@ class DepartmentServiceImpl extends BaseServiceImpl with DepartmentService {
 
   def saveOrUpdate(department: Department) {
     if (!department.isPersisted) {
-      department.setCreatedAt(new Date(System.currentTimeMillis()))
+      department.createdAt=new Date(System.currentTimeMillis())
     }
-    department.setUpdatedAt(new Date(System.currentTimeMillis()))
+    department.updatedAt=new Date(System.currentTimeMillis())
     this.entityDao.saveOrUpdate(department)
   }
 

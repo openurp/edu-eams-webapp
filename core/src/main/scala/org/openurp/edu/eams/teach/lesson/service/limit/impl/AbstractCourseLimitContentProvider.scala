@@ -31,7 +31,7 @@ abstract class AbstractCourseLimitContentProvider[T] extends BaseServiceImpl wit
     if (Arrays.isEmpty(strValues)) {
       return null
     }
-    val values = converter.convert(strValues, metaEnum.getContentValueType)
+    val values = converter.convert(strValues, metaEnum.contentValueType)
     if (Arrays.isEmpty(values)) {
       return null
     }

@@ -28,9 +28,9 @@ class CourseSubstitutionServiceImpl extends BaseServiceImpl with CourseSubstitut
   def getMajorCourseSubstitutions(student: Student): List[MajorCourseSubstitution] = {
     val query = OqlBuilder.from(classOf[MajorCourseSubstitution], "substitution")
     query.where("substitution.grades like :grade", "%" + student.grade + "%")
-    query.where("substitution.project = :project", student.getProject)
+    query.where("substitution.project = :project", student.project)
     query.where("substitution.education = :education", student.education)
-    query.where("substitution.stdType is null or substitution.stdType = :stdType", student.getType)
+    query.where("substitution.stdType is null or substitution.stdType = :stdType", student.type)
     if (null == student.major) {
       query.where("substitution.major is null")
     } else {

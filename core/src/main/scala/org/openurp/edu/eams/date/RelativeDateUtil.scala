@@ -6,8 +6,8 @@ import java.util.Date
 import org.beangle.commons.lang.Objects
 import org.beangle.commons.lang.Strings
 import org.openurp.base.Semester
-import WeekDay._
 import RelativeDateUtil._
+import org.beangle.commons.lang.time.WeekDays.WeekDay
 
 object RelativeDateUtil {
 
@@ -26,7 +26,7 @@ object RelativeDateUtil {
   private val formatter = new SimpleDateFormat("yyyy-MM-dd")
 }
 
-class RelativeDateUtil private () {
+class RelativeDateUtil {
 
   private var startOn: Date = _
 
@@ -34,24 +34,24 @@ class RelativeDateUtil private () {
 
   private var dateUtil: EamsDateUtil = _
 
-  def getDate(relativeWeekIndex2: Int, weekday: WeekDay): Date = {
-    val weekOfYear = dateUtil.getWeekOfYear(startOn)
+  def date(relativeWeekIndex2: Int, weekday: WeekDay): Date = {
+    val weekOfYear = dateUtil.weekOfYear(startOn)
     val relativeWeekIndex = if (relativeWeekIndex2 == 0) 1 else relativeWeekIndex2
 
     if (relativeWeekIndex < 0) {
       if (Math.abs(relativeWeekIndex) >= weekOfYear) {
-        return dateUtil.getDate(EamsDateUtil.year(startOn), weekOfYear + relativeWeekIndex - 1, weekday)
+        return dateUtil.date(EamsDateUtil.year(startOn), weekOfYear + relativeWeekIndex - 1, weekday)
       }
-      dateUtil.getDate(EamsDateUtil.year(startOn), weekOfYear + relativeWeekIndex, weekday)
+      dateUtil.date(EamsDateUtil.year(startOn), weekOfYear + relativeWeekIndex, weekday)
     } else {
-      dateUtil.getDate(EamsDateUtil.year(startOn), weekOfYear + relativeWeekIndex - 1, weekday)
+      dateUtil.date(EamsDateUtil.year(startOn), weekOfYear + relativeWeekIndex - 1, weekday)
     }
   }
 
   def getDates(relativeWeekIndecies: Array[Int], weekday: WeekDay): Array[Date] = {
     val dates = Array.ofDim[Date](relativeWeekIndecies.length)
     for (i <- 0 until relativeWeekIndecies.length) {
-      dates(i) = getDate(relativeWeekIndecies(i), weekday)
+      dates(i) = date(relativeWeekIndecies(i), weekday)
     }
     dates
   }
@@ -60,8 +60,8 @@ class RelativeDateUtil private () {
     getDates(Strings.splitToInt(relativeWeekIndexString), weekday)
   }
 
-  def getWeekIndex(date: Date): Int = {
-    dateUtil.getNthWeekRelativeFromStart(startOn, date)
+  def weekIndex(date: Date): Int = {
+    dateUtil.nthWeekRelativeFromStart(startOn, date)
   }
 
   override def toString(): String = {

@@ -4,7 +4,7 @@ import java.util.Date
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.base.Room
 import org.openurp.edu.eams.classroom.RoomUsageCapacity
-import 
+import org.beangle.commons.lang.time.YearWeekTime
 import org.openurp.base.code.RoomUsage
 
 object OccupancyUtils {

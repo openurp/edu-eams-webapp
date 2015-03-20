@@ -15,7 +15,7 @@ class DefaultCourseLimitItemContentProviderFactory extends CourseLimitItemConten
 
   def getProvider(courseLimitMetaEnum: CourseLimitMetaEnum): CourseLimitItemContentProvider = {
     val provider = providers.get(courseLimitMetaEnum)
-    provider.setMetaEnum(courseLimitMetaEnum)
+    provider.metaEnum=courseLimitMetaEnum
     provider
   }
 
@@ -23,7 +23,7 @@ class DefaultCourseLimitItemContentProviderFactory extends CourseLimitItemConten
 
   def getProvider(courseLimitMetaId: Long): CourseLimitItemContentProvider = {
     val values = CourseLimitMetaEnum.values
-    for (courseLimitMetaEnum <- values if courseLimitMetaId == courseLimitMetaEnum.getMetaId) {
+    for (courseLimitMetaEnum <- values if courseLimitMetaId == courseLimitMetaEnum.metaId) {
       return getProvider(courseLimitMetaEnum)
     }
     null

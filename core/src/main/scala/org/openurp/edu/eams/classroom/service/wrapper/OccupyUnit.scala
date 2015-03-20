@@ -2,8 +2,8 @@ package org.openurp.edu.eams.classroom.service.wrapper
 
 
 import org.openurp.base.Room
-import 
 import org.openurp.base.code.RoomUsage
+import org.beangle.commons.lang.time.YearWeekTime
 
 class OccupyUnit( val rooms: Iterable[Room], 
      val units: Array[YearWeekTime], 

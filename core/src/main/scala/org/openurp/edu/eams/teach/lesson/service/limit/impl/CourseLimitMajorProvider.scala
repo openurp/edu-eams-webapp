@@ -15,8 +15,8 @@ class CourseLimitMajorProvider extends AbstractCourseLimitNamedEntityProvider[Ma
     if (cascadeField.isEmpty) {
       return
     }
-    val departIds = cascadeField.get(CourseLimitMetaEnum.DEPARTMENT.getMetaId)
-    val educationIds = cascadeField.get(CourseLimitMetaEnum.EDUCATION.getMetaId)
+    val departIds = cascadeField.get(CourseLimitMetaEnum.DEPARTMENT.metaId)
+    val educationIds = cascadeField.get(CourseLimitMetaEnum.EDUCATION.metaId)
     if (Strings.isNotBlank(departIds) || Strings.isNotBlank(educationIds)) {
       val sb = new StringBuilder("exists(from entity.journals journal where journal.effectiveAt <= :now and (journal.invalidAt is null or journal.invalidAt >= :now)")
       if (Strings.isNotBlank(departIds)) {

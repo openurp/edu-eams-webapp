@@ -38,7 +38,7 @@ class LessonDaoHibernate extends HibernateEntityDao with LessonDao {
   private var lessonPlanRelationDao: LessonPlanRelationDao = _
 
   private def evictLessonRegion() {
-    val cache = sessionFactory.getCache
+    val cache = sessionFactory.cache
     if (null != cache) {
       cache.evictEntityRegion(classOf[Lesson])
     }
@@ -50,12 +50,12 @@ class LessonDaoHibernate extends HibernateEntityDao with LessonDao {
       pageNo: Int, 
       pageSize: Int): Page[Lesson] = {
     val params = new HashMap[String, Any](3)
-    if (strategy.getName == "teacher") {
+    if (strategy.name == "teacher") {
       id = "%" + id + "%"
     }
     params.put("id", id)
     params.put("semesterId", semester.id)
-    val queryStr = strategy.getQueryString(null, " and task.semester.id= :semesterId ")
+    val queryStr = strategy.queryString(null, " and task.semester.id= :semesterId ")
     val lessons = search(queryStr, params, new PageLimit(pageNo, pageSize), false)
     lessons.asInstanceOf[Page[Lesson]]
   }
@@ -63,8 +63,8 @@ class LessonDaoHibernate extends HibernateEntityDao with LessonDao {
   def getLessonsByCategory(id: Serializable, strategy: LessonFilterStrategy, semesters: Iterable[Semester]): List[Lesson] = {
     val taskQuery = strategy.createQuery(getSession, "select distinct task.id from Lesson as task ", 
       " and task.semester in (:semesters) ")
-    taskQuery.setParameter("id", id)
-    taskQuery.setParameterList("semesters", semesters)
+    taskQuery.parameter="id", id
+    taskQuery.parameterList="semesters", semesters
     get(classOf[Lesson], taskQuery.list())
   }
 
@@ -82,7 +82,7 @@ class LessonDaoHibernate extends HibernateEntityDao with LessonDao {
       strategy: LessonFilterStrategy, 
       semester: Semester): Int = {
     evictLessonRegion()
-    val queryStr = strategy.getQueryString("update TeachTask set " + attr + " = :value ", " and semester.id = :semesterId")
+    val queryStr = strategy.queryString("update TeachTask set " + attr + " = :value ", " and semester.id = :semesterId")
     executeUpdate(queryStr, Array(value, semester.id))
   }
 
@@ -101,9 +101,9 @@ class LessonDaoHibernate extends HibernateEntityDao with LessonDao {
       entityQuery.where("task.teachDepart.id in (:departIds) ", departIds)
     }
     val updateSql = new StringBuffer("update TeachTask set " + attr + "=(:" + attr + ") where id in (")
-    updateSql.append(entityQuery.build().getStatement).append(")")
+    updateSql.append(entityQuery.build().statement).append(")")
     newParamsMap.put(attr, value)
-    newParamsMap.putAll(entityQuery.getParams)
+    newParamsMap.putAll(entityQuery.params)
     updateSql.toString
   }
 
@@ -116,16 +116,16 @@ class LessonDaoHibernate extends HibernateEntityDao with LessonDao {
     val newParamsMap = CollectUtils.newHashMap()
     val updateSql = getUpdateQueryString(attr, value, task, stdTypeIds, departIds, newParamsMap)
     val query = getSession.createQuery(updateSql)
-    QuerySupport.setParameter(query, newParamsMap)
+    QuerySupport.parameter=query, newParamsMap
     query.executeUpdate()
   }
 
   def countLesson(id: Serializable, strategy: LessonFilterStrategy, semester: Semester): Int = {
     val countQuery = strategy.createQuery(getSession, "select count(task.id) from TeachTask as task ", 
       " and task.semester.id  = :semesterId")
-    if (strategy.getName == "teacher") id = "%" + id + "%"
-    countQuery.setParameter("id", id)
-    countQuery.setParameter("semesterId", semester.id)
+    if (strategy.name == "teacher") id = "%" + id + "%"
+    countQuery.parameter="id", id
+    countQuery.parameter="semesterId", semester.id
     val rsList = countQuery.list()
     rsList.get(0).asInstanceOf[Number].intValue()
   }
@@ -170,10 +170,10 @@ class LessonDaoHibernate extends HibernateEntityDao with LessonDao {
         remove(lesson)
       }
     }
-    getSession.setFlushMode(FlushMode.COMMIT)
+    getSession.flushMode=FlushMode.COMMIT
     lessonSeqNoGenerator.genLessonSeqNos(lessons)
     for (lesson <- lessons) {
-      lesson.setAuditStatus(CommonAuditState.UNSUBMITTED)
+      lesson.auditStatus=CommonAuditState.UNSUBMITTED
       super.saveOrUpdate(lesson)
       lessonPlanRelationDao.saveRelation(plan, lesson)
     }
@@ -181,9 +181,9 @@ class LessonDaoHibernate extends HibernateEntityDao with LessonDao {
   }
 
   def saveOrUpdate(lesson: Lesson) {
-    val iter = lesson.getTeachClass.getLimitGroups.iterator()
+    val iter = lesson.teachClass.limitGroups.iterator()
     while (iter.hasNext) {
-      if (CollectUtils.isEmpty(iter.next().getItems)) {
+      if (CollectUtils.isEmpty(iter.next().items)) {
         iter.remove()
       }
     }

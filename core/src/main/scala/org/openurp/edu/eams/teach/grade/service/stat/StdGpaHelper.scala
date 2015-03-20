@@ -1,21 +1,24 @@
 package org.openurp.edu.eams.teach.grade.service.stat
 
-import org.openurp.edu.eams.teach.grade.model.StdGpa
-import org.openurp.edu.eams.teach.grade.service.GpaService
+import org.openurp.edu.teach.grade.domain.StdGpa
+import org.openurp.edu.teach.grade.service.GpaService
+import scala.collection.mutable.ListBuffer
+
+
 
 
 
 object StdGpaHelper {
 
   def statGpa(multiStdGrade: MultiStdGrade, gpaService: GpaService) {
-    var stdGradeList = multiStdGrade.getStdGrades
+    var stdGradeList = multiStdGrade.stdGrades
     if (null == stdGradeList) {
-      stdGradeList = Collections.emptyList()
+      stdGradeList = ListBuffer.empty
     }
     for (stdGrade <- stdGradeList) {
-      val stdGpa = new StdGpa(stdGrade.getStd)
-      stdGpa.setGpa(gpaService.getGpa(stdGrade.getStd, stdGrade.grades))
-      stdGrade.setStdGpa(stdGpa)
+      val stdGpa = new StdGpa(stdGrade.std)
+      stdGpa.gpa=gpaService.gpa(stdGrade.std, stdGrade.grades)
+      stdGrade.stdGpa=stdGpa
     }
   }
 }

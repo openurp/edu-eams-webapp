@@ -16,10 +16,10 @@ class StdGradeImpl(courseGrades: List[CourseGrade]) extends StdGrade {
   private var noGradeCourses: Set[Course] = new HashSet[Course]()
 
   for (courseGrade <- courseGrades) {
-    var gradelist = gradeMap.get(courseGrade.getCourse)
+    var gradelist = gradeMap.get(courseGrade.course)
     if (null == gradelist) {
       gradelist = new ArrayList[CourseGrade]()
-      gradeMap.put(courseGrade.getCourse, gradelist)
+      gradeMap.put(courseGrade.course, gradelist)
     }
     gradelist.add(courseGrade)
   }

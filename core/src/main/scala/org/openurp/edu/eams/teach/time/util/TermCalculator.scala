@@ -70,14 +70,14 @@ object TermCalculator {
 class TermCalculator(private var semesterService: SemesterService, private var semester: Semester)
     {
 
-  protected val logger = LoggerFactory.getLogger(this.getClass)
+  protected val logger = LoggerFactory.logger(this.getClass)
 
   private var termCalcCache: Map[String, Integer] = CollectUtils.newHashMap()
 
-  this.semester.getCalendar.id
+  this.semester.calendar.id
 
   def getTermBetween(pre: Semester, post: Semester, omitSmallTerm: Boolean): Int = {
-    semesterService.getTermsBetween(pre, post, omitSmallTerm)
+    semesterService.termsBetween(pre, post, omitSmallTerm)
   }
 
   def getTerm(begOn: java.util.Date, endOn: java.util.Date, omitSmallTerm: Boolean): Int = {
@@ -85,7 +85,7 @@ class TermCalculator(private var semesterService: SemesterService, private var s
     if (term != null) {
       return term
     }
-    val enrollSemester = semesterService.getSemester(semester.getCalendar, new Date(begOn.getTime), new Date(endOn.getTime))
+    val enrollSemester = semesterService.semester(semester.calendar, new Date(begOn.getTime), new Date(endOn.getTime))
     if (logger.isDebugEnabled) {
       logger.debug("calculate a term for [{}~{}]", begOn.toString, endOn.toString)
     }
@@ -93,7 +93,7 @@ class TermCalculator(private var semesterService: SemesterService, private var s
       logger.info("cannot find enrollterm for grade {}~{}", begOn.toString, endOn.toString)
       term = new java.lang.Integer(-1)
     } else {
-      term = new java.lang.Integer(semesterService.getTermsBetween(enrollSemester, semester, omitSmallTerm))
+      term = new java.lang.Integer(semesterService.termsBetween(enrollSemester, semester, omitSmallTerm))
     }
     termCalcCache.put(begOn.toString + "~" + endOn.toString, term)
     if (term == null) -1 else term
@@ -105,7 +105,7 @@ class TermCalculator(private var semesterService: SemesterService, private var s
     if (term != null) {
       return term
     }
-    val enrollSemester = semesterService.getSemester(semester.getCalendar, new Date(date.getTime))
+    val enrollSemester = semesterService.semester(semester.calendar, new Date(date.getTime))
     if (logger.isDebugEnabled) {
       logger.debug("calculate a term for [{}]", date.toString)
     }
@@ -113,7 +113,7 @@ class TermCalculator(private var semesterService: SemesterService, private var s
       logger.info("cannot find enrollterm for grade {}", date.toString)
       term = new java.lang.Integer(-1)
     } else {
-      term = new java.lang.Integer(semesterService.getTermsBetween(enrollSemester, semester, omitSmallTerm))
+      term = new java.lang.Integer(semesterService.termsBetween(enrollSemester, semester, omitSmallTerm))
     }
     termCalcCache.put(date.toString, term)
     if (term == null) -1 else term
@@ -134,7 +134,7 @@ class TermCalculator(private var semesterService: SemesterService, private var s
       dateString = if (month == "2") matcher.group(1) + "-0" + month + '-' + "28" else matcher.group(1) + "-0" + month + '-' + matcher.group(3)
     }
     val date = Date.valueOf(dateString)
-    val enrollSemester = semesterService.getSemester(semester.getCalendar, date)
+    val enrollSemester = semesterService.semester(semester.calendar, date)
     if (logger.isDebugEnabled) {
       logger.debug("calculate a term for [{}]", grade)
     }
@@ -142,7 +142,7 @@ class TermCalculator(private var semesterService: SemesterService, private var s
       logger.info("cannot find enrollterm for grade {}", grade)
       term = new java.lang.Integer(-1)
     } else {
-      term = new java.lang.Integer(semesterService.getTermsBetween(enrollSemester, semester, omitSmallTerm))
+      term = new java.lang.Integer(semesterService.termsBetween(enrollSemester, semester, omitSmallTerm))
     }
     termCalcCache.put(grade, term)
     if (term == null) -1 else term

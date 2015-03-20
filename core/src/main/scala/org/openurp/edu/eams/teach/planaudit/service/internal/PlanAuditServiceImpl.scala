@@ -31,7 +31,7 @@ import org.openurp.edu.eams.teach.program.util.PlanUtils
 
 class PlanAuditServiceImpl extends BaseServiceImpl with PlanAuditService {
 
-  private var logger: Logger = LoggerFactory.getLogger(classOf[PlanAuditServiceImpl])
+  private var logger: Logger = LoggerFactory.logger(classOf[PlanAuditServiceImpl])
 
   protected var coursePlanProvider: CoursePlanProvider = _
 
@@ -42,49 +42,49 @@ class PlanAuditServiceImpl extends BaseServiceImpl with PlanAuditService {
   protected var listeners: List[PlanAuditListener] = new ArrayList[PlanAuditListener]()
 
   def audit(student: Student, context: PlanAuditContext): PlanAuditResult = {
-    logger.debug("start audit {}", student.getCode)
+    logger.debug("start audit {}", student.code)
     val planAuditResult = new PlanAuditResultBean(student)
-    planAuditResult.setCreatedAt(new Date())
-    planAuditResult.setPassed(false)
-    planAuditResult.setRemark(null)
-    planAuditResult.setUpdatedAt(new Date())
-    planAuditResult.setAuditor(SecurityUtils.getUsername + SecurityUtils.getFullname)
-    planAuditResult.setAuditStat(new AuditStat())
-    planAuditResult.setPartial(context.isPartial)
-    context.setResult(planAuditResult)
-    val plan = context.getCoursePlan
+    planAuditResult.createdAt=new Date()
+    planAuditResult.passed=false
+    planAuditResult.remark=null
+    planAuditResult.updatedAt=new Date()
+    planAuditResult.auditor=(SecurityUtils.username + SecurityUtils.fullname)
+    planAuditResult.auditStat=new AuditStat()
+    planAuditResult.partial=context.isPartial
+    context.result=planAuditResult
+    val plan = context.coursePlan
     if (null == plan) {
-      return context.getResult
+      return context.result
     }
-    context.setStdGrade(new StdGradeImpl(courseGradeProvider.getPublished(student)))
+    context.stdGrade=new StdGradeImpl(courseGradeProvider.published(student))
     for (listener <- listeners if !listener.startPlanAudit(context)) {
       return planAuditResult
     }
-    val courseGroupAdapter = new CourseGroupAdapter(context.getCoursePlan)
+    val courseGroupAdapter = new CourseGroupAdapter(context.coursePlan)
     val groupResultAdapter = new GroupResultAdapter(courseGroupAdapter, planAuditResult)
-    var creditsRequired = context.getCoursePlan.getCredits
-    if (context.getAuditTerms != null && context.getAuditTerms.length != 0) {
+    var creditsRequired = context.coursePlan.credits
+    if (context.auditTerms != null && context.auditTerms.length != 0) {
       creditsRequired = 0
-      for (i <- 0 until context.getAuditTerms.length; group <- context.getCoursePlan.getGroups if group.getParent == null) {
-        creditsRequired += PlanUtils.getGroupCredits(group, java.lang.Integer.valueOf(context.getAuditTerms()(i)))
+      for (i <- 0 until context.auditTerms.length; group <- context.coursePlan.groups if group.parent == null) {
+        creditsRequired += PlanUtils.groupCredits(group, java.lang.Integer.valueOf(context.auditTerms()(i)))
       }
     }
-    planAuditResult.getAuditStat.setCreditsRequired(creditsRequired)
+    planAuditResult.auditStat.creditsRequired=creditsRequired
     var numRequired = 0
     if (!context.isPartial) {
-      for (group <- context.getCoursePlan.getGroups if group.getParent == null) {
-        numRequired += group.getCourseNum
+      for (group <- context.coursePlan.groups if group.parent == null) {
+        numRequired += group.courseNum
       }
     }
-    planAuditResult.getAuditStat.setNumRequired(numRequired)
+    planAuditResult.auditStat.numRequired=numRequired
     auditGroup(context, courseGroupAdapter, groupResultAdapter)
     for (listener <- listeners) listener.endPlanAudit(context)
     planAuditResult
   }
 
   private def auditGroup(context: PlanAuditContext, courseGroup: CourseGroup, groupAuditResult: GroupAuditResult) {
-    val courseGroups = courseGroup.getChildren
-    val planAuditResult = context.getResult
+    val courseGroups = courseGroup.children
+    val planAuditResult = context.result
     groupAudit: var it = courseGroups.iterator()
     while (it.hasNext) {
       val children = it.next()
@@ -95,7 +95,7 @@ class PlanAuditServiceImpl extends BaseServiceImpl with PlanAuditService {
       while (it1.hasNext) {
         val listener = it1.next()
         if (!listener.startGroupAudit(context, children, childResult)) {
-          planAuditResult.getAuditStat.reduceRequired(childResult.getAuditStat.getCreditsRequired, childResult.getAuditStat.getNumRequired)
+          planAuditResult.auditStat.reduceRequired(childResult.auditStat.creditsRequired, childResult.auditStat.numRequired)
           groupAuditResult.removeChild(childResult)
           planAuditResult.removeGroupResult(childResult)
           //continue
@@ -103,11 +103,11 @@ class PlanAuditServiceImpl extends BaseServiceImpl with PlanAuditService {
       }
       auditGroup(context, children, childResult)
     }
-    var myPlanCourses = courseGroup.getPlanCourses
+    var myPlanCourses = courseGroup.planCourses
     if (courseGroup.isInstanceOf[ReferedCourseGroup]) {
-      val refereGroup = courseGroup.asInstanceOf[ReferedCourseGroup].getReferenceGroup
-      if (null != refereGroup && null != refereGroup.getShareCourseGroup) {
-        myPlanCourses = refereGroup.getPlanCourses
+      val refereGroup = courseGroup.asInstanceOf[ReferedCourseGroup].referenceGroup
+      if (null != refereGroup && null != refereGroup.shareCourseGroup) {
+        myPlanCourses = refereGroup.planCourses
       }
     }
     courseAudit: var iter = myPlanCourses.iterator()
@@ -117,7 +117,7 @@ class PlanAuditServiceImpl extends BaseServiceImpl with PlanAuditService {
         //continue
       }
       val planCourseAuditResult = new CourseAuditResultBean(planCourse)
-      var courseGrades = context.getStdGrade.useGrades(planCourse.getCourse)
+      var courseGrades = context.stdGrade.useGrades(planCourse.course)
       if (courseGrades.isEmpty) {
         if (!planCourse.isCompulsory) //continue
         courseGrades = Collections.emptyList()

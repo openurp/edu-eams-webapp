@@ -29,12 +29,12 @@ class CoursePrefixSeqNoGeneratorImpl extends HibernateEntityDao with LessonSeqNo
   var infix: String = "."
 
   def genLessonSeqNo(lesson: Lesson) {
-    if (Strings.isNotEmpty(lesson.getNo)) {
+    if (Strings.isNotEmpty(lesson.no)) {
       return
     }
     val prefix = getPrefix(lesson)
     synchronized (this) {
-      val seqNos = getLessonNos(lesson.getProject, lesson.getSemester, lesson.getCourse)
+      val seqNos = getLessonNos(lesson.project, lesson.semester, lesson.course)
       var newSeqNo = "00"
       for (seqNo <- seqNos) {
         if (gap(seqNo, newSeqNo) >= 2) {
@@ -44,7 +44,7 @@ class CoursePrefixSeqNoGeneratorImpl extends HibernateEntityDao with LessonSeqNo
         }
       }
       newSeqNo = rollUp(newSeqNo)
-      lesson.setNo(prefix + leftPadding(newSeqNo))
+      lesson.no=(prefix + leftPadding(newSeqNo))
     }
   }
 
@@ -111,18 +111,18 @@ class CoursePrefixSeqNoGeneratorImpl extends HibernateEntityDao with LessonSeqNo
     synchronized {
       if (lessons.isEmpty) return
       val courseLessons = CollectUtils.newHashMap()
-      for (lesson <- lessons if Strings.isEmpty(lesson.getNo)) {
-        var matches = courseLessons.get(lesson.getCourse)
+      for (lesson <- lessons if Strings.isEmpty(lesson.no)) {
+        var matches = courseLessons.get(lesson.course)
         if (null == matches) {
           matches = new ArrayList[Lesson]()
-          courseLessons.put(lesson.getCourse, matches)
+          courseLessons.put(lesson.course, matches)
         }
         matches.add(lesson)
       }
       for (course <- courseLessons.keySet) {
         val myLessons = courseLessons.get(course).asInstanceOf[Iterable[Lesson]]
         val firstLesson = myLessons.iterator().next()
-        val allSeqNos = getLessonNos(firstLesson.getProject, firstLesson.getSemester, course)
+        val allSeqNos = getLessonNos(firstLesson.project, firstLesson.semester, course)
         genLessonSeqNos(myLessons, getPrefix(firstLesson), allSeqNos)
       }
     }
@@ -135,7 +135,7 @@ class CoursePrefixSeqNoGeneratorImpl extends HibernateEntityDao with LessonSeqNo
     while (iter.hasNext) {
       val seqNo = iter.next()
       val lesson = lessonIter.next().asInstanceOf[Lesson]
-      lesson.setNo(prefix + seqNo)
+      lesson.no=(prefix + seqNo)
     }
   }
 
@@ -144,17 +144,17 @@ class CoursePrefixSeqNoGeneratorImpl extends HibernateEntityDao with LessonSeqNo
   }
 
   protected def getPrefix(lesson: Lesson): String = {
-    var courseCode = lesson.getCourse.getCode
+    var courseCode = lesson.course.code
     if (Strings.isEmpty(courseCode)) {
-      courseCode = get(classOf[Course], lesson.getCourse.id).getCode
+      courseCode = get(classOf[Course], lesson.course.id).code
     }
     if (Strings.isBlank(infix)) courseCode else (courseCode + infix)
   }
 
   private def getLessonNos(project: Project, semester: Semester, course: Course): List[String] = {
-    var courseCode = course.getCode
+    var courseCode = course.code
     if (Strings.isEmpty(courseCode)) {
-      courseCode = get(classOf[Course], course.id).getCode
+      courseCode = get(classOf[Course], course.id).code
     }
     val builder = OqlBuilder.from(classOf[Lesson], "lesson")
     builder.where("lesson.project = :project and lesson.semester=:semster", project, semester)

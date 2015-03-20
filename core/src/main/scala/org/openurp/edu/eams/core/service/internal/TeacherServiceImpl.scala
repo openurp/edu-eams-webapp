@@ -25,7 +25,7 @@ class TeacherServiceImpl extends BaseServiceImpl with TeacherService {
 
   def getTeacherNamesByDepart(departmentId: java.lang.Integer): List[Array[Any]] = {
     if (null == departmentId) return CollectUtils.newArrayList(0)
-    val builder = OqlBuilder.from(classOf[Teacher].getName + " teacher")
+    val builder = OqlBuilder.from(classOf[Teacher].name + " teacher")
     builder.where("teacher.department.id=:departmentId", departmentId)
     builder.select("teacher.id,teacher.name")
     entityDao.search(builder)
@@ -71,8 +71,8 @@ class TeacherServiceImpl extends BaseServiceImpl with TeacherService {
 
   def saveOrUpdate(teacher: Teacher) {
     val newTeacher = !teacher.isPersisted
-    if (!teacher.isPersisted) teacher.setCreatedAt(new Date(System.currentTimeMillis()))
-    teacher.setUpdatedAt(new Date(System.currentTimeMillis()))
+    if (!teacher.isPersisted) teacher.createdAt=new Date(System.currentTimeMillis())
+    teacher.updatedAt=new Date(System.currentTimeMillis())
     entityDao.saveOrUpdate(teacher)
     if (newTeacher) publish(new TeacherCreationEvent(teacher))
   }

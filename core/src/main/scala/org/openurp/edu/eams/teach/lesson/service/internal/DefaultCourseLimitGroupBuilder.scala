@@ -29,14 +29,14 @@ class DefaultCourseLimitGroupBuilder(val group: CourseLimitGroup) extends Course
 
   def inGrades(grades: String*): CourseLimitGroupBuilder = {
     if (grades.length > 0 && grades(0) != null) {
-      val item = getOrCreateItem(CourseLimitMetaEnum.GRADE.getMetaId)
+      val item = getOrCreateItem(CourseLimitMetaEnum.GRADE.metaId)
       addValues(item, true, grades)
     }
     this
   }
 
   def notInGrades(grades: String*): CourseLimitGroupBuilder = {
-    val item = getOrCreateItem(CourseLimitMetaEnum.GRADE.getMetaId)
+    val item = getOrCreateItem(CourseLimitMetaEnum.GRADE.metaId)
     addValues(item, false, grades)
     this
   }
@@ -48,12 +48,12 @@ class DefaultCourseLimitGroupBuilder(val group: CourseLimitGroup) extends Course
       addValues(item, true, ids(entities))
     }
     if (entities.length > 0 && entities(0).isInstanceOf[Adminclass]) {
-      clear(new CourseLimitMetaBean(CourseLimitMetaEnum.GRADE.getMetaId))
-      clear(new CourseLimitMetaBean(CourseLimitMetaEnum.STDTYPE.getMetaId))
-      clear(new CourseLimitMetaBean(CourseLimitMetaEnum.DEPARTMENT.getMetaId))
-      clear(new CourseLimitMetaBean(CourseLimitMetaEnum.MAJOR.getMetaId))
-      clear(new CourseLimitMetaBean(CourseLimitMetaEnum.DIRECTION.getMetaId))
-      clear(new CourseLimitMetaBean(CourseLimitMetaEnum.EDUCATION.getMetaId))
+      clear(new CourseLimitMetaBean(CourseLimitMetaEnum.GRADE.metaId))
+      clear(new CourseLimitMetaBean(CourseLimitMetaEnum.STDTYPE.metaId))
+      clear(new CourseLimitMetaBean(CourseLimitMetaEnum.DEPARTMENT.metaId))
+      clear(new CourseLimitMetaBean(CourseLimitMetaEnum.MAJOR.metaId))
+      clear(new CourseLimitMetaBean(CourseLimitMetaEnum.DIRECTION.metaId))
+      clear(new CourseLimitMetaBean(CourseLimitMetaEnum.EDUCATION.metaId))
       val grades = Array.ofDim[String](entities.length)
       val stdTypes = Array.ofDim[StdType](entities.length)
       val departments = Array.ofDim[Department](entities.length)
@@ -90,11 +90,11 @@ class DefaultCourseLimitGroupBuilder(val group: CourseLimitGroup) extends Course
 
   def clear(meta: CourseLimitMeta): CourseLimitGroupBuilder = {
     var removed: CourseLimitItem = null
-    for (item <- group.getItems if item.getMeta == meta) {
+    for (item <- group.items if item.meta == meta) {
       removed = item
     }
     if (null != removed) {
-      group.getItems.remove(removed)
+      group.items.remove(removed)
     }
     this
   }
@@ -113,66 +113,66 @@ class DefaultCourseLimitGroupBuilder(val group: CourseLimitGroup) extends Course
   }
 
   private def addValues(item: CourseLimitItem, contain: Boolean, values: String*) {
-    var old = item.getContent
+    var old = item.content
     old = if (old.length > 0) Strings.concat(old, ",", Strings.join(values, ",")) else Strings.join(values, 
       ",")
     if (-1 != old.indexOf(',')) {
       if (!old.startsWith(",")) old = "," + old
       if (!old.endsWith(",")) old = old + ","
     }
-    item.setContent(old)
+    item.content=old
     if (contain) {
       if (-1 != old.indexOf(',')) {
-        item.setOperator(CourseLimitMeta.Operator.IN)
+        item.operator=CourseLimitMeta.Operator.IN
       } else {
-        item.setOperator(CourseLimitMeta.Operator.EQUAL)
+        item.operator=CourseLimitMeta.Operator.EQUAL
       }
     } else {
       if (-1 != old.indexOf(',')) {
-        item.setOperator(CourseLimitMeta.Operator.NOT_IN)
+        item.operator=CourseLimitMeta.Operator.NOT_IN
       } else {
-        item.setOperator(CourseLimitMeta.Operator.NOT_EQUAL)
+        item.operator=CourseLimitMeta.Operator.NOT_EQUAL
       }
     }
   }
 
   private def getOrCreateItem(metaId: java.lang.Long): CourseLimitItem = {
-    for (item <- group.getItems if item.getMeta.id == metaId) {
+    for (item <- group.items if item.meta.id == metaId) {
       return item
     }
     val item = new CourseLimitItemBean()
-    item.setMeta(new CourseLimitMetaBean(metaId))
-    item.setOperator(CourseLimitMeta.Operator.EQUAL)
-    item.setContent("")
-    item.setGroup(group)
-    group.getItems.add(item)
+    item.meta=new CourseLimitMetaBean(metaId)
+    item.operator=CourseLimitMeta.Operator.EQUAL
+    item.content=""
+    item.group=group
+    group.items.add(item)
     item
   }
 
   private def getItem[T](first: T): CourseLimitItem = {
     var item: CourseLimitItem = null
     if (first.isInstanceOf[Gender]) {
-      item = getOrCreateItem(CourseLimitMetaEnum.GENDER.getMetaId)
+      item = getOrCreateItem(CourseLimitMetaEnum.GENDER.metaId)
     } else if (first.isInstanceOf[StdType]) {
-      item = getOrCreateItem(CourseLimitMetaEnum.STDTYPE.getMetaId)
+      item = getOrCreateItem(CourseLimitMetaEnum.STDTYPE.metaId)
     } else if (first.isInstanceOf[Department]) {
-      item = getOrCreateItem(CourseLimitMetaEnum.DEPARTMENT.getMetaId)
+      item = getOrCreateItem(CourseLimitMetaEnum.DEPARTMENT.metaId)
     } else if (first.isInstanceOf[Major]) {
-      item = getOrCreateItem(CourseLimitMetaEnum.MAJOR.getMetaId)
+      item = getOrCreateItem(CourseLimitMetaEnum.MAJOR.metaId)
     } else if (first.isInstanceOf[Direction]) {
-      item = getOrCreateItem(CourseLimitMetaEnum.DIRECTION.getMetaId)
+      item = getOrCreateItem(CourseLimitMetaEnum.DIRECTION.metaId)
     } else if (first.isInstanceOf[Adminclass]) {
-      item = getOrCreateItem(CourseLimitMetaEnum.ADMINCLASS.getMetaId)
+      item = getOrCreateItem(CourseLimitMetaEnum.ADMINCLASS.metaId)
     } else if (first.isInstanceOf[Education]) {
-      item = getOrCreateItem(CourseLimitMetaEnum.EDUCATION.getMetaId)
+      item = getOrCreateItem(CourseLimitMetaEnum.EDUCATION.metaId)
     } else if (first.isInstanceOf[Program]) {
-      item = getOrCreateItem(CourseLimitMetaEnum.PROGRAM.getMetaId)
+      item = getOrCreateItem(CourseLimitMetaEnum.PROGRAM.metaId)
     } else if (first.isInstanceOf[NormalClass]) {
-      item = getOrCreateItem(CourseLimitMetaEnum.NORMALCLASS.getMetaId)
+      item = getOrCreateItem(CourseLimitMetaEnum.NORMALCLASS.metaId)
     } else if (first.isInstanceOf[StdLabel]) {
-      item = getOrCreateItem(CourseLimitMetaEnum.STDLABEL.getMetaId)
+      item = getOrCreateItem(CourseLimitMetaEnum.STDLABEL.metaId)
     } else {
-      throw new RuntimeException("no support limit meta class " + first.getClass.getName)
+      throw new RuntimeException("no support limit meta class " + first.getClass.name)
     }
     item
   }

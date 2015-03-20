@@ -22,7 +22,7 @@ class CourseLimitGenderProvider extends AbstractCourseLimitNamedEntityProvider[G
   }
 
   protected override def getContentMap(content: Array[Serializable]): Map[String, Gender] = {
-    val contentMap = super.getContentMap(content)
+    val contentMap = super.contentMap(content)
     val results = new LinkedHashMap[String, Gender]()
     for ((key, value) <- contentMap) {
       val gender = value

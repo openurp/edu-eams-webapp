@@ -45,8 +45,8 @@ class PlanAuditCourseTakeListener extends PlanAuditListener {
   var defaultPassed: Boolean = true
 
   def startPlanAudit(context: PlanAuditContext): Boolean = {
-    val builder = OqlBuilder.from(classOf[CourseTake], "ct").where("ct.std=:std", context.getStd)
-    builder.where("not exists(from " + classOf[CourseGrade].getName + 
+    val builder = OqlBuilder.from(classOf[CourseTake], "ct").where("ct.std=:std", context.std)
+    builder.where("not exists(from " + classOf[CourseGrade].name + 
       " cg where cg.semester=ct.lesson.semester and cg.course=ct.lesson.course " + 
       "and cg.std=ct.std and cg.status=:status)", Grade.Status.PUBLISHED)
     builder.where("ct.lesson.semester.endOn >= :now", new Date())
@@ -55,8 +55,8 @@ class PlanAuditCourseTakeListener extends PlanAuditListener {
     for (c <- entityDao.search(builder)) {
       course2Types.put(c.asInstanceOf[Array[Any]](0).asInstanceOf[Course], c.asInstanceOf[Array[Any]](1).asInstanceOf[CourseType])
     }
-    context.getParams.put(TakeCourse2Types, course2Types)
-    context.getParams.put(Group2CoursesKey, new ArrayList[Pair[GroupAuditResult, Course]]())
+    context.params.put(TakeCourse2Types, course2Types)
+    context.params.put(Group2CoursesKey, new ArrayList[Pair[GroupAuditResult, Course]]())
     true
   }
 
@@ -65,29 +65,29 @@ class PlanAuditCourseTakeListener extends PlanAuditListener {
   }
 
   def startCourseAudit(context: PlanAuditContext, groupResult: GroupAuditResult, planCourse: PlanCourse): Boolean = {
-    if (context.getParams.get(TakeCourse2Types).asInstanceOf[Map[Course, CourseType]]
-      .containsKey(planCourse.getCourse)) {
-      (context.getParams.get(Group2CoursesKey)).asInstanceOf[ArrayList[Pair[GroupAuditResult, Course]]]
-        .add(new Pair(groupResult, planCourse.getCourse))
+    if (context.params.get(TakeCourse2Types).asInstanceOf[Map[Course, CourseType]]
+      .containsKey(planCourse.course)) {
+      (context.params.get(Group2CoursesKey)).asInstanceOf[ArrayList[Pair[GroupAuditResult, Course]]]
+        .add(new Pair(groupResult, planCourse.course))
     }
     true
   }
 
   def endPlanAudit(context: PlanAuditContext) {
-    val course2Types = context.getParams.remove(TakeCourse2Types).asInstanceOf[Map[Course, CourseType]]
-    val results = context.getParams.remove(Group2CoursesKey).asInstanceOf[ArrayList[Pair[GroupAuditResult, Course]]]
+    val course2Types = context.params.remove(TakeCourse2Types).asInstanceOf[Map[Course, CourseType]]
+    val results = context.params.remove(Group2CoursesKey).asInstanceOf[ArrayList[Pair[GroupAuditResult, Course]]]
     val used = CollectUtils.newHashSet()
     for (tuple <- results) {
-      add2Group(tuple.getRight, tuple.getLeft)
-      course2Types.remove(tuple.getRight)
-      used.add(tuple.getLeft)
+      add2Group(tuple.right, tuple.left)
+      course2Types.remove(tuple.right)
+      used.add(tuple.left)
     }
     val lastTarget = getTargetGroupResult(context)
     for ((key, value) <- course2Types) {
-      val g = context.getCoursePlan.getGroup(value)
+      val g = context.coursePlan.group(value)
       var gr: GroupAuditResult = null
-      if (null == g || g.getPlanCourses.isEmpty) {
-        gr = context.getResult.getGroupResult(value)
+      if (null == g || g.planCourses.isEmpty) {
+        gr = context.result.groupResult(value)
       }
       if (null == gr) gr = lastTarget
       if (null != gr) {
@@ -100,39 +100,39 @@ class PlanAuditCourseTakeListener extends PlanAuditListener {
 
   private def add2Group(course: Course, groupResult: GroupAuditResult) {
     var existedResult: CourseAuditResult = null
-    for (cr <- groupResult.getCourseResults if cr.getCourse == course) {
+    for (cr <- groupResult.courseResults if cr.course == course) {
       existedResult = cr
       //break
     }
-    groupResult.getPlanResult.setPartial(true)
+    groupResult.planResult.partial=true
     if (existedResult == null) {
       existedResult = new CourseAuditResultBean()
-      existedResult.setCourse(course)
-      existedResult.setPassed(defaultPassed)
+      existedResult.course=course
+      existedResult.passed=defaultPassed
       groupResult.addCourseResult(existedResult)
     } else {
-      if (defaultPassed) existedResult.setPassed(defaultPassed)
-      existedResult.getGroupResult.updateCourseResult(existedResult)
+      if (defaultPassed) existedResult.passed=defaultPassed
+      existedResult.groupResult.updateCourseResult(existedResult)
     }
-    if (Strings.isEmpty(existedResult.getRemark)) {
-      existedResult.setRemark("在读")
+    if (Strings.isEmpty(existedResult.remark)) {
+      existedResult.remark="在读"
     } else {
-      existedResult.setRemark(existedResult.getRemark + "/在读")
+      existedResult.remark=(existedResult.remark + "/在读")
     }
   }
 
   private def getTargetGroupResult(context: PlanAuditContext): GroupAuditResult = {
-    val electiveType = context.getStandard.getConvertTargetCourseType
+    val electiveType = context.standard.convertTargetCourseType
     if (null == electiveType) return null
-    val result = context.getResult
-    var groupResult = result.getGroupResult(electiveType)
+    val result = context.result
+    var groupResult = result.groupResult(electiveType)
     if (null == groupResult) {
       val groupRs = new GroupAuditResultBean()
-      groupRs.setCourseType(electiveType)
-      groupRs.setName(electiveType.getName)
+      groupRs.courseType=electiveType
+      groupRs.name=electiveType.name
       val groupRelation = new ExpressionGroupRelation()
-      groupRelation.setRelation(ExpressionGroupRelation.AND)
-      groupRs.setRelation(groupRelation)
+      groupRelation.relation=ExpressionGroupRelation.AND
+      groupRs.relation=groupRelation
       groupResult = groupRs
       result.addGroupResult(groupResult)
     }

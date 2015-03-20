@@ -3,7 +3,6 @@ package org.openurp.edu.eams.teach.lesson.service
 
 
 import org.beangle.data.model.Entity
-import org.beangle.commons.lang.tuple.Pair
 import org.openurp.base.Department
 import org.openurp.code.person.Gender
 import org.openurp.edu.base.Adminclass
@@ -19,7 +18,6 @@ import org.openurp.edu.teach.lesson.CourseTake
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.teach.lesson.TeachClass
 import org.openurp.edu.eams.teach.lesson.model.CourseLimitGroupPair
-import org.openurp.edu.eams.teach.lesson.model.NormalClassBean
 import org.openurp.edu.base.Program
 
 
@@ -39,10 +37,6 @@ trait CourseLimitService {
   def xtractAdminclassLimit(teachClass: TeachClass): Pair[Operator, List[Adminclass]]
 
   def xtractAdminclassLimit(group: CourseLimitGroup): Pair[Operator, List[Adminclass]]
-
-  def xtractNormalclassLimit(teachClass: TeachClass): Pair[Operator, List[NormalClassBean]]
-
-  def xtractNormalclassLimit(group: CourseLimitGroup): Pair[Operator, List[NormalClassBean]]
 
   def xtractGradeLimit(teachClass: TeachClass): Pair[Operator, List[String]]
 
@@ -107,10 +101,6 @@ trait CourseLimitService {
   def extractGender(teachClass: TeachClass): Gender
 
   def extractGender(group: CourseLimitGroup): Gender
-
-  def extractNormalclasses(teachClass: TeachClass): List[NormalClassBean]
-
-  def extractNormalclasses(group: CourseLimitGroup): List[NormalClassBean]
 
   def builder(): CourseLimitGroupBuilder
 

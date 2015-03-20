@@ -7,43 +7,39 @@ import java.util.Date
 import java.util.GregorianCalendar
 import org.beangle.commons.lang.Strings
 import org.openurp.base.Semester
-import org.openurp.edu.eams.base.util.WeekDays
 import org.openurp.edu.eams.base.util.WeekStates
 import org.beangle.commons.lang.time.YearWeekTime
 import org.openurp.edu.eams.date.EamsDateUtil
 import org.openurp.edu.teach.exam.ExamActivity
 import org.openurp.edu.teach.exam.ExamRoom
-import org.beangle.commons.lang.time.YearWeekTimeBuilder
 import org.beangle.commons.lang.time.WeekDays
 import org.openurp.base.Semester
-
-
+import org.openurp.edu.eams.weekstate.YearWeekTimeBuilder
+import org.openurp.base.Semester
 
 object ExamYearWeekTimeUtil {
 
   def getYearWeekTimeFromActivity(activity: ExamActivity): YearWeekTime = {
     val f = new SimpleDateFormat("HH:mm")
     val unit = new YearWeekTime()
-    unit.setStartTime(getTimeNumber(f.format(activity.getStartAt)))
-    unit.setEndTime(getTimeNumber(f.format(activity.getEndAt)))
-    val date = activity.getStartAt
-    val state = YearWeekTimeBuilder.build(date, WeekStateDirection.LTR)
-    unit.setYear(state.year)
-    unit.setWeekday(state.day.getIndex)
-    unit.newWeekState(state.getString)
+    unit.start=activity.beginAt
+    unit.end=activity.endAt
+    val date = activity.examOn
+    val state = YearWeekTimeBuilder.build(date)
+    unit.year=state.year
+    unit.day=state.day.index
     unit
   }
 
   def getYearWeekTimeFromActivity(examRoom: ExamRoom): YearWeekTime = {
     val f = new SimpleDateFormat("HH:mm")
     val unit = new YearWeekTime()
-    unit.setStartTime(getTimeNumber(f.format(examRoom.getStartAt)))
-    unit.setEndTime(getTimeNumber(f.format(examRoom.getEndAt)))
-    val date = examRoom.getStartAt
-    val state = YearWeekTimeBuilder.build(date, WeekStateDirection.LTR)
-    unit.setYear(state.year)
-    unit.setWeekday(state.day.getIndex)
-    unit.newWeekState(state.getString)
+    unit.start=examRoom.beginAt
+    unit.end=examRoom.endAt
+    val date = examRoom.
+    val state = YearWeekTimeBuilder.build(date)
+    unit.year= state.year
+    unit.day= state.day.index
     unit
   }
 
@@ -88,13 +84,13 @@ object ExamYearWeekTimeUtil {
     weekState.toString
   }
 
-  def getWeekDayByDate(date: Date): java.lang.Integer = EamsDateUtil.day(date).getIndex
+  def getWeekDayByDate(date: Date): java.lang.Integer = EamsDateUtil.day(date).index
 
   def getWeekOfYear(date: Date): Int = {
     val gc = new GregorianCalendar()
     gc.setTime(date)
     if (11 == gc.get(Calendar.MONTH) && 1 == gc.get(Calendar.WEEK_OF_YEAR)) {
-      gc.getActualMaximum(Calendar.WEEK_OF_YEAR) + 1
+      gc.actualMaximum(Calendar.WEEK_OF_YEAR) + 1
     } else {
       gc.get(Calendar.WEEK_OF_YEAR)
     }
@@ -114,8 +110,8 @@ object ExamYearWeekTimeUtil {
       .iterator()
       .next()
     val gc = new GregorianCalendar()
-    gc.set(Calendar.YEAR, yearWeekState.getKey)
-    gc.set(Calendar.WEEK_OF_YEAR, yearWeekState.getValue.indexOf("1") + 1)
+    gc.set(Calendar.YEAR, yearWeekState.key)
+    gc.set(Calendar.WEEK_OF_YEAR, yearWeekState.value.indexOf("1") + 1)
     gc.set(Calendar.DAY_OF_WEEK, weekday)
     gc.set(Calendar.HOUR_OF_DAY, times(0))
     gc.set(Calendar.MINUTE, times(1))
@@ -126,8 +122,8 @@ object ExamYearWeekTimeUtil {
   def getTeachWeekOfYear(semester: Semester, nowDate: Date): Int = {
     val start = Calendar.getInstance
     start.setTime(semester.beginOn)
-    start.setFirstDayOfWeek(semester.getFirstWeekday)
-    start.set(Calendar.DAY_OF_WEEK, semester.getFirstWeekday)
+    start.firstDayOfWeek=semester.firstWeekday
+    start.set(Calendar.DAY_OF_WEEK, semester.firstWeekday)
     var weeks = 0
     while (!start.getTime.after(nowDate)) {
       start.add(Calendar.WEEK_OF_YEAR, 1)

@@ -25,27 +25,27 @@ class TimeSettingServiceImpl extends BaseServiceImpl with TimeSettingService {
 
   def getClosestTimeSetting(project: Project, semester: Semester, campus: Campus): TimeSetting = {
     var builder = OqlBuilder.from(classOf[TimeSetting], "time").where("time.semester = :semester", semester)
-      .where("exists(from " + classOf[Project].getName + 
+      .where("exists(from " + classOf[Project].name + 
       " p join p.timeSettings ts where ts.id=time and p = :project)", project)
       .where("time.campus = :campus", campus)
       .cacheable()
     var settings = entityDao.search(builder)
     if (!settings.isEmpty) return settings.get(0)
-    builder = OqlBuilder.from(classOf[TimeSetting], "time").where("exists(from " + classOf[Project].getName + 
+    builder = OqlBuilder.from(classOf[TimeSetting], "time").where("exists(from " + classOf[Project].name + 
       " p join p.timeSettings ts where ts.id=time and p = :project)", project)
       .where("time.campus = :campus", campus)
       .where("time.semester is null")
       .cacheable()
     settings = entityDao.search(builder)
     if (!settings.isEmpty) return settings.get(0)
-    builder = OqlBuilder.from(classOf[TimeSetting], "time").where("exists(from " + classOf[Project].getName + 
+    builder = OqlBuilder.from(classOf[TimeSetting], "time").where("exists(from " + classOf[Project].name + 
       " p join p.timeSettings ts where ts.id=time and p = :project)", project)
       .where("time.campus is null", campus)
       .where("time.semester =:semester", semester)
       .cacheable()
     settings = entityDao.search(builder)
     if (!settings.isEmpty) return settings.get(0)
-    builder = OqlBuilder.from(classOf[TimeSetting], "time").where("exists(from " + classOf[Project].getName + 
+    builder = OqlBuilder.from(classOf[TimeSetting], "time").where("exists(from " + classOf[Project].name + 
       " p join p.timeSettings ts where ts.id=time and p = :project)", project)
       .where("time.campus is null and time.semester is null")
       .cacheable()

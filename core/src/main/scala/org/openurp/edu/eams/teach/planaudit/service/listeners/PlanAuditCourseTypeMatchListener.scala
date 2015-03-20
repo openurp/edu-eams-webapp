@@ -26,8 +26,8 @@ import org.openurp.edu.eams.teach.time.util.TermCalculator
 class PlanAuditCourseTypeMatchListener extends PlanAuditListener {
 
   protected def addGroupResult(results: Map[CourseType, GroupAuditResult], gr: GroupAuditResult) {
-    results.put(gr.getCourseType, gr)
-    for (child <- gr.getChildren) {
+    results.put(gr.courseType, gr)
+    for (child <- gr.children) {
       addGroupResult(results, child)
     }
   }
@@ -35,39 +35,39 @@ class PlanAuditCourseTypeMatchListener extends PlanAuditListener {
   private var semesterService: SemesterService = _
 
   def endPlanAudit(context: PlanAuditContext) {
-    val auditTerms = context.getAuditTerms
+    val auditTerms = context.auditTerms
     val results = CollectUtils.newHashMap()
-    val stdGrade = context.getStdGrade
-    val restCourses = stdGrade.getRestCourses
+    val stdGrade = context.stdGrade
+    val restCourses = stdGrade.restCourses
     if (!restCourses.isEmpty) {
-      val result = context.getResult
-      for (gr <- result.getGroupResults) {
+      val result = context.result
+      for (gr <- result.groupResults) {
         addGroupResult(results, gr)
       }
     }
     for (course <- restCourses) {
       val grades = stdGrade.grades(course)
       var courseType: CourseType = null
-      if (grades.isEmpty) //continue else courseType = grades.get(0).getCourseType
+      if (grades.isEmpty) //continue else courseType = grades.get(0).courseType
       val groupResult = results.get(courseType)
       if (null == groupResult) //continue
-      val g = context.getCoursePlan.getGroup(groupResult.getCourseType)
+      val g = context.coursePlan.group(groupResult.courseType)
       if (null != g && g.isCompulsory) //continue
       stdGrade.useGrades(course)
       val remark = new StringBuilder()
       if (course.isExchange) {
-        for (grade <- grades; ec <- grade.getExchanges) remark.append(ec.getName).append(' ')
+        for (grade <- grades; ec <- grade.exchanges) remark.append(ec.name).append(' ')
       }
-      if (null != auditTerms && auditTerms.length > 0 && context.getCoursePlan != null) {
+      if (null != auditTerms && auditTerms.length > 0 && context.coursePlan != null) {
         var inAuditTerms = false
         for (grade <- grades) {
           if (inAuditTerms) //break
           var term = -1
-          term = if (context.getCoursePlan.getInvalidOn != null) new TermCalculator(semesterService, 
-            grade.getSemester)
-            .getTerm(context.getCoursePlan.getInvalidOn, context.getCoursePlan.getInvalidOn, true) else new TermCalculator(semesterService, 
-            grade.getSemester)
-            .getTerm(context.getCoursePlan.getEffectiveOn, java.sql.Date.valueOf("2099-09-09"), true)
+          term = if (context.coursePlan.invalidOn != null) new TermCalculator(semesterService, 
+            grade.semester)
+            .term(context.coursePlan.invalidOn, context.coursePlan.invalidOn, true) else new TermCalculator(semesterService, 
+            grade.semester)
+            .term(context.coursePlan.effectiveOn, java.sql.Date.valueOf("2099-09-09"), true)
           for (j <- 0 until auditTerms.length if String.valueOf(term) == auditTerms(j)) {
             inAuditTerms = true
             //break
@@ -75,24 +75,24 @@ class PlanAuditCourseTypeMatchListener extends PlanAuditListener {
         }
         if (!inAuditTerms) //continue
       }
-      val courseGroup = context.getCoursePlan.getGroup(courseType)
+      val courseGroup = context.coursePlan.group(courseType)
       var outOfPlan = false
-      if (!CollectUtils.isEmpty(courseGroup.getPlanCourses)) {
+      if (!CollectUtils.isEmpty(courseGroup.planCourses)) {
         outOfPlan = true
       }
       var existResult: CourseAuditResult = null
       var existed = false
-      for (cr <- groupResult.getCourseResults if cr.getCourse == course) {
+      for (cr <- groupResult.courseResults if cr.course == course) {
         existResult = cr
         existed = true
         //break
       }
       if (existResult == null) existResult = new CourseAuditResultBean()
-      existResult.setCourse(course)
+      existResult.course=course
       existResult.checkPassed(grades)
-      if (null != existResult.getRemark) remark.insert(0, existResult.getRemark)
+      if (null != existResult.remark) remark.insert(0, existResult.remark)
       if (outOfPlan) remark.append(" 计划外")
-      existResult.setRemark(remark.toString)
+      existResult.remark=remark.toString
       if (!existed) groupResult.addCourseResult(existResult)
       groupResult.checkPassed(true)
     }
@@ -103,9 +103,9 @@ class PlanAuditCourseTypeMatchListener extends PlanAuditListener {
   }
 
   def startGroupAudit(context: PlanAuditContext, courseGroup: CourseGroup, groupResult: GroupAuditResult): Boolean = {
-    val standard = context.getStandard
+    val standard = context.standard
     if (null != standard) {
-      return !standard.isDisaudit(courseGroup.getCourseType)
+      return !standard.isDisaudit(courseGroup.courseType)
     }
     true
   }

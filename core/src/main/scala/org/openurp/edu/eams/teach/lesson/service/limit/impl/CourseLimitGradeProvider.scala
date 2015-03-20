@@ -23,7 +23,7 @@ class CourseLimitGradeProvider extends AbstractCourseLimitContentProvider[String
   }
 
   protected override def getOtherContents(content: Array[Serializable], term: String, limit: PageLimit): List[String] = {
-    val builder = OqlBuilder.from(classOf[Program].getName + " program")
+    val builder = OqlBuilder.from(classOf[Program].name + " program")
     if (!Arrays.isEmpty(content)) {
       builder.where("program.grade not in(:grades)", content)
     }
@@ -36,7 +36,7 @@ class CourseLimitGradeProvider extends AbstractCourseLimitContentProvider[String
     entityDao.search(builder)
   }
 
-  def getContentIdTitleMap(content: String): Map[String, String] = super.getContents(content)
+  def getContentIdTitleMap(content: String): Map[String, String] = super.contents(content)
 
   protected override def getCascadeContents(content: Array[Serializable], 
       term: String, 

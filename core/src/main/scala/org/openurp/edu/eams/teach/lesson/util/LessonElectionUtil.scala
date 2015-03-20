@@ -12,25 +12,25 @@ import org.openurp.edu.teach.lesson.TeachClass
 object LessonElectionUtil {
 
   def normalizeTeachClass(lesson: Lesson) {
-    lesson.getTeachClass.setLesson(lesson)
-    for (take <- lesson.getTeachClass.getCourseTakes) {
-      take.setLesson(lesson)
+    lesson.teachClass.lesson=lesson
+    for (take <- lesson.teachClass.courseTakes) {
+      take.lesson=lesson
     }
-    for (take <- lesson.getTeachClass.getExamTakes) {
-      take.setLesson(lesson)
+    for (take <- lesson.teachClass.examTakes) {
+      take.lesson=lesson
     }
-    for (group <- lesson.getTeachClass.getLimitGroups) {
-      group.setLesson(lesson)
-      for (item <- group.getItems) {
-        item.setGroup(group)
+    for (group <- lesson.teachClass.limitGroups) {
+      group.lesson=lesson
+      for (item <- group.items) {
+        item.group=group
       }
     }
   }
 
   def addCourseTake(teachClass: TeachClass, take: CourseTake) {
-    teachClass.getCourseTakes.add(take)
-    take.setLesson(teachClass.getLesson)
-    teachClass.setStdCount(teachClass.getCourseTakes.size)
+    teachClass.courseTakes.add(take)
+    take.lesson=teachClass.lesson
+    teachClass.stdCount=teachClass.courseTakes.size
   }
 
   def addCourseTakes(teachClass: TeachClass, takes: Iterable[CourseTake]) {

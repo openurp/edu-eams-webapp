@@ -17,18 +17,18 @@ class DefaultNumberRangeFormatter extends NumberRangeFormatter {
 
   def format(pattern: NumberRange, textResource: TextResource, hasNext: Boolean): String = {
     val sb = new StringBuilder()
-    if (pattern.getStart == pattern.getEnd) {
-      sb.append(pattern.getStart)
+    if (pattern.start == pattern.end) {
+      sb.append(pattern.start)
     } else {
-      sb.append('[').append(pattern.getStart).append('-')
-        .append(pattern.getEnd)
+      sb.append('[').append(pattern.start).append('-')
+        .append(pattern.end)
         .append(']')
     }
-    if (Strings.isNotBlank(pattern.getI18nKey)) {
+    if (Strings.isNotBlank(pattern.i18nKey)) {
       if (textResource != null) {
-        sb.append(textResource(pattern.getI18nKey))
+        sb.append(textResource(pattern.i18nKey))
       } else {
-        sb.append(pattern.getI18nKey)
+        sb.append(pattern.i18nKey)
       }
     }
     if (hasNext) {

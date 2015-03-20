@@ -20,23 +20,23 @@ object CourseLimitUtils {
   def build[T <: Entity[_]](entity: T, alias: String): Condition = {
     var metaId: java.lang.Long = null
     if (entity.isInstanceOf[Gender]) {
-      metaId = CourseLimitMetaEnum.GENDER.getMetaId
+      metaId = CourseLimitMetaEnum.GENDER.metaId
     } else if (entity.isInstanceOf[StdType]) {
-      metaId = CourseLimitMetaEnum.STDTYPE.getMetaId
+      metaId = CourseLimitMetaEnum.STDTYPE.metaId
     } else if (entity.isInstanceOf[Department]) {
-      metaId = CourseLimitMetaEnum.DEPARTMENT.getMetaId
+      metaId = CourseLimitMetaEnum.DEPARTMENT.metaId
     } else if (entity.isInstanceOf[Major]) {
-      metaId = CourseLimitMetaEnum.MAJOR.getMetaId
+      metaId = CourseLimitMetaEnum.MAJOR.metaId
     } else if (entity.isInstanceOf[Direction]) {
-      metaId = CourseLimitMetaEnum.DIRECTION.getMetaId
+      metaId = CourseLimitMetaEnum.DIRECTION.metaId
     } else if (entity.isInstanceOf[Adminclass]) {
-      metaId = CourseLimitMetaEnum.ADMINCLASS.getMetaId
+      metaId = CourseLimitMetaEnum.ADMINCLASS.metaId
     } else if (entity.isInstanceOf[Education]) {
-      metaId = CourseLimitMetaEnum.EDUCATION.getMetaId
+      metaId = CourseLimitMetaEnum.EDUCATION.metaId
     } else if (entity.isInstanceOf[Program]) {
-      metaId = CourseLimitMetaEnum.PROGRAM.getMetaId
+      metaId = CourseLimitMetaEnum.PROGRAM.metaId
     } else {
-      throw new RuntimeException("not supported limit meta class " + entity.getClass.getName)
+      throw new RuntimeException("not supported limit meta class " + entity.getClass.name)
     }
     build(metaId, alias, entity.id.toString)
   }

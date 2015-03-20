@@ -18,22 +18,22 @@ class DefaultGroupResultBuilder extends GroupResultBuilder {
 
   def buildResult(context: PlanAuditContext, group: CourseGroup): GroupAuditResult = {
     val result = new GroupAuditResultBean()
-    var creditsRequired = group.getCredits
-    if (context.getAuditTerms != null && context.getAuditTerms.length != 0) {
+    var creditsRequired = group.credits
+    if (context.auditTerms != null && context.auditTerms.length != 0) {
       creditsRequired = 0
       var groupCourseCredits = 0f
       var creditsNeedCompare = false
       val auditedCourses = CollectUtils.newHashSet()
-      for (i <- 0 until context.getAuditTerms.length) {
-        val term = java.lang.Integer.valueOf(context.getAuditTerms()(i))
-        creditsRequired += PlanUtils.getGroupCredits(group, term)
-        if (group.getChildren.isEmpty && !group.getPlanCourses.isEmpty && 
+      for (i <- 0 until context.auditTerms.length) {
+        val term = java.lang.Integer.valueOf(context.auditTerms()(i))
+        creditsRequired += PlanUtils.groupCredits(group, term)
+        if (group.children.isEmpty && !group.planCourses.isEmpty && 
           group.isCompulsory) {
           creditsNeedCompare = true
-          for (planCourse <- group.getPlanCourses if !auditedCourses.contains(planCourse.getCourse) && Strings.isNotEmpty(planCourse.getTerms) && 
-            TermCalculator.inTerm(planCourse.getTerms, term)) {
-            groupCourseCredits += planCourse.getCourse.getCredits
-            auditedCourses.add(planCourse.getCourse)
+          for (planCourse <- group.planCourses if !auditedCourses.contains(planCourse.course) && Strings.isNotEmpty(planCourse.terms) && 
+            TermCalculator.inTerm(planCourse.terms, term)) {
+            groupCourseCredits += planCourse.course.credits
+            auditedCourses.add(planCourse.course)
           }
         }
       }
@@ -42,16 +42,16 @@ class DefaultGroupResultBuilder extends GroupResultBuilder {
           0) creditsRequired else groupCourseCredits
       }
     }
-    result.getAuditStat.setCreditsRequired(creditsRequired)
+    result.auditStat.creditsRequired=creditsRequired
     if (context.isPartial) {
-      result.getAuditStat.setNumRequired(0)
+      result.auditStat.numRequired=0
     } else {
-      result.getAuditStat.setNumRequired(group.getCourseNum)
+      result.auditStat.numRequired=group.courseNum
     }
-    result.setCourseType(group.getCourseType)
-    result.setName(group.getName)
-    result.setRelation(group.getRelation)
-    result.setPlanResult(context.getResult)
+    result.courseType=group.courseType
+    result.name=group.name
+    result.relation=group.relation
+    result.planResult=context.result
     result
   }
 }

@@ -15,9 +15,9 @@ class CourseLimitDirectionProvider extends AbstractCourseLimitNamedEntityProvide
     if (cascadeField.isEmpty) {
       return
     }
-    val majorIds = cascadeField.get(CourseLimitMetaEnum.MAJOR.getMetaId)
-    val departIds = cascadeField.get(CourseLimitMetaEnum.DEPARTMENT.getMetaId)
-    val educationIds = cascadeField.get(CourseLimitMetaEnum.EDUCATION.getMetaId)
+    val majorIds = cascadeField.get(CourseLimitMetaEnum.MAJOR.metaId)
+    val departIds = cascadeField.get(CourseLimitMetaEnum.DEPARTMENT.metaId)
+    val educationIds = cascadeField.get(CourseLimitMetaEnum.EDUCATION.metaId)
     if (Strings.isNotBlank(majorIds)) {
       builder.where("entity.major.id in (:majorIds)", Strings.splitToInt(majorIds))
     }

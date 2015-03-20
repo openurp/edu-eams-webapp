@@ -17,7 +17,7 @@ import org.beangle.commons.text.i18n.TextResource
 import org.openurp.base.Semester
 import org.openurp.base.model.SemesterBean
 import org.openurp.edu.eams.base.util.WeekUnit
-import 
+import org.beangle.commons.lang.time.YearWeekTime
 import org.openurp.edu.eams.date.EamsDateUtil
 import org.openurp.edu.eams.number.NumberSequence
 import org.openurp.edu.teach.schedule.CourseActivity
@@ -134,19 +134,19 @@ object YearWeekTimeUtil {
     if (null != weekUnitVector && !weekUnitVector.isEmpty) {
       val weekUnits = new StringBuffer()
       for (weekUnit <- weekUnitVector) {
-        if (weekUnit.getStart == weekUnit.getEnd) {
-          weekUnits.append(format.charAt(0)).append(weekUnit.getStart)
+        if (weekUnit.start == weekUnit.end) {
+          weekUnits.append(format.charAt(0)).append(weekUnit.start)
             .append(format.charAt(2))
         } else {
           if (needI18N) {
-            if (null == weekRegular(weekUnit.getCycle)) {
-              weekRegular(weekUnit.getCycle) = resourses.getText(weekRegularKeys(weekUnit.getCycle))
+            if (null == weekRegular(weekUnit.cycle)) {
+              weekRegular(weekUnit.cycle) = resourses.text(weekRegularKeys(weekUnit.cycle))
             }
           }
-          weekUnits.append(weekRegular(weekUnit.getCycle))
-          weekUnits.append(format.charAt(0)).append(weekUnit.getStart)
+          weekUnits.append(weekRegular(weekUnit.cycle))
+          weekUnits.append(format.charAt(0)).append(weekUnit.start)
             .append(format.charAt(1))
-            .append(weekUnit.getEnd)
+            .append(weekUnit.end)
             .append(format.charAt(2))
         }
         weekUnits.append(format.charAt(3))
@@ -174,7 +174,7 @@ object YearWeekTimeUtil {
       semester == null) {
       return Array.ofDim[YearWeekTime](0)
     }
-    val year = SemesterUtil.getStartYear(semester)
+    val year = SemesterUtil.startYear(semester)
     val LastDay = year + "-12-31"
     val gregorianCalendar = new GregorianCalendar()
     gregorianCalendar.setTime(java.sql.Date.valueOf(LastDay))
@@ -184,9 +184,9 @@ object YearWeekTimeUtil {
     }
     val unitList = CollectUtils.newArrayList()
     for (courseTime <- courseTimes) {
-      val weekState = courseTime.getWeekState
-      val sb = new StringBuffer(Strings.repeat("0", semester.getStartWeek - 1))
-      sb.append(Strings.substring(weekState, 1, semester.getWeeks + 1))
+      val weekState = courseTime.weekState
+      val sb = new StringBuffer(Strings.repeat("0", semester.startWeek - 1))
+      sb.append(Strings.substring(weekState, 1, semester.weeks + 1))
         .append(Strings.repeat("0", Semester.OVERALLWEEKS * 2 - sb.length))
       if (!endAtSat) {
         sb.insert(Semester.OVERALLWEEKS, "0")
@@ -194,10 +194,10 @@ object YearWeekTimeUtil {
       if (sb.substring(0, Semester.OVERALLWEEKS).indexOf("1") != 
         -1) {
         val unit = new YearWeekTime()
-        unit.setYear(year)
-        unit.setWeekday(courseTime.day)
-        unit.setEndTime(courseTime.end)
-        unit.setStartTime(courseTime.start)
+        unit.year=year
+        unit.weekday=courseTime.day
+        unit.endTime=courseTime.end
+        unit.start=courseTime.start
         unit.newWeekState(sb.substring(0, Semester.OVERALLWEEKS))
         unitList.add(unit)
       }
@@ -205,10 +205,10 @@ object YearWeekTimeUtil {
         .indexOf("1") != 
         -1) {
         val unit = new YearWeekTime()
-        unit.setYear(year + 1)
-        unit.setWeekday(courseTime.day)
-        unit.setStartTime(courseTime.start)
-        unit.setEndTime(courseTime.end)
+        unit.year=(year + 1)
+        unit.weekday=courseTime.day
+        unit.start=courseTime.start
+        unit.endTime=courseTime.end
         unit.newWeekState(sb.substring(Semester.OVERALLWEEKS, 2 * Semester.OVERALLWEEKS))
         unitList.add(unit)
       }
@@ -217,7 +217,7 @@ object YearWeekTimeUtil {
   }
 
   def convertToYearWeekTimes(lesson: Lesson, courseTimes: CourseTime*): Array[YearWeekTime] = {
-    convertToYearWeekTimes(lesson.getSemester, courseTimes)
+    convertToYearWeekTimes(lesson.semester, courseTimes)
   }
 
   def buildYearWeekTimes(from: Int, 
@@ -251,17 +251,17 @@ object YearWeekTimeUtil {
   }
 
   def buildFirstLessonDay(lesson: Lesson): Date = {
-    val activities = CollectUtils.newArrayList(lesson.getCourseSchedule.getActivities)
+    val activities = CollectUtils.newArrayList(lesson.courseSchedule.activities)
     if (activities.size > 1) {
       Collections.sort(activities, new Comparator[CourseActivity]() {
 
         def compare(activity1: CourseActivity, activity2: CourseActivity): Int = {
           val time1 = activity1.getTime
           val time2 = activity2.getTime
-          if (time1.getWeekState.indexOf("1") == time2.getWeekState.indexOf("1")) {
+          if (time1.weekState.indexOf("1") == time2.weekState.indexOf("1")) {
             return time2.day - time1.day
           } else {
-            return if (time1.getWeekState.indexOf("1") < time2.getWeekState.indexOf("1")) 1 else -1
+            return if (time1.weekState.indexOf("1") < time2.weekState.indexOf("1")) 1 else -1
           }
         }
       })
@@ -285,23 +285,23 @@ object YearWeekTimeUtil {
   def buildCourseTime(startAt: Date, endAt: Date, semester: Semester): CourseTime = {
     val f = new SimpleDateFormat("HH:mm")
     val time = new CourseTime()
-    time.setStartTime(getTimeNumber(f.format(startAt)))
-    time.setEndTime(getTimeNumber(f.format(endAt)))
-    time.setWeekday(EamsDateUtil.day(startAt).getIndex)
+    time.startTime=getTimeNumber(f.format(startAt))
+    time.endTime=getTimeNumber(f.format(endAt))
+    time.weekday=EamsDateUtil.day(startAt).index
     time.newWeekState(getWeekState(startAt, semester))
     time
   }
 
   def getWeekOfYear(date: Date): Int = {
     val c = new GregorianCalendar()
-    c.setFirstDayOfWeek(Calendar.MONDAY)
-    c.setMinimalDaysInFirstWeek(7)
+    c.firstDayOfWeek=Calendar.MONDAY
+    c.minimalDaysInFirstWeek=7
     c.setTime(date)
     c.get(Calendar.WEEK_OF_YEAR)
   }
 
   def getWeekState(date: Date, semester: Semester): String = {
-    val semesterYear = semester.getStartYear
+    val semesterYear = semester.startYear
     val gc = new GregorianCalendar()
     gc.setTime(date)
     val activityYear = gc.get(java.util.Calendar.YEAR)
@@ -347,13 +347,13 @@ object YearWeekTimeUtil {
     val format = new SimpleDateFormat("yyyy-MM-dd")
     val sb = new SemesterBean("2012-2013", "1", new java.sql.Date(format.parse("2012-09-03").getTime), 
       new java.sql.Date(format.parse("2012-2-1").getTime))
-    sb.setFirstWeekday(2)
+    sb.firstWeekday=2
     val t = YearWeekTimeUtil.buildYearWeekTimes(1, 3, 20, 1)
-    println(sb.getStartWeek)
-    println(t.getWeekState)
-    t.setWeekday(1)
-    t.setEndTime(1900)
-    t.setStartTime(1800)
+    println(sb.startWeek)
+    println(t.weekState)
+    t.weekday=1
+    t.endTime=1900
+    t.startTime=1800
     println(convertToYearWeekTimes(sb, t)(0))
     println(convertToYearWeekTimes(sb, t)(1))
   }

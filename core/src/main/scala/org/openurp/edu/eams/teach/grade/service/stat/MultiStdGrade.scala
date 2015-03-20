@@ -1,11 +1,5 @@
 package org.openurp.edu.eams.teach.grade.service.stat
 
-
-
-
-
-
-import org.beangle.commons.bean.comparators.PropertyComparator
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.lang.Objects
 import org.openurp.base.Semester
@@ -13,30 +7,25 @@ import org.openurp.edu.base.Adminclass
 import org.openurp.edu.base.Student
 import org.openurp.edu.base.Course
 import org.openurp.edu.teach.grade.CourseGrade
+import scala.collection.mutable.HashSet
+import java.util.ArrayList
+import org.beangle.commons.collection.Collections
+import scala.collection.mutable.Buffer
 
-
-
-
-class MultiStdGrade( var semester: Semester, grades: Map[Student, List[CourseGrade]],  var ratio: java.lang.Float)
-    {
+class MultiStdGrade(var semester: Semester, grades: Map[Student, List[CourseGrade]], var ratio: java.lang.Float) {
 
   private var adminClass: Adminclass = _
 
-  
-  var courses: List[Course] = CollectUtils.newArrayList()
+  var courses: Buffer[Course] = CollectUtils.newArrayList[Course]
 
-  
-  var stdGrades: List[StdGrade] = new ArrayList[StdGrade](gradesMap.values)
+  var stdGrades: Buffer[StdGrade] = CollectUtils.newArrayList[StdGrade]
 
-  
-  var extraGradeMap: Map[String, List[CourseGrade]] = CollectUtils.newHashMap()
+  stdGrades ++= (gradesMap.values)
 
-  
+  var extraGradeMap: collection.mutable.Map[String, List[CourseGrade]] = CollectUtils.newHashMap[String, List[CourseGrade]]
+
   var maxDisplay: java.lang.Integer = new java.lang.Integer(courses.size + maxExtra)
 
-  if (grades.isEmpty) {
-    return
-  }
 
   val gradesMap = CollectUtils.newHashMap()
 
@@ -46,11 +35,11 @@ class MultiStdGrade( var semester: Semester, grades: Map[Student, List[CourseGra
     val stdGrade = new StdGrade(key, value, null, null)
     gradesMap.put(key.id, stdGrade)
     for (grade <- value) {
-      val courseStdNum = courseStdNumMap.get(grade.getCourse).asInstanceOf[CourseStdNum]
+      val courseStdNum = courseStdNumMap.get(grade.course).asInstanceOf[CourseStdNum]
       if (null == courseStdNum) {
-        courseStdNumMap.put(grade.getCourse, new CourseStdNum(grade.getCourse, new java.lang.Integer(1)))
+        courseStdNumMap.put(grade.course, new CourseStdNum(grade.course, new java.lang.Integer(1)))
       } else {
-        courseStdNum.setCount(new java.lang.Integer(courseStdNum.getCount.intValue() + 1))
+        courseStdNum.count = (new java.lang.Integer(courseStdNum.count.intValue() + 1))
       }
     }
   }
@@ -62,16 +51,16 @@ class MultiStdGrade( var semester: Semester, grades: Map[Student, List[CourseGra
   var maxStdCount = 0
 
   if (CollectUtils.isNotEmpty(courseStdNums)) {
-    maxStdCount = (courseStdNums.get(0)).asInstanceOf[CourseStdNum].getCount
+    maxStdCount = (courseStdNums.get(0)).asInstanceOf[CourseStdNum].count
       .intValue()
   }
 
   for (i <- 0 until courseStdNums.size) {
     val rank = courseStdNums.get(i).asInstanceOf[CourseStdNum]
-    if (new java.lang.Float(rank.getCount.intValue()).floatValue() / 
-      maxStdCount > 
+    if (new java.lang.Float(rank.count.intValue()).floatValue() /
+      maxStdCount >
       ratio.floatValue()) {
-      courses.add(rank.getCourse)
+      courses.add(rank.course)
     }
   }
 
@@ -86,7 +75,7 @@ class MultiStdGrade( var semester: Semester, grades: Map[Student, List[CourseGra
     var iterator = stdGrade.grades.iterator()
     while (iterator.hasNext) {
       val courseGrade = iterator.next()
-      if (!commonCourseSet.contains(courseGrade.getCourse)) {
+      if (!commonCourseSet.contains(courseGrade.course)) {
         extraGrades.add(courseGrade)
         myExtra += 1
       }
@@ -95,7 +84,7 @@ class MultiStdGrade( var semester: Semester, grades: Map[Student, List[CourseGra
       maxExtra = myExtra
     }
     if (!extraGrades.isEmpty) {
-      extraGradeMap.put(stdGrade.getStd.id.toString, extraGrades)
+      extraGradeMap.put(stdGrade.std.id.toString, extraGrades)
     }
   }
 
@@ -135,7 +124,7 @@ class CourseStdNum(course2: Course, var count: java.lang.Integer) extends Compar
 
   def compareTo(`object`: AnyRef): Int = {
     val myClass = `object`.asInstanceOf[CourseStdNum]
-    Objects.compareBuilder().add(myClass.count, this.count)
+    Objects.compareBuilder.add(myClass.count, this.count)
       .toComparison()
   }
 }

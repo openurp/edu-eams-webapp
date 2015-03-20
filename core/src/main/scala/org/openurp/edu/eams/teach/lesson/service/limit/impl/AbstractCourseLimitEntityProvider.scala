@@ -17,7 +17,7 @@ abstract class AbstractCourseLimitEntityProvider[T <: Entity[ID], ID <: Serializ
     extends AbstractCourseLimitContentProvider[T] {
 
   protected override def getContentMap(content: Array[Serializable]): Map[String, T] = {
-    val entities = entityDao.get(getMetaEnum.getContentType.getName, "id", content)
+    val entities = entityDao.get(getMetaEnum.contentType.name, "id", content)
     val results = new LinkedHashMap[String, T]()
     for (entity <- entities) {
       results.put(entity.id.toString, entity)
@@ -26,7 +26,7 @@ abstract class AbstractCourseLimitEntityProvider[T <: Entity[ID], ID <: Serializ
   }
 
   def getQueryBuilder(content: Array[Serializable], term: String, limit: PageLimit): OqlBuilder[T] = {
-    val queryBuilder = OqlBuilder.from(getMetaEnum.getContentType.getName, "entity")
+    val queryBuilder = OqlBuilder.from(getMetaEnum.contentType.name, "entity")
     if (!Arrays.isEmpty(content)) {
       queryBuilder.where("entity.id not in(:ids)", content)
     }
@@ -58,8 +58,8 @@ abstract class AbstractCourseLimitEntityProvider[T <: Entity[ID], ID <: Serializ
     val sb = new StringBuilder()
     var hasName = false
     try {
-      if (classOf[String].isAssignableFrom(Model.getType(getMetaEnum.getContentType).getPropertyType("name")
-        .getReturnedClass)) {
+      if (classOf[String].isAssignableFrom(Model.type(getMetaEnum.contentType).propertyType("name")
+        .returnedClass)) {
         sb.append("entity.name like :codeOrName ")
         hasName = true
       }
@@ -67,8 +67,8 @@ abstract class AbstractCourseLimitEntityProvider[T <: Entity[ID], ID <: Serializ
       case e: Exception => 
     }
     try {
-      if (classOf[String].isAssignableFrom(Model.getType(getMetaEnum.getContentType).getPropertyType("code")
-        .getReturnedClass)) {
+      if (classOf[String].isAssignableFrom(Model.type(getMetaEnum.contentType).propertyType("code")
+        .returnedClass)) {
         if (hasName) {
           sb.append("or ")
         }
@@ -83,11 +83,11 @@ abstract class AbstractCourseLimitEntityProvider[T <: Entity[ID], ID <: Serializ
   }
 
   def getContentIdTitleMap(content: String): Map[String, String] = {
-    val entities = entityDao.get(getMetaEnum.getContentType.getName, "id", getContentValues(content))
+    val entities = entityDao.get(getMetaEnum.contentType.name, "id", getContentValues(content))
     val results = new LinkedHashMap[String, String]()
     for (entity <- entities) {
       val idTitle = getContentIdTitle(entity)
-      results.put(idTitle.getLeft, idTitle.getRight)
+      results.put(idTitle.left, idTitle.right)
     }
     results
   }

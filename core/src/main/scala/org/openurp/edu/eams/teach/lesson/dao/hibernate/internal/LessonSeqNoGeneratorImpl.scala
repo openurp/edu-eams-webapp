@@ -22,12 +22,12 @@ class LessonSeqNoGeneratorImpl  extends LessonSeqNoGenerator {
   var entityDao:EntityDao=_
   
   def genLessonSeqNo(lesson: Lesson) {
-    if (Strings.isNotEmpty(lesson.getNo)) {
+    if (Strings.isNotEmpty(lesson.no)) {
       return
     }
     synchronized (this) {
       val hql = MessageFormat.format("select no from org.openurp.edu.teach.lesson.Lesson lesson where lesson.semester.id={0} and lesson.project.id={1} order by no", 
-        lesson.getSemester.id.toString, lesson.getProject.id.toString)
+        lesson.semester.id.toString, lesson.project.id.toString)
       val lessonNos = search(hql)
       var newNo = 0
       for (seqNo <- lessonNos) {
@@ -41,18 +41,18 @@ class LessonSeqNoGeneratorImpl  extends LessonSeqNoGenerator {
         }
       }
       newNo += 1
-      lesson.setNo(Strings.repeat("0", 4 - String.valueOf(newNo).length) + 
+      lesson.no(Strings.repeat("0", 4 - String.valueOf(newNo).length) + 
         newNo)
     }
   }
 
   def genLessonSeqNos(lessons: Iterable[Lesson]) {
     val semesterTasks = CollectUtils.newHashMap()
-    for (lesson <- lessons if Strings.isEmpty(lesson.getNo)) {
-      var matches = semesterTasks.get(lesson.getSemester)
+    for (lesson <- lessons if Strings.isEmpty(lesson.no)) {
+      var matches = semesterTasks.get(lesson.semester)
       if (null == matches) {
         matches = new ArrayList[Lesson]()
-        semesterTasks.put(lesson.getSemester, matches)
+        semesterTasks.put(lesson.semester, matches)
       }
       matches.add(lesson)
     }
@@ -71,7 +71,7 @@ class LessonSeqNoGeneratorImpl  extends LessonSeqNoGenerator {
       val iter1 = tasks.iterator()
       var projectId: java.lang.Integer = null
       if (iter1.hasNext) {
-        projectId = iter1.next().asInstanceOf[Lesson].getProject.id
+        projectId = iter1.next().asInstanceOf[Lesson].project.id
       }
       val hql = MessageFormat.format("select no from org.openurp.edu.teach.lesson.Lesson lesson where lesson.semester.id={0} and lesson.project.id={1} order by no", 
         semester.id.toString, projectId.toString)
@@ -91,7 +91,7 @@ class LessonSeqNoGeneratorImpl  extends LessonSeqNoGenerator {
             allocated += 1
             newSeqNo += 1
             val task = taskIter.next().asInstanceOf[Lesson]
-            task.setNo(Strings.repeat("0", 4 - String.valueOf(newSeqNo).length) + 
+            task.no(Strings.repeat("0", 4 - String.valueOf(newSeqNo).length) + 
               newSeqNo)
             if (allocated >= tasks.size) break=true
           }
@@ -103,7 +103,7 @@ class LessonSeqNoGeneratorImpl  extends LessonSeqNoGenerator {
         newSeqNo += 1
         allocated += 1
         val task = taskIter.next().asInstanceOf[Lesson]
-        task.setNo(Strings.repeat("0", 4 - String.valueOf(newSeqNo).length) + 
+        task.no(Strings.repeat("0", 4 - String.valueOf(newSeqNo).length) + 
           newSeqNo)
       }
     }

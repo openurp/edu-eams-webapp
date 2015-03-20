@@ -41,8 +41,8 @@ class CoursePlanProviderImpl extends BaseServiceImpl with CoursePlanProvider {
   }
 
   def getCoursePlan(studentProgram: StudentProgram): CoursePlan = {
-    var plan = getPersonalPlan(studentProgram.getStd)
-    if (null == plan) plan = getMajorPlan(studentProgram.getProgram)
+    var plan = getPersonalPlan(studentProgram.std)
+    if (null == plan) plan = getMajorPlan(studentProgram.program)
     plan
   }
 

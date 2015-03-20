@@ -36,7 +36,7 @@ import org.openurp.edu.eams.base.code.school.RoomType
 import org.openurp.edu.eams.base.util.WeekDays
 import org.openurp.edu.eams.base.util.WeekStates
 import org.openurp.edu.eams.classroom.Occupancy
-import 
+import org.beangle.commons.lang.time.YearWeekTime
 import org.openurp.base.code.RoomUsage
 import org.openurp.edu.eams.classroom.model.OccupancyBean
 import org.openurp.edu.eams.classroom.service.RoomResourceService

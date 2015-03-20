@@ -1,15 +1,9 @@
 package org.openurp.edu.eams.teach.lesson.service.internal
 
-import java.util.LinkedHashSet
-
-
-.Entry
 
 import javax.validation.constraints.Size
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.lang.Strings
-import org.beangle.commons.lang.tuple.Pair
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.openurp.edu.teach.lesson.CourseLimitGroup
@@ -35,15 +29,15 @@ object DefaultTeachClassNameStrategy {
 
 class DefaultTeachClassNameStrategy extends TeachClassNameStrategy {
 
-  protected var logger: Logger = LoggerFactory.getLogger(getClass)
+  protected var logger: Logger = LoggerFactory.logger(getClass)
 
   private var courseLimitItemContentProviderFactory: CourseLimitItemContentProviderFactory = _
 
   def genName(groups: List[CourseLimitGroup]): String = {
-    Strings.abbreviate(buildAll(groups).getLeft, getNameMaxSize)
+    Strings.abbreviate(buildAll(groups).left, getNameMaxSize)
   }
 
-  def genName(teachClass: TeachClass): String = genName(teachClass.getLimitGroups)
+  def genName(teachClass: TeachClass): String = genName(teachClass.limitGroups)
 
   def genName(fullname: String): String = {
     if (Strings.isBlank(fullname)) {
@@ -53,21 +47,21 @@ class DefaultTeachClassNameStrategy extends TeachClassNameStrategy {
   }
 
   def abbreviateName(teachClass: TeachClass) {
-    if (null != teachClass && Strings.isBlank(teachClass.getName)) {
-      teachClass.setName(Strings.abbreviate(teachClass.getName, getNameMaxSize))
+    if (null != teachClass && Strings.isBlank(teachClass.name)) {
+      teachClass.name=Strings.abbreviate(teachClass.name, getNameMaxSize)
     }
   }
 
   def genFullname(groups: List[CourseLimitGroup]): String = {
-    Strings.abbreviate(buildAll(groups).getRight, getFullnameMaxSize)
+    Strings.abbreviate(buildAll(groups).right, getFullnameMaxSize)
   }
 
-  def genFullname(teachClass: TeachClass): String = genFullname(teachClass.getLimitGroups)
+  def genFullname(teachClass: TeachClass): String = genFullname(teachClass.limitGroups)
 
   def autoName(teachClass: TeachClass) {
-    val names = buildAll(teachClass.getLimitGroups)
-    teachClass.setName(names.getLeft)
-    teachClass.setFullname(names.getRight)
+    val names = buildAll(teachClass.limitGroups)
+    teachClass.name=names.left
+    teachClass.fullname=names.right
   }
 
   private def buildAll(groups: List[CourseLimitGroup]): Pair[String, String] = {
@@ -76,15 +70,15 @@ class DefaultTeachClassNameStrategy extends TeachClassNameStrategy {
     val excludeContents = CollectUtils.newHashMap()
     for (courseLimitGroup <- groups) {
       val metaContentTitles = CollectUtils.newHashMap()
-      for (item <- courseLimitGroup.getItems) {
-        val op = item.getOperator
-        val meta = item.getMeta
+      for (item <- courseLimitGroup.items) {
+        val op = item.operator
+        val meta = item.meta
         var provider = providers.get(meta.id)
         if (null == provider) {
-          provider = courseLimitItemContentProviderFactory.getProvider(meta)
+          provider = courseLimitItemContentProviderFactory.provider(meta)
           providers.put(meta.id, provider)
         }
-        val contentIdTitles = provider.getContentIdTitleMap(item.getContent)
+        val contentIdTitles = provider.contentIdTitleMap(item.content)
         val contentTitles = new LinkedHashSet[String](contentIdTitles.values)
         if (Operator.NOT_EQUAL == op || Operator.NOT_IN == op) {
           var oneMetaExcludeContents = excludeContents.get(meta.id)
@@ -100,9 +94,9 @@ class DefaultTeachClassNameStrategy extends TeachClassNameStrategy {
     }
     for (oneGroupContentTitles <- groupContentTitles; (key, value) <- oneGroupContentTitles) {
       val metaId = key
-      val op = value.getLeft
+      val op = value.left
       if (Operator.EQUAL == op || Operator.IN == op) {
-        val contents = value.getRight
+        val contents = value.right
         val oneMetaExcludeContents = excludeContents.get(metaId)
         if (null != oneMetaExcludeContents) {
           for (oneMetaExcludeContentSet <- oneMetaExcludeContents) {
@@ -116,7 +110,7 @@ class DefaultTeachClassNameStrategy extends TeachClassNameStrategy {
     val enums = CourseLimitMetaEnum.values
     val metasEnums = CollectUtils.newHashMap()
     for (courseLimitMetaEnum <- enums) {
-      metasEnums.put(courseLimitMetaEnum.getMetaId, courseLimitMetaEnum)
+      metasEnums.put(courseLimitMetaEnum.metaId, courseLimitMetaEnum)
     }
     val metaTitles = CollectUtils.newHashMap()
     metaTitles.put(CourseLimitMetaEnum.ADMINCLASS, "班级")
@@ -177,9 +171,9 @@ class DefaultTeachClassNameStrategy extends TeachClassNameStrategy {
   }
 
   private def containsMeta(meta: CourseLimitMetaEnum, groupContents: Map[Long, Pair[Operator, Set[String]]]): Boolean = {
-    val pair = groupContents.get(meta.getMetaId)
+    val pair = groupContents.get(meta.metaId)
     if (null != pair) {
-      return CollectUtils.isNotEmpty(pair.getRight)
+      return CollectUtils.isNotEmpty(pair.right)
     }
     false
   }
@@ -188,15 +182,15 @@ class DefaultTeachClassNameStrategy extends TeachClassNameStrategy {
       meta: CourseLimitMetaEnum, 
       oneGroupContentTitles: Map[Long, Pair[Operator, Set[String]]], 
       key: String): StringBuilder = {
-    val directionPair = oneGroupContentTitles.get(meta.getMetaId)
+    val directionPair = oneGroupContentTitles.get(meta.metaId)
     if (null != directionPair) {
-      val contents = directionPair.getRight
+      val contents = directionPair.right
       if (CollectUtils.isNotEmpty(contents)) {
         if (sb.length > 0) {
           sb.append(",")
         }
         sb.append(key).append(":")
-        val directionOp = directionPair.getLeft
+        val directionOp = directionPair.left
         if (directionOp == CourseLimitMeta.Operator.NOT_EQUAL || directionOp == CourseLimitMeta.Operator.NOT_IN) {
           sb.append("非 ")
         }
@@ -207,18 +201,18 @@ class DefaultTeachClassNameStrategy extends TeachClassNameStrategy {
   }
 
   private def appendGradeContents(sb: StringBuilder, oneGroupContentTitles: Map[Long, Pair[Operator, Set[String]]]): StringBuilder = {
-    val gradePair = oneGroupContentTitles.get(CourseLimitMetaEnum.GRADE.getMetaId)
+    val gradePair = oneGroupContentTitles.get(CourseLimitMetaEnum.GRADE.metaId)
     if (null != gradePair) {
-      if (CollectUtils.isNotEmpty(gradePair.getRight)) {
+      if (CollectUtils.isNotEmpty(gradePair.right)) {
         if (sb.length > 0) {
           sb.append(",")
         }
         sb.append("年级:")
-        val gradeOp = gradePair.getLeft
+        val gradeOp = gradePair.left
         if (gradeOp == CourseLimitMeta.Operator.NOT_EQUAL || gradeOp == CourseLimitMeta.Operator.NOT_IN) {
           sb.append("非 ")
         }
-        for (grade <- gradePair.getRight) {
+        for (grade <- gradePair.right) {
           sb.append(grade).append("级 ")
         }
         sb.deleteCharAt(sb.length - 1)
@@ -235,14 +229,14 @@ class DefaultTeachClassNameStrategy extends TeachClassNameStrategy {
   private def getFullnameMaxSize(): Int = {
     if (null == fullnameMaxSize) {
       fullnameMaxSize = 600
-      val entityClass = Model.getType(classOf[TeachClassBean]).getEntityClass
+      val entityClass = Model.type(classOf[TeachClassBean]).entityClass
       try {
-        fullnameMaxSize = entityClass.getDeclaredField("fullname").getAnnotation(classOf[Size])
+        fullnameMaxSize = entityClass.declaredField("fullname").annotation(classOf[Size])
           .max()
       } catch {
-        case e: NoSuchFieldException => logger.info("get " + entityClass.getName + ".name max size failure", 
+        case e: NoSuchFieldException => logger.info("get " + entityClass.name + ".name max size failure", 
           e)
-        case e: SecurityException => logger.info("get " + entityClass.getName + ".name max size failure", 
+        case e: SecurityException => logger.info("get " + entityClass.name + ".name max size failure", 
           e)
       }
     }
@@ -252,14 +246,14 @@ class DefaultTeachClassNameStrategy extends TeachClassNameStrategy {
   private def getNameMaxSize(): Int = {
     if (null == nameMaxSize) {
       nameMaxSize = 100
-      val entityClass = Model.getType(classOf[TeachClassBean]).getEntityClass
+      val entityClass = Model.type(classOf[TeachClassBean]).entityClass
       try {
-        nameMaxSize = entityClass.getDeclaredField("name").getAnnotation(classOf[Size])
+        nameMaxSize = entityClass.declaredField("name").annotation(classOf[Size])
           .max()
       } catch {
-        case e: NoSuchFieldException => logger.info("get " + entityClass.getName + ".name max size failure", 
+        case e: NoSuchFieldException => logger.info("get " + entityClass.name + ".name max size failure", 
           e)
-        case e: SecurityException => logger.info("get " + entityClass.getName + ".name max size failure", 
+        case e: SecurityException => logger.info("get " + entityClass.name + ".name max size failure", 
           e)
       }
     }

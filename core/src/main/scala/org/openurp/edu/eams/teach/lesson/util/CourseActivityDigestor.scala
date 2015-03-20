@@ -11,7 +11,7 @@ import org.beangle.commons.text.i18n.TextResource
 import org.openurp.base.Room
 import org.openurp.base.Semester
 import org.openurp.edu.eams.base.util.WeekDays
-import 
+import org.beangle.commons.lang.time.YearWeekTime
 import org.openurp.edu.base.Teacher
 import org.openurp.edu.eams.number.NumberRangeDigestor
 import org.openurp.edu.teach.schedule.CourseActivity
@@ -67,7 +67,7 @@ class CourseActivityDigestor private () {
   }
 
   def digest(textResource: TextResource, lesson: Lesson, format: String): String = {
-    digest(textResource, lesson.getCourseSchedule.getActivities, format)
+    digest(textResource, lesson.courseSchedule.activities, format)
   }
 
   def digest(textResource: TextResource, activities: Iterable[CourseActivity]): String = {
@@ -77,7 +77,7 @@ class CourseActivityDigestor private () {
   def digest(textResource: TextResource, activities: Iterable[CourseActivity], format: String): String = {
     if (CollectUtils.isEmpty(activities)) return ""
     if (Strings.isEmpty(format)) format = defaultFormat
-    val semester = activities.iterator().next().getLesson.getSemester
+    val semester = activities.iterator().next().lesson.semester
     val mergedActivities = CollectUtils.newArrayList()
     val teachers = CollectUtils.newHashSet()
     val hasRoom = Strings.contains(format, room)
@@ -86,17 +86,17 @@ class CourseActivityDigestor private () {
     Collections.sort(activitiesList)
     for (activity <- activitiesList) {
       if (hasTeacher) {
-        if (CollectUtils.isNotEmpty(activity.getTeachers)) teachers.addAll(activity.getTeachers)
+        if (CollectUtils.isNotEmpty(activity.teachers)) teachers.addAll(activity.teachers)
       }
       var merged = false
       for (added <- mergedActivities if added.isSameActivityExcept(activity, hasTeacher, hasRoom)) {
-        if (added.getTime.getStartUnit > activity.getTime.getStartUnit) {
-          added.getTime.setStartUnit(activity.getTime.getStartUnit)
+        if (added.getTime.startUnit > activity.getTime.startUnit) {
+          added.getTime.startUnit=activity.getTime.startUnit
         }
-        if (added.getTime.getEndUnit < activity.getTime.getEndUnit) {
-          added.getTime.setEndUnit(activity.getTime.getEndUnit)
+        if (added.getTime.endUnit < activity.getTime.endUnit) {
+          added.getTime.endUnit=activity.getTime.endUnit
         }
-        added.getTime.newWeekState(BitStrings.or(added.getTime.getWeekState, activity.getTime.getWeekState))
+        added.getTime.newWeekState(BitStrings.or(added.getTime.weekState, activity.getTime.weekState))
         merged = true
       }
       if (!merged) {
@@ -124,8 +124,8 @@ class CourseActivityDigestor private () {
       replaceStart = CourseArrangeBuf.indexOf(":teacher")
       if (addTeacher) {
         val teacherStr = new StringBuilder("")
-        for (teacher <- activity.getTeachers) {
-          teacherStr.append(teacher.getName)
+        for (teacher <- activity.teachers) {
+          teacherStr.append(teacher.name)
         }
         CourseArrangeBuf.replace(replaceStart, replaceStart + 9, teacherStr.toString)
       } else if (-1 != replaceStart) {
@@ -133,16 +133,16 @@ class CourseActivityDigestor private () {
       }
       replaceStart = CourseArrangeBuf.indexOf(day)
       if (-1 != replaceStart) {
-        if (null != textResource && textResource.getLocale.getLanguage == "en") {
-          CourseArrangeBuf.replace(replaceStart, replaceStart + day.length, (WeekDays.get(activity.getTime.day)).getEngName + 
+        if (null != textResource && textResource.locale.language == "en") {
+          CourseArrangeBuf.replace(replaceStart, replaceStart + day.length, (WeekDays.get(activity.getTime.day)).engName + 
             ".")
         } else {
-          CourseArrangeBuf.replace(replaceStart, replaceStart + day.length, (WeekDays.get(activity.getTime.day)).getName)
+          CourseArrangeBuf.replace(replaceStart, replaceStart + day.length, (WeekDays.get(activity.getTime.day)).name)
         }
       }
       replaceStart = CourseArrangeBuf.indexOf(units)
       if (-1 != replaceStart) {
-        CourseArrangeBuf.replace(replaceStart, replaceStart + units.length, activity.getTime.getStartUnit + "-" + activity.getTime.getEndUnit)
+        CourseArrangeBuf.replace(replaceStart, replaceStart + units.length, activity.getTime.startUnit + "-" + activity.getTime.endUnit)
       }
       replaceStart = CourseArrangeBuf.indexOf(time)
       if (-1 != replaceStart) {
@@ -158,16 +158,16 @@ class CourseActivityDigestor private () {
       }
       replaceStart = CourseArrangeBuf.indexOf(lesson)
       if (-1 != replaceStart) {
-        CourseArrangeBuf.replace(replaceStart, replaceStart + lesson.length, activity.getLesson.getNo)
+        CourseArrangeBuf.replace(replaceStart, replaceStart + lesson.length, activity.lesson.no)
       }
       replaceStart = CourseArrangeBuf.indexOf(course)
       if (-1 != replaceStart) {
-        CourseArrangeBuf.replace(replaceStart, replaceStart + course.length, activity.getLesson.getCourse.getName + "(" + activity.getLesson.getCourse.getCode + 
+        CourseArrangeBuf.replace(replaceStart, replaceStart + course.length, activity.lesson.course.name + "(" + activity.lesson.course.code + 
           ")")
       }
       replaceStart = CourseArrangeBuf.indexOf(weeks)
       if (-1 != replaceStart) {
-        val weekIndeciesInSemester = SemesterWeekTimeBuilder.parse(activity.getTime.getWeekState, WeekStateDirection.LTR)
+        val weekIndeciesInSemester = SemesterWeekTimeBuilder.parse(activity.getTime.weekState, WeekStateDirection.LTR)
         CourseArrangeBuf.replace(replaceStart, replaceStart + weeks.length, NumberRangeDigestor.digest(weekIndeciesInSemester, 
           textResource) + 
           " ")
@@ -178,17 +178,17 @@ class CourseActivityDigestor private () {
         val timeUnits = YearWeekTimeUtil.convertToYearWeekTimes(semester, activity.getTime)
         if (null != timeUnits && timeUnits.length > 0) {
           val unit = timeUnits(0)
-          CourseArrangeBuf.replace(replaceStart, replaceStart + starton.length, sdf.format(unit.getFirstDay))
+          CourseArrangeBuf.replace(replaceStart, replaceStart + starton.length, sdf.format(unit.firstDay))
         }
       }
       replaceStart = CourseArrangeBuf.indexOf(room)
       if (-1 != replaceStart) {
-        val rooms = activity.getRooms
+        val rooms = activity.rooms
         val roomStr = new StringBuilder("")
         var it = rooms.iterator()
         while (it.hasNext) {
           val room = it.next()
-          roomStr.append(room.getName)
+          roomStr.append(room.name)
           if (it.hasNext) {
             roomStr.append(",")
           }
@@ -200,7 +200,7 @@ class CourseActivityDigestor private () {
           var iterator = rooms.iterator()
           while (iterator.hasNext) {
             val room = iterator.next()
-            buildingStr.append(room.getBuilding.getName)
+            buildingStr.append(room.building.name)
             if (iterator.hasNext) {
               buildingStr.append(",")
             }
@@ -213,7 +213,7 @@ class CourseActivityDigestor private () {
           var iterator = rooms.iterator()
           while (iterator.hasNext) {
             val room = iterator.next()
-            roomCodeStr.append(room.getCode)
+            roomCodeStr.append(room.code)
             if (iterator.hasNext) {
               roomCodeStr.append(",")
             }
@@ -226,7 +226,7 @@ class CourseActivityDigestor private () {
           var it = rooms.iterator()
           while (it.hasNext) {
             val room = it.next()
-            districtStr.append(room.getCampus.getName)
+            districtStr.append(room.campus.name)
             if (it.hasNext) {
               districtStr.append(",")
             }

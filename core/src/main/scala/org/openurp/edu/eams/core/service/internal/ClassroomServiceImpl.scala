@@ -24,9 +24,9 @@ class RoomServiceImpl extends BaseServiceImpl with RoomService {
 
   def saveOrUpdate(classroom: Room) {
     if (!classroom.isPersisted) {
-      classroom.setCreatedAt(new Date(System.currentTimeMillis()))
+      classroom.createdAt=new Date(System.currentTimeMillis())
     }
-    classroom.setUpdatedAt(new Date(System.currentTimeMillis()))
+    classroom.updatedAt=new Date(System.currentTimeMillis())
     this.entityDao.saveOrUpdate(classroom)
   }
 }

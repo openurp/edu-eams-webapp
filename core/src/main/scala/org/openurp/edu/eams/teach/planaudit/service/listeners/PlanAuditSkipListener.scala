@@ -22,36 +22,36 @@ class PlanAuditSkipListener extends PlanAuditListener {
   def startPlanAudit(context: PlanAuditContext): Boolean = true
 
   def startCourseAudit(context: PlanAuditContext, groupResult: GroupAuditResult, planCourse: PlanCourse): Boolean = {
-    val standard = context.getStandard
+    val standard = context.standard
     if (null == standard) {
       return true
     }
-    val auditTerms = context.getAuditTerms
+    val auditTerms = context.auditTerms
     if (auditTerms == null || auditTerms.length == 0) {
       return true
     }
-    if (standard.isDisaudit(planCourse.getCourseGroup.getCourseType)) {
+    if (standard.isDisaudit(planCourse.courseGroup.courseType)) {
       return false
     }
-    for (j <- 0 until auditTerms.length if PlanUtils.openOnThisTerm(planCourse.getTerms, java.lang.Integer.valueOf(auditTerms(j)))) {
+    for (j <- 0 until auditTerms.length if PlanUtils.openOnThisTerm(planCourse.terms, java.lang.Integer.valueOf(auditTerms(j)))) {
       return true
     }
     false
   }
 
   def startGroupAudit(context: PlanAuditContext, courseGroup: CourseGroup, groupResult: GroupAuditResult): Boolean = {
-    val standard = context.getStandard
+    val standard = context.standard
     if (null == standard) {
       return true
     }
-    if (standard.isDisaudit(courseGroup.getCourseType)) {
-      for (grade <- context.getStdGrade.grades if standard.getDisauditCourseTypes.contains(grade.getCourseType)) {
-        context.getStdGrade.useGrades(grade.getCourse)
+    if (standard.isDisaudit(courseGroup.courseType)) {
+      for (grade <- context.stdGrade.grades if standard.disauditCourseTypes.contains(grade.courseType)) {
+        context.stdGrade.useGrades(grade.course)
       }
-      val oriCreditsRequired = context.getResult.getAuditStat.getCreditsRequired
-      val oriNumRequired = context.getResult.getAuditStat.getNumRequired
-      context.getResult.getAuditStat.setCreditsRequired(oriCreditsRequired - courseGroup.getCredits)
-      context.getResult.getAuditStat.setNumRequired(oriNumRequired - courseGroup.getCourseNum)
+      val oriCreditsRequired = context.result.auditStat.creditsRequired
+      val oriNumRequired = context.result.auditStat.numRequired
+      context.result.auditStat.creditsRequired=(oriCreditsRequired - courseGroup.credits)
+      context.result.auditStat.numRequired=(oriNumRequired - courseGroup.courseNum)
       return false
     }
     true
@@ -61,15 +61,15 @@ class PlanAuditSkipListener extends PlanAuditListener {
   }
 
   private def getPlanCourse(group: CourseGroup, course: Course): PlanCourse = {
-    group.getPlanCourses.find(_.getCourse == course).getOrElse(null)
+    group.planCourses.find(_.course == course).orElse(null)
   }
 
   private def extractDisauditCourses(plan: CoursePlan, disauditCourseTypes: Set[CourseType]): Set[Course] = {
     val res = new HashSet[Course]()
-    var iter = plan.getGroups.iterator()
+    var iter = plan.groups.iterator()
     while (iter.hasNext) {
       val group = iter.next().asInstanceOf[CourseGroup]
-      if (disauditCourseTypes.contains(group.getCourseType)) {
+      if (disauditCourseTypes.contains(group.courseType)) {
         res.addAll(extractDescendCourses(group))
       }
     }
@@ -78,10 +78,10 @@ class PlanAuditSkipListener extends PlanAuditListener {
 
   private def extractDescendCourses(group: CourseGroup): Set[Course] = {
     val res = new HashSet[Course]()
-    for (pcourse <- group.getPlanCourses) {
-      res.add(pcourse.getCourse)
+    for (pcourse <- group.planCourses) {
+      res.add(pcourse.course)
     }
-    for (child <- group.getChildren) {
+    for (child <- group.children) {
       res.addAll(extractDescendCourses(child))
     }
     res

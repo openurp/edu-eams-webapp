@@ -1,9 +1,6 @@
 package org.openurp.edu.eams.teach.service
 
 import java.io.Serializable
-
-
-
 import org.beangle.commons.collection.Order
 import org.beangle.commons.collection.page.Page
 import org.beangle.commons.collection.page.PageLimit
@@ -11,19 +8,17 @@ import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.base.Room
 import org.openurp.base.Department
 import org.openurp.base.Semester
-import org.openurp.edu.eams.classroom.Occupancy
-import 
+import org.beangle.commons.lang.time.YearWeekTime
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.base.Project
 import org.openurp.edu.base.Student
 import org.openurp.edu.base.Teacher
 import org.openurp.edu.eams.system.security.DataRealm
-import org.openurp.edu.eams.teach.code.industry.ExamType
 import org.openurp.edu.teach.schedule.CourseActivity
-import org.openurp.edu.eams.teach.lesson.CourseTime
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.base.Program
 import org.openurp.edu.eams.util.DataRealmLimit
+import org.openurp.edu.teach.code.ExamType
 
 
 

@@ -43,22 +43,22 @@ class CourseServiceImpl extends BaseServiceImpl with CourseService {
 
   def saveOrUpdate(course: Course, extInfo: CourseExtInfo) {
     saveSetting(course)
-    if (extInfo.isPersisted && Strings.isBlank(extInfo.getRequirement) && 
-      Strings.isBlank(extInfo.getDescription)) {
+    if (extInfo.isPersisted && Strings.isBlank(extInfo.requirement) && 
+      Strings.isBlank(extInfo.description)) {
       entityDao.saveOrUpdate(course)
     } else {
-      extInfo.setCourse(course)
+      extInfo.course=course
       entityDao.saveOrUpdate(course, extInfo)
     }
   }
 
   private def saveSetting(course: Course) {
     if (!course.isPersisted) {
-      course.setCreatedAt(new Date(System.currentTimeMillis()))
+      course.createdAt=new Date(System.currentTimeMillis())
     }
-    course.setUpdatedAt(new Date(System.currentTimeMillis()))
-    if (null == course.getCreatedAt) {
-      course.setCreatedAt(new Date(System.currentTimeMillis()))
+    course.updatedAt=new Date(System.currentTimeMillis())
+    if (null == course.createdAt) {
+      course.createdAt=new Date(System.currentTimeMillis())
     }
   }
 
@@ -73,7 +73,7 @@ class CourseServiceImpl extends BaseServiceImpl with CourseService {
         var iter = list.iterator()
         while (iter.hasNext) {
           val course = iter.next().asInstanceOf[Course]
-          courseinfos(i) = course.getName + "(" + course.getCredits + ")"
+          courseinfos(i) = course.name + "(" + course.credits + ")"
           i += 1
         }
       }

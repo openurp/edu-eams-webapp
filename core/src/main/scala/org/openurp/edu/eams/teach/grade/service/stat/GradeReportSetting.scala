@@ -1,12 +1,10 @@
 package org.openurp.edu.eams.teach.grade.service.stat
 
-import org.openurp.edu.eams.teach.lesson.GradeTypeConstants.FINAL_ID
 import java.util.Date
 import org.beangle.commons.collection.Order
 import org.openurp.edu.base.Project
 import org.openurp.edu.teach.code.GradeType
-
-
+import org.openurp.edu.teach.code.model.GradeTypeBean
 
 class GradeReportSetting {
 
@@ -26,9 +24,9 @@ class GradeReportSetting {
 
   var printOtherGrade: java.lang.Boolean = true
 
-  var order: Order = new Order()
+  var order: Order = _
 
-  var gradeType: GradeType = new GradeType(FINAL_ID)
+  var gradeType: GradeType = new GradeTypeBean(GradeType.Final)
 
   var printBy: String = _
 

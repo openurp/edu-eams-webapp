@@ -22,10 +22,10 @@ class SpringGradeFilterRegistry extends GradeFilterRegistry with ApplicationCont
 
   def afterPropertiesSet() {
     if (null == applicationContext) return
-    val names = applicationContext.getBeanNamesForType(classOf[GradeFilter])
+    val names = applicationContext.beanNamesForType(classOf[GradeFilter])
     if (null != names && names.length > 0) {
       for (name <- names) {
-        filters.put(name, applicationContext.getBean(name).asInstanceOf[GradeFilter])
+        filters.put(name, applicationContext.bean(name).asInstanceOf[GradeFilter])
       }
     }
   }

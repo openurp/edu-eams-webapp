@@ -69,7 +69,7 @@ class StatGroup(entity: AnyRef) extends StatCountor {
       val statItem = new StatItem(data(from))
       val cts = Array.ofDim[Comparable[_]](counters)
       System.arraycopy(data, from + 1, cts, 0, counters)
-      statItem.setCountors(cts)
+      statItem.countors=cts
       this.items.add(statItem)
     } else if (to - from > counters) {
       var subItem = new StatGroup(data(from))
@@ -114,7 +114,7 @@ class StatGroup(entity: AnyRef) extends StatCountor {
     var iter = items.iterator()
     while (iter.hasNext) {
       val obj = iter.next().asInstanceOf[StatCountor]
-      entities.add(obj.getWhat)
+      entities.add(obj.what)
     }
     entities
   }
@@ -126,7 +126,7 @@ class StatGroup(entity: AnyRef) extends StatCountor {
       var iter = items.iterator()
       while (iter.hasNext) {
         val obj = iter.next().asInstanceOf[AnyRef]
-        entities.addAll(obj.asInstanceOf[StatGroup].getItemEntities)
+        entities.addAll(obj.asInstanceOf[StatGroup].itemEntities)
       }
     }
     new ArrayList(entities)
@@ -136,7 +136,7 @@ class StatGroup(entity: AnyRef) extends StatCountor {
     var iter = items.iterator()
     while (iter.hasNext) {
       val element = iter.next().asInstanceOf[StatCountor]
-      if (Objects.==(element.getWhat, statWhat)) {
+      if (Objects.==(element.what, statWhat)) {
         return element
       }
     }
@@ -148,8 +148,8 @@ class StatGroup(entity: AnyRef) extends StatCountor {
     var iterator = items.iterator()
     while (iterator.hasNext) {
       val item = iterator.next().asInstanceOf[StatItem]
-      if (null != item.getCountors()(counterIndex)) {
-        sum += (item.getCountors()(counterIndex)).asInstanceOf[Number]
+      if (null != item.countors()(counterIndex)) {
+        sum += (item.countors()(counterIndex)).asInstanceOf[Number]
           .doubleValue()
       }
     }

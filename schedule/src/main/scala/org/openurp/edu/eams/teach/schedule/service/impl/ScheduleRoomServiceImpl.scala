@@ -15,7 +15,7 @@ import org.openurp.base.Campus
 import org.openurp.base.Room
 import org.openurp.base.Department
 import org.openurp.edu.eams.base.code.school.RoomType
-import 
+import org.beangle.commons.lang.time.YearWeekTime
 import org.openurp.edu.teach.schedule.CourseActivity
 import org.openurp.edu.eams.teach.lesson.CourseTime
 import org.openurp.edu.eams.teach.lesson.util.YearWeekTimeUtil

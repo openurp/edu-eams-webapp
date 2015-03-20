@@ -41,7 +41,7 @@ class StatHelper(private var entityDao: EntityDao) {
     while (iter.hasNext) {
       val entity = iter.next().asInstanceOf[Entity[_]]
       val stat = statMap.get(entity.id).asInstanceOf[StatItem]
-      stat.setWhat(entity)
+      stat.what=entity
     }
     new ArrayList(statMap.values)
   }
@@ -51,7 +51,7 @@ class StatHelper(private var entityDao: EntityDao) {
     var iter = stats.iterator()
     while (iter.hasNext) {
       val element = iter.next().asInstanceOf[StatItem]
-      statMap.put(element.getWhat, element)
+      statMap.put(element.what, element)
     }
     statMap
   }

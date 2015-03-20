@@ -9,7 +9,7 @@ import org.joda.time.Weeks
 import org.openurp.base.Semester
 import org.openurp.edu.eams.base.util.WeekStates
 import org.beangle.commons.lang.time.WeekDays._
-
+import org.beangle.commons.lang.time.WeekDays
 object EamsDateUtil {
 
   val SUNDAY_FIRST = new EamsDateUtil(true)
@@ -21,10 +21,10 @@ object EamsDateUtil {
   }
 
   def getWeekday(date: Date): WeekDay = {
-    WeekDay.getDay(new DateTime(date).getDayOfWeek)
+    WeekDays.of(date)
   }
 
-  def getYear(date: Date): Int = {
+  def year(date: Date): Int = {
     new DateTime(date).year.get
   }
 
@@ -68,7 +68,7 @@ object EamsDateUtil {
     dates.toList
   }
 
-  def getLastWeekdayOfYear(year: Int): WeekDay = {
+  def lastWeekdayOfYear(year: Int): WeekDay = {
     getWeekday(java.sql.Date.valueOf("" + year + "-12-31"))
   }
 
@@ -133,15 +133,15 @@ class EamsDateUtil (var firstDayOnSunday: Boolean) {
   }
 
   private def getWeekOfYearOfLastDay(year: Int, firstDayOnSunday: Boolean): Int = {
-    getNthWeekRelativeFromStart(new DateTime(year, 1, 1, 0, 0).toDate(), new DateTime(year, 12, 31, 0,
+    nthWeekRelativeFromStart(new DateTime(year, 1, 1, 0, 0).toDate(), new DateTime(year, 12, 31, 0,
       0).toDate(), firstDayOnSunday)
   }
 
-  def getDate(year: Int, weekOfYear: Int, weekday: WeekDay): java.util.Date = {
-    getDate(year, weekOfYear, weekday, firstDayOnSunday)
+  def date(year: Int, weekOfYear: Int, weekday: WeekDay): java.util.Date = {
+    date(year, weekOfYear, weekday, firstDayOnSunday)
   }
 
-  private def getDate(year: Int, weekOfYear: Int, weekday: WeekDay, firstDayOnSunday: Boolean): java.util.Date = {
+  private def date(year: Int, weekOfYear: Int, weekday: WeekDay, firstDayOnSunday: Boolean): java.util.Date = {
     val calendar = buildCalendar(firstDayOnSunday)
     calendar.set(Calendar.YEAR, year)
     calendar.set(Calendar.WEEK_OF_YEAR, 1)
@@ -159,12 +159,12 @@ class EamsDateUtil (var firstDayOnSunday: Boolean) {
     }
   }
 
-  def getWeekOfYear(date: Date): Int = getWeekOfYear(date, firstDayOnSunday)
+  def weekOfYear(date: Date): Int = getWeekOfYear(date, firstDayOnSunday)
 
   private def getWeekOfYear(date: Date, firstDayOnSunday: Boolean): Int = {
-    val year = getYear(date)
+    val year = year(date)
     val firstDayOfYear = java.sql.Date.valueOf("" + year + "-01-01")
-    getNthWeekRelativeFromStart(firstDayOfYear, date)
+    nthWeekRelativeFromStart(firstDayOfYear, date)
   }
 
   def getWeeksBetween(start: java.util.Date, end: java.util.Date): Int = {
@@ -177,16 +177,15 @@ class EamsDateUtil (var firstDayOnSunday: Boolean) {
     val firstDayOfWeekOfStartDate = buildCalendar(firstDayOnSunday, min)
     val firstDayOfWeek = if (firstDayOnSunday) Calendar.SUNDAY else Calendar.MONDAY
     firstDayOfWeekOfStartDate.set(Calendar.DAY_OF_WEEK, firstDayOfWeek)
-    val weeks = Weeks.weeksBetween(new Instant(firstDayOfWeekOfStartDate), new Instant(max))
-      .getWeeks
+    val weeks = Weeks.weeksBetween(new Instant(firstDayOfWeekOfStartDate), new Instant(max)).getWeeks
     if (start.after(end)) -weeks else weeks
   }
 
-  def getNthWeekRelativeFromStart(start: java.util.Date, end: java.util.Date): Int = {
-    getNthWeekRelativeFromStart(start, end, firstDayOnSunday)
+  def nthWeekRelativeFromStart(start: java.util.Date, end: java.util.Date): Int = {
+    nthWeekRelativeFromStart(start, end, firstDayOnSunday)
   }
 
-  private def getNthWeekRelativeFromStart(start: java.util.Date, end: java.util.Date, firstDayOnSunday: Boolean): Int = {
+  private def nthWeekRelativeFromStart(start: java.util.Date, end: java.util.Date, firstDayOnSunday: Boolean): Int = {
     val weeksBetween = getWeeksBetween(start, end, firstDayOnSunday)
     if (weeksBetween >= 0) {
       return weeksBetween + 1
@@ -194,8 +193,8 @@ class EamsDateUtil (var firstDayOnSunday: Boolean) {
     weeksBetween
   }
 
-  def getWeeksOfYear(year: Int): Int = {
-    getNthWeekRelativeFromStart(java.sql.Date.valueOf("" + year + "-01-01"), java.sql.Date.valueOf("" + year + "-12-31"))
+  def weeksOfYear(year: Int): Int = {
+    nthWeekRelativeFromStart(java.sql.Date.valueOf("" + year + "-01-01"), java.sql.Date.valueOf("" + year + "-12-31"))
   }
 
   def isLastDayOfYearAlsoLastDayOfWeek(year: Int): Boolean = {
@@ -204,18 +203,18 @@ class EamsDateUtil (var firstDayOnSunday: Boolean) {
 
   private def isLastDayOfYearAlsoLastDayOfWeek(year: Int, firstDayOnSunday: Boolean): Boolean = {
     if (firstDayOnSunday) {
-      getLastWeekdayOfYear(year) == Sat
+      lastWeekdayOfYear(year) == Sat
     } else {
-      getLastWeekdayOfYear(year) == Sun
+      lastWeekdayOfYear(year) == Sun
     }
   }
 
   def getWeekdayArray(): Array[WeekDay] = {
-    WeekDay.dayArray(firstDayOnSunday)
+    WeekDays.values.toArray.asInstanceOf[Array[WeekDay]]
   }
 
   def getWeekdayList(): List[WeekDay] = {
-    WeekDay.dayList(firstDayOnSunday)
+    WeekDays.values.toList.asInstanceOf[List[WeekDay]]
   }
 
   override def toString(): String = {

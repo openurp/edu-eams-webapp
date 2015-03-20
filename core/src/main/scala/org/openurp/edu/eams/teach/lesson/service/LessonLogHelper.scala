@@ -9,8 +9,8 @@ class LessonLogHelper extends BaseServiceImpl {
 
   def log(detail: String) {
     val logEvent = new BusinessEvent(1)
-    logEvent.setDetail(detail)
-    logEvent.setResource("教学任务")
+    logEvent.detail=detail
+    logEvent.resource="教学任务"
     publish(logEvent)
   }
 }

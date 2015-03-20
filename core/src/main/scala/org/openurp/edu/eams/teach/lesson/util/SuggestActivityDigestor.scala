@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory
 import org.openurp.base.Room
 import org.openurp.base.Semester
 import org.openurp.edu.eams.base.util.WeekDays
-import 
+import org.beangle.commons.lang.time.YearWeekTime
 import org.openurp.edu.base.Teacher
 import org.openurp.edu.eams.util.TimeUtils
 import SuggestActivityDigestor._
@@ -54,8 +54,8 @@ class SuggestActivityDigestor private () {
   }
 
   def digest(textResource: TextResource, arrangeSuggest: ArrangeSuggest, format: String): String = {
-    val semester = arrangeSuggest.getLesson.getSemester
-    val activities = arrangeSuggest.getActivities
+    val semester = arrangeSuggest.lesson.semester
+    val activities = arrangeSuggest.activities
     if (CollectUtils.isEmpty(activities)) return ""
     if (Strings.isEmpty(format)) format = defaultFormat
     val mergedActivities = CollectUtils.newArrayList()
@@ -66,17 +66,17 @@ class SuggestActivityDigestor private () {
     Collections.sort(activitiesList)
     for (activity <- activitiesList) {
       if (hasTeacher) {
-        if (CollectUtils.isNotEmpty(activity.getTeachers)) teachers.addAll(activity.getTeachers)
+        if (CollectUtils.isNotEmpty(activity.teachers)) teachers.addAll(activity.teachers)
       }
       var merged = false
       for (added <- mergedActivities if added.isSameActivityExcept(activity, hasTeacher)) {
-        if (added.getTime.getStartUnit > activity.getTime.getStartUnit) {
-          added.getTime.setStartUnit(activity.getTime.getStartUnit)
+        if (added.getTime.startUnit > activity.getTime.startUnit) {
+          added.getTime.startUnit=activity.getTime.startUnit
         }
-        if (added.getTime.getEndUnit < activity.getTime.getEndUnit) {
-          added.getTime.setEndUnit(activity.getTime.getEndUnit)
+        if (added.getTime.endUnit < activity.getTime.endUnit) {
+          added.getTime.endUnit=activity.getTime.endUnit
         }
-        added.getTime.newWeekState(BitStrings.or(added.getTime.getWeekState, activity.getTime.getWeekState))
+        added.getTime.newWeekState(BitStrings.or(added.getTime.weekState, activity.getTime.weekState))
         merged = true
       }
       if (!merged) {
@@ -104,8 +104,8 @@ class SuggestActivityDigestor private () {
       replaceStart = CourseArrangeBuf.indexOf(":teacher")
       if (addTeacher) {
         val teacherStr = new StringBuilder("")
-        for (teacher <- activity.getTeachers) {
-          teacherStr.append(teacher.getName)
+        for (teacher <- activity.teachers) {
+          teacherStr.append(teacher.name)
         }
         CourseArrangeBuf.replace(replaceStart, replaceStart + 9, teacherStr.toString)
       } else if (-1 != replaceStart) {
@@ -113,16 +113,16 @@ class SuggestActivityDigestor private () {
       }
       replaceStart = CourseArrangeBuf.indexOf(day)
       if (-1 != replaceStart) {
-        if (null != textResource && textResource.getLocale.getLanguage == "en") {
-          CourseArrangeBuf.replace(replaceStart, replaceStart + day.length, (WeekDays.get(activity.getTime.day)).getEngName + 
+        if (null != textResource && textResource.locale.language == "en") {
+          CourseArrangeBuf.replace(replaceStart, replaceStart + day.length, (WeekDays.get(activity.getTime.day)).engName + 
             ".")
         } else {
-          CourseArrangeBuf.replace(replaceStart, replaceStart + day.length, (WeekDays.get(activity.getTime.day)).getName)
+          CourseArrangeBuf.replace(replaceStart, replaceStart + day.length, (WeekDays.get(activity.getTime.day)).name)
         }
       }
       replaceStart = CourseArrangeBuf.indexOf(units)
       if (-1 != replaceStart) {
-        CourseArrangeBuf.replace(replaceStart, replaceStart + units.length, activity.getTime.getStartUnit + "-" + activity.getTime.getEndUnit)
+        CourseArrangeBuf.replace(replaceStart, replaceStart + units.length, activity.getTime.startUnit + "-" + activity.getTime.endUnit)
       }
       replaceStart = CourseArrangeBuf.indexOf(time)
       if (-1 != replaceStart) {
@@ -138,7 +138,7 @@ class SuggestActivityDigestor private () {
       }
       replaceStart = CourseArrangeBuf.indexOf(weeks)
       if (-1 != replaceStart) {
-        CourseArrangeBuf.replace(replaceStart, replaceStart + weeks.length, YearWeekTimeUtil.digest(activity.getTime.getWeekState, 
+        CourseArrangeBuf.replace(replaceStart, replaceStart + weeks.length, YearWeekTimeUtil.digest(activity.getTime.weekState, 
           CourseTime.FIRST_WEEK_FROM, 1, Semester.OVERALLWEEKS, textResource))
       }
       val sdf = new SimpleDateFormat("M月dd日起")
@@ -147,7 +147,7 @@ class SuggestActivityDigestor private () {
         val timeUnits = YearWeekTimeUtil.convertToYearWeekTimes(semester, activity.getTime)
         if (null != timeUnits && timeUnits.length > 0) {
           val unit = timeUnits(0)
-          CourseArrangeBuf.replace(replaceStart, replaceStart + starton.length, sdf.format(unit.getFirstDay))
+          CourseArrangeBuf.replace(replaceStart, replaceStart + starton.length, sdf.format(unit.firstDay))
         }
       }
       CourseArrangeBuf.append(" ").append(delimeter)

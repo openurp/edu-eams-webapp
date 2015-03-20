@@ -60,20 +60,20 @@ class ExamActivityDigestor private () {
     val hasRoom = Strings.contains(format, room)
     val hasTeacher = Strings.contains(format, "teacher")
     val arrangeInfoBuf = new StringBuffer()
-    var iter = activity.getExamRooms.iterator()
+    var iter = activity.examRooms.iterator()
     while (iter.hasNext) {
       val examRoom = iter.next()
       arrangeInfoBuf.append(format)
       var replaceStart = 0
       replaceStart = arrangeInfoBuf.indexOf(day)
       if (-1 != replaceStart) {
-        var dayIndex = activity.getStartAt.getDay
+        var dayIndex = activity.startAt.day
         if (dayIndex == 0) {
           dayIndex = 6
         } else {
           dayIndex -= 1
         }
-        arrangeInfoBuf.replace(replaceStart, replaceStart + day.length, WeekDays.All(dayIndex).getName)
+        arrangeInfoBuf.replace(replaceStart, replaceStart + day.length, WeekDays.All(dayIndex).name)
       }
       replaceStart = arrangeInfoBuf.indexOf(units)
       if (-1 != replaceStart) {
@@ -81,20 +81,20 @@ class ExamActivityDigestor private () {
       replaceStart = arrangeInfoBuf.indexOf(time)
       if (-1 != replaceStart) {
         val sdm = new SimpleDateFormat("HH:mm")
-        arrangeInfoBuf.replace(replaceStart, replaceStart + time.length, sdm.format(activity.getStartAt) + "-" + sdm.format(activity.getEndAt))
+        arrangeInfoBuf.replace(replaceStart, replaceStart + time.length, sdm.format(activity.startAt) + "-" + sdm.format(activity.endAt))
       }
       replaceStart = arrangeInfoBuf.indexOf(date)
       if (-1 != replaceStart) {
-        arrangeInfoBuf.replace(replaceStart, replaceStart + date.length, df.format(activity.getStartAt))
+        arrangeInfoBuf.replace(replaceStart, replaceStart + date.length, df.format(activity.startAt))
       }
       replaceStart = arrangeInfoBuf.indexOf(weeks)
       if (-1 != replaceStart) {
-        val teachWeek = EamsDateUtil.SUNDAY_FIRST.getWeekOfYear(examRoom.getsemester.beginOn)
-        val examWeek = EamsDateUtil.SUNDAY_FIRST.getWeekOfYear(activity.getStartAt)
+        val teachWeek = EamsDateUtil.SUNDAY_FIRST.weekOfYear(examRoom.getsemester.beginOn)
+        val examWeek = EamsDateUtil.SUNDAY_FIRST.weekOfYear(activity.startAt)
         val c = Calendar.getInstance
-        c.setTime(activity.getStartAt)
-        if (c.get(Calendar.YEAR) > activity.getSemester.getStartYear) {
-          val year = SemesterUtil.getStartYear(activity.getSemester)
+        c.setTime(activity.startAt)
+        if (c.get(Calendar.YEAR) > activity.semester.startYear) {
+          val year = SemesterUtil.startYear(activity.semester)
           val LastDay = year + "-12-31"
           val gregorianCalendar = new GregorianCalendar()
           gregorianCalendar.setTime(java.sql.Date.valueOf(LastDay))
@@ -113,20 +113,20 @@ class ExamActivityDigestor private () {
       }
       replaceStart = arrangeInfoBuf.indexOf(room)
       if (-1 != replaceStart) {
-        arrangeInfoBuf.replace(replaceStart, replaceStart + room.length, if ((null != examRoom.getRoom)) examRoom.getRoom.getName else "")
+        arrangeInfoBuf.replace(replaceStart, replaceStart + room.length, if ((null != examRoom.room)) examRoom.room.name else "")
         replaceStart = arrangeInfoBuf.indexOf(building)
         if (-1 != replaceStart) {
-          if (null != examRoom.getRoom && null != examRoom.getRoom.getBuilding) {
-            arrangeInfoBuf.replace(replaceStart, replaceStart + building.length, examRoom.getRoom.getBuilding.getName)
+          if (null != examRoom.room && null != examRoom.room.building) {
+            arrangeInfoBuf.replace(replaceStart, replaceStart + building.length, examRoom.room.building.name)
           } else {
             arrangeInfoBuf.replace(replaceStart, replaceStart + building.length, "")
           }
         }
         replaceStart = arrangeInfoBuf.indexOf(district)
         if (-1 != replaceStart) {
-          if (null != examRoom.getRoom && null != examRoom.getRoom.getBuilding && 
-            null != examRoom.getRoom.getBuilding.getCampus) {
-            arrangeInfoBuf.replace(replaceStart, replaceStart + district.length, examRoom.getRoom.getBuilding.getCampus.getName)
+          if (null != examRoom.room && null != examRoom.room.building && 
+            null != examRoom.room.building.campus) {
+            arrangeInfoBuf.replace(replaceStart, replaceStart + district.length, examRoom.room.building.campus.name)
           } else {
             arrangeInfoBuf.replace(replaceStart, replaceStart + district.length, "")
           }

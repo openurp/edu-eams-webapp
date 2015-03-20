@@ -8,7 +8,7 @@ import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.EntityDao
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.base.Semester
-import 
+import org.beangle.commons.lang.time.YearWeekTime
 import org.openurp.edu.base.Student
 import org.openurp.edu.teach.code.CourseType
 import org.openurp.edu.eams.teach.election.ElectionProfile

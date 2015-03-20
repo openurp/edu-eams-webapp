@@ -13,9 +13,9 @@ object SemesterUtil {
   def getWeekTime(semester: Semester, weekIndex: Int): Array[java.util.Date] = {
     val dates = Array.ofDim[java.util.Date](2)
     val relativeDateUtil = RelativeDateUtil.startOn(semester)
-    val startOn = if (semester.getFirstWeekday == Calendar.SUNDAY) WeekDay.SUNDAY else WeekDay.MONDAY
-    dates(0) = relativeDateUtil.getDate(weekIndex, startOn)
-    dates(1) = relativeDateUtil.getDate(weekIndex + 1, startOn)
+    val startOn = if (semester.firstWeekday == Calendar.SUNDAY) WeekDay.SUNDAY else WeekDay.MONDAY
+    dates(0) = relativeDateUtil.date(weekIndex, startOn)
+    dates(1) = relativeDateUtil.date(weekIndex + 1, startOn)
     dates
   }
 

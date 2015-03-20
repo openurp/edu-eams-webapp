@@ -15,13 +15,13 @@ class CoursePropertyExtractor(resource: TextResource) extends DefaultPropertyExt
   def getPropertyValue(target: AnyRef, property: String): AnyRef = {
     val course = target.asInstanceOf[Course]
     if ("extInfo.requirement" == property) {
-      val extInfo = courseService.getCourseExtInfo(course.id)
-      extInfo.getRequirement
+      val extInfo = courseService.courseExtInfo(course.id)
+      extInfo.requirement
     } else if ("extInfo.description" == property) {
-      val extInfo = courseService.getCourseExtInfo(course.id)
-      extInfo.getDescription
+      val extInfo = courseService.courseExtInfo(course.id)
+      extInfo.description
     } else {
-      super.getPropertyValue(target, property)
+      super.propertyValue(target, property)
     }
   }
 

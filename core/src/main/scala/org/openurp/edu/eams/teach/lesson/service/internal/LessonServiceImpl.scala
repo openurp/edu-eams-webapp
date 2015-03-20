@@ -48,7 +48,7 @@ class LessonServiceImpl extends BaseServiceImpl with LessonService {
 
   def teachDepartsOfSemester(projects: List[Project], departments: List[Department], semester: Semester): List[Department] = {
     if (CollectUtils.isNotEmpty(projects) && CollectUtils.isNotEmpty(departments)) {
-      val query = OqlBuilder.from(classOf[Lesson].getName + " lesson")
+      val query = OqlBuilder.from(classOf[Lesson].name + " lesson")
       query.select("distinct(lesson.teachDepart)")
       query.where(" lesson.semester=:semester and lesson.teachDepart in (:departments) and lesson.project in (:projects) ", 
         semester, departments, projects)
@@ -60,7 +60,7 @@ class LessonServiceImpl extends BaseServiceImpl with LessonService {
 
   def courseTypesOfSemester(projects: List[Project], departments: List[Department], semester: Semester): List[CourseType] = {
     if (CollectUtils.isNotEmpty(projects) && CollectUtils.isNotEmpty(departments)) {
-      val query = OqlBuilder.from(classOf[Lesson].getName + " lesson")
+      val query = OqlBuilder.from(classOf[Lesson].name + " lesson")
       query.select("distinct(lesson.courseType)")
       query.where(" lesson.semester=:semester and lesson.teachDepart in (:departments) and lesson.project in (:projects) ", 
         semester, departments, projects)
@@ -72,16 +72,16 @@ class LessonServiceImpl extends BaseServiceImpl with LessonService {
 
   def attendDepartsOfSemester(projects: List[Project], semester: Semester): List[Department] = {
     if (CollectUtils.isNotEmpty(projects)) {
-      val qq = OqlBuilder.from(classOf[Lesson].getName + " lesson")
+      val qq = OqlBuilder.from(classOf[Lesson].name + " lesson")
       qq.join("lesson.teachClass.limitGroups", "lgroup").join("lgroup.items", "litem")
-        .where("litem.meta.id = :metaid", CourseLimitMetaEnum.DEPARTMENT.getMetaId)
+        .where("litem.meta.id = :metaid", CourseLimitMetaEnum.DEPARTMENT.metaId)
         .where("lesson.semester = :semester", semester)
         .where("lesson.project in (:projects)", projects)
       qq.select("litem").cacheable()
       val limitItems = entityDao.search(qq)
       val sb = new StringBuilder()
       for (item <- limitItems) {
-        val ids = item.getContent.split(",")
+        val ids = item.content.split(",")
         sb.append(Strings.join(ids, ",")).append(',')
       }
       val departmentIds = Strings.splitToInt(sb.toString)
@@ -130,7 +130,7 @@ class LessonServiceImpl extends BaseServiceImpl with LessonService {
     } else {
       val prefix = "select distinct lesson.id from org.openurp.edu.teach.lesson.Lesson as lesson "
       val postfix = " and lesson.semester in (:semesters) "
-      val query = OqlBuilder.hql(prefix + strategy.getFilterString + postfix)
+      val query = OqlBuilder.hql(prefix + strategy.filterString + postfix)
       query.param("id", id)
       query.param("semesters", semesters)
       val lessonIds = entityDao.search(query)
@@ -155,15 +155,15 @@ class LessonServiceImpl extends BaseServiceImpl with LessonService {
     for (lesson <- lessons) {
       val copy = lesson.clone()
       if (!params.isCopyCourseTakes) {
-        copy.getTeachClass.getCourseTakes.clear()
-        copy.getTeachClass.setStdCount(0)
+        copy.teachClass.courseTakes.clear()
+        copy.teachClass.stdCount=0
       } else {
-        for (take <- copy.getTeachClass.getCourseTakes) {
-          take.setElectionMode(Model.newInstance(classOf[ElectionMode], ElectionMode.ASSIGEND))
+        for (take <- copy.teachClass.courseTakes) {
+          take.electionMode=Model.newInstance(classOf[ElectionMode], ElectionMode.ASSIGEND)
         }
       }
-      copy.setAuditStatus(CommonAuditState.UNSUBMITTED)
-      copy.setSemester(params.getSemester)
+      copy.auditStatus=CommonAuditState.UNSUBMITTED
+      copy.semester=params.semester
       LessonElectionUtil.normalizeTeachClass(copy)
       copiedTasks.add(copy)
     }
@@ -178,17 +178,17 @@ class LessonServiceImpl extends BaseServiceImpl with LessonService {
     val builder = OqlBuilder.from(classOf[Lesson], "lesson")
     builder.where("lesson.semester =:semester", semester)
     val con = CourseLimitUtils.build(entity, "lgi")
-    val params = con.getParams
+    val params = con.params
     builder.where("exists(from lesson.teachClass.limitGroups lg join lg.items as lgi where" + 
-      con.getContent + 
+      con.content + 
       ")", params.get(0), params.get(1), params.get(2))
     entityDao.search(builder)
   }
 
   def fillTeachers(teacherIds: Array[Long], lesson: Lesson) {
-    lesson.getTeachers.clear()
+    lesson.teachers.clear()
     if (teacherIds != null && teacherIds.length > 0) {
-      lesson.getTeachers.addAll(new HashSet[Teacher](entityDao.get(classOf[Teacher], teacherIds)))
+      lesson.teachers.addAll(new HashSet[Teacher](entityDao.get(classOf[Teacher], teacherIds)))
     }
   }
 

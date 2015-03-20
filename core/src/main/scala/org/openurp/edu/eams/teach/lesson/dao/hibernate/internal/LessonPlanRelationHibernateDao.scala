@@ -48,30 +48,30 @@ class LessonPlanRelationHibernateDao extends HibernateEntityDao with LessonPlanR
 
   def possibleRelatePlans(lesson: Lesson): List[MajorPlan] = {
     val plans = new ArrayList[MajorPlan]()
-    val programs = courseLimitService.extractPrograms(lesson.getTeachClass)
+    val programs = courseLimitService.extractPrograms(lesson.teachClass)
     if (CollectUtils.isNotEmpty(programs)) {
       plans.addAll(get(classOf[MajorPlan], "program", programs))
     }
-    val adminclasses = courseLimitService.extractAdminclasses(lesson.getTeachClass)
+    val adminclasses = courseLimitService.extractAdminclasses(lesson.teachClass)
     if (CollectUtils.isNotEmpty(adminclasses)) {
       for (adminclass <- adminclasses) {
         plans.addAll(search(MajorPlanQueryBuilder.build(adminclass)))
       }
       return plans
     }
-    val grade = courseLimitService.extractGrade(lesson.getTeachClass)
+    val grade = courseLimitService.extractGrade(lesson.teachClass)
     if (Strings.isEmpty(grade)) {
       return CollectUtils.newArrayList()
     }
-    val majors = courseLimitService.extractMajors(lesson.getTeachClass)
+    val majors = courseLimitService.extractMajors(lesson.teachClass)
     if (CollectUtils.isEmpty(majors)) {
       return CollectUtils.newArrayList()
     }
-    val stdTypes = courseLimitService.extractStdTypes(lesson.getTeachClass)
+    val stdTypes = courseLimitService.extractStdTypes(lesson.teachClass)
     if (CollectUtils.isEmpty(stdTypes)) {
       stdTypes.add(null)
     }
-    val directions = courseLimitService.extractDirections(lesson.getTeachClass)
+    val directions = courseLimitService.extractDirections(lesson.teachClass)
     if (CollectUtils.isEmpty(directions)) {
       directions.add(null)
     }
@@ -101,10 +101,10 @@ class LessonPlanRelationHibernateDao extends HibernateEntityDao with LessonPlanR
 
   def saveRelation(plan: MajorPlan, lesson: Lesson) {
     val relation = new LessonPlanRelationBean()
-    relation.setPlan(plan)
-    relation.setLesson(lesson)
-    relation.setCreatedAt(new Date())
-    relation.setUpdatedAt(new Date())
+    relation.plan=plan
+    relation.lesson=lesson
+    relation.createdAt=new Date()
+    relation.updatedAt=new Date()
     save(relation)
   }
 

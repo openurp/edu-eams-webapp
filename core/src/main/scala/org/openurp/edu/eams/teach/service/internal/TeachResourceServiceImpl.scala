@@ -18,7 +18,7 @@ import org.openurp.base.Room
 import org.openurp.base.Department
 import org.openurp.base.Semester
 import org.openurp.edu.eams.classroom.Occupancy
-import 
+import org.beangle.commons.lang.time.YearWeekTime
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.base.Project
 import org.openurp.edu.base.Student
@@ -140,11 +140,11 @@ class TeachResourceServiceImpl extends BaseServiceImpl with TeachResourceService
       builder.where("teacher!= :replaceTeacher", replaceTeacher)
     }
     if (null != teacher) {
-      if (Strings.isNotEmpty(teacher.getCode)) {
-        builder.where(Condition.like("teacher.code", teacher.getCode))
+      if (Strings.isNotEmpty(teacher.code)) {
+        builder.where(Condition.like("teacher.code", teacher.code))
       }
-      if (Strings.isNotEmpty(teacher.getName)) {
-        builder.where(Condition.like("teacher.name", teacher.getName))
+      if (Strings.isNotEmpty(teacher.name)) {
+        builder.where(Condition.like("teacher.name", teacher.name))
       }
       if (null != teacher.department) {
         builder.where("teacher.department = :deparment", teacher.department)
@@ -202,14 +202,14 @@ class TeachResourceServiceImpl extends BaseServiceImpl with TeachResourceService
     val builder = OqlBuilder.from(classOf[CourseActivity], "activity")
     builder.where("activity.lesson.semester =:semester", semester)
     setTimeQuery(time, builder)
-    val con = CourseLimitUtils.build(CourseLimitMetaEnum.ADMINCLASS.getMetaId, "lgi", adminclass.id.toString)
-    val params = con.getParams
+    val con = CourseLimitUtils.build(CourseLimitMetaEnum.ADMINCLASS.metaId, "lgi", adminclass.id.toString)
+    val params = con.params
     builder.where("exists(from activity.lesson.teachClass.limitGroups lg join lg.items as lgi where (lgi.operator='" + 
       Operator.EQUAL.name() + 
       "' or lgi.operator='" + 
       Operator.IN.name() + 
       "') and " + 
-      con.getContent + 
+      con.content + 
       ")", params.get(0), params.get(1), params.get(2))
     entityDao.search(builder)
   }
@@ -218,14 +218,14 @@ class TeachResourceServiceImpl extends BaseServiceImpl with TeachResourceService
     val builder = OqlBuilder.from(classOf[CourseActivity], "activity")
     builder.where("activity.lesson.semester =:semester", semester)
     setTimeQuery(time, builder)
-    val con = CourseLimitUtils.build(CourseLimitMetaEnum.PROGRAM.getMetaId, "lgi", program.id.toString)
-    val params = con.getParams
+    val con = CourseLimitUtils.build(CourseLimitMetaEnum.PROGRAM.metaId, "lgi", program.id.toString)
+    val params = con.params
     builder.where("exists(from activity.lesson.teachClass.limitGroups lg join lg.items as lgi where (lgi.operator='" + 
       Operator.EQUAL.name() + 
       "' or lgi.operator='" + 
       Operator.IN.name() + 
       "') and " + 
-      con.getContent + 
+      con.content + 
       ")", params.get(0), params.get(1), params.get(2))
     entityDao.search(builder)
   }
@@ -235,11 +235,11 @@ class TeachResourceServiceImpl extends BaseServiceImpl with TeachResourceService
       if (null != time.day) {
         builder.where("activity.time.day =:weekday", time.day)
       }
-      if (null != time.getEndUnit) {
-        builder.where("activity.time.endUnit =:endUnit", time.getEndUnit)
+      if (null != time.endUnit) {
+        builder.where("activity.time.endUnit =:endUnit", time.endUnit)
       }
-      if (null != time.getStartUnit) {
-        builder.where("activity.time.startUnit =:startUnit", time.getStartUnit)
+      if (null != time.startUnit) {
+        builder.where("activity.time.startUnit =:startUnit", time.startUnit)
       }
       if (null != time.state && 0 < time.state) {
         builder.where("bitand(activity.time.state," + time.state + 
@@ -342,15 +342,15 @@ class TeachResourceServiceImpl extends BaseServiceImpl with TeachResourceService
     val activitys = entityDao.search(builder)
     val utilizations = CollectUtils.newHashMap()
     for (courseActivity <- activitys) {
-      val rooms = courseActivity.getRooms
+      val rooms = courseActivity.rooms
       var capacity = 0
       for (room <- rooms) {
-        capacity += room.getCapacity
+        capacity += room.capacity
       }
       val objs = Array.ofDim[Any](2)
       objs(1) = capacity
       if (capacity != 0) {
-        val ratioNow = courseActivity.getLesson.getTeachClass.getStdCount.toFloat / 
+        val ratioNow = courseActivity.lesson.teachClass.stdCount.toFloat / 
           capacity.toFloat
         if (ratioNow <= ratio) {
           objs(0) = ratioNow
@@ -371,15 +371,15 @@ class TeachResourceServiceImpl extends BaseServiceImpl with TeachResourceService
     val activitys = entityDao.search(builder)
     val utilizations = CollectUtils.newHashMap()
     for (courseActivity <- activitys) {
-      val rooms = courseActivity.getRooms
+      val rooms = courseActivity.rooms
       var capacity = 0
       for (room <- rooms) {
-        capacity += room.getCapacity
+        capacity += room.capacity
       }
       val objs = Array.ofDim[Any](2)
       objs(1) = capacity
       if (capacity != 0) {
-        val ratioNow = courseActivity.getLesson.getTeachClass.getLimitCount.toFloat / 
+        val ratioNow = courseActivity.lesson.teachClass.limitCount.toFloat / 
           capacity.toFloat
         if (ratioNow <= ratio) {
           objs(0) = ratioNow
@@ -420,11 +420,11 @@ class TeachResourceServiceImpl extends BaseServiceImpl with TeachResourceService
       limit: PageLimit): Iterable[_] = null
 
   def getTeacherPeriod(lesson: Lesson, teacher: Teacher): Int = {
-    val courseActivities = lesson.getCourseSchedule.getActivities
+    val courseActivities = lesson.courseSchedule.activities
     var period = 0
-    for (courseActivity <- courseActivities if courseActivity.getTeachers.contains(teacher)) {
+    for (courseActivity <- courseActivities if courseActivity.teachers.contains(teacher)) {
       val time = courseActivity.getTime
-      period += (time.getEndUnit - time.getStartUnit + 1) * Strings.count(time.state, "1")
+      period += (time.endUnit - time.startUnit + 1) * Strings.count(time.state, "1")
     }
     period
   }

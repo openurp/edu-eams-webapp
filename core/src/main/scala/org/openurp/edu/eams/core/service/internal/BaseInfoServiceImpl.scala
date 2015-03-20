@@ -18,21 +18,21 @@ class BaseInfoServiceImpl extends BaseServiceImpl with BaseInfoService {
       builder.cacheable(true)
       entityDao.search(builder)
     } else {
-      throw new RuntimeException(clazz.getName + " is not a baseInfo ")
+      throw new RuntimeException(clazz.name + " is not a baseInfo ")
     }
   }
 
   private def likeBaseInfo(clazz: Class[_]): Boolean = {
-    val methods = clazz.getDeclaredMethods
+    val methods = clazz.declaredMethods
     var hasEffectiveAt = false
     var hasInvalidAt = false
     var hasCode = false
     for (method <- methods) {
-      if ("getEffectiveAt" == method.getName) {
+      if ("getEffectiveAt" == method.name) {
         hasEffectiveAt = true
-      } else if ("getInvalidAt" == method.getName) {
+      } else if ("getInvalidAt" == method.name) {
         hasInvalidAt = true
-      } else if ("getCode" == method.getName) {
+      } else if ("getCode" == method.name) {
         hasCode = true
       }
     }

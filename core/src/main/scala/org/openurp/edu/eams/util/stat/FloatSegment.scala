@@ -72,7 +72,7 @@ class FloatSegment(var min: Float, var max: Float) extends Comparable[Any] {
 
   def compareTo(`object`: AnyRef): Int = {
     val myClass = `object`.asInstanceOf[FloatSegment]
-    java.lang.Float.compare(myClass.getMin, this.getMin)
+    java.lang.Float.compare(myClass.min, this.min)
   }
 
   def clone(): AnyRef = new FloatSegment(getMin, getMax)
@@ -82,8 +82,8 @@ class FloatSegment(var min: Float, var max: Float) extends Comparable[Any] {
   }
 
   override def toString(): String = {
-    Objects.toStringBuilder(this.getClass).add("min", this.getMin)
-      .add("max", this.getMax)
+    Objects.toStringBuilder(this.getClass).add("min", this.min)
+      .add("max", this.max)
       .add("count", this.count)
       .toString
   }

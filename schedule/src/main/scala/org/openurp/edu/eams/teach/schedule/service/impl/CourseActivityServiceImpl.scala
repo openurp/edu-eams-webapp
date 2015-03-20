@@ -28,7 +28,7 @@ import org.openurp.base.Semester
 import org.openurp.base.TimeSetting
 import org.openurp.edu.eams.base.util.WeekStates
 import org.openurp.edu.eams.classroom.Occupancy
-import 
+import org.beangle.commons.lang.time.YearWeekTime
 import org.openurp.base.code.RoomUsage
 import org.openurp.edu.eams.classroom.util.RoomUseridGenerator
 import org.openurp.edu.eams.classroom.util.RoomUseridGenerator.Usage

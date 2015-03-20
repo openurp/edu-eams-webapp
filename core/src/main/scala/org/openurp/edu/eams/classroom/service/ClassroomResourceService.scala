@@ -1,11 +1,7 @@
 package org.openurp.edu.eams.classroom.service
 
-
-
 import org.openurp.base.Room
-import 
-
-
+import org.beangle.commons.lang.time.YearWeekTime
 
 trait RoomResourceService {
 

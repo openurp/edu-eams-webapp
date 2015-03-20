@@ -33,13 +33,13 @@ class AdminclassServiceImpl extends BaseServiceImpl with AdminclassService {
   }
 
   def saveOrUpdate(adminclass: Adminclass) {
-    if (null == adminclass.getCreatedAt) {
-      adminclass.setCreatedAt(new Date(System.currentTimeMillis()))
+    if (null == adminclass.createdAt) {
+      adminclass.createdAt=new Date(System.currentTimeMillis())
     }
     if (!adminclass.isPersisted) {
-      adminclass.setCreatedAt(new Date(System.currentTimeMillis()))
+      adminclass.createdAt=new Date(System.currentTimeMillis())
     }
-    adminclass.setUpdatedAt(new Date(System.currentTimeMillis()))
+    adminclass.updatedAt=new Date(System.currentTimeMillis())
     entityDao.saveOrUpdate(adminclass)
   }
 
@@ -55,7 +55,7 @@ class AdminclassServiceImpl extends BaseServiceImpl with AdminclassService {
     } catch {
       case e: RuntimeException => {
         logger.info("execproduct is failed" + "in update_classactualstdcount" + 
-          Throwables.getStackTrace(e))
+          Throwables.stackTrace(e))
         throw e
       }
     }
@@ -74,7 +74,7 @@ class AdminclassServiceImpl extends BaseServiceImpl with AdminclassService {
     } catch {
       case e: RuntimeException => {
         logger.info("execproduct is failed" + "in update_classstdcount" + 
-          Throwables.getStackTrace(e))
+          Throwables.stackTrace(e))
         throw e
       }
     }
@@ -104,7 +104,7 @@ class AdminclassServiceImpl extends BaseServiceImpl with AdminclassService {
     var iterator = adminclasses.iterator()
     while (iterator.hasNext) {
       val adminclass = iterator.next().asInstanceOf[Adminclass]
-      val studentSet = adminclass.getStudents
+      val studentSet = adminclass.students
       var iter = students.iterator()
       while (iter.hasNext) {
         val student = iter.next().asInstanceOf[Student]
@@ -121,7 +121,7 @@ class AdminclassServiceImpl extends BaseServiceImpl with AdminclassService {
     var iterator = adminclasses.iterator()
     while (iterator.hasNext) {
       val adminclass = iterator.next().asInstanceOf[Adminclass]
-      val studentSet = adminclass.getStudents
+      val studentSet = adminclass.students
       var iter = students.iterator()
       while (iter.hasNext) {
         val student = iter.next().asInstanceOf[Student]
@@ -136,7 +136,7 @@ class AdminclassServiceImpl extends BaseServiceImpl with AdminclassService {
 
   def updateStudentAdminclass(std: Student, adminclasses: Iterable[_], project: Project) {
     val orig = EntityUtils.extractIds(adminclasses)
-    val dest = EntityUtils.extractIds(Collections.singleton(std.getAdminclass))
+    val dest = EntityUtils.extractIds(Collections.singleton(std.adminclass))
     val addClassList = CollectUtils.subtract(orig, dest)
     val subClassList = CollectUtils.subtract(dest, orig)
     batchRemoveStudentClass(Collections.singletonList(std), entityDao.get(classOf[Adminclass], "id", 

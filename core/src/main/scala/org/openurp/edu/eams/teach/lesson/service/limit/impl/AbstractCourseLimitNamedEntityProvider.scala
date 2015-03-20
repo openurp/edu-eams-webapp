@@ -11,7 +11,7 @@ abstract class AbstractCourseLimitNamedEntityProvider[T <: Entity[ID], ID <: Ser
     extends AbstractCourseLimitEntityProvider[T, ID] {
 
   def getContentIdTitle(entity: T): Pair[String, String] = {
-    val name = PropertyUtils.getProperty(entity, "name")
+    val name = PropertyUtils.property(entity, "name")
     new Pair[String, String](entity.id.toString, name)
   }
 }

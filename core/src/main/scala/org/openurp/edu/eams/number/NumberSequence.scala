@@ -31,6 +31,6 @@ object NumberSequence {
         }
       }
     }
-    integers.toArray(Array.ofDim[Integer](0))
+    integers.toArray
   }
 }

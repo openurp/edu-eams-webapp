@@ -56,7 +56,7 @@ object CourseLimitMetaEnum extends Enumeration {
 
     def getContentValueType(): Class[_ <: Serializable] = {
       if (null == contentValueType && null != contentType) {
-        this.contentValueType = if (classOf[Entity[_]].isAssignableFrom(contentType)) Model.getType(contentType).idType else contentType
+        this.contentValueType = if (classOf[Entity[_]].isAssignableFrom(contentType)) Model.type(contentType).idType else contentType
       }
       contentValueType
     }

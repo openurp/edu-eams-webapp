@@ -31,7 +31,7 @@ class TextbookOrderLineServiceImpl extends BaseServiceImpl with TextbookOrderLin
     if (CollectUtils.isEmpty(lessons)) {
       return Collections.emptySet()
     }
-    val builder = OqlBuilder.from(classOf[LessonMaterial].getName + " lessonMaterial")
+    val builder = OqlBuilder.from(classOf[LessonMaterial].name + " lessonMaterial")
     builder.where("lessonMaterial.lesson in(:lessons)", lessons)
       .select("lessonMaterial.lesson.id")
     CollectUtils.newHashSet(entityDao.search(builder))
@@ -43,8 +43,8 @@ class TextbookOrderLineServiceImpl extends BaseServiceImpl with TextbookOrderLin
     }
     val lessonMaterials = entityDao.get(classOf[LessonMaterial], "lesson", lessons)
     val result = CollectUtils.newHashMap()
-    for (lessonMaterial <- lessonMaterials if !lessonMaterial.getBooks.isEmpty) {
-      result.put(lessonMaterial.getLesson.id, lessonMaterial.getBooks)
+    for (lessonMaterial <- lessonMaterials if !lessonMaterial.books.isEmpty) {
+      result.put(lessonMaterial.lesson.id, lessonMaterial.books)
     }
     result
   }
@@ -54,18 +54,18 @@ class TextbookOrderLineServiceImpl extends BaseServiceImpl with TextbookOrderLin
     val lessonMaterials = entityDao.get(classOf[LessonMaterial], "lesson", lesson)
     if (!lessonMaterials.isEmpty) {
       val lessonMaterial = lessonMaterials.get(0)
-      if (LessonMaterialStatus.ASSIGNED == lessonMaterial.getStatus) {
-        return lessonMaterials.get(0).getBooks
+      if (LessonMaterialStatus.ASSIGNED == lessonMaterial.status) {
+        return lessonMaterials.get(0).books
       }
     } else {
       val courseMaterials = entityDao.search(OqlBuilder.from(classOf[CourseMaterial], "courseMaterial")
-        .where("courseMaterial.course = :course", lesson.getCourse)
-        .where("courseMaterial.semester = :semester", lesson.getSemester)
-        .where("courseMaterial.department = :department", lesson.getTeachDepart))
+        .where("courseMaterial.course = :course", lesson.course)
+        .where("courseMaterial.semester = :semester", lesson.semester)
+        .where("courseMaterial.department = :department", lesson.teachDepart))
       if (!courseMaterials.isEmpty) {
         val courseMaterial = courseMaterials.get(0)
-        if (CourseMaterialStatus.ASSIGNED == courseMaterial.getStatus) {
-          return courseMaterials.get(0).getBooks
+        if (CourseMaterialStatus.ASSIGNED == courseMaterial.status) {
+          return courseMaterials.get(0).books
         }
       }
     }
@@ -76,7 +76,7 @@ class TextbookOrderLineServiceImpl extends BaseServiceImpl with TextbookOrderLin
     if (CollectUtils.isEmpty(lessons)) {
       return Collections.emptySet()
     }
-    val builder = OqlBuilder.from(classOf[TextbookOrderLine].getName + " orderline," + classOf[LessonMaterial].getName + 
+    val builder = OqlBuilder.from(classOf[TextbookOrderLine].name + " orderline," + classOf[LessonMaterial].name + 
       " lessonMaterial")
     builder.join("lessonMaterial.books", "textbook").where("orderline.textbook = textbook")
       .select("lessonMaterial.lesson.id")
@@ -87,7 +87,7 @@ class TextbookOrderLineServiceImpl extends BaseServiceImpl with TextbookOrderLin
     if (null == lesson || null == std) {
       return Collections.emptyList()
     }
-    val builder = OqlBuilder.from(classOf[TextbookOrderLine].getName + " orderline," + classOf[LessonMaterial].getName + 
+    val builder = OqlBuilder.from(classOf[TextbookOrderLine].name + " orderline," + classOf[LessonMaterial].name + 
       " lessonMaterial")
     builder.join("lessonMaterial.books", "textbook").where("orderline.textbook = textbook")
       .where("lessonMaterial.lesson=:lesson", lesson)
@@ -99,7 +99,7 @@ class TextbookOrderLineServiceImpl extends BaseServiceImpl with TextbookOrderLin
     val builder = OqlBuilder.from(classOf[TextbookOrderLine], "textBookOrderLine")
     builder.where("textBookOrderLine.student=:student", std)
       .where("textBookOrderLine.semester=:semester", semester)
-    builder.where("exists(from " + classOf[LessonMaterial].getName + " lessonMaterial " + 
+    builder.where("exists(from " + classOf[LessonMaterial].name + " lessonMaterial " + 
       "join lessonMaterial.books textBook where lessonMaterial.lesson.id=:lessonId and textBook=textBookOrderLine.textbook)", 
       lessonId)
     entityDao.search(builder)
@@ -115,15 +115,15 @@ class TextbookOrderLineServiceImpl extends BaseServiceImpl with TextbookOrderLin
     val date = new Date()
     for (textbook <- textbooks) {
       val textbookOrderLine = Model.newInstance(classOf[TextbookOrderLine])
-      textbookOrderLine.setAmount(materialNum * textbook.getPrice)
-      textbookOrderLine.setQuantity(materialNum)
-      textbookOrderLine.setSemester(semester)
-      textbookOrderLine.setStudent(std)
-      textbookOrderLine.setLesson(lesson)
-      textbookOrderLine.setTextbook(textbook)
-      textbookOrderLine.setCode(textbookOrderLineCodeGenerator.genCode(textbookOrderLine))
-      textbookOrderLine.setCreatedAt(date)
-      textbookOrderLine.setUpdatedAt(date)
+      textbookOrderLine.amount=(materialNum * textbook.price)
+      textbookOrderLine.quantity=materialNum
+      textbookOrderLine.semester=semester
+      textbookOrderLine.student=std
+      textbookOrderLine.lesson=lesson
+      textbookOrderLine.textbook=textbook
+      textbookOrderLine.code=textbookOrderLineCodeGenerator.genCode(textbookOrderLine)
+      textbookOrderLine.createdAt=date
+      textbookOrderLine.updatedAt=date
       textbookOrderLines.add(textbookOrderLine)
     }
     textbookOrderLines
@@ -134,18 +134,18 @@ class TextbookOrderLineServiceImpl extends BaseServiceImpl with TextbookOrderLin
     val date = new Date()
     val courseTakeQuery = OqlBuilder.from(classOf[CourseTake], "ct")
     courseTakeQuery.where("ct.std=:std and ct.lesson.semester=:semester", std, semester)
-    val bookLessons = this.getBookLessons(entityDao.search(courseTakeQuery))
+    val bookLessons = this.bookLessons(entityDao.search(courseTakeQuery))
     for (textbook <- bookMap.keySet) {
       val textbookOrderLine = Model.newInstance(classOf[TextbookOrderLine])
-      textbookOrderLine.setAmount(bookMap.get(textbook) * textbook.getPrice)
-      textbookOrderLine.setQuantity(bookMap.get(textbook))
-      textbookOrderLine.setSemester(semester)
-      textbookOrderLine.setStudent(std)
-      textbookOrderLine.setLesson(bookLessons.get(textbook))
-      textbookOrderLine.setTextbook(textbook)
-      textbookOrderLine.setCode(textbookOrderLineCodeGenerator.genCode(textbookOrderLine))
-      textbookOrderLine.setCreatedAt(date)
-      textbookOrderLine.setUpdatedAt(date)
+      textbookOrderLine.amount=(bookMap.get(textbook) * textbook.price)
+      textbookOrderLine.quantity=bookMap.get(textbook)
+      textbookOrderLine.semester=semester
+      textbookOrderLine.student=std
+      textbookOrderLine.lesson=bookLessons.get(textbook)
+      textbookOrderLine.textbook=textbook
+      textbookOrderLine.code=textbookOrderLineCodeGenerator.genCode(textbookOrderLine)
+      textbookOrderLine.createdAt=date
+      textbookOrderLine.updatedAt=date
       textbookOrderLines.add(textbookOrderLine)
     }
     textbookOrderLines
@@ -154,25 +154,25 @@ class TextbookOrderLineServiceImpl extends BaseServiceImpl with TextbookOrderLin
   def getBookLessons(takes: List[CourseTake]): Map[Textbook, Lesson] = {
     val bookLessons = CollectUtils.newHashMap()
     for (take <- takes) {
-      val lesson = take.getLesson
+      val lesson = take.lesson
       val lessonMaterials = entityDao.get(classOf[LessonMaterial], "lesson", lesson)
       if (!lessonMaterials.isEmpty) {
         val lessonMaterial = lessonMaterials.get(0)
-        if (LessonMaterialStatus.ASSIGNED == lessonMaterial.getStatus) {
-          val lessonTextbooks = lessonMaterials.get(0).getBooks
+        if (LessonMaterialStatus.ASSIGNED == lessonMaterial.status) {
+          val lessonTextbooks = lessonMaterials.get(0).books
           for (textbook <- lessonTextbooks if !bookLessons.containsKey(textbook)) bookLessons.put(textbook, 
             lesson)
         }
       } else {
         val courseMaterials = entityDao.search(OqlBuilder.from(classOf[CourseMaterial], "courseMaterial")
-          .where("courseMaterial.course = :course", lesson.getCourse)
-          .where("courseMaterial.semester = :semester", lesson.getSemester)
-          .where("courseMaterial.department = :department", lesson.getTeachDepart)
+          .where("courseMaterial.course = :course", lesson.course)
+          .where("courseMaterial.semester = :semester", lesson.semester)
+          .where("courseMaterial.department = :department", lesson.teachDepart)
           .cacheable())
         if (!courseMaterials.isEmpty) {
           val courseMaterial = courseMaterials.get(0)
-          if (CourseMaterialStatus.ASSIGNED == courseMaterial.getStatus) {
-            val lessonTextbooks = courseMaterials.get(0).getBooks
+          if (CourseMaterialStatus.ASSIGNED == courseMaterial.status) {
+            val lessonTextbooks = courseMaterials.get(0).books
             for (textbook <- lessonTextbooks if !bookLessons.containsKey(textbook)) bookLessons.put(textbook, 
               lesson)
           }
@@ -186,12 +186,12 @@ class TextbookOrderLineServiceImpl extends BaseServiceImpl with TextbookOrderLin
     val textbooksTotal = CollectUtils.newHashSet()
     val lessonBooks = CollectUtils.newHashMap()
     for (take <- takes) {
-      val lesson = take.getLesson
+      val lesson = take.lesson
       val lessonMaterials = entityDao.get(classOf[LessonMaterial], "lesson", lesson)
       if (!lessonMaterials.isEmpty) {
         val lessonMaterial = lessonMaterials.get(0)
-        if (LessonMaterialStatus.ASSIGNED == lessonMaterial.getStatus) {
-          val lessonTextbooks = lessonMaterials.get(0).getBooks
+        if (LessonMaterialStatus.ASSIGNED == lessonMaterial.status) {
+          val lessonTextbooks = lessonMaterials.get(0).books
           val textbooks = CollectUtils.newArrayList()
           for (textbook <- lessonTextbooks if !textbooksTotal.contains(textbook)) {
             textbooks.add(textbook)
@@ -201,13 +201,13 @@ class TextbookOrderLineServiceImpl extends BaseServiceImpl with TextbookOrderLin
         }
       } else {
         val courseMaterials = entityDao.search(OqlBuilder.from(classOf[CourseMaterial], "courseMaterial")
-          .where("courseMaterial.course = :course", lesson.getCourse)
-          .where("courseMaterial.semester = :semester", lesson.getSemester)
-          .where("courseMaterial.department = :department", lesson.getTeachDepart))
+          .where("courseMaterial.course = :course", lesson.course)
+          .where("courseMaterial.semester = :semester", lesson.semester)
+          .where("courseMaterial.department = :department", lesson.teachDepart))
         if (!courseMaterials.isEmpty) {
           val courseMaterial = courseMaterials.get(0)
-          if (CourseMaterialStatus.ASSIGNED == courseMaterial.getStatus) {
-            val lessonTextbooks = courseMaterials.get(0).getBooks
+          if (CourseMaterialStatus.ASSIGNED == courseMaterial.status) {
+            val lessonTextbooks = courseMaterials.get(0).books
             val textbooks = CollectUtils.newArrayList()
             for (textbook <- lessonTextbooks if !textbooksTotal.contains(textbook)) {
               textbooks.add(textbook)

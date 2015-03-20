@@ -43,7 +43,7 @@ class DefaultCourseLimitMetaEnumProvider extends CourseLimitMetaEnumProvider {
         //break
       }
       if (append) {
-        results.add(courseLimitMetaEnum.getMetaId)
+        results.add(courseLimitMetaEnum.metaId)
       }
     }
     results
@@ -60,7 +60,7 @@ class DefaultCourseLimitMetaEnumProvider extends CourseLimitMetaEnumProvider {
       }
       if (append) {
         courseLimitMetaEnums.add(courseLimitMetaEnum)
-        ids.add(courseLimitMetaEnum.getMetaId)
+        ids.add(courseLimitMetaEnum.metaId)
       }
     }
     new Pair[List[Long], List[CourseLimitMetaEnum]](ids, courseLimitMetaEnums)

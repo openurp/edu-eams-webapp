@@ -53,13 +53,13 @@ class StudentServiceImpl extends BaseServiceImpl with StudentService {
   def isActive(student: Student): Boolean = isActive(student, new Date())
 
   def isActive(student: Student, date: Date): Boolean = {
-    student.isRegisted && student.getRegistOn.before(date) && 
-      student.getGraduateOn.after(date)
+    student.isRegisted && student.registOn.before(date) && 
+      student.graduateOn.after(date)
   }
 
   def getStdStatus(student: Student): StdStatus = {
     val journal = getJournal(student)
-    if (journal != null) journal.getStatus else null
+    if (journal != null) journal.status else null
   }
 
   def getStudentByCode(code: String): Student = {

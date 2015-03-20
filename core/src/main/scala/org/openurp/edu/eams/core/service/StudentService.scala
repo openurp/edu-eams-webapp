@@ -2,11 +2,10 @@ package org.openurp.edu.eams.core.service
 
 import java.util.Date
 import org.beangle.commons.event.Event
-import org.openurp.edu.eams.core.StdPerson
 import org.openurp.edu.base.Student
 import org.openurp.edu.base.StudentJournal
-import org.openurp.edu.eams.core.code.industry.StdStatus
-
+import org.openurp.edu.base.code.StdStatus
+import org.openurp.people.base.Person
 
 
 trait StudentService {
@@ -31,7 +30,7 @@ trait StudentService {
 
   def getStudentByProjectAndCode(code: String, projectId: java.lang.Integer): Student
 
-  def getMajorProjectStudent(stdPerson: StdPerson): Student
+  def getMajorProjectStudent(person: Person): Student
 
-  def getMinorProjectStudent(stdPerson: StdPerson): Student
+  def getMinorProjectStudent(person: Person): Student
 }

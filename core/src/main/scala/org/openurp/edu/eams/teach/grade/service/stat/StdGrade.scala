@@ -1,44 +1,40 @@
 package org.openurp.edu.eams.teach.grade.service.stat
 import java.util.Comparator
-
-
-
 import org.beangle.commons.collection.CollectUtils
 import org.openurp.edu.base.Student
-import org.openurp.edu.eams.teach.grade.model.StdGpa
-import org.openurp.edu.eams.teach.grade.service.impl.GradeFilter
 import org.openurp.edu.teach.grade.CourseGrade
-
-
+import org.openurp.edu.teach.grade.domain.StdGpa
+import org.openurp.edu.teach.grade.domain.GradeFilter
+import org.beangle.commons.collection.Collections
 
 class StdGrade {
 
-  protected var std: Student = _
+  var std: Student = _
 
-  protected var grades: List[CourseGrade] = _
+  var grades: List[CourseGrade] = _
 
-  protected var gradeFilters: List[GradeFilter] = _
+  var gradeFilters: List[GradeFilter] = _
 
-  protected var stdGpa: StdGpa = _
+  var stdGpa: StdGpa = _
 
-  protected var cmp: Comparator[CourseGrade] = _
+  var cmp: Comparator[CourseGrade] = _
 
   def toGradeMap(): Map[String, CourseGrade] = {
     val gradeMap = CollectUtils.newHashMap()
     if (null == grades || grades.isEmpty) gradeMap else {
-      var iter = grades.iterator()
+      var iter = grades.iterator
       while (iter.hasNext) {
         val courseGrade = iter.next()
-        gradeMap.put(courseGrade.getCourse.id.toString, courseGrade)
+        gradeMap.put(courseGrade.course.id.toString, courseGrade)
       }
       gradeMap
     }
   }
 
-  def this(std: Student, 
-      courseGrades: List[CourseGrade], 
-      cmp: Comparator, 
-      gradeFilters: List[GradeFilter]) {
+  def this(std: Student,
+    courseGrades: List[CourseGrade],
+    cmp: Comparator,
+    gradeFilters: List[GradeFilter]) {
     this()
     this.std = std
     this.gradeFilters = gradeFilters
@@ -69,7 +65,7 @@ class StdGrade {
     while (iter.hasNext) {
       val courseGrade = iter.next().asInstanceOf[CourseGrade]
       if (courseGrade.isPassed) {
-        credits += courseGrade.getCourse.getCredits
+        credits += courseGrade.course.credits
       }
     }
     new java.lang.Float(credits)

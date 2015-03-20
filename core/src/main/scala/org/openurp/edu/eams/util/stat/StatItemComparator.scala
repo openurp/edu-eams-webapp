@@ -18,15 +18,15 @@ class StatItemComparator(private var order: Order) extends Comparator {
       item1 = arg0.asInstanceOf[StatItem]
       item0 = arg1.asInstanceOf[StatItem]
     }
-    if (null == item0.getWhat || null == item1.getWhat) {
+    if (null == item0.what || null == item1.what) {
       if (null == item0) {
         1
       } else {
         -1
       }
     }
-    val c0 = PropertyUtils.getProperty(item0, order.getProperty).asInstanceOf[Comparable[_]]
-    val c1 = PropertyUtils.getProperty(item1, order.getProperty).asInstanceOf[Comparable[_]]
+    val c0 = PropertyUtils.property(item0, order.property).asInstanceOf[Comparable[_]]
+    val c1 = PropertyUtils.property(item1, order.property).asInstanceOf[Comparable[_]]
     if (null == c0 || null == c1) {
       if (null == c0) {
         1

@@ -21,7 +21,7 @@ import org.beangle.data.model.dao.QueryBuilder
 
 abstract class AbstractStdOccupyProvider extends StdOccupyProvider {
 
-  protected var logger: Logger = LoggerFactory.getLogger(getClass)
+  protected var logger: Logger = LoggerFactory.logger(getClass)
 
   protected var entityDao: EntityDao = _
 
@@ -37,19 +37,19 @@ abstract class AbstractStdOccupyProvider extends StdOccupyProvider {
 
   protected def executeOccupyQuery(query: QueryBuilder, zone: TimeZone, processor: OccupyProcessor): Map[_,_] = {
     val st = System.currentTimeMillis()
-    var params = query.getParams
+    var params = query.params
     if (null == params) {
       params = new HashMap()
     }
     val occupis = new HashMap()
-    var iter = zone.getWeeks.iterator()
+    var iter = zone.weeks.iterator()
     while (iter.hasNext) {
       val week = iter.next().asInstanceOf[WeekDay]
       val weekOccupy = new HashMap()
-      var iter2 = zone.getUnits.iterator()
+      var iter2 = zone.units.iterator()
       while (iter2.hasNext) {
         val unit = iter2.next().asInstanceOf[CourseUnit]
-        for (weekState <- zone.getWeekStates) {
+        for (weekState <- zone.weekStates) {
           params.put("weekId", new java.lang.Integer(week.id.intValue()))
           params.put("startTime", unit.start)
           params.put("endTime", unit.end)

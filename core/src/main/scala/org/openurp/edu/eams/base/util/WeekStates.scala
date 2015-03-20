@@ -12,7 +12,7 @@ import org.openurp.edu.eams.weekstate.SemesterWeekTimeBuilder
 import org.beangle.commons.lang.time.WeekState
 import org.openurp.base.Semester
 import org.beangle.commons.lang.time.WeekDays._
-import 
+import org.beangle.commons.lang.time.YearWeekTime
 import org.beangle.commons.lang.time.WeekDays
 
 object WeekStates {

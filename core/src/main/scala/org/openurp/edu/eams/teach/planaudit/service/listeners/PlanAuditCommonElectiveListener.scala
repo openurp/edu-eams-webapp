@@ -23,27 +23,27 @@ import org.openurp.edu.teach.plan.PlanCourse
 class PlanAuditCommonElectiveListener extends PlanAuditListener {
 
   def endPlanAudit(context: PlanAuditContext) {
-    val result = context.getResult
-    val stdGrade = context.getStdGrade
-    val electiveType = context.getStandard.getConvertTargetCourseType
+    val result = context.result
+    val stdGrade = context.stdGrade
+    val electiveType = context.standard.convertTargetCourseType
     if (null == electiveType) return
-    var groupResult = result.getGroupResult(electiveType)
+    var groupResult = result.groupResult(electiveType)
     if (null == groupResult) {
       val groupRs = new GroupAuditResultBean()
-      groupRs.setCourseType(electiveType)
-      groupRs.setName(electiveType.getName)
+      groupRs.courseType=electiveType
+      groupRs.name=electiveType.name
       groupRs.groupNum = -1
       groupResult = groupRs
       result.addGroupResult(groupResult)
     }
-    val restCourses = stdGrade.getRestCourses
+    val restCourses = stdGrade.restCourses
     for (course <- restCourses) {
       val courseResult = new CourseAuditResultBean()
-      courseResult.setCourse(course)
+      courseResult.course=course
       val grades = stdGrade.useGrades(course)
       if (!grades.isEmpty && 
-        grades.get(0).getCourseType.id != electiveType.id) {
-        courseResult.setRemark("计划外")
+        grades.get(0).courseType.id != electiveType.id) {
+        courseResult.remark="计划外"
       }
       courseResult.checkPassed(grades)
       groupResult.addCourseResult(courseResult)
@@ -55,29 +55,29 @@ class PlanAuditCommonElectiveListener extends PlanAuditListener {
   protected def processConvertCredits(target: GroupAuditResult, result: PlanAuditResult, context: PlanAuditContext) {
     val parents = CollectUtils.newHashSet()
     val sibling = CollectUtils.newHashSet()
-    var start = target.getParent
+    var start = target.parent
     while (null != start && !parents.contains(start)) {
       parents.add(start)
-      start = start.getParent
+      start = start.parent
     }
-    val parent = target.getParent
+    val parent = target.parent
     if (null != parent) {
-      sibling.addAll(parent.getChildren)
+      sibling.addAll(parent.children)
       sibling.remove(target)
     }
     var otherConverted = 0f
     var siblingConverted = 0f
-    for (gr <- result.getGroupResults) {
-      if (!context.getStandard.isConvertable(gr.getCourseType)) //continue
+    for (gr <- result.groupResults) {
+      if (!context.standard.isConvertable(gr.courseType)) //continue
       if (gr == target || parents.contains(gr)) //continue
       if (sibling.contains(gr)) {
-        siblingConverted += if (gr.isPassed) gr.getAuditStat.getCreditsCompleted - gr.getAuditStat.getCreditsRequired else 0f
-      } else if (null == gr.getParent) {
-        otherConverted += if (gr.isPassed) gr.getAuditStat.getCreditsCompleted - gr.getAuditStat.getCreditsRequired else 0f
+        siblingConverted += if (gr.isPassed) gr.auditStat.creditsCompleted - gr.auditStat.creditsRequired else 0f
+      } else if (null == gr.parent) {
+        otherConverted += if (gr.isPassed) gr.auditStat.creditsCompleted - gr.auditStat.creditsRequired else 0f
       }
     }
-    target.getAuditStat.setCreditsConverted(otherConverted + siblingConverted)
-    for (r <- parents) r.getAuditStat.setCreditsConverted(otherConverted)
+    target.auditStat.creditsConverted=(otherConverted + siblingConverted)
+    for (r <- parents) r.auditStat.creditsConverted=otherConverted
   }
 
   def startPlanAudit(context: PlanAuditContext): Boolean = true

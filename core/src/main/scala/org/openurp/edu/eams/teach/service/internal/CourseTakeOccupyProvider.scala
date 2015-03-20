@@ -35,7 +35,7 @@ class CourseTakeOccupyProvider extends AbstractStdOccupyProvider {
     val tmpTable = "tmp_" + System.currentTimeMillis()
     val createTableSql = "create  table " + tmpTable + "(stdId number(19) primary key)"
     sqls.add(createTableSql)
-    for (std <- source.getStudents) {
+    for (std <- source.students) {
       val sb = new StringBuilder(80)
       sb.append("insert into ").append(tmpTable)
       sb.append(" values(").append(std.id).append(")")
@@ -53,7 +53,7 @@ class CourseTakeOccupyProvider extends AbstractStdOccupyProvider {
       " and bitand(zy.yxzsz, :weekState)>0))"
     val query = new SqlQuery(occupyQuery)
     val params = new HashMap()
-    query.setParams(params)
+    query.params=params
     params.put("semesterId", semester.id)
     val occupis = executeOccupyQuery(query, zone, new OccupyProcessor() {
 
@@ -83,7 +83,7 @@ class CourseTakeOccupyProvider extends AbstractStdOccupyProvider {
       " and activity.roomOccupation.time.end >:startTime" + 
       " and bitand(activity.roomOccupation.time.state,:weekState)>0 )")
     val params = new HashMap()
-    params.put("stds", source.getStudents)
+    params.put("stds", source.students)
     params.put("semester", semester)
     query.params(params)
     val occupis = executeOccupyQuery(query, zone, new OccupyProcessor() {
@@ -101,9 +101,9 @@ class CourseTakeOccupyProvider extends AbstractStdOccupyProvider {
         var o = new ArrayList[StdOccupy]()
         for (take <- takes) {
           var occupy = new StdOccupy()
-          occupy.setStd(take.getStd)
-          occupy.setCourse(take.getLesson.getCourse)
-          occupy.setRemark("上课")
+          occupy.std=take.std
+          occupy.course=take.lesson.course
+          occupy.remark="上课"
           o.add(occupy)
         }
         return o

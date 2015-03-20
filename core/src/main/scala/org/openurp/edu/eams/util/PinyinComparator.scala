@@ -23,9 +23,9 @@ class PinyinComparator extends Comparator[String]() {
   
   var pinyinOutputFormat: HanyuPinyinOutputFormat = new HanyuPinyinOutputFormat()
 
-  pinyinOutputFormat.setCaseType(HanyuPinyinCaseType.LOWERCASE)
+  pinyinOutputFormat.caseType=HanyuPinyinCaseType.LOWERCASE
 
-  pinyinOutputFormat.setToneType(HanyuPinyinToneType.WITHOUT_TONE)
+  pinyinOutputFormat.toneType=HanyuPinyinToneType.WITHOUT_TONE
 
   def this(asc: Boolean) {
     this()

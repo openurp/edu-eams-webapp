@@ -50,11 +50,11 @@ object LessonLogBuilder {
       empty.put(LOG_FIELDS(i), "")
     }
     empty.put(LESSON_ID, String.valueOf(lesson.id))
-    empty.put(LESSON_PROJECT, String.valueOf(lesson.getProject.getName))
-    empty.put(LESSON_SEMESTER, lesson.getSemester.getSchoolYear + "-" + lesson.getSemester.getName)
-    empty.put(LESSON_NO, lesson.getNo)
-    empty.put(COURSE_CODE, lesson.getCourse.getCode)
-    empty.put(COURSE_NAME, lesson.getCourse.getName)
+    empty.put(LESSON_PROJECT, String.valueOf(lesson.project.name))
+    empty.put(LESSON_SEMESTER, lesson.semester.schoolYear + "-" + lesson.semester.name)
+    empty.put(LESSON_NO, lesson.no)
+    empty.put(COURSE_CODE, lesson.course.code)
+    empty.put(COURSE_NAME, lesson.course.name)
     empty
   }
 
@@ -100,47 +100,47 @@ object LessonLogBuilder {
 
   private def stringify(lesson: Lesson): String = {
     val sb = new StringBuilder()
-    append(sb, "课程序号", lesson.getNo)
-    append(sb, "学期", lesson.getSemester.getSchoolYear + '-' + lesson.getSemester.getName)
-    append(sb, "课程", lesson.getCourse.getName + '[' + lesson.getCourse.getCode + 
+    append(sb, "课程序号", lesson.no)
+    append(sb, "学期", lesson.semester.schoolYear + '-' + lesson.semester.name)
+    append(sb, "课程", lesson.course.name + '[' + lesson.course.code + 
       ']')
-    append(sb, "教学项目", lesson.getProject.getName)
-    append(sb, "课程类别", lesson.getCourseType.getName)
-    append(sb, "开课院系", lesson.getTeachDepart.getName)
+    append(sb, "教学项目", lesson.project.name)
+    append(sb, "课程类别", lesson.courseType.name)
+    append(sb, "开课院系", lesson.teachDepart.name)
     val tsb = new StringBuilder()
-    var iter = lesson.getTeachers.iterator()
+    var iter = lesson.teachers.iterator()
     while (iter.hasNext) {
       val teacher = iter.next()
-      tsb.append(teacher.getName + '[' + teacher.getCode + ']')
+      tsb.append(teacher.name + '[' + teacher.code + ']')
       if (iter.hasNext) {
         tsb.append(',')
       }
     }
     append(sb, "授课教师", tsb.toString)
-    if (lesson.getLangType != null) {
-      append(sb, "授课语言", lesson.getLangType.getName)
+    if (lesson.langType != null) {
+      append(sb, "授课语言", lesson.langType.name)
     } else {
       append(sb, "授课语言", null)
     }
     append(sb, "挂牌", 1)
-    if (lesson.getCampus != null) {
-      append(sb, "校区", lesson.getCampus.getName)
+    if (lesson.campus != null) {
+      append(sb, "校区", lesson.campus.name)
     } else {
       append(sb, "校区", null)
     }
-    append(sb, "教学班", lesson.getTeachClass.getName)
-    append(sb, "年级", lesson.getTeachClass.grade)
-    if (lesson.getTeachClass.getDepart != null) {
-      append(sb, "上课院系", lesson.getTeachClass.getDepart.getName)
+    append(sb, "教学班", lesson.teachClass.name)
+    append(sb, "年级", lesson.teachClass.grade)
+    if (lesson.teachClass.depart != null) {
+      append(sb, "上课院系", lesson.teachClass.depart.name)
     } else {
       append(sb, "上课院系", null)
     }
-    append(sb, "实际人数", lesson.getTeachClass.getStdCount)
-    append(sb, "人数上限", lesson.getTeachClass.getLimitCount)
-    append(sb, "起始周", lesson.getCourseSchedule.getStartWeek)
-    append(sb, "结束周", lesson.getCourseSchedule.getEndWeek)
-    append(sb, "课时", lesson.getCourseSchedule.getPeriod)
-    append(sb, "备注", lesson.getRemark)
+    append(sb, "实际人数", lesson.teachClass.stdCount)
+    append(sb, "人数上限", lesson.teachClass.limitCount)
+    append(sb, "起始周", lesson.courseSchedule.startWeek)
+    append(sb, "结束周", lesson.courseSchedule.endWeek)
+    append(sb, "课时", lesson.courseSchedule.period)
+    append(sb, "备注", lesson.remark)
     sb.replace(sb.length - 1, sb.length, "")
     sb.toString
   }

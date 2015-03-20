@@ -3,8 +3,6 @@ package org.openurp.edu.eams.number
 import java.util.Arrays
 import org.beangle.commons.text.i18n.TextResource
 import org.openurp.edu.eams.weekstate.SemesterWeekTimeBuilder
-import org.beangle.commons.lang.time.YearWeekTimeBuilder
-
 
 object NumberRangeDigestor {
 
@@ -19,16 +17,16 @@ object NumberRangeDigestor {
     Arrays.sort(numberSequence)
     val patterns = new collection.mutable.ListBuffer[NumberRange]
     var lastPattern = NumberRange.newInstance(numberSequence(0))
-    patterns.add(lastPattern)
+    patterns += lastPattern
     for (i <- 1 until numberSequence.length) {
       val number = numberSequence(i)
       if (!lastPattern.test(number)) {
         lastPattern = lastPattern.guessNextPattern(number)
-        patterns.add(lastPattern)
+        patterns += lastPattern
       }
     }
     val sb = new StringBuilder()
-    var iterator = patterns.iterator()
+    var iterator = patterns.iterator
     while (iterator.hasNext) {
       val pattern = iterator.next()
       if (!pattern.isAbandon) {
