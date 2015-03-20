@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.election.dao
 
 
-import org.beangle.commons.dao.EntityDao
+import org.beangle.data.model.dao.EntityDao
 import org.openurp.edu.base.Student
 import org.openurp.edu.teach.code.CourseTakeType
 import org.openurp.edu.eams.teach.election.service.context.ElectState

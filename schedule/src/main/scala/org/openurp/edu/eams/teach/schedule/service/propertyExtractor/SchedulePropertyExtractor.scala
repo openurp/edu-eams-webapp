@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.schedule.service.propertyExtractor
 
 
-import org.beangle.commons.dao.EntityDao
+import org.beangle.data.model.dao.EntityDao
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.text.i18n.TextResource

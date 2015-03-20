@@ -2,7 +2,7 @@ package org.openurp.edu.eams.web.helper
 
 import javax.servlet.http.HttpServletRequest
 import org.beangle.commons.collection.page.PageLimit
-import org.beangle.commons.dao.EntityDao
+import org.beangle.data.model.dao.EntityDao
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.security.blueprint.SecurityUtils
 import org.beangle.security.blueprint.function.service.FuncPermissionService

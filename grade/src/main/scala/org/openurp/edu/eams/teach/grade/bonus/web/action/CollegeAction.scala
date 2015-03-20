@@ -19,7 +19,7 @@ import org.openurp.edu.eams.teach.Grade
 import org.openurp.edu.teach.code.ExamStatus
 import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.eams.teach.code.industry.ScoreMarkStyle
-import org.openurp.edu.teach.code.CourseType
+import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.eams.teach.grade.lesson.model.GradeInputSwitch
 import org.openurp.edu.eams.teach.grade.service.CourseGradeCalculator
 import org.openurp.edu.eams.teach.grade.service.CourseGradeService

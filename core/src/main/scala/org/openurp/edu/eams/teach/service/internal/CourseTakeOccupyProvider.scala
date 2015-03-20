@@ -4,7 +4,7 @@ package org.openurp.edu.eams.teach.service.internal
 
 
 
-import org.beangle.commons.dao.EntityDao
+import org.beangle.data.model.dao.EntityDao
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.dao.query.builder.SqlQuery
 import org.openurp.base.CourseUnit

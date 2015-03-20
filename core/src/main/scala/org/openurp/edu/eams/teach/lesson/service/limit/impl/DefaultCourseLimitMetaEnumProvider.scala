@@ -1,8 +1,5 @@
 package org.openurp.edu.eams.teach.lesson.service.limit.impl
 
-
-
-import org.beangle.commons.lang.tuple.Pair
 import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnum
 import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnumFilter
 import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnumProvider

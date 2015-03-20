@@ -70,7 +70,7 @@ object TermCalculator {
 class TermCalculator(private var semesterService: SemesterService, private var semester: Semester)
     {
 
-  protected val logger = LoggerFactory.logger(this.getClass)
+  protected val logger = LoggerFactory.getLogger(this.getClass)
 
   private var termCalcCache: Map[String, Integer] = CollectUtils.newHashMap()
 

@@ -29,7 +29,7 @@ object DefaultTeachClassNameStrategy {
 
 class DefaultTeachClassNameStrategy extends TeachClassNameStrategy {
 
-  protected var logger: Logger = LoggerFactory.logger(getClass)
+  protected var logger: Logger = LoggerFactory.getLogger(getClass)
 
   private var courseLimitItemContentProviderFactory: CourseLimitItemContentProviderFactory = _
 

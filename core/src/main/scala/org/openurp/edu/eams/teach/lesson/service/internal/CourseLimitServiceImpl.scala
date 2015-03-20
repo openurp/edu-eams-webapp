@@ -12,7 +12,7 @@ import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.beangle.data.model.Entity
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.lang.Strings
-import org.beangle.commons.lang.tuple.Pair
+
 import org.openurp.base.Department
 import org.openurp.code.person.Gender
 import org.openurp.edu.base.Adminclass

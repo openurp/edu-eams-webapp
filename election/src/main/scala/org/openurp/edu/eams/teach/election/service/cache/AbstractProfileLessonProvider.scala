@@ -1,6 +1,6 @@
 package org.openurp.edu.eams.teach.election.service.cache
 
-import org.beangle.commons.dao.EntityDao
+import org.beangle.data.model.dao.EntityDao
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 

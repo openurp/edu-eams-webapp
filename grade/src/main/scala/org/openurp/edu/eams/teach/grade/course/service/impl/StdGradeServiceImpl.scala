@@ -4,7 +4,7 @@ import java.util.Date
 
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.collection.Order
-import org.beangle.commons.dao.EntityDao
+import org.beangle.data.model.dao.EntityDao
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model
 import org.openurp.base.Department

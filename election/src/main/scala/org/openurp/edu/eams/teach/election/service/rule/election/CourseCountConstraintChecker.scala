@@ -6,7 +6,7 @@ import org.beangle.commons.collection.CollectUtils
 import org.beangle.ems.rule.Context
 import org.openurp.base.Semester
 import org.openurp.edu.base.Student
-import org.openurp.edu.teach.code.CourseType
+import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.eams.teach.election.model.Enum.ElectRuleType
 import org.openurp.edu.eams.teach.election.model.constraint.StdCourseCountConstraint
 import org.openurp.edu.eams.teach.election.service.CourseTakeService

@@ -1,10 +1,6 @@
 package org.openurp.edu.eams.teach.lesson.service.limit
 
 
-import org.beangle.commons.lang.tuple.Pair
-
-
-
 trait CourseLimitMetaEnumProvider {
 
   def getCourseLimitMetaEnums(): List[CourseLimitMetaEnum]

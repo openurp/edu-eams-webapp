@@ -2,7 +2,7 @@ package org.openurp.edu.eams.teach.election.service.rule
 
 
 
-import org.beangle.commons.dao.EntityDao
+import org.beangle.data.model.dao.EntityDao
 import org.beangle.ems.rule.engine.RuleExecutor
 import org.beangle.ems.rule.model.RuleConfig
 import org.beangle.ems.rule.model.RuleConfigParam

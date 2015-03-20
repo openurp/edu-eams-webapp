@@ -8,8 +8,7 @@ class StatItem(var what: AnyRef) extends StatCountor {
   var countors: Array[Comparable[_]] = _
 
   def this(what: AnyRef, count: Comparable[_]) {
-    this()
-    this.what = what
+    this(what)
     this.countors = Array(count)
   }
 
@@ -17,8 +16,7 @@ class StatItem(var what: AnyRef) extends StatCountor {
       count1: Comparable[_], 
       count2: Comparable[_], 
       count3: Comparable[_]) {
-    this()
-    this.what = what
+    this(what)
     this.countors = Array(count1, count2, count3)
   }
 
@@ -27,14 +25,12 @@ class StatItem(var what: AnyRef) extends StatCountor {
       count2: Comparable[_], 
       count3: Comparable[_], 
       count4: Comparable[_]) {
-    this()
-    this.what = what
+    this(what)
     this.countors = Array(count1, count2, count3, count4)
   }
 
   def this(what: AnyRef, count1: Comparable[_], count2: Comparable[_]) {
-    this()
-    this.what = what
+    this(what)
     this.countors = Array(count1, count2)
   }
 

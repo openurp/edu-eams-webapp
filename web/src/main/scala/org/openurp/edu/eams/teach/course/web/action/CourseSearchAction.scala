@@ -15,7 +15,7 @@ import org.openurp.edu.base.Course
 import org.openurp.edu.eams.teach.code.industry.ExamMode
 import org.openurp.edu.eams.teach.code.school.CourseCategory
 import org.openurp.edu.eams.teach.code.school.CourseHourType
-import org.openurp.edu.teach.code.CourseType
+import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.eams.teach.service.CourseService
 import org.openurp.edu.eams.teach.service.impl.CoursePropertyExtractor
 import org.openurp.edu.eams.web.action.common.ProjectSupportAction

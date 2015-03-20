@@ -26,7 +26,7 @@ import org.openurp.base.Campus
 import org.openurp.base.Department
 import org.openurp.base.Semester
 import org.openurp.code.person.Gender
-import org.openurp.edu.eams.base.util.WeekDays
+import org.beangle.commons.lang.time.WeekDays
 import org.openurp.edu.eams.classroom.Occupancy
 import org.openurp.edu.eams.classroom.util.RoomUseridGenerator
 import org.openurp.edu.eams.classroom.util.RoomUseridGenerator.Usage

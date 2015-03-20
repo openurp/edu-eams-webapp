@@ -4,7 +4,7 @@ package org.openurp.edu.eams.teach.grade.interceptor
 import org.apache.commons.collections.CollectionUtils
 import org.apache.struts2.ServletActionContext
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.EntityDao
+import org.beangle.data.model.dao.EntityDao
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.inject.Container

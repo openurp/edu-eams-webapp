@@ -13,7 +13,7 @@ import org.beangle.struts2.helper.Params
 import org.openurp.edu.eams.base.Building
 import org.openurp.base.Semester
 import org.openurp.base.TimeSetting
-import org.openurp.edu.eams.base.util.WeekDays
+import org.beangle.commons.lang.time.WeekDays
 import org.openurp.edu.base.Project
 import org.openurp.edu.base.Student
 import org.openurp.edu.eams.core.service.TimeSettingService

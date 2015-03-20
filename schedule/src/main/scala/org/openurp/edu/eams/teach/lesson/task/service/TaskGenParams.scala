@@ -6,7 +6,7 @@ import org.beangle.commons.entity.pojo.LongIdObject
 import org.openurp.base.Semester
 import org.openurp.edu.eams.base.code.school.RoomType
 import org.openurp.edu.base.Course
-import org.openurp.edu.teach.code.CourseType
+import org.openurp.edu.base.code.CourseType
 
 
 

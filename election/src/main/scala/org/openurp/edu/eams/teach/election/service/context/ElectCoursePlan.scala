@@ -6,7 +6,7 @@ import java.io.Serializable
 
 import org.beangle.commons.collection.CollectUtils
 import org.openurp.edu.base.Course
-import org.openurp.edu.teach.code.CourseType
+import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.teach.lesson.Lesson
 
 

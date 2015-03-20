@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.lesson.task.util
 
 import org.openurp.edu.base.Adminclass
-import org.openurp.edu.teach.code.CourseType
+import org.openurp.edu.base.code.CourseType
 
 
 

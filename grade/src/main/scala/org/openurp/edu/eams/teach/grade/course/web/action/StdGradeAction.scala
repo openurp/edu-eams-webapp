@@ -25,7 +25,7 @@ import org.openurp.edu.eams.teach.code.industry.ExamMode
 import org.openurp.edu.teach.code.ExamStatus
 import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.eams.teach.code.industry.ScoreMarkStyle
-import org.openurp.edu.teach.code.CourseType
+import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.eams.teach.grade.course.service.MarkStyleHelper
 import org.openurp.edu.eams.teach.grade.course.service.StdGradeService
 import org.openurp.edu.eams.teach.grade.course.web.helper.CourseGradeHelper

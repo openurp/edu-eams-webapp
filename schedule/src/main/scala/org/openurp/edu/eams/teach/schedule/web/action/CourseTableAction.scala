@@ -29,7 +29,7 @@ import org.openurp.base.Department
 import org.openurp.base.Semester
 import org.openurp.code.person.Gender
 import org.openurp.edu.eams.base.code.school.RoomType
-import org.openurp.edu.eams.base.util.WeekDays
+import org.beangle.commons.lang.time.WeekDays
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.base.Project
 import org.openurp.edu.base.Student
@@ -41,7 +41,7 @@ import org.openurp.edu.eams.core.service.TimeSettingService
 import org.openurp.edu.base.Course
 import org.openurp.edu.eams.teach.Textbook
 import org.openurp.edu.eams.teach.code.school.CourseHourType
-import org.openurp.edu.teach.code.CourseType
+import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.teach.schedule.CourseActivity
 import org.openurp.edu.teach.lesson.CourseLimitMeta.Operator
 import org.openurp.edu.eams.teach.lesson.CourseMaterial

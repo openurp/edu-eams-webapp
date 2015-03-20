@@ -4,10 +4,8 @@ import java.io.Serializable
 
 import java.util.Arrays
 
-
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.impl.BaseServiceImpl
-import org.beangle.commons.dao.query.builder.Condition
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.data.model.Entity
 import org.beangle.commons.entity.metadata.Model
@@ -18,7 +16,7 @@ import org.openurp.edu.eams.core.CommonAuditState
 import org.openurp.edu.base.Project
 import org.openurp.edu.base.Teacher
 import org.openurp.edu.teach.code.ElectionMode
-import org.openurp.edu.teach.code.CourseType
+import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.teach.lesson.CourseLimitItem
 import org.openurp.edu.teach.lesson.CourseTake
 import org.openurp.edu.teach.lesson.Lesson
@@ -32,8 +30,6 @@ import org.openurp.edu.eams.teach.lesson.service.TaskCopyParams
 import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnum
 import org.openurp.edu.eams.teach.lesson.util.LessonElectionUtil
 
-
-
 class LogHelper {
 
   def info(s: String) {
@@ -46,33 +42,33 @@ class LessonServiceImpl extends BaseServiceImpl with LessonService {
 
   private var lessonLogHelper: LessonLogHelper = _
 
-  def teachDepartsOfSemester(projects: List[Project], departments: List[Department], semester: Semester): List[Department] = {
+  def teachDepartsOfSemester(projects: List[Project], departments: List[Department], semester: Semester): Seq[Department] = {
     if (CollectUtils.isNotEmpty(projects) && CollectUtils.isNotEmpty(departments)) {
-      val query = OqlBuilder.from(classOf[Lesson].name + " lesson")
+      val query = OqlBuilder.from(classOf[Lesson].getName + " lesson")
       query.select("distinct(lesson.teachDepart)")
-      query.where(" lesson.semester=:semester and lesson.teachDepart in (:departments) and lesson.project in (:projects) ", 
+      query.where(" lesson.semester=:semester and lesson.teachDepart in (:departments) and lesson.project in (:projects) ",
         semester, departments, projects)
       entityDao.search(query)
     } else {
-      CollectUtils.newArrayList(0)
+      CollectUtils.newArrayList
     }
   }
 
-  def courseTypesOfSemester(projects: List[Project], departments: List[Department], semester: Semester): List[CourseType] = {
+  def courseTypesOfSemester(projects: List[Project], departments: List[Department], semester: Semester): Seq[CourseType] = {
     if (CollectUtils.isNotEmpty(projects) && CollectUtils.isNotEmpty(departments)) {
-      val query = OqlBuilder.from(classOf[Lesson].name + " lesson")
+      val query = OqlBuilder.from(classOf[Lesson].getName + " lesson")
       query.select("distinct(lesson.courseType)")
-      query.where(" lesson.semester=:semester and lesson.teachDepart in (:departments) and lesson.project in (:projects) ", 
+      query.where(" lesson.semester=:semester and lesson.teachDepart in (:departments) and lesson.project in (:projects) ",
         semester, departments, projects)
       entityDao.search(query)
     } else {
-      CollectUtils.newArrayList(0)
+      CollectUtils.newArrayList
     }
   }
 
-  def attendDepartsOfSemester(projects: List[Project], semester: Semester): List[Department] = {
+  def attendDepartsOfSemester(projects: List[Project], semester: Semester): Seq[Department] = {
     if (CollectUtils.isNotEmpty(projects)) {
-      val qq = OqlBuilder.from(classOf[Lesson].name + " lesson")
+      val qq = OqlBuilder.from[CourseLimitItem](classOf[Lesson].getName + " lesson")
       qq.join("lesson.teachClass.limitGroups", "lgroup").join("lgroup.items", "litem")
         .where("litem.meta.id = :metaid", CourseLimitMetaEnum.DEPARTMENT.metaId)
         .where("lesson.semester = :semester", semester)
@@ -81,39 +77,39 @@ class LessonServiceImpl extends BaseServiceImpl with LessonService {
       val limitItems = entityDao.search(qq)
       val sb = new StringBuilder()
       for (item <- limitItems) {
-        val ids = item.content.split(",")
+        val ids = Strings.split(item.content)
         sb.append(Strings.join(ids, ",")).append(',')
       }
       val departmentIds = Strings.splitToInt(sb.toString)
-      val distinctIds = new ArrayList[Integer]()
+      val distinctIds = new collection.mutable.ListBuffer[Integer]
       Arrays.sort(departmentIds)
       var prev = -1
       for (i <- 0 until departmentIds.length) {
         if (prev != departmentIds(i)) {
-          distinctIds.add(departmentIds(i))
+          distinctIds += departmentIds(i)
         }
         prev = departmentIds(i)
       }
       if (CollectUtils.isEmpty(distinctIds)) {
-        return new ArrayList[Department]()
+        return List.empty
       }
-      entityDao.get(classOf[Department], distinctIds)
+      entityDao.findBy(classOf[Department], "id", distinctIds)
     } else {
       CollectUtils.newArrayList(0)
     }
   }
 
-  def canAttendDepartsOfSemester(projects: List[Project], departments: List[Department], semester: Semester): List[Department] = {
+  def canAttendDepartsOfSemester(projects: List[Project], departments: List[Department], semester: Semester): Seq[Department] = {
     if (CollectUtils.isNotEmpty(projects) && CollectUtils.isNotEmpty(departments)) {
       val query = OqlBuilder.from(classOf[Department], "department")
-      query.where("exists (from org.openurp.edu.teach.plan.MajorPlan plan" + 
-        " where plan.program.department=department and plan.program.major.project in (:projects)" + 
-        " and plan.program.department in (:departs)" + 
-        " and current_date() >= plan.program.effectiveOn and (plan.program.invalidOn is null or current_date() <= plan.program.invalidOn))", 
+      query.where("exists (from org.openurp.edu.teach.plan.MajorPlan plan" +
+        " where plan.program.department=department and plan.program.major.project in (:projects)" +
+        " and plan.program.department in (:departs)" +
+        " and current_date() >= plan.program.effectiveOn and (plan.program.invalidOn is null or current_date() <= plan.program.invalidOn))",
         semester, departments, projects)
       entityDao.search(query)
     } else {
-      CollectUtils.newArrayList(0)
+      CollectUtils.newArrayList
     }
   }
 
@@ -124,29 +120,29 @@ class LessonServiceImpl extends BaseServiceImpl with LessonService {
     entityDao.search(query).asInstanceOf[List[Project]]
   }
 
-  def getLessonByCategory(id: Serializable, strategy: LessonFilterStrategy, semesters: Iterable[Semester]): List[Lesson] = {
+  def getLessonByCategory(id: Serializable, strategy: LessonFilterStrategy, semesters: Iterable[Semester]): Seq[Lesson] = {
     if (null == id || semesters.isEmpty) {
       CollectUtils.newArrayList(0)
     } else {
       val prefix = "select distinct lesson.id from org.openurp.edu.teach.lesson.Lesson as lesson "
       val postfix = " and lesson.semester in (:semesters) "
-      val query = OqlBuilder.hql(prefix + strategy.filterString + postfix)
+      val query = OqlBuilder.oql[java.lang.Long](prefix + strategy.getFilterString + postfix)
       query.param("id", id)
       query.param("semesters", semesters)
       val lessonIds = entityDao.search(query)
-      var rs = CollectUtils.newArrayList()
+      var rs = CollectUtils.newArrayList[Lesson]
       if (CollectUtils.isNotEmpty(lessonIds)) {
-        rs = entityDao.get(classOf[Lesson], lessonIds.toArray(Array.ofDim[Long](0)))
+        rs = entityDao.findBy(classOf[Lesson], "id",lessonIds)
       }
       rs
     }
   }
 
-  def getLessonByCategory(id: Serializable, strategy: LessonFilterStrategy, semester: Semester): List[Lesson] = {
+  def getLessonByCategory(id: Serializable, strategy: LessonFilterStrategy, semester: Semester): Seq[Lesson] = {
     if (null == id || null == semester.id) {
-      CollectUtils.newArrayList(0)
+      CollectUtils.newArrayList
     } else {
-      getLessonByCategory(id, strategy, Collections.singletonList(semester))
+      getLessonByCategory(id, strategy, List(semester))
     }
   }
 
@@ -156,14 +152,14 @@ class LessonServiceImpl extends BaseServiceImpl with LessonService {
       val copy = lesson.clone()
       if (!params.isCopyCourseTakes) {
         copy.teachClass.courseTakes.clear()
-        copy.teachClass.stdCount=0
+        copy.teachClass.stdCount = 0
       } else {
         for (take <- copy.teachClass.courseTakes) {
-          take.electionMode=Model.newInstance(classOf[ElectionMode], ElectionMode.ASSIGEND)
+          take.electionMode = Model.newInstance(classOf[ElectionMode], ElectionMode.ASSIGEND)
         }
       }
-      copy.auditStatus=CommonAuditState.UNSUBMITTED
-      copy.semester=params.semester
+      copy.auditStatus = CommonAuditState.UNSUBMITTED
+      copy.semester = params.semester
       LessonElectionUtil.normalizeTeachClass(copy)
       copiedTasks.add(copy)
     }
@@ -174,13 +170,13 @@ class LessonServiceImpl extends BaseServiceImpl with LessonService {
     copiedTasks
   }
 
-  def getLessons[T <: Entity[_]](semester: Semester, entity: T): List[Lesson] = {
+  def getLessons[T <: Entity[_]](semester: Semester, entity: T): Seq[Lesson] = {
     val builder = OqlBuilder.from(classOf[Lesson], "lesson")
     builder.where("lesson.semester =:semester", semester)
     val con = CourseLimitUtils.build(entity, "lgi")
     val params = con.params
-    builder.where("exists(from lesson.teachClass.limitGroups lg join lg.items as lgi where" + 
-      con.content + 
+    builder.where("exists(from lesson.teachClass.limitGroups lg join lg.items as lgi where" +
+      con.content +
       ")", params.get(0), params.get(1), params.get(2))
     entityDao.search(builder)
   }

@@ -4,8 +4,6 @@ import java.util.Date
 
 
 
-.Entry
-
 import org.apache.commons.collections.CollectionUtils
 import org.apache.commons.collections.ListUtils
 import org.apache.commons.collections.MapUtils
@@ -27,7 +25,7 @@ import org.openurp.edu.base.StudentJournal
 import org.openurp.code.edu.Education
 import org.openurp.edu.base.code.StdType
 import org.openurp.edu.teach.code.CourseTakeType
-import org.openurp.edu.teach.code.CourseType
+import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.eams.teach.election.model.Enum.ConstraintType
 import org.openurp.edu.eams.teach.election.model.constraint.ConstraintLogger
 import org.openurp.edu.eams.teach.election.model.constraint.StdCourseCountConstraint

@@ -16,7 +16,7 @@ import org.beangle.commons.entity.pojo.LongIdObject
 import org.hibernate.annotations.NaturalId
 import org.openurp.base.Semester
 import org.openurp.edu.base.Student
-import org.openurp.edu.teach.code.CourseType
+import org.openurp.edu.base.code.CourseType
 
 
 

@@ -25,7 +25,7 @@ import org.openurp.edu.base.Project
 import org.openurp.edu.base.Student
 import org.openurp.code.edu.Education
 import org.openurp.edu.base.code.StdType
-import org.openurp.edu.teach.code.CourseType
+import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.eams.teach.election.ElectPlan
 import org.openurp.edu.eams.teach.election.ElectionProfile
 import org.openurp.edu.eams.teach.election.model.ElectionProfileBean

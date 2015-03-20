@@ -7,7 +7,7 @@ import org.beangle.commons.dao.query.builder.Condition
 import org.beangle.struts2.helper.Params
 import org.openurp.edu.eams.base.CourseUnit
 import org.openurp.base.Semester
-import org.openurp.edu.eams.base.util.WeekDays
+import org.beangle.commons.lang.time.WeekDays
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.base.Teacher
 import org.openurp.edu.eams.core.service.TimeSettingService

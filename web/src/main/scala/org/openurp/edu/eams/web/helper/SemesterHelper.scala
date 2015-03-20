@@ -4,7 +4,7 @@ package org.openurp.edu.eams.web.helper
 import javax.persistence.EntityNotFoundException
 import javax.servlet.http.HttpServletRequest
 import org.apache.struts2.ServletActionContext
-import org.beangle.commons.dao.EntityDao
+import org.beangle.data.model.dao.EntityDao
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.web.util.CookieUtils
 import org.beangle.security.blueprint.data.service.DataPermissionService

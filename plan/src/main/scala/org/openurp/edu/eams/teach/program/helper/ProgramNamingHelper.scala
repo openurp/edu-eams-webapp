@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.program.helper
 
 import java.text.MessageFormat
-import org.beangle.commons.dao.EntityDao
+import org.beangle.data.model.dao.EntityDao
 import com.ekingstar.eams.core.Direction
 import com.ekingstar.eams.core.Major
 import com.ekingstar.eams.core.Student

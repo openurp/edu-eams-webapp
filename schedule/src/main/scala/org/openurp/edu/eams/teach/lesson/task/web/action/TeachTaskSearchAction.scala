@@ -13,7 +13,7 @@ import org.beangle.commons.transfer.exporter.PropertyExtractor
 import org.openurp.base.Campus
 import org.openurp.base.Department
 import org.openurp.base.Semester
-import org.openurp.edu.eams.base.util.WeekDays
+import org.beangle.commons.lang.time.WeekDays
 import org.openurp.edu.eams.base.util.WeekStates
 import org.openurp.edu.base.Project
 import org.openurp.edu.base.Student

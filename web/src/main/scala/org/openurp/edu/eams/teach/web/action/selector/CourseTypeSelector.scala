@@ -1,6 +1,6 @@
 package org.openurp.edu.eams.teach.web.action.selector
 
-import org.openurp.edu.teach.code.CourseType
+import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.eams.web.action.BaseAction
 
 

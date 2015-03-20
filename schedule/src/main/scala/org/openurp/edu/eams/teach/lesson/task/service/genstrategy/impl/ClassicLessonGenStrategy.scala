@@ -15,7 +15,7 @@ import org.openurp.edu.eams.base.util.WeekStates
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.eams.core.service.SemesterService
 import org.openurp.edu.base.Course
-import org.openurp.edu.teach.code.CourseType
+import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.eams.teach.lesson.CourseSchedule
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.teach.lesson.LessonPlanRelation

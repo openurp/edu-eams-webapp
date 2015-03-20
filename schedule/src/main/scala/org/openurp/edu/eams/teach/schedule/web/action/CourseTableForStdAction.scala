@@ -13,7 +13,7 @@ import org.beangle.data.model.Entity
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.lang.Strings
 import org.openurp.base.Semester
-import org.openurp.edu.eams.base.util.WeekDays
+import org.beangle.commons.lang.time.WeekDays
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.base.Student
 import org.openurp.edu.eams.core.service.TimeSettingService

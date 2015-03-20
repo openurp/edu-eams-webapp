@@ -7,7 +7,7 @@ import java.util.GregorianCalendar
 
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.text.i18n.TextResource
-import org.openurp.edu.eams.base.util.WeekDays
+import org.beangle.commons.lang.time.WeekDays
 import org.openurp.edu.eams.date.EamsDateUtil
 import org.openurp.edu.teach.exam.ExamActivity
 import org.openurp.edu.teach.exam.ExamRoom

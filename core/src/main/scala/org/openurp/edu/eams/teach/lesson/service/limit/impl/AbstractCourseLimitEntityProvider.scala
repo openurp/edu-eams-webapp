@@ -3,15 +3,10 @@ package org.openurp.edu.eams.teach.lesson.service.limit.impl
 import java.io.Serializable
 import java.util.LinkedHashMap
 
-
 import org.beangle.commons.collection.page.PageLimit
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.data.model.Entity
-import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.lang.Arrays
-import org.beangle.commons.lang.tuple.Pair
-
-
 
 abstract class AbstractCourseLimitEntityProvider[T <: Entity[ID], ID <: Serializable]
     extends AbstractCourseLimitContentProvider[T] {
@@ -39,9 +34,7 @@ abstract class AbstractCourseLimitEntityProvider[T <: Entity[ID], ID <: Serializ
   }
 
   protected override def getCascadeContents(content: Array[Serializable], 
-      term: String, 
-      limit: PageLimit, 
-      cascadeField: Map[Long, String]): List[T] = {
+      term: String,       limit: PageLimit,       cascadeField: Map[Long, String]): Seq[T] = {
     val builder = getQueryBuilder(content, term, limit)
     addCascadeQuery(builder, cascadeField)
     entityDao.search(builder)
@@ -50,7 +43,7 @@ abstract class AbstractCourseLimitEntityProvider[T <: Entity[ID], ID <: Serializ
   protected def addCascadeQuery(builder: OqlBuilder[T], cascadeField: Map[Long, String]) {
   }
 
-  protected override def getOtherContents(content: Array[Serializable], term: String, limit: PageLimit): List[T] = {
+  protected override def getOtherContents(content: Array[Serializable], term: String, limit: PageLimit): Seq[T] = {
     entityDao.search(getQueryBuilder(content, term, limit))
   }
 

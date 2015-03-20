@@ -2,7 +2,7 @@ package org.openurp.edu.eams.teach.schedule.util
 
 
 
-import org.openurp.edu.teach.code.CourseType
+import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.teach.lesson.Lesson
 
 

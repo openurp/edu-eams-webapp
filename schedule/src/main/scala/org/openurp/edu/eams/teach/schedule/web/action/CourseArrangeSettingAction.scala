@@ -10,7 +10,7 @@ import org.beangle.commons.lang.Strings
 import org.beangle.struts2.convention.route.Action
 import org.beangle.struts2.helper.ContextHelper
 import org.openurp.base.Semester
-import org.openurp.edu.eams.base.util.WeekDays
+import org.beangle.commons.lang.time.WeekDays
 import org.openurp.edu.base.Project
 import org.openurp.edu.eams.core.service.TimeSettingService
 import org.openurp.edu.eams.teach.code.industry.TeachLangType

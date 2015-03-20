@@ -10,10 +10,10 @@ import java.text.MessageFormat
 import org.apache.commons.collections.CollectionUtils
 import org.apache.commons.collections.Transformer
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.EntityDao
+import org.beangle.data.model.dao.EntityDao
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
-import org.beangle.commons.lang.tuple.Pair
+
 import org.beangle.commons.text.i18n.TextResource
 import org.beangle.commons.transfer.exporter.DefaultPropertyExtractor
 import org.openurp.base.Room

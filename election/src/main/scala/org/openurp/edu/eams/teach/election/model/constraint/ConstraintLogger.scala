@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
 import org.beangle.commons.entity.pojo.LongIdObject
 import org.openurp.base.Semester
-import org.openurp.edu.teach.code.CourseType
+import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.eams.teach.election.CourseTypeCreditConstraint
 import org.openurp.edu.eams.teach.election.model.Enum.ConstraintType
 import ConstraintLogger._

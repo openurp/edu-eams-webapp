@@ -5,7 +5,7 @@ import java.util.Arrays
 import java.util.Comparator
 
 
-import org.beangle.commons.dao.EntityDao
+import org.beangle.data.model.dao.EntityDao
 import org.beangle.commons.lang.Strings
 import org.openurp.edu.teach.plan.CourseGroup
 import org.openurp.edu.eams.teach.program.CoursePlan

@@ -10,7 +10,7 @@ import org.beangle.commons.lang.Strings
 import org.beangle.commons.text.i18n.TextResource
 import org.openurp.base.Room
 import org.openurp.base.Semester
-import org.openurp.edu.eams.base.util.WeekDays
+import org.beangle.commons.lang.time.WeekDays
 import org.beangle.commons.lang.time.YearWeekTime
 import org.openurp.edu.base.Teacher
 import org.openurp.edu.eams.number.NumberRangeDigestor

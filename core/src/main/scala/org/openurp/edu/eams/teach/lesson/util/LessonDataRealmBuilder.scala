@@ -2,7 +2,7 @@ package org.openurp.edu.eams.teach.lesson.util
 
 import java.text.MessageFormat
 
-import org.beangle.commons.dao.EntityDao
+import org.beangle.data.model.dao.EntityDao
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.base.Department
 import org.openurp.edu.base.Project

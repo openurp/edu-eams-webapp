@@ -20,7 +20,7 @@ import org.beangle.security.blueprint.User
 import org.openurp.edu.eams.base.CourseUnit
 import org.openurp.base.Semester
 import org.openurp.code.person.Gender
-import org.openurp.edu.eams.base.util.WeekDays
+import org.beangle.commons.lang.time.WeekDays
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.base.Project
 import org.openurp.edu.base.Student

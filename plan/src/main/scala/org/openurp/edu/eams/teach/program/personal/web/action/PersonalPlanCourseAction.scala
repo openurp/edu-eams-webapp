@@ -2,7 +2,7 @@ package org.openurp.edu.eams.teach.program.personal.web.action
 
 import javax.persistence.EntityNotFoundException
 import org.beangle.commons.lang.Strings
-import org.beangle.commons.lang.tuple.Pair
+
 import org.beangle.struts2.convention.route.Action
 import com.ekingstar.eams.base.Department
 import com.ekingstar.eams.teach.Course

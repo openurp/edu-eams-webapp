@@ -6,7 +6,7 @@ package org.openurp.edu.eams.teach.planaudit.service.listeners
 import org.beangle.commons.collection.CollectUtils
 import org.openurp.edu.eams.core.service.SemesterService
 import org.openurp.edu.base.Course
-import org.openurp.edu.teach.code.CourseType
+import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.eams.teach.exchange.ExchangeCourse
 import org.openurp.edu.teach.grade.CourseGrade
 import org.openurp.edu.teach.planaudit.CourseAuditResult

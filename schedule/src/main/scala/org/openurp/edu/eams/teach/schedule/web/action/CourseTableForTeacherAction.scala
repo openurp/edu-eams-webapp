@@ -10,7 +10,7 @@ import org.beangle.data.model.Entity
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.lang.functor.Predicate
 import org.openurp.base.Semester
-import org.openurp.edu.eams.base.util.WeekDays
+import org.beangle.commons.lang.time.WeekDays
 import org.openurp.edu.base.Project
 import org.openurp.edu.base.Teacher
 import org.openurp.edu.eams.core.service.TimeSettingService

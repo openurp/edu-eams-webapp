@@ -9,7 +9,7 @@ import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.base.Room
 import org.openurp.base.Department
 import org.openurp.base.Semester
-import org.openurp.edu.eams.base.util.WeekDays
+import org.beangle.commons.lang.time.WeekDays
 import org.openurp.edu.base.Project
 import org.openurp.edu.eams.teach.code.industry.TeachLangType
 import org.openurp.edu.eams.teach.code.school.CourseCategory

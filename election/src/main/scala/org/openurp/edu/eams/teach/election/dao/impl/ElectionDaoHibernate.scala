@@ -10,7 +10,7 @@ import java.sql.Types
 import java.util.Date
 
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.EntityDao
+import org.beangle.data.model.dao.EntityDao
 import org.beangle.commons.dao.Operation
 import org.beangle.data.model.Entity
 import org.beangle.commons.entity.metadata.Model

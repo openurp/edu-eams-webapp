@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.grade.course.service
 
 
-import org.beangle.commons.dao.EntityDao
+import org.beangle.data.model.dao.EntityDao
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.base.Department
 import org.openurp.base.Semester

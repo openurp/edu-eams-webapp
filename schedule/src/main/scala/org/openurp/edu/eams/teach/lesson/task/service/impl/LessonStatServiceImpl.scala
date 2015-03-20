@@ -26,7 +26,7 @@ import org.openurp.edu.eams.core.code.nation.TeacherTitle
 import org.openurp.edu.base.code.StdType
 import org.openurp.edu.eams.core.service.SemesterService
 import org.openurp.edu.eams.system.security.DataRealm
-import org.openurp.edu.teach.code.CourseType
+import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.teach.schedule.CourseActivity
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.teach.lesson.LessonTag

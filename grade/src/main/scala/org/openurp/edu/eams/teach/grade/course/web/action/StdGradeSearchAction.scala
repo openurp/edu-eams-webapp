@@ -7,7 +7,7 @@ import org.openurp.base.Department
 import org.openurp.edu.base.Project
 import org.openurp.edu.base.Student
 import org.openurp.edu.teach.code.CourseTakeType
-import org.openurp.edu.teach.code.CourseType
+import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.eams.teach.grade.service.CourseGradeService
 import org.openurp.edu.teach.grade.CourseGrade
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction

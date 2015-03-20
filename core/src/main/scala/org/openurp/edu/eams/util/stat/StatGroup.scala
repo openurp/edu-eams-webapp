@@ -20,7 +20,7 @@ object StatGroup {
   def buildStatGroup(datas: List[_], counters: Int): StatGroup = {
     val result = new StatGroup(null)
     if (!(datas == null || datas.isEmpty)) {
-      var iter = datas.iterator()
+      var iter = datas.iterator
       while (iter.hasNext) {
         val data = iter.next().asInstanceOf[Array[Any]]
         result.addData(data, 0, data.length - 1, counters)
@@ -33,7 +33,7 @@ object StatGroup {
     val stats = new ArrayList()
     if (!CollectUtils.isEmpty(datas)) {
       val rs = new HashMap()
-      var iter = datas.iterator()
+      var iter = datas.iterator
       while (iter.hasNext) {
         val data = iter.next().asInstanceOf[Array[Any]]
         var result = rs.get(data(0)).asInstanceOf[StatGroup]
@@ -56,8 +56,7 @@ class StatGroup(entity: AnyRef) extends StatCountor {
   var items: List[_] = new ArrayList()
 
   def this(entity: AnyRef, items: List[_]) {
-    this()
-    this.what = entity
+    this(entity)
     this.items = items
   }
 
@@ -111,7 +110,7 @@ class StatGroup(entity: AnyRef) extends StatCountor {
 
   def getItemEntities(): List[_] = {
     val entities = new ArrayList()
-    var iter = items.iterator()
+    var iter = items.iterator
     while (iter.hasNext) {
       val obj = iter.next().asInstanceOf[StatCountor]
       entities.add(obj.what)

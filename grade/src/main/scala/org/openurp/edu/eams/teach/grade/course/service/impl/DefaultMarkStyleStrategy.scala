@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.grade.course.service.impl
 
 
-import org.beangle.commons.dao.EntityDao
+import org.beangle.data.model.dao.EntityDao
 import org.beangle.commons.entity.metadata.Model
 import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.eams.teach.code.industry.ScoreMarkStyle

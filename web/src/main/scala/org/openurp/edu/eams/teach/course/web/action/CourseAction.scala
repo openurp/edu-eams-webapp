@@ -38,7 +38,7 @@ import org.openurp.edu.eams.teach.code.industry.ExamMode
 import org.openurp.edu.eams.teach.code.school.CourseAbilityRate
 import org.openurp.edu.eams.teach.code.school.CourseCategory
 import org.openurp.edu.eams.teach.code.school.CourseHourType
-import org.openurp.edu.teach.code.CourseType
+import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.eams.teach.model.CourseHourBean
 import org.openurp.edu.eams.teach.service.impl.CourseImportListener
 import org.openurp.edu.eams.web.util.DownloadHelper

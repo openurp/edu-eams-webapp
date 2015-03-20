@@ -1,11 +1,7 @@
 package org.openurp.edu.eams.teach.service.impl
 
-
-
-
-
-import org.beangle.commons.dao.EntityDao
-import org.beangle.commons.dao.query.QueryBuilder
+import org.beangle.data.model.dao.EntityDao
+import org.beangle.data.model.dao.QueryBuilder
 import org.beangle.commons.lang.BitStrings
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -21,7 +17,7 @@ import org.beangle.data.model.dao.QueryBuilder
 
 abstract class AbstractStdOccupyProvider extends StdOccupyProvider {
 
-  protected var logger: Logger = LoggerFactory.logger(getClass)
+  protected var logger: Logger = LoggerFactory.getLogger(getClass)
 
   protected var entityDao: EntityDao = _
 

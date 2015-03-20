@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.lesson.task.experiment
 
 import java.util.concurrent.BlockingQueue
-import org.beangle.commons.lang.tuple.Pair
+
 import AjaxProgressBar._
 
 

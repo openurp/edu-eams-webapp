@@ -4,7 +4,7 @@ package org.openurp.edu.eams.teach.program.major.service
 
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.base.Course
-import org.openurp.edu.teach.code.CourseType
+import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.teach.plan.CoursePlan
 import org.openurp.edu.teach.plan.PlanCourse
 import org.openurp.edu.teach.plan.MajorPlan

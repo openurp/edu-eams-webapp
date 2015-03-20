@@ -3,7 +3,7 @@ package org.openurp.edu.eams.teach.grade.transcript.service.impl
 
 
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.EntityDao
+import org.beangle.data.model.dao.EntityDao
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.edu.base.Student
 import org.openurp.edu.eams.teach.grade.transcript.service.TranscriptDataProvider

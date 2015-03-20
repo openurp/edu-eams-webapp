@@ -8,7 +8,7 @@ import javax.validation.ConstraintViolation
 import javax.validation.ConstraintViolationException
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.EntityDao
+import org.beangle.data.model.dao.EntityDao
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.data.model.Entity
 import org.beangle.commons.entity.metadata.Model
@@ -22,7 +22,7 @@ import org.openurp.edu.base.Course
 import org.openurp.edu.teach.code.ExamStatus
 import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.eams.teach.code.industry.ScoreMarkStyle
-import org.openurp.edu.teach.code.CourseType
+import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.eams.teach.grade.service.CourseGradeCalculator
 import org.openurp.edu.teach.grade.CourseGrade
 import org.openurp.edu.teach.grade.model.CourseGradeState

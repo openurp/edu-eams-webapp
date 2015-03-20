@@ -6,12 +6,12 @@ import org.beangle.commons.collection.Order
 
 
 
-class StatItemComparator(private var order: Order) extends Comparator {
+class StatItemComparator(private var order: Order) extends Ordering[AnyRef] {
 
   def compare(arg0: AnyRef, arg1: AnyRef): Int = {
     var item0: StatItem = null
     var item1: StatItem = null
-    if (order.isAscending) {
+    if (order.ascending) {
       item0 = arg0.asInstanceOf[StatItem]
       item1 = arg1.asInstanceOf[StatItem]
     } else {
@@ -25,8 +25,8 @@ class StatItemComparator(private var order: Order) extends Comparator {
         -1
       }
     }
-    val c0 = PropertyUtils.property(item0, order.property).asInstanceOf[Comparable[_]]
-    val c1 = PropertyUtils.property(item1, order.property).asInstanceOf[Comparable[_]]
+    val c0 = PropertyUtils.getProperty(item0, order.property).asInstanceOf[Comparable[Any]]
+    val c1 = PropertyUtils.getProperty(item1, order.property).asInstanceOf[Comparable[Any]]
     if (null == c0 || null == c1) {
       if (null == c0) {
         1

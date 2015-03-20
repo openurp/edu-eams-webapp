@@ -12,7 +12,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.openurp.base.Room
 import org.openurp.base.Semester
-import org.openurp.edu.eams.base.util.WeekDays
+import org.beangle.commons.lang.time.WeekDays
 import org.beangle.commons.lang.time.YearWeekTime
 import org.openurp.edu.base.Teacher
 import org.openurp.edu.eams.util.TimeUtils

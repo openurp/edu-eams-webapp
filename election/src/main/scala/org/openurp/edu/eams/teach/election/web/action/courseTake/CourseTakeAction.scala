@@ -29,7 +29,7 @@ import org.beangle.security.blueprint.User
 import org.beangle.security.blueprint.service.UserService
 import org.beangle.struts2.helper.QueryHelper
 import org.openurp.base.Semester
-import org.openurp.edu.eams.base.util.WeekDays
+import org.beangle.commons.lang.time.WeekDays
 import org.openurp.edu.base.Student
 import org.openurp.edu.eams.system.msg.service.SystemMessageService
 import org.openurp.edu.teach.code.CourseTakeType

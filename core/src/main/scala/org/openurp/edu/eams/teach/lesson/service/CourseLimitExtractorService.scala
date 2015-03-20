@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.lesson.service
 
 
-import org.beangle.commons.lang.tuple.Pair
+
 import org.openurp.base.Department
 import org.openurp.code.person.Gender
 import org.openurp.edu.base.Adminclass

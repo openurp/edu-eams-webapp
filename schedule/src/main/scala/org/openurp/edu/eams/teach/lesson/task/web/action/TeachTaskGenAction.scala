@@ -15,7 +15,7 @@ import org.openurp.edu.eams.base.code.school.RoomType
 import org.openurp.edu.eams.base.util.WeekStates
 import org.openurp.edu.eams.core.CommonAuditState
 import org.openurp.edu.base.Course
-import org.openurp.edu.teach.code.CourseType
+import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.teach.lesson.LessonPlanRelation
 import org.openurp.edu.eams.teach.lesson.dao.LessonSeqNoGenerator

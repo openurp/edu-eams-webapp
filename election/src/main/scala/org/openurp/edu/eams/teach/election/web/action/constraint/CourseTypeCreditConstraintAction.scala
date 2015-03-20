@@ -7,7 +7,7 @@ import org.beangle.commons.dao.Operation
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.data.model.Entity
 import org.openurp.base.Semester
-import org.openurp.edu.teach.code.CourseType
+import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.eams.teach.election.CourseTypeCreditConstraint
 import org.openurp.edu.eams.teach.election.model.Enum.ConstraintType
 import org.openurp.edu.eams.teach.election.model.constraint.ConstraintLogger

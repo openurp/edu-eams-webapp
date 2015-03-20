@@ -18,7 +18,7 @@ import org.openurp.edu.eams.core.model.MajorBean
 import org.openurp.edu.eams.core.model.ProjectBean
 import org.openurp.edu.base.Course
 import org.openurp.edu.eams.teach.code.school.CourseAbilityRate
-import org.openurp.edu.teach.code.CourseType
+import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.eams.teach.election.ElectionProfile
 import org.openurp.edu.eams.teach.election.model.ElectionProfileBean
 import org.openurp.edu.teach.schedule.CourseActivity

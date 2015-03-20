@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletRequest
 import org.apache.commons.collections.CollectionUtils
 import org.beangle.commons.bean.comparators.PropertyComparator
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.EntityDao
+import org.beangle.data.model.dao.EntityDao
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.beangle.security.blueprint.Profile

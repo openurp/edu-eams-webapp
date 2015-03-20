@@ -11,7 +11,7 @@ import org.hibernate.annotations.Cache
 import org.hibernate.annotations.CacheConcurrencyStrategy
 import org.openurp.base.Semester
 import org.openurp.code.edu.Education
-import org.openurp.edu.teach.code.CourseType
+import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.eams.teach.election.CourseTypeCreditConstraint
 
 

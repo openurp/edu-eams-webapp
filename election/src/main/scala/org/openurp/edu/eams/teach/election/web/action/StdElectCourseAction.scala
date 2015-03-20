@@ -29,7 +29,7 @@ import org.openurp.base.Campus
 import org.openurp.edu.eams.base.CourseUnit
 import org.openurp.base.Semester
 import org.openurp.edu.eams.base.model.CampusBean
-import org.openurp.edu.eams.base.util.WeekDays
+import org.beangle.commons.lang.time.WeekDays
 import org.openurp.edu.base.Project
 import org.openurp.edu.base.Student
 import org.openurp.edu.eams.core.model.ProjectBean
@@ -38,7 +38,7 @@ import org.openurp.edu.eams.core.service.TimeSettingService
 import org.openurp.edu.base.Course
 import org.openurp.edu.teach.code.CourseTakeType
 import org.openurp.edu.teach.code.ElectionMode
-import org.openurp.edu.teach.code.CourseType
+import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.eams.teach.election.CourseTypeCreditConstraint
 import org.openurp.edu.eams.teach.election.ElectionProfile
 import org.openurp.edu.eams.teach.election.model.ElectionProfileBean

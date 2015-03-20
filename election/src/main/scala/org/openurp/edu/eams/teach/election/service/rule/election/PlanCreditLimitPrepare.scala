@@ -4,9 +4,9 @@ package org.openurp.edu.eams.teach.election.service.rule.election
 
 
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.EntityDao
+import org.beangle.data.model.dao.EntityDao
 import org.beangle.data.jpa.dao.OqlBuilder
-import org.openurp.edu.teach.code.CourseType
+import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.eams.teach.election.CourseTypeCreditConstraint
 import org.openurp.edu.eams.teach.election.service.context.ElectCourseGroup
 import org.openurp.edu.eams.teach.election.service.context.ElectCoursePlan

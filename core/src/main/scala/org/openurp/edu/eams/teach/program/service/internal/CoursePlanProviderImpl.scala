@@ -28,26 +28,20 @@ class CoursePlanProviderImpl extends BaseServiceImpl with CoursePlanProvider {
     entityDao.uniqueResult(query)
   }
 
-  def getPersonalPlan(std: Student): PersonalPlan = {
-    val query = OqlBuilder.from(classOf[PersonalPlan], "plan")
+  def getPersonalPlan(std: Student): StdPlan = {
+    val query = OqlBuilder.from(classOf[StdPlan], "plan")
     query.where("plan.std = :std", std)
     entityDao.uniqueResult(query)
   }
 
   def getCoursePlans(students: Iterable[Student]): Map[Student, CoursePlan] = {
-    val result = CollectUtils.newHashMap()
+    val result = CollectUtils.newHashMap[Student, CoursePlan] 
     for (student <- students) result.put(student, getCoursePlan(student))
-    result
-  }
-
-  def getCoursePlan(studentProgram: StudentProgram): CoursePlan = {
-    var plan = getPersonalPlan(studentProgram.std)
-    if (null == plan) plan = getMajorPlan(studentProgram.program)
-    plan
+    result.toMap
   }
 
   def getCoursePlan(student: Student): CoursePlan = {
-    var plan = getPersonalPlan(student)
+    var plan:CoursePlan = getPersonalPlan(student)
     if (null == plan) plan = getMajorPlan(student)
     plan
   }

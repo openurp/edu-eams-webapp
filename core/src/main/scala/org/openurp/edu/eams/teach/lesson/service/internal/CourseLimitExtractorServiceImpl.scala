@@ -5,7 +5,7 @@ package org.openurp.edu.eams.teach.lesson.service.internal
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.beangle.commons.lang.Strings
-import org.beangle.commons.lang.tuple.Pair
+
 import org.openurp.base.Department
 import org.openurp.code.person.Gender
 import org.openurp.edu.base.Adminclass

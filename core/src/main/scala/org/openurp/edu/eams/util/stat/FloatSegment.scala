@@ -1,33 +1,34 @@
 package org.openurp.edu.eams.util.stat
 
-
-
-
 import org.beangle.commons.lang.Objects
 import FloatSegment._
-
-
+import org.beangle.commons.collection.CollectUtils
 
 object FloatSegment {
 
-  def buildSegments(start: Int, span: Int, count: Int): List[FloatSegment] = {
-    val segmentList = new ArrayList[FloatSegment]()
+  def buildSegments(s: Int, span: Int, count: Int): List[FloatSegment] = {
+    var start =s
+    val segmentList = CollectUtils.newArrayList[FloatSegment]
     for (i <- 0 until count) {
-      segmentList.add(new FloatSegment(start, start + span - 1))
+      segmentList += new FloatSegment(start, start + span - 1)
       start += span
     }
-    segmentList
+    segmentList.toList
   }
 
-  def countSegments(segs: List[FloatSegment], numbers: List[Number]) {
-    var iter = numbers.iterator()
+  def countSegments(segs: Seq[FloatSegment], numbers: List[Number]) {
+    var iter = numbers.iterator
     while (iter.hasNext) {
       val number = iter.next()
-      if (null == number) //continue
-      var iterator = segs.iterator()
-      while (iterator.hasNext) {
-        val element = iterator.next()
-        if (element.add(number.floatValue())) //break
+      if (null != number) {
+        var iterator = segs.iterator
+        var added = false
+        while (iterator.hasNext && !added) {
+          val element = iterator.next()
+          if (element.add(number.floatValue())) {
+            added = true
+          }
+        }
       }
     }
   }

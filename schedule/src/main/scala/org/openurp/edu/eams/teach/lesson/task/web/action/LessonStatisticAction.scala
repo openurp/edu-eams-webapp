@@ -10,7 +10,7 @@ import org.beangle.commons.lang.Strings
 import org.openurp.base.Semester
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.base.Project
-import org.openurp.edu.teach.code.CourseType
+import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.teach.lesson.LessonTag
 import org.openurp.edu.eams.teach.lesson.service.CourseLimitService

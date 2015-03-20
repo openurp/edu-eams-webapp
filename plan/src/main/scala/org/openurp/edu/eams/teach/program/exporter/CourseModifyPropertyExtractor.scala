@@ -1,6 +1,6 @@
 package org.openurp.edu.eams.teach.program.exporter
 
-import org.beangle.commons.dao.EntityDao
+import org.beangle.data.model.dao.EntityDao
 import org.beangle.commons.text.i18n.TextResource
 import org.beangle.commons.transfer.exporter.DefaultPropertyExtractor
 import org.openurp.edu.eams.teach.program.major.MajorPlan

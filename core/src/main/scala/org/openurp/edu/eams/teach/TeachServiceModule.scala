@@ -2,7 +2,7 @@ package org.openurp.edu.eams.teach
 
 import org.beangle.commons.inject.bind.AbstractBindModule
 import org.beangle.commons.inject.bind.BeanConfig.ReferenceValue
-import org.beangle.commons.lang.tuple.Pair
+
 import org.springframework.transaction.interceptor.TransactionProxyFactoryBean
 import org.openurp.edu.eams.teach.grade.service.impl.BestGradeFilter
 import org.openurp.edu.eams.teach.grade.service.impl.BestOriginGradeFilter

@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory
 
 class DataAuthorityPredicate(stdTypeIdSeq: String, departIdSeq: String) extends Predicate[Any] {
 
-  protected val logger = LoggerFactory.logger(this.getClass)
+  protected val logger = LoggerFactory.getLogger(this.getClass)
 
   protected var stdTypeDataRealm: String = stdTypeIdSeq
 
@@ -39,12 +39,12 @@ class DataAuthorityPredicate(stdTypeIdSeq: String, departIdSeq: String) extends 
     try {
       if (null == arg0) return true
       if (Strings.isNotEmpty(stdTypeDataRealm)) {
-        val stdTypeId = PropertyUtils.property(arg0, stdTypeAttrName + ".id").asInstanceOf[java.lang.Long]
+        val stdTypeId = PropertyUtils.getProperty(arg0, stdTypeAttrName + ".id").asInstanceOf[java.lang.Long]
         if ((null != stdTypeId) && 
           !Strings.contains(stdTypeDataRealm, stdTypeId.toString)) return false
       }
       if (Strings.isNotEmpty(departDataRealm)) {
-        val departId = PropertyUtils.property(arg0, departAttrName + ".id").asInstanceOf[java.lang.Long]
+        val departId = PropertyUtils.getProperty(arg0, departAttrName + ".id").asInstanceOf[java.lang.Long]
         if ((null != departId) && 
           !Strings.contains(departDataRealm, departId.toString)) return false
       }

@@ -5,12 +5,12 @@ import java.io.Serializable
 
 
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.EntityDao
+import org.beangle.data.model.dao.EntityDao
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.base.Semester
 import org.beangle.commons.lang.time.YearWeekTime
 import org.openurp.edu.base.Student
-import org.openurp.edu.teach.code.CourseType
+import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.eams.teach.election.ElectionProfile
 import org.openurp.edu.eams.teach.election.model.constraint.AbstractCreditConstraint
 import org.openurp.edu.eams.teach.election.model.constraint.StdCourseCountConstraint

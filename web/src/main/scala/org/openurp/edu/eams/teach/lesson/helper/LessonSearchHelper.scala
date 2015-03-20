@@ -11,7 +11,7 @@ import org.beangle.commons.dao.query.builder.Condition
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.BitStrings
 import org.beangle.commons.lang.Strings
-import org.beangle.commons.lang.tuple.Pair
+
 import org.beangle.struts2.helper.Params
 import org.beangle.struts2.helper.QueryHelper
 import org.openurp.base.Department

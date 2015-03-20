@@ -9,7 +9,7 @@ import org.apache.commons.collections.Predicate
 import org.apache.struts2.ServletActionContext
 import org.beangle.commons.bean.comparators.PropertyComparator
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.EntityDao
+import org.beangle.data.model.dao.EntityDao
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Objects
 import org.beangle.commons.lang.Strings

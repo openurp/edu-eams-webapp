@@ -5,7 +5,7 @@ package org.openurp.edu.eams.teach.lesson.task.biz
 
 import java.util.TreeSet
 import org.openurp.edu.base.Adminclass
-import org.openurp.edu.teach.code.CourseType
+import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.teach.lesson.task.biz.comparator.LessonComparator
 

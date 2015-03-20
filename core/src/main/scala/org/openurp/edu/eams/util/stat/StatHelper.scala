@@ -1,12 +1,7 @@
 package org.openurp.edu.eams.util.stat
 
 
-
-
-
-
-
-import org.beangle.commons.dao.EntityDao
+import org.beangle.data.model.dao.EntityDao
 import org.beangle.data.model.Entity
 import StatHelper._
 
@@ -15,7 +10,7 @@ import StatHelper._
 object StatHelper {
 
   def replaceIdWith(datas: Iterable[_], clazzes: Array[Class[_]], entityDao: EntityDao) {
-    var iter = datas.iterator()
+    var iter = datas.iterator
     while (iter.hasNext) {
       val data = iter.next().asInstanceOf[Array[Any]]
       for (i <- 0 until clazzes.length) {
@@ -30,10 +25,6 @@ object StatHelper {
 }
 
 class StatHelper(private var entityDao: EntityDao) {
-
-  def this() {
-    super()
-  }
 
   private def setStatEntities(statMap: Map[_,_], entityClass: Class[_]): List[_] = {
     val entities = entityDao.get(entityClass, "id", statMap.keySet)

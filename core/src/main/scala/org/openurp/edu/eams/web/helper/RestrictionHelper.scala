@@ -2,7 +2,7 @@ package org.openurp.edu.eams.web.helper
 
 
 import javax.servlet.http.HttpSession
-import org.beangle.commons.dao.EntityDao
+import org.beangle.data.model.dao.EntityDao
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.security.blueprint.Profile
 import org.beangle.security.blueprint.User

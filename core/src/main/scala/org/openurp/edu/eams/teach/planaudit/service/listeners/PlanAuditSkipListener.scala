@@ -4,7 +4,7 @@ package org.openurp.edu.eams.teach.planaudit.service.listeners
 
 
 import org.openurp.edu.base.Course
-import org.openurp.edu.teach.code.CourseType
+import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.teach.grade.CourseGrade
 import org.openurp.edu.teach.planaudit.GroupAuditResult
 import org.openurp.edu.teach.planaudit.model.PlanAuditStandard

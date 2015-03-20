@@ -33,7 +33,7 @@ import org.openurp.base.Department
 import org.openurp.base.Semester
 import org.openurp.base.TimeSetting
 import org.openurp.edu.eams.base.code.school.RoomType
-import org.openurp.edu.eams.base.util.WeekDays
+import org.beangle.commons.lang.time.WeekDays
 import org.openurp.edu.eams.base.util.WeekStates
 import org.openurp.edu.eams.classroom.Occupancy
 import org.beangle.commons.lang.time.YearWeekTime

@@ -22,7 +22,7 @@ import org.beangle.data.model.Entity
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.lang.Arrays
 import org.beangle.commons.lang.Strings
-import org.beangle.commons.lang.tuple.Pair
+
 import org.beangle.commons.transfer.TransferResult
 import org.beangle.commons.transfer.excel.ExcelTemplateWriter
 import org.beangle.commons.transfer.exporter.Context
@@ -39,7 +39,7 @@ import org.openurp.base.Semester
 import org.openurp.code.person.Gender
 import org.openurp.edu.eams.base.code.school.RoomType
 import org.openurp.edu.eams.base.model.WeekState
-import org.openurp.edu.eams.base.util.WeekDays
+import org.beangle.commons.lang.time.WeekDays
 import org.openurp.edu.eams.base.util.WeekStates
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.eams.core.CommonAuditState
@@ -54,7 +54,7 @@ import org.openurp.edu.eams.teach.code.industry.ExamMode
 import org.openurp.edu.eams.teach.code.industry.ExamType
 import org.openurp.edu.eams.teach.code.industry.TeachLangType
 import org.openurp.edu.eams.teach.code.school.CourseHourType
-import org.openurp.edu.teach.code.CourseType
+import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.eams.teach.exam.ExamTurn
 import org.openurp.edu.eams.teach.exam.service.ExamYearWeekTimeUtil
 import org.openurp.edu.teach.lesson.CourseLimitGroup

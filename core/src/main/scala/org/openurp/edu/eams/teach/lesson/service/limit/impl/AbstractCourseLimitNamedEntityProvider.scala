@@ -3,7 +3,7 @@ package org.openurp.edu.eams.teach.lesson.service.limit.impl
 import java.io.Serializable
 import org.beangle.commons.bean.PropertyUtils
 import org.beangle.data.model.Entity
-import org.beangle.commons.lang.tuple.Pair
+
 
 
 
@@ -11,7 +11,7 @@ abstract class AbstractCourseLimitNamedEntityProvider[T <: Entity[ID], ID <: Ser
     extends AbstractCourseLimitEntityProvider[T, ID] {
 
   def getContentIdTitle(entity: T): Pair[String, String] = {
-    val name = PropertyUtils.property(entity, "name")
+    val name = PropertyUtils.getProperty(entity, "name")
     new Pair[String, String](entity.id.toString, name)
   }
 }

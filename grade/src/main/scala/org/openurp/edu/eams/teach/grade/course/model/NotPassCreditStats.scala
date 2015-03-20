@@ -6,7 +6,7 @@ import javax.persistence.ManyToOne
 import org.beangle.commons.entity.pojo.LongIdObject
 import org.openurp.edu.base.Student
 import org.openurp.edu.base.Course
-import org.openurp.edu.teach.code.CourseType
+import org.openurp.edu.base.code.CourseType
 
 
 

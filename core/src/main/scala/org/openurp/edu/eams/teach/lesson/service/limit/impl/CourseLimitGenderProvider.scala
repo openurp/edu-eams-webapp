@@ -4,16 +4,10 @@ import java.io.Serializable
 
 import java.util.LinkedHashMap
 
-.Entry
-
-import org.beangle.ems.dictionary.service.BaseCodeService
 import org.openurp.code.person.Gender
-
-
 
 class CourseLimitGenderProvider extends AbstractCourseLimitNamedEntityProvider[Gender, Integer] {
 
-  protected var baseCodeService: BaseCodeService = _
 
   protected var excludedIds: Set[Integer] = new HashSet[Integer]()
 
@@ -22,7 +16,7 @@ class CourseLimitGenderProvider extends AbstractCourseLimitNamedEntityProvider[G
   }
 
   protected override def getContentMap(content: Array[Serializable]): Map[String, Gender] = {
-    val contentMap = super.contentMap(content)
+    val contentMap = super.getContentMap(content)
     val results = new LinkedHashMap[String, Gender]()
     for ((key, value) <- contentMap) {
       val gender = value

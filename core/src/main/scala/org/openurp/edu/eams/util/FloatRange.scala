@@ -1,10 +1,7 @@
 package org.openurp.edu.eams.util
 
-import org.beangle.commons.entity.Component
 import FloatRange._
-
-
-
+import org.beangle.data.model.Component
 
 object FloatRange {
 
@@ -21,6 +18,8 @@ object FloatRange {
     implicit def convertValue(v: Value): NearType = v.asInstanceOf[NearType]
   }
 }
+
+import FloatRange._
 
 class FloatRange extends Component {
 
@@ -44,7 +43,7 @@ class FloatRange extends Component {
   }
 
   def this(min: Float, max: Float) {
-    super()
+    this()
     if (java.lang.Float.isNaN(min) || java.lang.Float.isNaN(max)) {
       throw new IllegalArgumentException("The numbers must not be NaN")
     }
@@ -66,9 +65,6 @@ class FloatRange extends Component {
     this.maxInclusive = maxInclusive
   }
 
-  def minInclusive() {
-    this.minInclusive = true
-  }
 
   def minExclusive() {
     this.minInclusive = false
@@ -84,10 +80,6 @@ class FloatRange extends Component {
     this.maxInclusive = false
   }
 
-  def maxInclusive() {
-    this.maxInclusive = true
-  }
-
   def maxExclusive() {
     this.maxInclusive = false
   }
@@ -99,9 +91,7 @@ class FloatRange extends Component {
     result
   }
 
-
-
-  private def containsFloat(value: Float, nearType: NearType): Boolean = {
+  private def containsFloat(value: Float, nearType: NearType.NearType): Boolean = {
     if (nearType == NearType.EQUAL) {
       return containsFloat(value)
     }
@@ -125,7 +115,7 @@ class FloatRange extends Component {
     if (range == null) {
       return false
     }
-    if (== range) {
+    if (this == range) {
       return true
     }
     var result = true
@@ -144,7 +134,7 @@ class FloatRange extends Component {
     if (range == null) {
       return false
     }
-    if (== range) {
+    if (this == range) {
       return true
     }
     var result = false

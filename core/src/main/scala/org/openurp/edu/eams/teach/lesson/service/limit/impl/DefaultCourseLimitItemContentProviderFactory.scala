@@ -1,13 +1,9 @@
 package org.openurp.edu.eams.teach.lesson.service.limit.impl
 
-
-
 import org.openurp.edu.teach.lesson.CourseLimitMeta
 import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitItemContentProvider
 import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitItemContentProviderFactory
 import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnum
-
-
 
 class DefaultCourseLimitItemContentProviderFactory extends CourseLimitItemContentProviderFactory {
 

@@ -8,7 +8,7 @@ import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.openurp.base.Semester
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.eams.core.service.SemesterService
-import org.openurp.edu.teach.code.CourseType
+import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.teach.lesson.LessonPlanRelation
 import org.openurp.edu.eams.teach.lesson.service.CourseLimitService

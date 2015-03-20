@@ -15,7 +15,7 @@ import org.openurp.edu.eams.base.CourseUnit
 import org.openurp.base.Department
 import org.openurp.base.Semester
 import org.openurp.base.TimeSetting
-import org.openurp.edu.eams.base.util.WeekDays
+import org.beangle.commons.lang.time.WeekDays
 import org.openurp.edu.base.Project
 import org.openurp.edu.base.Teacher
 import org.openurp.edu.eams.core.model.TeacherBean

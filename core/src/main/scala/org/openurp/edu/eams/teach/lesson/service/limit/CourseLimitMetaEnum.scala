@@ -2,7 +2,6 @@ package org.openurp.edu.eams.teach.lesson.service.limit
 
 import java.io.Serializable
 import org.beangle.data.model.Entity
-import org.beangle.commons.entity.metadata.Model
 import org.openurp.base.Department
 import org.openurp.code.person.Gender
 import org.openurp.edu.base.Adminclass
@@ -12,10 +11,7 @@ import org.openurp.code.edu.Education
 import org.openurp.edu.base.code.StdLabel
 import org.openurp.edu.base.code.StdType
 import org.openurp.edu.teach.lesson.CourseLimitMeta.Operator
-import org.openurp.edu.eams.teach.lesson.NormalClass
 import org.openurp.edu.base.Program
-
-
 
 
 object CourseLimitMetaEnum extends Enumeration {
@@ -38,28 +34,16 @@ object CourseLimitMetaEnum extends Enumeration {
 
   val PROGRAM = new CourseLimitMetaEnum(9L, classOf[Program], null, Operator.IN, Operator.NOT_IN)
 
-  val NORMALCLASS = new CourseLimitMetaEnum(10L, classOf[NormalClass], null, Operator.IN, Operator.NOT_IN)
-
   val STDLABEL = new CourseLimitMetaEnum(11L, classOf[StdLabel], null, Operator.IN, Operator.NOT_IN)
 
   class CourseLimitMetaEnum( var metaId: Long, 
-      clazz: Class[_ <: Serializable], 
+      val contentType: Class[_ <: Serializable], 
        var format: String, 
        var operators: Operator*) extends Val {
 
-    
-    var contentType: Class[_ <: Serializable] = clazz
-
-    private var contentValueType: Class[_ <: Serializable] = _
-
-    getContentValueType
-
-    def getContentValueType(): Class[_ <: Serializable] = {
-      if (null == contentValueType && null != contentType) {
-        this.contentValueType = if (classOf[Entity[_]].isAssignableFrom(contentType)) Model.type(contentType).idType else contentType
-      }
-      contentValueType
-    }
+     val contentValueType: Class[_ <: Serializable] = {
+       if (classOf[Entity[_]].isAssignableFrom(contentType)) classOf[Number] else contentType
+     }
   }
 
   implicit def convertValue(v: Value): CourseLimitMetaEnum = v.asInstanceOf[CourseLimitMetaEnum]

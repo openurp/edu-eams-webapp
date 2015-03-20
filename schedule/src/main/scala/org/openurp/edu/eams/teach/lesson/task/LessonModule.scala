@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.lesson.task
 
 import org.beangle.commons.inject.bind.AbstractBindModule
-import org.beangle.commons.lang.tuple.Pair
+
 import org.springframework.transaction.interceptor.TransactionProxyFactoryBean
 import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnum
 import org.openurp.edu.eams.teach.lesson.service.limit.impl.CourseLimitAdminclassProvider

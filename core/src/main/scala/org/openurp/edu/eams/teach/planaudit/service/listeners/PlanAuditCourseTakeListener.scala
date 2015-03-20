@@ -5,13 +5,13 @@ import java.util.Date
 
 
 import org.beangle.commons.collection.CollectUtils
-import org.beangle.commons.dao.EntityDao
+import org.beangle.data.model.dao.EntityDao
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
-import org.beangle.commons.lang.tuple.Pair
+
 import org.openurp.edu.base.Course
 import org.openurp.edu.eams.teach.Grade
-import org.openurp.edu.teach.code.CourseType
+import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.teach.grade.CourseGrade
 import org.openurp.edu.teach.lesson.CourseTake
 import org.openurp.edu.teach.planaudit.CourseAuditResult

@@ -1,6 +1,6 @@
 package org.openurp.edu.eams.web.helper
 
-import org.beangle.commons.dao.EntityDao
+import org.beangle.data.model.dao.EntityDao
 import org.beangle.commons.lang.Strings
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

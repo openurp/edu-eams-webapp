@@ -15,7 +15,7 @@ import org.openurp.base.Campus
 import org.openurp.base.Room
 import org.openurp.base.Department
 import org.openurp.base.Semester
-import org.openurp.edu.eams.base.util.WeekDays
+import org.beangle.commons.lang.time.WeekDays
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.eams.core.CommonAuditState
 import org.openurp.edu.base.Direction
@@ -23,7 +23,7 @@ import org.openurp.edu.base.Major
 import org.openurp.code.edu.Education
 import org.openurp.edu.base.code.StdType
 import org.openurp.edu.eams.teach.code.industry.ExamMode
-import org.openurp.edu.teach.code.CourseType
+import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.eams.teach.election.ElectionProfile
 import org.openurp.edu.teach.schedule.CourseActivity
 import org.openurp.edu.teach.lesson.CourseLimitGroup

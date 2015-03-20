@@ -14,12 +14,12 @@ class CourseLimitAdminclassProvider extends AbstractCourseLimitNamedEntityProvid
     if (cascadeField.isEmpty) {
       return
     }
-    val grades = cascadeField.get(CourseLimitMetaEnum.GRADE.metaId)
-    val educationIds = cascadeField.get(CourseLimitMetaEnum.EDUCATION.metaId)
-    val stdTypeIds = cascadeField.get(CourseLimitMetaEnum.STDTYPE.metaId)
-    val departIds = cascadeField.get(CourseLimitMetaEnum.DEPARTMENT.metaId)
-    val majorIds = cascadeField.get(CourseLimitMetaEnum.MAJOR.metaId)
-    val directionIds = cascadeField.get(CourseLimitMetaEnum.DIRECTION.metaId)
+    val grades = cascadeField.get(CourseLimitMetaEnum.GRADE.metaId).orNull
+    val educationIds = cascadeField.get(CourseLimitMetaEnum.EDUCATION.metaId).orNull
+    val stdTypeIds = cascadeField.get(CourseLimitMetaEnum.STDTYPE.metaId).orNull
+    val departIds = cascadeField.get(CourseLimitMetaEnum.DEPARTMENT.metaId).orNull
+    val majorIds = cascadeField.get(CourseLimitMetaEnum.MAJOR.metaId).orNull
+    val directionIds = cascadeField.get(CourseLimitMetaEnum.DIRECTION.metaId).orNull
     if (Strings.isNotBlank(grades)) {
       builder.where("entity.grade in (:grades)", Strings.split(grades))
     }

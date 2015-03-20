@@ -15,7 +15,7 @@ import org.openurp.edu.base.Teacher
 import org.openurp.edu.eams.teach.Grade
 import org.openurp.edu.teach.code.ExamStatus
 import org.openurp.edu.teach.code.GradeType
-import org.openurp.edu.teach.code.CourseType
+import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.eams.teach.grade.course.GradeModifyApply
 import org.openurp.edu.eams.teach.grade.course.model.GradeModifyApplyBean
 import org.openurp.edu.eams.teach.grade.course.model.GradeModifyApplyBean.GradeModifyStatus
