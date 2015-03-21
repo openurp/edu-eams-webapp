@@ -51,7 +51,7 @@ abstract class AbstractCourseLimitEntityProvider[T <: Entity[ID], ID <: Serializ
     val sb = new StringBuilder()
     var hasName = false
     try {
-      if (classOf[String].isAssignableFrom(Model.type(getMetaEnum.contentType).propertyType("name")
+      if (classOf[String].isAssignableFrom(Model.getType(getMetaEnum.contentType).propertyType("name")
         .returnedClass)) {
         sb.append("entity.name like :codeOrName ")
         hasName = true
@@ -60,7 +60,7 @@ abstract class AbstractCourseLimitEntityProvider[T <: Entity[ID], ID <: Serializ
       case e: Exception => 
     }
     try {
-      if (classOf[String].isAssignableFrom(Model.type(getMetaEnum.contentType).propertyType("code")
+      if (classOf[String].isAssignableFrom(Model.getType(getMetaEnum.contentType).propertyType("code")
         .returnedClass)) {
         if (hasName) {
           sb.append("or ")

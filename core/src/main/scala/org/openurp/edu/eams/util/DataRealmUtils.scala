@@ -1,32 +1,34 @@
 package org.openurp.edu.eams.util
 
 
-import org.beangle.commons.dao.query.builder.Condition
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.openurp.base.Department
 import org.openurp.edu.base.code.StdType
 import org.openurp.edu.eams.system.security.DataRealm
+import org.beangle.commons.collection.CollectUtils
+import java.util.ArrayList
+import org.beangle.data.model.dao.Condition
 
 
 
 object DataRealmUtils {
 
   def addDataRealm(query: OqlBuilder[_], attrs: Array[String], dataRealm: DataRealm) {
-    addDataRealms(query, attrs, Collections.singletonList(dataRealm))
+    addDataRealms(query, attrs,List(dataRealm))
   }
 
-  def inDataRealms(query: OqlBuilder, attrs: Array[String], dataRealms: List[_]) {
+  def inDataRealms(query: OqlBuilder[_], attrs: Array[String], dataRealms: List[_]) {
     if (dataRealms == null || dataRealms.isEmpty) return
-    val conditions = new ArrayList()
-    val datas = new ArrayList()
+    val conditions = CollectUtils.newArrayList[Condition]
+    val datas = CollectUtils.newArrayList[Any]
     for (i <- 0 until dataRealms.size) {
-      val dataRealm = dataRealms.get(i).asInstanceOf[DataRealm]
+      val dataRealm = dataRealms(i).asInstanceOf[DataRealm]
       val buffer = new StringBuffer("")
       if (attrs.length > 0) {
         if (Strings.isNotEmpty(dataRealm.studentTypeIdSeq) && Strings.isNotEmpty(attrs(0))) {
           buffer.append(attrs(0) + " in (:mytypeIds" + randomInt() + ")")
-          datas.add(Strings.transformToLong(Strings.split(dataRealm.studentTypeIdSeq)))
+          datas += Strings.transformToLong(Strings.split(dataRealm.studentTypeIdSeq))
         }
       }
       if (attrs.length > 1) {
@@ -35,16 +37,16 @@ object DataRealmUtils {
             buffer.append(" and ")
           }
           buffer.append(attrs(1) + " in (:myDepartIds" + randomInt() + ")")
-          datas.add(Strings.transformToLong(Strings.split(dataRealm.departmentIdSeq)))
+          datas += Strings.transformToLong(Strings.split(dataRealm.departmentIdSeq))
         }
       }
       if (buffer.length > 0) {
-        conditions.add(new Condition(buffer.toString))
+        conditions += new Condition(buffer.toString)
       }
     }
     val buffer = new StringBuffer("(")
     for (i <- 0 until conditions.size) {
-      val condition = conditions.get(i).asInstanceOf[Condition]
+      val condition = conditions(i)
       if (i != 0) {
         buffer.append(" or ")
       }
@@ -56,19 +58,19 @@ object DataRealmUtils {
     query.where(con)
   }
 
-  def addDataRealms(query: OqlBuilder, attrs: Array[String], dataRealms: List[_]) {
+  def addDataRealms(query: OqlBuilder[_], attrs: Array[String], dataRealms: Seq[_]) {
     if (dataRealms == null || dataRealms.isEmpty) return
-    val conditions = new ArrayList()
-    val datas = new ArrayList()
+    val conditions = CollectUtils.newArrayList[Condition]
+    val datas = CollectUtils.newArrayList[Any]
     for (i <- 0 until dataRealms.size) {
-      val dataRealm = dataRealms.get(i).asInstanceOf[DataRealm]
+      val dataRealm = dataRealms(i).asInstanceOf[DataRealm]
       val buffer = new StringBuffer("")
       if (attrs.length > 0) {
         if (Strings.isNotEmpty(dataRealm.studentTypeIdSeq) && Strings.isNotEmpty(attrs(0))) {
-          buffer.append(" exists (from " + classOf[StdType].name + " mytype where mytype.id =" + 
+          buffer.append(" exists (from " + classOf[StdType].getName + " mytype where mytype.id =" + 
             attrs(0))
           buffer.append(" and mytype.id in(:mytypeIds" + randomInt() + "))")
-          datas.add(Strings.transformToLong(Strings.split(dataRealm.studentTypeIdSeq)))
+          datas+= Strings.transformToLong(Strings.split(dataRealm.studentTypeIdSeq))
         }
       }
       if (attrs.length > 1) {
@@ -76,19 +78,19 @@ object DataRealmUtils {
           if (buffer.length > 0) {
             buffer.append(" and ")
           }
-          buffer.append(" exists (from " + classOf[Department].name + " mydepart where mydepart.id =" + 
+          buffer.append(" exists (from " + classOf[Department].getName + " mydepart where mydepart.id =" + 
             attrs(1))
           buffer.append(" and mydepart.id in(:myDepartIds" + randomInt() + "))")
-          datas.add(Strings.transformToLong(Strings.split(dataRealm.departmentIdSeq)))
+          datas += Strings.transformToLong(Strings.split(dataRealm.departmentIdSeq))
         }
       }
       if (buffer.length > 0) {
-        conditions.add(new Condition((buffer.toString)))
+        conditions += new Condition((buffer.toString))
       }
     }
     val buffer = new StringBuffer("(")
     for (i <- 0 until conditions.size) {
-      val condition = conditions.get(i).asInstanceOf[Condition]
+      val condition = conditions(i).asInstanceOf[Condition]
       if (i != 0) {
         buffer.append(" or ")
       }

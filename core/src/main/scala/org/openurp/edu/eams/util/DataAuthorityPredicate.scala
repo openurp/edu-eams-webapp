@@ -8,32 +8,12 @@ import org.slf4j.LoggerFactory
 
 
 
-class DataAuthorityPredicate(stdTypeIdSeq: String, departIdSeq: String) extends Predicate[Any] {
+class DataAuthorityPredicate(var stdTypeDataRealm: String, var departDataRealm: String,
+    var stdTypeAttrName: String = "studentType",
+    var departAttrName: String = "department"
+    ) extends Predicate[Any] {
 
   protected val logger = LoggerFactory.getLogger(this.getClass)
-
-  protected var stdTypeDataRealm: String = stdTypeIdSeq
-
-  protected var departDataRealm: String = departIdSeq
-
-  protected var stdTypeAttrName: String = "studentType"
-
-  protected var departAttrName: String = "department"
-
-  def this() {
-    this()
-  }
-
-  def this(stdTypeIdSeq: String, 
-      departIdSeq: String, 
-      studentTypeName: String, 
-      departAttrName: String) {
-    this()
-    this.stdTypeDataRealm = stdTypeIdSeq
-    this.departDataRealm = departIdSeq
-    this.stdTypeAttrName = studentTypeName
-    this.departAttrName = departAttrName
-  }
 
   def apply(arg0: AnyRef): java.lang.Boolean = {
     try {
@@ -51,33 +31,9 @@ class DataAuthorityPredicate(stdTypeIdSeq: String, departIdSeq: String) extends 
       true
     } catch {
       case e: Exception => {
-        logger.info("exception occurred in judge dataAuthorty of " + arg0.getClass.name, e)
+        logger.info("exception occurred in judge dataAuthorty of " + arg0.getClass.getName, e)
         false
       }
     }
-  }
-
-  def getDepartAttrName(): String = departAttrName
-
-  def setDepartAttrName(departAttrName: String) {
-    this.departAttrName = departAttrName
-  }
-
-  def getDepartDataRealm(): String = departDataRealm
-
-  def setDepartDataRealm(departDataRealm: String) {
-    this.departDataRealm = departDataRealm
-  }
-
-  def getStdTypeAttrName(): String = stdTypeAttrName
-
-  def setStdTypeAttrName(stdTypeAttrName: String) {
-    this.stdTypeAttrName = stdTypeAttrName
-  }
-
-  def getStdTypeDataRealm(): String = stdTypeDataRealm
-
-  def setStdTypeDataRealm(stdTypeDataRealm: String) {
-    this.stdTypeDataRealm = stdTypeDataRealm
   }
 }

@@ -10,10 +10,10 @@ import org.openurp.edu.eams.system.security.DataRealm
 class DataRealmLimit extends Limit() {
 
   
-  var pageLimit: PageLimit = new PageLimit()
+  var pageLimit: PageLimit = _
 
   
-  var dataRealm: DataRealm = new DataRealm()
+  var dataRealm: DataRealm =_
 
   def this(stdTypeIds: String, departIds: String) {
     this()

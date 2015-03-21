@@ -139,7 +139,7 @@ class SuggestActivityDigestor private () {
       replaceStart = CourseArrangeBuf.indexOf(weeks)
       if (-1 != replaceStart) {
         CourseArrangeBuf.replace(replaceStart, replaceStart + weeks.length, YearWeekTimeUtil.digest(activity.getTime.weekState, 
-          CourseTime.FIRST_WEEK_FROM, 1, Semester.OVERALLWEEKS, textResource))
+          CourseTime.FIRST_WEEK_FROM, 1, ExamYearWeekTimeUtil.OVERALLWEEKS, textResource))
       }
       val sdf = new SimpleDateFormat("M月dd日起")
       replaceStart = CourseArrangeBuf.indexOf(starton)

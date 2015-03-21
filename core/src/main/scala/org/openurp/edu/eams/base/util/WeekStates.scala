@@ -47,7 +47,7 @@ object WeekStates {
       weekStates = thisYearWeeks + nextYearWeeks
     }
     var weekday =  first.day.index
-    if (semester.firstWeekday != Sun && weekday < jdkWeekIdex(semester.firstWeekday)) {
+    if (semester.firstWeekday != Sun && weekday < semester.firstWeekday.index) {
       weekStates = weekStates.substring(1)
     }
     weekStates

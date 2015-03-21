@@ -187,21 +187,21 @@ object YearWeekTimeUtil {
       val weekState = courseTime.weekState
       val sb = new StringBuffer(Strings.repeat("0", semester.startWeek - 1))
       sb.append(Strings.substring(weekState, 1, semester.weeks + 1))
-        .append(Strings.repeat("0", Semester.OVERALLWEEKS * 2 - sb.length))
+        .append(Strings.repeat("0", ExamYearWeekTimeUtil.OVERALLWEEKS * 2 - sb.length))
       if (!endAtSat) {
-        sb.insert(Semester.OVERALLWEEKS, "0")
+        sb.insert(ExamYearWeekTimeUtil.OVERALLWEEKS, "0")
       }
-      if (sb.substring(0, Semester.OVERALLWEEKS).indexOf("1") != 
+      if (sb.substring(0, ExamYearWeekTimeUtil.OVERALLWEEKS).indexOf("1") != 
         -1) {
         val unit = new YearWeekTime()
         unit.year=year
         unit.weekday=courseTime.day
         unit.endTime=courseTime.end
         unit.start=courseTime.start
-        unit.newWeekState(sb.substring(0, Semester.OVERALLWEEKS))
+        unit.newWeekState(sb.substring(0, ExamYearWeekTimeUtil.OVERALLWEEKS))
         unitList.add(unit)
       }
-      if (sb.substring(Semester.OVERALLWEEKS, 2 * Semester.OVERALLWEEKS)
+      if (sb.substring(ExamYearWeekTimeUtil.OVERALLWEEKS, 2 * ExamYearWeekTimeUtil.OVERALLWEEKS)
         .indexOf("1") != 
         -1) {
         val unit = new YearWeekTime()
@@ -209,7 +209,7 @@ object YearWeekTimeUtil {
         unit.weekday=courseTime.day
         unit.start=courseTime.start
         unit.endTime=courseTime.end
-        unit.newWeekState(sb.substring(Semester.OVERALLWEEKS, 2 * Semester.OVERALLWEEKS))
+        unit.newWeekState(sb.substring(ExamYearWeekTimeUtil.OVERALLWEEKS, 2 * ExamYearWeekTimeUtil.OVERALLWEEKS))
         unitList.add(unit)
       }
     }
@@ -234,7 +234,7 @@ object YearWeekTimeUtil {
       }
       i += 1
     }
-    sb.append(Strings.repeat("0", Semester.OVERALLWEEKS - sb.length))
+    sb.append(Strings.repeat("0", ExamYearWeekTimeUtil.OVERALLWEEKS - sb.length))
     val unit = new CourseTime()
     unit.newWeekState(sb.toString)
     unit
@@ -310,7 +310,7 @@ object YearWeekTimeUtil {
     val weekState = new StringBuffer()
     if (semesterYear == activityYear) {
       var i = 1
-      while (i <= Semester.OVERALLWEEKS) {
+      while (i <= ExamYearWeekTimeUtil.OVERALLWEEKS) {
         if (i == w) {
           weekState.append("1")
         } else {
@@ -319,10 +319,10 @@ object YearWeekTimeUtil {
         i += 1
       }
       weekState.substring(semesterWeek - 1) + 
-        Strings.repeat("0", Semester.OVERALLWEEKS - weekState.substring(semesterWeek - 1).length)
+        Strings.repeat("0", ExamYearWeekTimeUtil.OVERALLWEEKS - weekState.substring(semesterWeek - 1).length)
     } else {
       var i = 1
-      while (i <= Semester.OVERALLWEEKS) {
+      while (i <= ExamYearWeekTimeUtil.OVERALLWEEKS) {
         if (i == w) {
           weekState.append("1")
         } else {
@@ -330,9 +330,9 @@ object YearWeekTimeUtil {
         }
         i += 1
       }
-      val weekStateStr = Strings.repeat("0", Semester.OVERALLWEEKS - semesterWeek)
+      val weekStateStr = Strings.repeat("0", ExamYearWeekTimeUtil.OVERALLWEEKS - semesterWeek)
       weekStateStr + 
-        weekState.substring(0, Semester.OVERALLWEEKS - weekStateStr.length)
+        weekState.substring(0, ExamYearWeekTimeUtil.OVERALLWEEKS - weekStateStr.length)
     }
   }
 

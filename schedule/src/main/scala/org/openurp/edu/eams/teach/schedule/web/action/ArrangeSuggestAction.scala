@@ -139,7 +139,7 @@ class ArrangeSuggestAction extends SemesterSupportAction {
     }
     put("optionalRoomsJSON", gson.toJson(optionalRooms))
     put("roomsJSON", gson.toJson(suggest.getRooms))
-    put("weekStateLength", Semester.OVERALLWEEKS)
+    put("weekStateLength", ExamYearWeekTimeUtil.OVERALLWEEKS)
     forward()
   }
 

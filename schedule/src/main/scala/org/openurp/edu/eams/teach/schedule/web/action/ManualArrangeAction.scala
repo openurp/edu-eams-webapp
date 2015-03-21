@@ -615,7 +615,7 @@ class ManualArrangeAction extends SemesterSupportAction {
       val selectedWeeks = get("selectedWeeks")
       var vaildWeeks = Strings.repeat("0", 2 + taskWeekStart.intValue() - 2)
       vaildWeeks += selectedWeeks
-      vaildWeeks += Strings.repeat("0", Semester.OVERALLWEEKS - vaildWeeks.length)
+      vaildWeeks += Strings.repeat("0", ExamYearWeekTimeUtil.OVERALLWEEKS - vaildWeeks.length)
       val timeList = new ArrayList[CourseTime]()
       val selectedWeeksUnits = selectedWeekUnitSeq.split(";")
       Arrays.sort(selectedWeeksUnits, new Comparator[String]() {

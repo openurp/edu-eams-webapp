@@ -229,7 +229,7 @@ class DefaultTeachClassNameStrategy extends TeachClassNameStrategy {
   private def getFullnameMaxSize(): Int = {
     if (null == fullnameMaxSize) {
       fullnameMaxSize = 600
-      val entityClass = Model.type(classOf[TeachClassBean]).entityClass
+      val entityClass = Model.getType(classOf[TeachClassBean]).entityClass
       try {
         fullnameMaxSize = entityClass.declaredField("fullname").annotation(classOf[Size])
           .max()
@@ -246,7 +246,7 @@ class DefaultTeachClassNameStrategy extends TeachClassNameStrategy {
   private def getNameMaxSize(): Int = {
     if (null == nameMaxSize) {
       nameMaxSize = 100
-      val entityClass = Model.type(classOf[TeachClassBean]).entityClass
+      val entityClass = Model.getType(classOf[TeachClassBean]).entityClass
       try {
         nameMaxSize = entityClass.declaredField("name").annotation(classOf[Size])
           .max()

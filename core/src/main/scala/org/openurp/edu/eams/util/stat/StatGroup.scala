@@ -122,7 +122,7 @@ class StatGroup(entity: AnyRef) extends StatCountor {
     val entities = new HashSet()
     if (items.isEmpty) return CollectUtils.newArrayList()
     if (items.get(0).isInstanceOf[StatGroup]) {
-      var iter = items.iterator()
+      var iter = items.iterator
       while (iter.hasNext) {
         val obj = iter.next().asInstanceOf[AnyRef]
         entities.addAll(obj.asInstanceOf[StatGroup].itemEntities)
@@ -132,7 +132,7 @@ class StatGroup(entity: AnyRef) extends StatCountor {
   }
 
   def getItem(statWhat: AnyRef): AnyRef = {
-    var iter = items.iterator()
+    var iter = items.iterator
     while (iter.hasNext) {
       val element = iter.next().asInstanceOf[StatCountor]
       if (Objects.==(element.what, statWhat)) {
@@ -144,7 +144,7 @@ class StatGroup(entity: AnyRef) extends StatCountor {
 
   def sumItemCounter(counterIndex: Int): Number = {
     var sum = 0
-    var iterator = items.iterator()
+    var iterator = items.iterator
     while (iterator.hasNext) {
       val item = iterator.next().asInstanceOf[StatItem]
       if (null != item.countors()(counterIndex)) {

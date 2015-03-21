@@ -1,17 +1,16 @@
 package org.openurp.edu.eams.weekstate
 
 import java.util.{Arrays, Date, TreeMap}
-
 import collection.mutable.Buffer
-
 import org.beangle.commons.collection.CollectUtils
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.lang.time.WeekDays._
+import org.beangle.commons.lang.time.WeekDays
 import org.beangle.commons.lang.time.YearWeekTime
 import org.openurp.base.{Semester, SemesterWeekTime}
 import org.openurp.edu.eams.date.{EamsDateUtil, RelativeDateUtil}
-
 import YearWeekTimeBuilder._
+import org.beangle.commons.lang.time.WeekState
 
 
 object YearWeekTimeBuilder {
@@ -73,9 +72,9 @@ val RESERVE_BITS =1
       return null
     }
     if (state1 == null) {
-      return state2.clone()
+      return new YearWeekTime(state2)
     } else if (state2 == null) {
-      return state1.clone()
+      return new YearWeekTime(state1)
     }
      if (state1.day != state2.day) {
       throw new RuntimeException("Merge Error: Weekday Different")
@@ -83,7 +82,7 @@ val RESERVE_BITS =1
       throw new RuntimeException("Merge Error: Year Different")
     }
     val res = new YearWeekTime(state1)
-    res.weekState=state1.number | state2.number
+    res.state= state1.state | state2.state
     res
   }
 
@@ -92,7 +91,7 @@ val RESERVE_BITS =1
       return null
     }
     if (states.length == 1) {
-      return states(0).clone()
+      return new YearWeekTime(states(0))
     }
     var res = states(0)
     for (i <- 1 until states.length) {
@@ -140,7 +139,7 @@ val RESERVE_BITS =1
 
   def build(date: Date): YearWeekTime = {
     val year = EamsDateUtil.year(date)
-    val weekday = rDateUtil.day(date)
+    val weekday = WeekDays.of(date)
     val weekOfYear = EamsDateUtil.SUNDAY_FIRST.weekOfYear(date)
     RTL(year).build(Array(weekOfYear), weekday)(0)
   }
@@ -201,7 +200,7 @@ class YearWeekTimeBuilder {
     build(Strings.splitToInt(weekIndeciesOfYear), weekday)
   }
 
-  protected def buildString(weekIndecies: Array[Integer], year: Int): String = {
+  protected def buildString(weekIndecies: Array[Integer], year: Int): WeekState = {
     val maxWeeks = EamsDateUtil.SUNDAY_FIRST.weeksOfYear(year)
     val res = Strings.rightPad("", MAX_LENGTH, '0')
     val sb = new StringBuilder(res)
@@ -216,7 +215,7 @@ class YearWeekTimeBuilder {
       }
       sb.setCharAt(weekIndex - 1, '1')
     }
-      Strings.leftPad(sb.toString.replaceAll("^0+1", "1"), /*this.paddingLength*/0, '0')
+      WeekState(Strings.leftPad(sb.toString.replaceAll("^0+1", "1"), /*this.paddingLength*/0, '0'))
   }
 
   def parse(weekState: String): Array[Integer] = parse(weekState)

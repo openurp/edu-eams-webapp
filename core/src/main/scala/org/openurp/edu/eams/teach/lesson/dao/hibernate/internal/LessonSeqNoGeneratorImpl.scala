@@ -10,6 +10,7 @@ import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.teach.lesson.dao.LessonSeqNoGenerator
 import LessonSeqNoGeneratorImpl._
 import org.beangle.data.model.dao.EntityDao
+import scala.collection.mutable.Buffer
 
 
 object LessonSeqNoGeneratorImpl {
@@ -47,14 +48,14 @@ class LessonSeqNoGeneratorImpl  extends LessonSeqNoGenerator {
   }
 
   def genLessonSeqNos(lessons: Iterable[Lesson]) {
-    val semesterTasks = CollectUtils.newHashMap()
+    val semesterTasks = CollectUtils.newHashMap[Semester,Buffer[Lesson]]
     for (lesson <- lessons if Strings.isEmpty(lesson.no)) {
-      var matches = semesterTasks.get(lesson.semester)
+      var matches = semesterTasks.get(lesson.semester).orNull
       if (null == matches) {
-        matches = new ArrayList[Lesson]()
+        matches = CollectUtils.newArrayList[Lesson]
         semesterTasks.put(lesson.semester, matches)
       }
-      matches.add(lesson)
+      matches += lesson
     }
     var iter = semesterTasks.keySet.iterator()
     while (iter.hasNext) {

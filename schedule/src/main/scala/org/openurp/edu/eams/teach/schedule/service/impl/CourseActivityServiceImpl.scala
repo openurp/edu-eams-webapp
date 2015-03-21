@@ -670,14 +670,14 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
     toWeeks = if (toWeekStart > 0) Strings.repeat("0", toWeekStart) + weeks else "0" + 
       weeks.substring(Math.abs(toWeekStart - fromWeekStart))
     if (!Strings.contains(toWeeks, '1')) {
-      time.newWeekState(Strings.repeat("0", Semester.OVERALLWEEKS))
+      time.newWeekState(Strings.repeat("0", ExamYearWeekTimeUtil.OVERALLWEEKS))
       keeped.add(activity)
     } else {
       if (toWeeks.length > to.getWeeks + 1) {
         toWeeks = toWeeks.substring(0, to.getWeeks + 1)
       }
       time.newWeekState(toWeeks + 
-        Strings.repeat("0", Semester.OVERALLWEEKS - toWeeks.length))
+        Strings.repeat("0", ExamYearWeekTimeUtil.OVERALLWEEKS - toWeeks.length))
       if (null != timeSetting) {
         time.setStartTime(timeSetting.getDefaultUnits.get(time.getStartUnit).start)
         time.setEndTime(timeSetting.getDefaultUnits.get(time.getEndUnit).end)
@@ -767,7 +767,7 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
     if (toMerged.getTime.getEndUnit != activity.getTime.getEndUnit) {
       return false
     }
-    val weekState = Strings.repeat("0", Semester.OVERALLWEEKS)
+    val weekState = Strings.repeat("0", ExamYearWeekTimeUtil.OVERALLWEEKS)
     weekState == BitStrings.and(toMerged.getTime.getWeekState, activity.getTime.getWeekState)
   }
 
