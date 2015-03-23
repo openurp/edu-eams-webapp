@@ -2,13 +2,13 @@ package org.openurp.edu.eams.util.stat
 
 import org.beangle.commons.lang.Objects
 import FloatSegment._
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 
 object FloatSegment {
 
   def buildSegments(s: Int, span: Int, count: Int): List[FloatSegment] = {
     var start =s
-    val segmentList = CollectUtils.newArrayList[FloatSegment]
+    val segmentList = Collections.newBuffer[FloatSegment]
     for (i <- 0 until count) {
       segmentList += new FloatSegment(start, start + span - 1)
       start += span

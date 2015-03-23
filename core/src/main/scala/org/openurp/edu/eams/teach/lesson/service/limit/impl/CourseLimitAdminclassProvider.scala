@@ -4,22 +4,21 @@ package org.openurp.edu.eams.teach.lesson.service.limit.impl
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.openurp.edu.base.Adminclass
-import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnum
+import org.openurp.edu.teach.lesson.LessonLimitMeta
 
 
-
-class CourseLimitAdminclassProvider extends AbstractCourseLimitNamedEntityProvider[Adminclass, Integer] {
+class LessonLimitAdminclassProvider extends AbstractLessonLimitNamedEntityProvider[Adminclass, Integer] {
 
   protected override def addCascadeQuery(builder: OqlBuilder[Adminclass], cascadeField: Map[Long, String]) {
     if (cascadeField.isEmpty) {
       return
     }
-    val grades = cascadeField.get(CourseLimitMetaEnum.GRADE.metaId).orNull
-    val educationIds = cascadeField.get(CourseLimitMetaEnum.EDUCATION.metaId).orNull
-    val stdTypeIds = cascadeField.get(CourseLimitMetaEnum.STDTYPE.metaId).orNull
-    val departIds = cascadeField.get(CourseLimitMetaEnum.DEPARTMENT.metaId).orNull
-    val majorIds = cascadeField.get(CourseLimitMetaEnum.MAJOR.metaId).orNull
-    val directionIds = cascadeField.get(CourseLimitMetaEnum.DIRECTION.metaId).orNull
+    val grades = cascadeField.get(LessonLimitMeta.Grade.id).orNull
+    val educationIds = cascadeField.get(LessonLimitMeta.Education.id).orNull
+    val stdTypeIds = cascadeField.get(LessonLimitMeta.StdType.id).orNull
+    val departIds = cascadeField.get(LessonLimitMeta.Department.id).orNull
+    val majorIds = cascadeField.get(LessonLimitMeta.Major.id).orNull
+    val directionIds = cascadeField.get(LessonLimitMeta.Direction.id).orNull
     if (Strings.isNotBlank(grades)) {
       builder.where("entity.grade in (:grades)", Strings.split(grades))
     }

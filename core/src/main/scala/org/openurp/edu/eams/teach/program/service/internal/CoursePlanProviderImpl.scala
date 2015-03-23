@@ -2,7 +2,7 @@ package org.openurp.edu.eams.teach.program.service.internal
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.edu.base.Student
@@ -35,7 +35,7 @@ class CoursePlanProviderImpl extends BaseServiceImpl with CoursePlanProvider {
   }
 
   def getCoursePlans(students: Iterable[Student]): Map[Student, CoursePlan] = {
-    val result = CollectUtils.newHashMap[Student, CoursePlan] 
+    val result = Collections.newMap[Student, CoursePlan] 
     for (student <- students) result.put(student, getCoursePlan(student))
     result.toMap
   }

@@ -7,7 +7,7 @@ package org.openurp.edu.eams.util.stat
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.lang.Objects
 import StatGroup._
 
@@ -31,7 +31,7 @@ object StatGroup {
 
   def buildStatGroups(datas: List[_], counters: Int): List[_] = {
     val stats = new ArrayList()
-    if (!CollectUtils.isEmpty(datas)) {
+    if (!Collections.isEmpty(datas)) {
       val rs = new HashMap()
       var iter = datas.iterator
       while (iter.hasNext) {
@@ -120,7 +120,7 @@ class StatGroup(entity: AnyRef) extends StatCountor {
 
   def getSubItemEntities(): List[_] = {
     val entities = new HashSet()
-    if (items.isEmpty) return CollectUtils.newArrayList()
+    if (items.isEmpty) return Collections.newBuffer()
     if (items.get(0).isInstanceOf[StatGroup]) {
       var iter = items.iterator
       while (iter.hasNext) {

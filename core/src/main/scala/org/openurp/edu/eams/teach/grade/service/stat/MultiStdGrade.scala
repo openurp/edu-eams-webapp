@@ -1,6 +1,6 @@
 package org.openurp.edu.eams.teach.grade.service.stat
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.lang.Objects
 import org.openurp.base.Semester
 import org.openurp.edu.base.Adminclass
@@ -16,20 +16,20 @@ class MultiStdGrade(var semester: Semester, grades: Map[Student, List[CourseGrad
 
   private var adminClass: Adminclass = _
 
-  var courses: Buffer[Course] = CollectUtils.newArrayList[Course]
+  var courses: Buffer[Course] = Collections.newBuffer[Course]
 
-  var stdGrades: Buffer[StdGrade] = CollectUtils.newArrayList[StdGrade]
+  var stdGrades: Buffer[StdGrade] = Collections.newBuffer[StdGrade]
 
   stdGrades ++= (gradesMap.values)
 
-  var extraGradeMap: collection.mutable.Map[String, List[CourseGrade]] = CollectUtils.newHashMap[String, List[CourseGrade]]
+  var extraGradeMap: collection.mutable.Map[String, List[CourseGrade]] = Collections.newMap[String, List[CourseGrade]]
 
   var maxDisplay: java.lang.Integer = new java.lang.Integer(courses.size + maxExtra)
 
 
-  val gradesMap = CollectUtils.newHashMap()
+  val gradesMap = Collections.newMap()
 
-  val courseStdNumMap = CollectUtils.newHashMap()
+  val courseStdNumMap = Collections.newMap()
 
   for ((key, value) <- grades) {
     val stdGrade = new StdGrade(key, value, null, null)
@@ -50,7 +50,7 @@ class MultiStdGrade(var semester: Semester, grades: Map[Student, List[CourseGrad
 
   var maxStdCount = 0
 
-  if (CollectUtils.isNotEmpty(courseStdNums)) {
+  if (Collections.isNotEmpty(courseStdNums)) {
     maxStdCount = (courseStdNums.get(0)).asInstanceOf[CourseStdNum].count
       .intValue()
   }
@@ -70,7 +70,7 @@ class MultiStdGrade(var semester: Semester, grades: Map[Student, List[CourseGrad
   while (iter.hasNext) {
     val stdGrade = iter.next()
     var myExtra = 0
-    val extraGrades = CollectUtils.newArrayList()
+    val extraGrades = Collections.newBuffer()
     val commonCourseSet = new HashSet[Course](courses)
     var iterator = stdGrade.grades.iterator()
     while (iterator.hasNext) {

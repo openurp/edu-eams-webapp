@@ -1,6 +1,6 @@
 package org.openurp.edu.eams.teach.grade.service.stat
 import java.util.Comparator
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.openurp.edu.base.Student
 import org.openurp.edu.teach.grade.CourseGrade
 import org.openurp.edu.teach.grade.domain.StdGpa
@@ -20,7 +20,7 @@ class StdGrade {
   var cmp: Comparator[CourseGrade] = _
 
   def toGradeMap(): Map[String, CourseGrade] = {
-    val gradeMap = CollectUtils.newHashMap()
+    val gradeMap = Collections.newMap()
     if (null == grades || grades.isEmpty) gradeMap else {
       var iter = grades.iterator
       while (iter.hasNext) {

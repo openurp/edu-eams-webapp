@@ -1,6 +1,6 @@
 package org.openurp.edu.eams.teach.lesson.service.limit
 
-trait CourseLimitMetaEnumFilter {
+trait LessonLimitMetaFilter {
 
-  def accept(courseLimitMetaEnum: CourseLimitMetaEnum): Boolean
+  def accept(courseLimitMetaEnum: LessonLimitMeta): Boolean
 }

@@ -1,14 +1,14 @@
 package org.openurp.edu.eams.teach.lesson.service
 
 
-import org.openurp.edu.teach.lesson.CourseLimitGroup
+import org.openurp.edu.teach.lesson.LessonLimitGroup
 import org.openurp.edu.teach.lesson.TeachClass
 
 
 
 trait TeachClassNameStrategy {
 
-  def genName(groups: List[CourseLimitGroup]): String
+  def genName(groups: List[LessonLimitGroup]): String
 
   def genName(teachClass: TeachClass): String
 
@@ -16,7 +16,7 @@ trait TeachClassNameStrategy {
 
   def abbreviateName(teachClass: TeachClass): Unit
 
-  def genFullname(groups: List[CourseLimitGroup]): String
+  def genFullname(groups: List[LessonLimitGroup]): String
 
   def genFullname(teachClass: TeachClass): String
 

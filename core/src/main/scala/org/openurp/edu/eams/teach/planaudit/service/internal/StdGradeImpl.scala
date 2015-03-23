@@ -1,6 +1,6 @@
 package org.openurp.edu.eams.teach.planaudit.service.internal
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.openurp.edu.base.Course
 import org.openurp.edu.teach.grade.CourseGrade
 import org.openurp.edu.eams.teach.planaudit.service.StdGrade
@@ -49,7 +49,7 @@ class StdGradeImpl(courseGrades: List[CourseGrade]) extends StdGrade {
   }
 
   def getRestCourses(): Iterable[Course] = {
-    CollectUtils.subtract(gradeMap.keySet, usedCourses)
+    Collections.subtract(gradeMap.keySet, usedCourses)
   }
 
   def getGrades(): List[CourseGrade] = {
@@ -65,7 +65,7 @@ class StdGradeImpl(courseGrades: List[CourseGrade]) extends StdGrade {
   }
 
   def getCoursePassedMap(): Map[Long, Boolean] = {
-    val passedMap = CollectUtils.newHashMap()
+    val passedMap = Collections.newMap()
     for (course <- gradeMap.keySet) {
       val grades = gradeMap.get(course)
       if (!grades.isEmpty) {

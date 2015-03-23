@@ -4,4 +4,4 @@ import org.openurp.code.edu.Education
 
 
 
-class CourseLimitEducationProvider extends AbstractCourseLimitNamedEntityProvider[Education, Integer]
+class LessonLimitEducationProvider extends AbstractLessonLimitNamedEntityProvider[Education, Integer]

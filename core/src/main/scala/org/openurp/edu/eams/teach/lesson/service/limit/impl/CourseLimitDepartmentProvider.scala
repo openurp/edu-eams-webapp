@@ -4,4 +4,4 @@ import org.openurp.base.Department
 
 
 
-class CourseLimitDepartmentProvider extends AbstractCourseLimitNamedEntityProvider[Department, Integer]
+class LessonLimitDepartmentProvider extends AbstractLessonLimitNamedEntityProvider[Department, Integer]

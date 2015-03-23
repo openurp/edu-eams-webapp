@@ -7,8 +7,8 @@ import org.beangle.data.model.Entity
 
 
 
-abstract class AbstractCourseLimitNamedEntityProvider[T <: Entity[ID], ID <: Serializable]
-    extends AbstractCourseLimitEntityProvider[T, ID] {
+abstract class AbstractLessonLimitNamedEntityProvider[T <: Entity[ID], ID <: Serializable]
+    extends AbstractLessonLimitEntityProvider[T, ID] {
 
   def getContentIdTitle(entity: T): Pair[String, String] = {
     val name = PropertyUtils.getProperty(entity, "name")

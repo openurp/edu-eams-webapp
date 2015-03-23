@@ -8,8 +8,8 @@ import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.data.model.Entity
 import org.beangle.commons.lang.Arrays
 
-abstract class AbstractCourseLimitEntityProvider[T <: Entity[ID], ID <: Serializable]
-    extends AbstractCourseLimitContentProvider[T] {
+abstract class AbstractLessonLimitEntityProvider[T <: Entity[ID], ID <: Serializable]
+    extends AbstractLessonLimitContentProvider[T] {
 
   protected override def getContentMap(content: Array[Serializable]): Map[String, T] = {
     val entities = entityDao.get(getMetaEnum.contentType.name, "id", content)

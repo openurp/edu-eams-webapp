@@ -10,31 +10,31 @@ import org.openurp.edu.base.Direction
 import org.openurp.edu.base.Major
 import org.openurp.code.edu.Education
 import org.openurp.edu.base.code.StdType
-import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnum
+
 import org.openurp.edu.base.Program
 
 
 
-object CourseLimitUtils {
+object LessonLimitUtils {
 
   def build[T <: Entity[_]](entity: T, alias: String): Condition = {
     var metaId: java.lang.Long = null
     if (entity.isInstanceOf[Gender]) {
-      metaId = CourseLimitMetaEnum.GENDER.metaId
+      metaId = LessonLimitMeta.Gender.id
     } else if (entity.isInstanceOf[StdType]) {
-      metaId = CourseLimitMetaEnum.STDTYPE.metaId
+      metaId = LessonLimitMeta.StdType.id
     } else if (entity.isInstanceOf[Department]) {
-      metaId = CourseLimitMetaEnum.DEPARTMENT.metaId
+      metaId = LessonLimitMeta.Department.id
     } else if (entity.isInstanceOf[Major]) {
-      metaId = CourseLimitMetaEnum.MAJOR.metaId
+      metaId = LessonLimitMeta.Major.id
     } else if (entity.isInstanceOf[Direction]) {
-      metaId = CourseLimitMetaEnum.DIRECTION.metaId
+      metaId = LessonLimitMeta.Direction.id
     } else if (entity.isInstanceOf[Adminclass]) {
-      metaId = CourseLimitMetaEnum.ADMINCLASS.metaId
+      metaId = LessonLimitMeta.Adminclass.id
     } else if (entity.isInstanceOf[Education]) {
-      metaId = CourseLimitMetaEnum.EDUCATION.metaId
+      metaId = LessonLimitMeta.Education.id
     } else if (entity.isInstanceOf[Program]) {
-      metaId = CourseLimitMetaEnum.PROGRAM.metaId
+      metaId = LessonLimitMeta.Program.id
     } else {
       throw new RuntimeException("not supported limit meta class " + entity.getClass.name)
     }

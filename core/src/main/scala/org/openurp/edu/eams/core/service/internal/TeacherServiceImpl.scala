@@ -3,7 +3,7 @@ package org.openurp.edu.eams.core.service.internal
 import java.sql.Date
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
@@ -24,7 +24,7 @@ class TeacherServiceImpl extends BaseServiceImpl with TeacherService {
   }
 
   def getTeacherNamesByDepart(departmentId: java.lang.Integer): List[Array[Any]] = {
-    if (null == departmentId) return CollectUtils.newArrayList(0)
+    if (null == departmentId) return Collections.newBuffer(0)
     val builder = OqlBuilder.from(classOf[Teacher].name + " teacher")
     builder.where("teacher.department.id=:departmentId", departmentId)
     builder.select("teacher.id,teacher.name")

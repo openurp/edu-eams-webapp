@@ -29,19 +29,19 @@ object LessonFilterStrategy {
 
 trait LessonFilterStrategy {
 
-  def getName(): String
+  def name: String
 
-  def getPostfix(): String
+  def postfix: String
 
-  def getPrefix(): String
+  def prefix: String
 
-  def getFilterString(): String
+  def filterString: String
 
   def createQuery(session: Session): Query
 
-  def getQueryString(): String
+  def queryString: String
 
   def createQuery(session: Session, prefix: String, postfix: String): Query
 
-  def getQueryString(prefix: String, postfix: String): String
+  def queryString(prefix: String, postfix: String): String
 }

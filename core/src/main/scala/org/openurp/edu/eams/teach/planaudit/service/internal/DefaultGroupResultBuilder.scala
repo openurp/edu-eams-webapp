@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.planaudit.service.internal
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.lang.Strings
 import org.openurp.edu.base.Course
 import org.openurp.edu.teach.planaudit.GroupAuditResult
@@ -23,7 +23,7 @@ class DefaultGroupResultBuilder extends GroupResultBuilder {
       creditsRequired = 0
       var groupCourseCredits = 0f
       var creditsNeedCompare = false
-      val auditedCourses = CollectUtils.newHashSet()
+      val auditedCourses = Collections.newHashSet()
       for (i <- 0 until context.auditTerms.length) {
         val term = java.lang.Integer.valueOf(context.auditTerms()(i))
         creditsRequired += PlanUtils.groupCredits(group, term)

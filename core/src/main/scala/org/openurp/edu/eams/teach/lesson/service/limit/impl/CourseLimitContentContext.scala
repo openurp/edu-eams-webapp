@@ -6,7 +6,7 @@ import net.sf.ehcache.store.chm.ConcurrentHashMap
 
 
 @SerialVersionUID(53685695269396170L)
-class CourseLimitContentContext extends ConcurrentHashMap[Any, Any] {
+class LessonLimitContentContext extends ConcurrentHashMap[Any, Any] {
 
   
   var content: String = _

@@ -1,23 +1,23 @@
 package org.openurp.edu.eams.teach.lesson.service.limit.impl
 
-import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnum
-import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnumFilter
-import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnumProvider
-import DefaultCourseLimitMetaEnumProvider._
+
+Filter
+Provider
+import DefaultLessonLimitMetaProvider._
 
 
 
-object DefaultCourseLimitMetaEnumProvider {
+object DefaultLessonLimitMetaProvider {
 
-  private val enums = CourseLimitMetaEnum.values
+  private val enums = LessonLimitMeta.values
 }
 
-class DefaultCourseLimitMetaEnumProvider extends CourseLimitMetaEnumProvider {
+class DefaultLessonLimitMetaProvider extends LessonLimitMetaProvider {
 
-  private var filters: List[CourseLimitMetaEnumFilter] = new ArrayList[CourseLimitMetaEnumFilter]()
+  private var filters: List[LessonLimitMetaFilter] = new ArrayList[LessonLimitMetaFilter]()
 
-  def getCourseLimitMetaEnums(): List[CourseLimitMetaEnum] = {
-    val results = new ArrayList[CourseLimitMetaEnum]()
+  def getLessonLimitMetas(): List[LessonLimitMeta] = {
+    val results = new ArrayList[LessonLimitMeta]()
     for (courseLimitMetaEnum <- enums) {
       var append = true
       for (filter <- filters if !filter.accept(courseLimitMetaEnum)) {
@@ -31,7 +31,7 @@ class DefaultCourseLimitMetaEnumProvider extends CourseLimitMetaEnumProvider {
     results
   }
 
-  def getCourseLimitMetaIds(): List[Long] = {
+  def getLessonLimitMetaIds(): List[Long] = {
     val results = new ArrayList[Long]()
     for (courseLimitMetaEnum <- enums) {
       var append = true
@@ -40,15 +40,15 @@ class DefaultCourseLimitMetaEnumProvider extends CourseLimitMetaEnumProvider {
         //break
       }
       if (append) {
-        results.add(courseLimitMetaEnum.metaId)
+        results.add(courseLimitMetaEnum.id)
       }
     }
     results
   }
 
-  def getCourseLimitMetaPairs(): Pair[List[Long], List[CourseLimitMetaEnum]] = {
+  def getLessonLimitMetaPairs(): Pair[List[Long], List[LessonLimitMeta]] = {
     val ids = new ArrayList[Long]()
-    val courseLimitMetaEnums = new ArrayList[CourseLimitMetaEnum]()
+    val courseLimitMetaEnums = new ArrayList[LessonLimitMeta]()
     for (courseLimitMetaEnum <- enums) {
       var append = true
       for (filter <- filters if !filter.accept(courseLimitMetaEnum)) {
@@ -57,13 +57,13 @@ class DefaultCourseLimitMetaEnumProvider extends CourseLimitMetaEnumProvider {
       }
       if (append) {
         courseLimitMetaEnums.add(courseLimitMetaEnum)
-        ids.add(courseLimitMetaEnum.metaId)
+        ids.add(courseLimitMetaEnum.id)
       }
     }
-    new Pair[List[Long], List[CourseLimitMetaEnum]](ids, courseLimitMetaEnums)
+    new Pair[List[Long], List[LessonLimitMeta]](ids, courseLimitMetaEnums)
   }
 
-  def setFilters(filters: List[CourseLimitMetaEnumFilter]) {
+  def setFilters(filters: List[LessonLimitMetaFilter]) {
     this.filters = filters
   }
 }

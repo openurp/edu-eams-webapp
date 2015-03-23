@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.grade.service.impl
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.lang.Strings
 import org.springframework.beans.BeansException
 import org.springframework.beans.factory.InitializingBean
@@ -12,7 +12,7 @@ import org.springframework.context.ApplicationContextAware
 
 class SpringGradeFilterRegistry extends GradeFilterRegistry with ApplicationContextAware with InitializingBean {
 
-  val filters = CollectUtils.newHashMap()
+  val filters = Collections.newMap()
 
   var applicationContext: ApplicationContext = _
 

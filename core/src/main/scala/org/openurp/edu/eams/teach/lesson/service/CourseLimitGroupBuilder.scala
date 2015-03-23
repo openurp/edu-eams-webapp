@@ -1,22 +1,22 @@
 package org.openurp.edu.eams.teach.lesson.service
 
 import org.beangle.data.model.Entity
-import org.openurp.edu.teach.lesson.CourseLimitGroup
-import org.openurp.edu.teach.lesson.CourseLimitMeta
+import org.openurp.edu.teach.lesson.LessonLimitGroup
+import org.openurp.edu.teach.lesson.LessonLimitMeta
 
 
 
-trait CourseLimitGroupBuilder {
+trait LessonLimitGroupBuilder {
 
-  def inGrades(grades: String*): CourseLimitGroupBuilder
+  def inGrades(grades: String*): LessonLimitGroupBuilder
 
-  def notInGrades(grades: String*): CourseLimitGroupBuilder
+  def notInGrades(grades: String*): LessonLimitGroupBuilder
 
-  def in[T <: Entity[_]](entities: T*): CourseLimitGroupBuilder
+  def in[T <: Entity[_]](entities: T*): LessonLimitGroupBuilder
 
-  def notIn[T <: Entity[_]](entities: T*): CourseLimitGroupBuilder
+  def notIn[T <: Entity[_]](entities: T*): LessonLimitGroupBuilder
 
-  def clear(meta: CourseLimitMeta): CourseLimitGroupBuilder
+  def clear(meta: LessonLimitMeta): LessonLimitGroupBuilder
 
-  def build(): CourseLimitGroup
+  def build(): LessonLimitGroup
 }

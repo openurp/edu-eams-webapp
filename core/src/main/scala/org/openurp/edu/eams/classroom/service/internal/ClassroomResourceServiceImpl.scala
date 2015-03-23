@@ -2,7 +2,7 @@ package org.openurp.edu.eams.classroom.service.internal
 
 
 import java.util.Date
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.base.Room
@@ -20,18 +20,18 @@ class RoomResourceServiceImpl extends BaseServiceImpl with RoomResourceService {
       "and (occupancy.time.day = :weekday) " + 
       "and (:startTime <= occupancy.time.end and :endTime > occupancy.time.start)" + 
       ")")
-    if (!CollectUtils.isEmpty(rooms)) {
+    if (!Collections.isEmpty(rooms)) {
       query.where("classroom in (:rooms)")
     }
     query.where("classroom.effectiveAt <= :now and (classroom.invalidAt is null or classroom.invalidAt >= :now)")
     query.orderBy("classroom.code")
-    val params = CollectUtils.newHashMap[String,Any]()
+    val params = Collections.newMap[String,Any]()
     params.put("year", unit.year)
     params.put("weekState", unit.state)
     params.put("weekday", unit.day)
-    params.put("startTime", unit.start)
+    params.put("startTime", unit.begin)
     params.put("endTime", unit.end)
-    if (!CollectUtils.isEmpty(rooms)) {
+    if (!Collections.isEmpty(rooms)) {
       params.put("rooms", rooms)
     }
     params.put("now", new Date())

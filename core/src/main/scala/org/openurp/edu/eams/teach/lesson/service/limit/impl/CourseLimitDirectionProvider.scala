@@ -5,19 +5,19 @@ import java.util.Date
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.openurp.edu.base.Direction
-import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnum
 
 
 
-class CourseLimitDirectionProvider extends AbstractCourseLimitNamedEntityProvider[Direction, Integer] {
+
+class LessonLimitDirectionProvider extends AbstractLessonLimitNamedEntityProvider[Direction, Integer] {
 
   protected override def addCascadeQuery(builder: OqlBuilder[Direction], cascadeField: Map[Long, String]) {
     if (cascadeField.isEmpty) {
       return
     }
-    val majorIds = cascadeField.get(CourseLimitMetaEnum.MAJOR.metaId).orNull
-    val departIds = cascadeField.get(CourseLimitMetaEnum.DEPARTMENT.metaId).orNull
-    val educationIds = cascadeField.get(CourseLimitMetaEnum.EDUCATION.metaId).orNull
+    val majorIds = cascadeField.get(LessonLimitMeta.Major.id).orNull
+    val departIds = cascadeField.get(LessonLimitMeta.Department.id).orNull
+    val educationIds = cascadeField.get(LessonLimitMeta.Education.id).orNull
     if (Strings.isNotBlank(majorIds)) {
       builder.where("entity.major.id in (:majorIds)", Strings.splitToInt(majorIds))
     }

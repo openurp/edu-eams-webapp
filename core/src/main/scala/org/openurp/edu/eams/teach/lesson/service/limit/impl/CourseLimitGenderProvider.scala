@@ -6,7 +6,7 @@ import java.util.LinkedHashMap
 
 import org.openurp.code.person.Gender
 
-class CourseLimitGenderProvider extends AbstractCourseLimitNamedEntityProvider[Gender, Integer] {
+class LessonLimitGenderProvider extends AbstractLessonLimitNamedEntityProvider[Gender, Integer] {
 
 
   protected var excludedIds: Set[Integer] = new HashSet[Integer]()

@@ -1,8 +1,8 @@
 package org.openurp.edu.eams.teach.lesson.util
 
 
-import org.openurp.edu.teach.lesson.CourseLimitGroup
-import org.openurp.edu.teach.lesson.CourseLimitItem
+import org.openurp.edu.teach.lesson.LessonLimitGroup
+import org.openurp.edu.teach.lesson.LessonLimitItem
 import org.openurp.edu.teach.lesson.CourseTake
 import org.openurp.edu.teach.exam.ExamTake
 import org.openurp.edu.teach.lesson.Lesson

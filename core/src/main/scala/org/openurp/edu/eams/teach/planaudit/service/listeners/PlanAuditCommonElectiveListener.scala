@@ -3,7 +3,7 @@ package org.openurp.edu.eams.teach.planaudit.service.listeners
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.openurp.edu.base.Course
 import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.teach.grade.CourseGrade
@@ -53,8 +53,8 @@ class PlanAuditCommonElectiveListener extends PlanAuditListener {
   }
 
   protected def processConvertCredits(target: GroupAuditResult, result: PlanAuditResult, context: PlanAuditContext) {
-    val parents = CollectUtils.newHashSet()
-    val sibling = CollectUtils.newHashSet()
+    val parents = Collections.newHashSet()
+    val sibling = Collections.newHashSet()
     var start = target.parent
     while (null != start && !parents.contains(start)) {
       parents.add(start)

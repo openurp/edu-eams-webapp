@@ -9,45 +9,45 @@ import org.openurp.edu.base.Direction
 import org.openurp.edu.base.Major
 import org.openurp.code.edu.Education
 import org.openurp.edu.base.code.StdType
-import org.openurp.edu.teach.lesson.CourseLimitGroup
-import org.openurp.edu.teach.lesson.CourseLimitMeta.Operator
+import org.openurp.edu.teach.lesson.LessonLimitGroup
+import org.openurp.edu.teach.lesson.LessonLimitMeta.Operator
 import org.openurp.edu.base.Program
 
 
 
-trait CourseLimitExtractorService {
+trait LessonLimitExtractorService {
 
-  def xtractEducationLimit(courseLimitGroup: CourseLimitGroup): Pair[Operator, List[Education]]
+  def xtractEducationLimit(courseLimitGroup: LessonLimitGroup): Pair[Operator, List[Education]]
 
-  def xtractAdminclassLimit(courseLimitGroup: CourseLimitGroup): Pair[Operator, List[Adminclass]]
+  def xtractAdminclassLimit(courseLimitGroup: LessonLimitGroup): Pair[Operator, List[Adminclass]]
 
-  def xtractGradeLimit(courseLimitGroup: CourseLimitGroup): Pair[Operator, List[String]]
+  def xtractGradeLimit(courseLimitGroup: LessonLimitGroup): Pair[Operator, List[String]]
 
-  def xtractStdTypeLimit(courseLimitGroup: CourseLimitGroup): Pair[Operator, List[StdType]]
+  def xtractStdTypeLimit(courseLimitGroup: LessonLimitGroup): Pair[Operator, List[StdType]]
 
-  def xtractAttendDepartLimit(courseLimitGroup: CourseLimitGroup): Pair[Operator, List[Department]]
+  def xtractAttendDepartLimit(courseLimitGroup: LessonLimitGroup): Pair[Operator, List[Department]]
 
-  def xtractMajorLimit(courseLimitGroup: CourseLimitGroup): Pair[Operator, List[Major]]
+  def xtractMajorLimit(courseLimitGroup: LessonLimitGroup): Pair[Operator, List[Major]]
 
-  def xtractDirectionLimit(courseLimitGroup: CourseLimitGroup): Pair[Operator, List[Direction]]
+  def xtractDirectionLimit(courseLimitGroup: LessonLimitGroup): Pair[Operator, List[Direction]]
 
-  def xtractProgramLimit(courseLimitGroup: CourseLimitGroup): Pair[Operator, List[Program]]
+  def xtractProgramLimit(courseLimitGroup: LessonLimitGroup): Pair[Operator, List[Program]]
 
-  def extractEducations(courseLimitGroup: CourseLimitGroup): List[Education]
+  def extractEducations(courseLimitGroup: LessonLimitGroup): List[Education]
 
-  def extractAdminclasses(courseLimitGroup: CourseLimitGroup): List[Adminclass]
+  def extractAdminclasses(courseLimitGroup: LessonLimitGroup): List[Adminclass]
 
-  def extractGrade(courseLimitGroup: CourseLimitGroup): String
+  def extractGrade(courseLimitGroup: LessonLimitGroup): String
 
-  def extractStdTypes(courseLimitGroup: CourseLimitGroup): List[StdType]
+  def extractStdTypes(courseLimitGroup: LessonLimitGroup): List[StdType]
 
-  def extractMajors(courseLimitGroup: CourseLimitGroup): List[Major]
+  def extractMajors(courseLimitGroup: LessonLimitGroup): List[Major]
 
-  def extractDirections(courseLimitGroup: CourseLimitGroup): List[Direction]
+  def extractDirections(courseLimitGroup: LessonLimitGroup): List[Direction]
 
-  def extractAttendDeparts(courseLimitGroup: CourseLimitGroup): List[Department]
+  def extractAttendDeparts(courseLimitGroup: LessonLimitGroup): List[Department]
 
-  def extractPrograms(courseLimitGroup: CourseLimitGroup): List[Program]
+  def extractPrograms(courseLimitGroup: LessonLimitGroup): List[Program]
 
-  def extractGender(courseLimitGroup: CourseLimitGroup): Gender
+  def extractGender(courseLimitGroup: LessonLimitGroup): Gender
 }

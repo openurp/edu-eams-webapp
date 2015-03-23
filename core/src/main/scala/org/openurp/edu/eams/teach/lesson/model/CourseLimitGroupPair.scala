@@ -1,14 +1,14 @@
 package org.openurp.edu.eams.teach.lesson.model
 
 
-import org.openurp.edu.teach.lesson.CourseLimitGroup
-import org.openurp.edu.teach.lesson.CourseLimitMeta.Operator
+import org.openurp.edu.teach.lesson.LessonLimitGroup
+import org.openurp.edu.teach.lesson.LessonLimitMeta.Operator
 
 
-class CourseLimitGroupPair {
+class LessonLimitGroupPair {
 
   
-  var courseLimitGroup: CourseLimitGroup = _
+  var courseLimitGroup: LessonLimitGroup = _
 
   
   var gradeLimit: Pair[Operator, List[_]] = _
@@ -43,7 +43,7 @@ class CourseLimitGroupPair {
   
   var stdLabelLimit: Pair[Operator, List[_]] = _
 
-  def this(courseLimitGroup: CourseLimitGroup) {
+  def this(courseLimitGroup: LessonLimitGroup) {
     this()
     this.courseLimitGroup = courseLimitGroup
   }

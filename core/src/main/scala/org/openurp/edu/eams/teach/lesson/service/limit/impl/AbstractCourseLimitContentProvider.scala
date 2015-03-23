@@ -9,22 +9,22 @@ import org.beangle.commons.conversion.impl.DefaultConversion
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.beangle.commons.lang.Arrays
 import org.beangle.commons.lang.Strings
-import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitItemContentProvider
-import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnum
-import AbstractCourseLimitContentProvider._
+import org.openurp.edu.eams.teach.lesson.service.limit.LessonLimitItemContentProvider
+
+import AbstractLessonLimitContentProvider._
 
 
 
 
-object AbstractCourseLimitContentProvider {
+object AbstractLessonLimitContentProvider {
 
   val converter = new MapConverter(DefaultConversion.Instance)
 }
 
-abstract class AbstractCourseLimitContentProvider[T] extends BaseServiceImpl with CourseLimitItemContentProvider[T] {
+abstract class AbstractLessonLimitContentProvider[T] extends BaseServiceImpl with LessonLimitItemContentProvider[T] {
 
   
-  var metaEnum: CourseLimitMetaEnum = _
+  var metaEnum: LessonLimitMeta = _
 
   protected def getContentValues(content: String): Array[Serializable] = {
     val strValues = Strings.split(content, ",")

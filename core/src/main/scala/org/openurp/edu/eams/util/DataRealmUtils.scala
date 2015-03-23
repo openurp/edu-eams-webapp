@@ -6,7 +6,7 @@ import org.beangle.commons.lang.Strings
 import org.openurp.base.Department
 import org.openurp.edu.base.code.StdType
 import org.openurp.edu.eams.system.security.DataRealm
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import java.util.ArrayList
 import org.beangle.data.model.dao.Condition
 
@@ -20,8 +20,8 @@ object DataRealmUtils {
 
   def inDataRealms(query: OqlBuilder[_], attrs: Array[String], dataRealms: List[_]) {
     if (dataRealms == null || dataRealms.isEmpty) return
-    val conditions = CollectUtils.newArrayList[Condition]
-    val datas = CollectUtils.newArrayList[Any]
+    val conditions = Collections.newBuffer[Condition]
+    val datas = Collections.newBuffer[Any]
     for (i <- 0 until dataRealms.size) {
       val dataRealm = dataRealms(i).asInstanceOf[DataRealm]
       val buffer = new StringBuffer("")
@@ -60,8 +60,8 @@ object DataRealmUtils {
 
   def addDataRealms(query: OqlBuilder[_], attrs: Array[String], dataRealms: Seq[_]) {
     if (dataRealms == null || dataRealms.isEmpty) return
-    val conditions = CollectUtils.newArrayList[Condition]
-    val datas = CollectUtils.newArrayList[Any]
+    val conditions = Collections.newBuffer[Condition]
+    val datas = Collections.newBuffer[Any]
     for (i <- 0 until dataRealms.size) {
       val dataRealm = dataRealms(i).asInstanceOf[DataRealm]
       val buffer = new StringBuffer("")

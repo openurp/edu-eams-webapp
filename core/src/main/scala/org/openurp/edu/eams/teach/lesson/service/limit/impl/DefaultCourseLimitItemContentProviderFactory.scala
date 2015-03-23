@@ -1,31 +1,31 @@
 package org.openurp.edu.eams.teach.lesson.service.limit.impl
 
-import org.openurp.edu.teach.lesson.CourseLimitMeta
-import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitItemContentProvider
-import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitItemContentProviderFactory
-import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnum
+import org.openurp.edu.teach.lesson.LessonLimitMeta
+import org.openurp.edu.eams.teach.lesson.service.limit.LessonLimitItemContentProvider
+import org.openurp.edu.eams.teach.lesson.service.limit.LessonLimitItemContentProviderFactory
 
-class DefaultCourseLimitItemContentProviderFactory extends CourseLimitItemContentProviderFactory {
 
-  private var providers: Map[CourseLimitMetaEnum, CourseLimitItemContentProvider] = new HashMap[CourseLimitMetaEnum, CourseLimitItemContentProvider]()
+class DefaultLessonLimitItemContentProviderFactory extends LessonLimitItemContentProviderFactory {
 
-  def getProvider(courseLimitMetaEnum: CourseLimitMetaEnum): CourseLimitItemContentProvider = {
+  private var providers: Map[LessonLimitMeta, LessonLimitItemContentProvider] = new HashMap[LessonLimitMeta, LessonLimitItemContentProvider]()
+
+  def getProvider(courseLimitMetaEnum: LessonLimitMeta): LessonLimitItemContentProvider = {
     val provider = providers.get(courseLimitMetaEnum)
     provider.metaEnum=courseLimitMetaEnum
     provider
   }
 
-  def getProvider(courseLimitMeta: CourseLimitMeta): CourseLimitItemContentProvider = getProvider(courseLimitMeta.id)
+  def getProvider(courseLimitMeta: LessonLimitMeta): LessonLimitItemContentProvider = getProvider(courseLimitMeta.id)
 
-  def getProvider(courseLimitMetaId: Long): CourseLimitItemContentProvider = {
-    val values = CourseLimitMetaEnum.values
-    for (courseLimitMetaEnum <- values if courseLimitMetaId == courseLimitMetaEnum.metaId) {
+  def getProvider(courseLimitMetaId: Long): LessonLimitItemContentProvider = {
+    val values = LessonLimitMeta.values
+    for (courseLimitMetaEnum <- values if courseLimitMetaId == courseLimitMetaEnum.id) {
       return getProvider(courseLimitMetaEnum)
     }
     null
   }
 
-  def setProviders(providers: Map[CourseLimitMetaEnum, CourseLimitItemContentProvider]) {
+  def setProviders(providers: Map[LessonLimitMeta, LessonLimitItemContentProvider]) {
     this.providers = providers
   }
 }

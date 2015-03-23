@@ -1,14 +1,14 @@
 package org.openurp.edu.eams.teach.lesson.service.limit
 
-import org.openurp.edu.teach.lesson.CourseLimitMeta
+import org.openurp.edu.teach.lesson.LessonLimitMeta
 
 
 
-trait CourseLimitItemContentProviderFactory {
+trait LessonLimitItemContentProviderFactory {
 
-  def getProvider(courseLimitMetaEnum: CourseLimitMetaEnum): CourseLimitItemContentProvider[_]
+  def getProvider(courseLimitMetaEnum: LessonLimitMeta): LessonLimitItemContentProvider[_]
 
-  def getProvider(courseLimitMeta: CourseLimitMeta): CourseLimitItemContentProvider[_]
+  def getProvider(courseLimitMeta: LessonLimitMeta): LessonLimitItemContentProvider[_]
 
-  def getProvider(courseLimitMetaId: Long): CourseLimitItemContentProvider[_]
+  def getProvider(courseLimitMetaId: Long): LessonLimitItemContentProvider[_]
 }

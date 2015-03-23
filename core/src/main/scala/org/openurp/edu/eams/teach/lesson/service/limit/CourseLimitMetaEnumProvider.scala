@@ -1,11 +1,11 @@
 package org.openurp.edu.eams.teach.lesson.service.limit
 
 
-trait CourseLimitMetaEnumProvider {
+trait LessonLimitMetaProvider {
 
-  def getCourseLimitMetaEnums(): List[CourseLimitMetaEnum]
+  def getLessonLimitMetas(): List[LessonLimitMeta]
 
-  def getCourseLimitMetaIds(): List[Long]
+  def getLessonLimitMetaIds(): List[Long]
 
-  def getCourseLimitMetaPairs(): Pair[List[Long], List[CourseLimitMetaEnum]]
+  def getLessonLimitMetaPairs(): Pair[List[Long], List[LessonLimitMeta]]
 }

@@ -11,7 +11,7 @@ import org.openurp.edu.base.Program
 
 
 
-class CourseLimitGradeProvider extends AbstractCourseLimitContentProvider[String] {
+class LessonLimitGradeProvider extends AbstractLessonLimitContentProvider[String] {
 
   protected def getContentMap(content: Array[Serializable]): Map[String, String] = {
     val results = new LinkedHashMap[String, String]()

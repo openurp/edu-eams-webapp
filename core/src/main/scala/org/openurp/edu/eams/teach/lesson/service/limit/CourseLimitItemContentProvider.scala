@@ -6,7 +6,7 @@ import org.beangle.commons.collection.page.PageLimit
 
 
 
-trait CourseLimitItemContentProvider[T] {
+trait LessonLimitItemContentProvider[T] {
 
   def getContents(content: String): Map[String, T]
 
@@ -19,7 +19,7 @@ trait CourseLimitItemContentProvider[T] {
       limit: PageLimit, 
       cascadeField: Map[Long, String]): List[T]
 
-  def getMetaEnum(): CourseLimitMetaEnum
+  def getMetaEnum(): LessonLimitMeta
 
-  def setMetaEnum(metaEnum: CourseLimitMetaEnum): Unit
+  def setMetaEnum(metaEnum: LessonLimitMeta): Unit
 }
