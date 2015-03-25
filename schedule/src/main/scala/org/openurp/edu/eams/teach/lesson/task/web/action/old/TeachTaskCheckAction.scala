@@ -23,9 +23,9 @@ import org.openurp.edu.eams.web.helper.BaseInfoSearchHelper
 
 class TeachTaskCheckAction extends SemesterSupportAction {
 
-  protected var baseInfoSearchHelper: BaseInfoSearchHelper = _
+  var baseInfoSearchHelper: BaseInfoSearchHelper = _
 
-  protected var majorPlanService: MajorPlanService = _
+  var majorPlanService: MajorPlanService = _
 
   def index(): String = {
     val stdTypes = baseCodeService.getCodes(classOf[StdType])

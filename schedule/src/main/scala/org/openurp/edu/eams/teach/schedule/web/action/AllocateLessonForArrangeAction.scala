@@ -21,9 +21,9 @@ import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
 class AllocateLessonForArrangeAction extends SemesterSupportAction {
 
-  protected var lessonSearchHelper: LessonSearchHelper = _
+  var lessonSearchHelper: LessonSearchHelper = _
 
-  private var lessonService: LessonService = _
+  var lessonService: LessonService = _
 
   private def getSemester(): Semester = {
     val semesterId = getInt("semester.id")
@@ -285,10 +285,6 @@ class AllocateLessonForArrangeAction extends SemesterSupportAction {
     }
   }
 
-  def setLessonSearchHelper(lessonSearchHelper: LessonSearchHelper) {
-    this.lessonSearchHelper = lessonSearchHelper
-  }
-
   def autoLocate(): String = {
     val semester = getSemester
     val project = getProject
@@ -330,9 +326,5 @@ class AllocateLessonForArrangeAction extends SemesterSupportAction {
         redirect("index", "info.save.failure")
       }
     }
-  }
-
-  def setLessonService(lessonService: LessonService) {
-    this.lessonService = lessonService
   }
 }

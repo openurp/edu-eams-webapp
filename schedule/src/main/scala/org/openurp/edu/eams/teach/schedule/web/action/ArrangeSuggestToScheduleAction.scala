@@ -38,15 +38,15 @@ import com.google.gson.GsonBuilder
 
 class ArrangeSuggestToScheduleAction extends ProjectSupportAction {
 
-  protected var lessonSearchHelper: LessonSearchHelper = _
+  var lessonSearchHelper: LessonSearchHelper = _
 
-  protected var lessonService: LessonService = _
+  var lessonService: LessonService = _
 
-  protected var bruteForceArrangeService: BruteForceArrangeService = _
+  var bruteForceArrangeService: BruteForceArrangeService = _
 
-  protected var courseActivityService: CourseActivityService = _
+  var courseActivityService: CourseActivityService = _
 
-  protected var scheduleLogHelper: ScheduleLogHelper = _
+  var scheduleLogHelper: ScheduleLogHelper = _
 
   protected override def indexSetting() {
     val project = getProject
@@ -212,20 +212,4 @@ class ArrangeSuggestToScheduleAction extends ProjectSupportAction {
   }
 
   protected override def getQueryBuilder(): OqlBuilder[Lesson] = lessonSearchHelper.buildQuery()
-
-  def setLessonSearchHelper(lessonSearchHelper: LessonSearchHelper) {
-    this.lessonSearchHelper = lessonSearchHelper
-  }
-
-  def setLessonService(lessonService: LessonService) {
-    this.lessonService = lessonService
-  }
-
-  def setBruteForceArrangeService(bruteForceArrangeService: BruteForceArrangeService) {
-    this.bruteForceArrangeService = bruteForceArrangeService
-  }
-
-  def setCourseActivityService(courseActivityService: CourseActivityService) {
-    this.courseActivityService = courseActivityService
-  }
 }

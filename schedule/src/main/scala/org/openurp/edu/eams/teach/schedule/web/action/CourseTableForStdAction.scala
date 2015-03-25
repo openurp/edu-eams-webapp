@@ -42,17 +42,17 @@ import org.openurp.edu.eams.web.action.common.AbstractStudentProjectSupportActio
 
 class CourseTableForStdAction extends AbstractStudentProjectSupportAction {
 
-  protected var lessonFilterStrategyFactory: LessonFilterStrategyFactory = _
+  var lessonFilterStrategyFactory: LessonFilterStrategyFactory = _
 
-  protected var lessonService: LessonService = _
+  var lessonService: LessonService = _
 
-  protected var timeSettingService: TimeSettingService = _
+  var timeSettingService: TimeSettingService = _
 
-  protected var teachResourceService: TeachResourceService = _
+  var teachResourceService: TeachResourceService = _
 
-  protected var majorPlanService: MajorPlanService = _
+  var majorPlanService: MajorPlanService = _
 
-  protected var stdCourseTablePermissionChecker: StdCourseTablePermissionChecker = _
+  var stdCourseTablePermissionChecker: StdCourseTablePermissionChecker = _
 
   override def innerIndex(): String = {
     val std = getLoginStudent
@@ -266,37 +266,5 @@ class CourseTableForStdAction extends AbstractStudentProjectSupportAction {
     put("startWeek", startWeek)
     put("endWeek", endWeek)
     Array(YearWeekTimeUtil.buildYearWeekTimes(2, startWeek.intValue(), endWeek.intValue(), CourseTime.CONTINUELY))
-  }
-
-  def getLessonService(): LessonService = lessonService
-
-  def setLessonService(lessonService: LessonService) {
-    this.lessonService = lessonService
-  }
-
-  def getTimeSettingService(): TimeSettingService = timeSettingService
-
-  def setTimeSettingService(timeSettingService: TimeSettingService) {
-    this.timeSettingService = timeSettingService
-  }
-
-  def getTeachResourceService(): TeachResourceService = teachResourceService
-
-  def setTeachResourceService(teachResourceService: TeachResourceService) {
-    this.teachResourceService = teachResourceService
-  }
-
-  def getMajorPlanService(): MajorPlanService = majorPlanService
-
-  def setMajorPlanService(majorPlanService: MajorPlanService) {
-    this.majorPlanService = majorPlanService
-  }
-
-  def setLessonFilterStrategyFactory(lessonFilterStrategyFactory: LessonFilterStrategyFactory) {
-    this.lessonFilterStrategyFactory = lessonFilterStrategyFactory
-  }
-
-  def setStdCourseTablePermissionChecker(stdCourseTablePermissionChecker: StdCourseTablePermissionChecker) {
-    this.stdCourseTablePermissionChecker = stdCourseTablePermissionChecker
   }
 }

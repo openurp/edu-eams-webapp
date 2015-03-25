@@ -91,23 +91,23 @@ object MultiManualArrangeAction {
 
 class MultiManualArrangeAction extends SemesterSupportAction {
 
-  protected var courseActivityService: CourseActivityService = _
+  var courseActivityService: CourseActivityService = _
 
-  protected var lessonService: LessonService = _
+  var lessonService: LessonService = _
 
-  protected var classroomService: RoomService = _
+  var classroomService: RoomService = _
 
-  protected var lessonSearchHelper: LessonSearchHelper = _
+  var lessonSearchHelper: LessonSearchHelper = _
 
-  protected var teachResourceService: TeachResourceService = _
+  var teachResourceService: TeachResourceService = _
 
-  protected var classroomResourceService: RoomResourceService = _
+  var classroomResourceService: RoomResourceService = _
 
-  protected var timeSettingService: TimeSettingService = _
+  var timeSettingService: TimeSettingService = _
 
-  protected var scheduleLogHelper: ScheduleLogHelper = _
+  var scheduleLogHelper: ScheduleLogHelper = _
 
-  protected var scheduleRoomService: ScheduleRoomService = _
+  var scheduleRoomService: ScheduleRoomService = _
 
   def setScheduleRoomService(scheduleRoomService: ScheduleRoomService) {
     this.scheduleRoomService = scheduleRoomService
@@ -1110,37 +1110,5 @@ class MultiManualArrangeAction extends SemesterSupportAction {
       put("teachers", CollectionUtils.EMPTY_COLLECTION)
     }
     forward("departTeacher")
-  }
-
-  def setCourseActivityService(courseActivityService: CourseActivityService) {
-    this.courseActivityService = courseActivityService
-  }
-
-  def setLessonService(lessonService: LessonService) {
-    this.lessonService = lessonService
-  }
-
-  def setRoomService(classroomService: RoomService) {
-    this.classroomService = classroomService
-  }
-
-  def setLessonSearchHelper(lessonSearchHelper: LessonSearchHelper) {
-    this.lessonSearchHelper = lessonSearchHelper
-  }
-
-  def setTeachResourceService(teachResourceService: TeachResourceService) {
-    this.teachResourceService = teachResourceService
-  }
-
-  def setRoomResourceService(classroomResourceService: RoomResourceService) {
-    this.classroomResourceService = classroomResourceService
-  }
-
-  def setTimeSettingService(timeSettingService: TimeSettingService) {
-    this.timeSettingService = timeSettingService
-  }
-
-  def setScheduleLogHelper(scheduleLogHelper: ScheduleLogHelper) {
-    this.scheduleLogHelper = scheduleLogHelper
   }
 }

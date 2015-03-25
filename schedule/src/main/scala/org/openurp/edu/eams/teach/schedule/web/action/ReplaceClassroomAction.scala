@@ -54,17 +54,17 @@ import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
 class ReplaceRoomAction extends SemesterSupportAction {
 
-  protected var classroomService: RoomService = _
+  var classroomService: RoomService = _
 
-  protected var classroomResourceService: RoomResourceService = _
+  var classroomResourceService: RoomResourceService = _
 
-  protected var timeSettingService: TimeSettingService = _
+  var timeSettingService: TimeSettingService = _
 
-  protected var courseActivityService: CourseActivityService = _
+  var courseActivityService: CourseActivityService = _
 
-  protected var scheduleLogHelper: ScheduleLogHelper = _
+  var scheduleLogHelper: ScheduleLogHelper = _
 
-  protected var scheduleRoomService: ScheduleRoomService = _
+  var scheduleRoomService: ScheduleRoomService = _
 
   def index(): String = {
     setSemesterDataRealm(hasStdType)
@@ -487,37 +487,5 @@ class ReplaceRoomAction extends SemesterSupportAction {
       }
     }
     String.valueOf(oldWeekStateChar)
-  }
-
-  def getRoomService(): RoomService = classroomService
-
-  def setRoomService(classroomService: RoomService) {
-    this.classroomService = classroomService
-  }
-
-  def getRoomResourceService(): RoomResourceService = classroomResourceService
-
-  def setRoomResourceService(classroomResourceService: RoomResourceService) {
-    this.classroomResourceService = classroomResourceService
-  }
-
-  def getTimeSettingService(): TimeSettingService = timeSettingService
-
-  def setTimeSettingService(timeSettingService: TimeSettingService) {
-    this.timeSettingService = timeSettingService
-  }
-
-  def getCourseActivityService(): CourseActivityService = courseActivityService
-
-  def setCourseActivityService(courseActivityService: CourseActivityService) {
-    this.courseActivityService = courseActivityService
-  }
-
-  def setScheduleLogHelper(scheduleLogHelper: ScheduleLogHelper) {
-    this.scheduleLogHelper = scheduleLogHelper
-  }
-
-  def setScheduleRoomService(scheduleRoomService: ScheduleRoomService) {
-    this.scheduleRoomService = scheduleRoomService
   }
 }

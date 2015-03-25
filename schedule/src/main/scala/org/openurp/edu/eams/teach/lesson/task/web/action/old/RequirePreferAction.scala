@@ -29,11 +29,11 @@ object RequirePreferAction {
 
 class RequirePreferAction extends BaseAction {
 
-  private var semesterService: SemesterService = _
+  var semesterService: SemesterService = _
 
-  private var preferenceService: RequirePreferService = _
+  var preferenceService: RequirePreferService = _
 
-  private var teacherService: TeacherService = _
+  var teacherService: TeacherService = _
 
   def index(): String = {
     val user = getUser
@@ -165,17 +165,5 @@ class RequirePreferAction extends BaseAction {
       preferenceService.setPreferenceFor(Collections.singletonList(task))
     }
     redirect(new Action("", "edit"), "info.save.success", Array("requirementType", "task"))
-  }
-
-  def setSemesterService(semesterService: SemesterService) {
-    this.semesterService = semesterService
-  }
-
-  def setPreferenceService(preferenceService: RequirePreferService) {
-    this.preferenceService = preferenceService
-  }
-
-  def setTeacherService(teacherService: TeacherService) {
-    this.teacherService = teacherService
   }
 }

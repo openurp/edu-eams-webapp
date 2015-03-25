@@ -16,9 +16,9 @@ import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
 class CourseTableCheckAction extends SemesterSupportAction {
 
-  protected var courseTableCheckService: CourseTableCheckService = _
+  var courseTableCheckService: CourseTableCheckService = _
 
-  protected var stdStatService: StdStatService = _
+  var stdStatService: StdStatService = _
 
   def index(): String = {
     setSemesterDataRealm(hasStdTypeCollege)
@@ -54,13 +54,5 @@ class CourseTableCheckAction extends SemesterSupportAction {
     realm.setStudentTypeIdSeq(getStdTypeIdSeq)
     put("onCampusStats", stdStatService.statOnCampusByStdTypeDepart(realm))
     forward()
-  }
-
-  def setCourseTableCheckService(courseTableCheckService: CourseTableCheckService) {
-    this.courseTableCheckService = courseTableCheckService
-  }
-
-  def setStdStatService(stdStatService: StdStatService) {
-    this.stdStatService = stdStatService
   }
 }

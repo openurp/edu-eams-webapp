@@ -22,7 +22,7 @@ import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
 class CourseArrangeAlterationAction extends SemesterSupportAction {
 
-  private var courseTableMailService: CourseTableMailService = _
+  var courseTableMailService: CourseTableMailService = _
 
   def index(): String = {
     setSemesterDataRealm(hasStdType)
@@ -146,10 +146,6 @@ class CourseArrangeAlterationAction extends SemesterSupportAction {
         userIds)
     }
     redirect("search", if (errorMsg == "") "邮件发送成功!" else errorMsg, get("params"))
-  }
-
-  def setCourseTableMailService(courseTableMailService: CourseTableMailService) {
-    this.courseTableMailService = courseTableMailService
   }
 
   def courseMailSetting(): String = {

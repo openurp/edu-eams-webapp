@@ -74,25 +74,25 @@ import org.openurp.edu.eams.web.helper.StdSearchHelper
 
 class CourseTableAction extends SemesterSupportAction {
 
-  protected var lessonFilterStrategyFactory: LessonFilterStrategyFactory = _
+  var lessonFilterStrategyFactory: LessonFilterStrategyFactory = _
 
-  protected var lessonService: LessonService = _
+  var lessonService: LessonService = _
 
-  protected var baseInfoSearchHelper: BaseInfoSearchHelper = _
+  var baseInfoSearchHelper: BaseInfoSearchHelper = _
 
-  protected var studentService: StudentService = _
+  var studentService: StudentService = _
 
-  protected var teachResourceService: TeachResourceService = _
+  var teachResourceService: TeachResourceService = _
 
-  protected var majorPlanService: MajorPlanService = _
+  var majorPlanService: MajorPlanService = _
 
-  protected var stdSearchHelper: StdSearchHelper = _
+  var stdSearchHelper: StdSearchHelper = _
 
-  protected var timeSettingService: TimeSettingService = _
+  var timeSettingService: TimeSettingService = _
 
-  protected var adminclassCourseGroups: Map[Adminclass, Map[CourseType, Float]] = CollectUtils.newHashMap()
+  var adminclassCourseGroups: Map[Adminclass, Map[CourseType, Float]] = CollectUtils.newHashMap()
 
-  protected var adminclassLessonGroups: Map[Adminclass, Map[CourseType, Set[Lesson]]] = CollectUtils.newHashMap()
+  var adminclassLessonGroups: Map[Adminclass, Map[CourseType, Set[Lesson]]] = CollectUtils.newHashMap()
 
   override def index(): String = {
     setSemesterDataRealm(hasStdTypeCollege)
@@ -717,37 +717,5 @@ class CourseTableAction extends SemesterSupportAction {
     } else {
       forward("courseTableLesson")
     }
-  }
-
-  def setLessonService(lessonService: LessonService) {
-    this.lessonService = lessonService
-  }
-
-  def setStudentService(studentService: StudentService) {
-    this.studentService = studentService
-  }
-
-  def setTeachResourceService(teachResourceService: TeachResourceService) {
-    this.teachResourceService = teachResourceService
-  }
-
-  def setMajorPlanService(majorPlanService: MajorPlanService) {
-    this.majorPlanService = majorPlanService
-  }
-
-  def setBaseInfoSearchHelper(baseInfoSearchHelper: BaseInfoSearchHelper) {
-    this.baseInfoSearchHelper = baseInfoSearchHelper
-  }
-
-  def setStdSearchHelper(stdSearchHelper: StdSearchHelper) {
-    this.stdSearchHelper = stdSearchHelper
-  }
-
-  def setTimeSettingService(timeSettingService: TimeSettingService) {
-    this.timeSettingService = timeSettingService
-  }
-
-  def setLessonFilterStrategyFactory(lessonFilterStrategyFactory: LessonFilterStrategyFactory) {
-    this.lessonFilterStrategyFactory = lessonFilterStrategyFactory
   }
 }

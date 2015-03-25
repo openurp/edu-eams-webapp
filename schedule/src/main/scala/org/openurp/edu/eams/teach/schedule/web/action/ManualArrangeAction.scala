@@ -87,29 +87,29 @@ object ManualArrangeAction {
 
 class ManualArrangeAction extends SemesterSupportAction {
 
-  protected var courseActivityService: CourseActivityService = _
+  var courseActivityService: CourseActivityService = _
 
-  protected var lessonService: LessonService = _
+  var lessonService: LessonService = _
 
-  protected var classroomService: RoomService = _
+  var classroomService: RoomService = _
 
-  protected var lessonSearchHelper: LessonSearchHelper = _
+  var lessonSearchHelper: LessonSearchHelper = _
 
-  protected var teachResourceService: TeachResourceService = _
+  var teachResourceService: TeachResourceService = _
 
-  protected var classroomResourceService: RoomResourceService = _
+  var classroomResourceService: RoomResourceService = _
 
-  protected var scheduleRoomService: ScheduleRoomService = _
+  var scheduleRoomService: ScheduleRoomService = _
 
-  protected var timeSettingService: TimeSettingService = _
+  var timeSettingService: TimeSettingService = _
 
-  protected var scheduleLogHelper: ScheduleLogHelper = _
+  var scheduleLogHelper: ScheduleLogHelper = _
 
-  protected var checkers: List[LessonScheduleChecker] = CollectUtils.newArrayList()
+  var checkers: List[LessonScheduleChecker] = CollectUtils.newArrayList()
 
-  protected var teacherPeriodLimitService: TeacherPeriodLimitService = _
+  var teacherPeriodLimitService: TeacherPeriodLimitService = _
 
-  protected var courseLimitService: CourseLimitService = _
+  var courseLimitService: CourseLimitService = _
 
   protected def getQueryBuilder(): OqlBuilder[Lesson] = {
     val query = lessonSearchHelper.buildQuery()
@@ -1043,35 +1043,5 @@ class ManualArrangeAction extends SemesterSupportAction {
       put("teachers", CollectionUtils.EMPTY_COLLECTION)
     }
     forward("departTeacher")
-  }
-
-  def setTeachResourceService(teachResourceService: TeachResourceService) {
-    this.teachResourceService = teachResourceService
-  }
-
-  def setRoomResourceService(classroomResourceService: RoomResourceService) {
-    this.classroomResourceService = classroomResourceService
-  }
-
-  def setScheduleLogHelper(scheduleLogHelper: ScheduleLogHelper) {
-    this.scheduleLogHelper = scheduleLogHelper
-  }
-
-  def setCheckers(checkers: List[LessonScheduleChecker]) {
-    this.checkers = checkers
-  }
-
-  def setTeacherPeriodLimitService(teacherPeriodLimitService: TeacherPeriodLimitService) {
-    this.teacherPeriodLimitService = teacherPeriodLimitService
-  }
-
-  def getCourseLimitService(): CourseLimitService = courseLimitService
-
-  def setCourseLimitService(courseLimitService: CourseLimitService) {
-    this.courseLimitService = courseLimitService
-  }
-
-  def setScheduleRoomService(scheduleRoomService: ScheduleRoomService) {
-    this.scheduleRoomService = scheduleRoomService
   }
 }

@@ -24,11 +24,11 @@ import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
 class CourseArrangeSettingAction extends SemesterSupportAction {
 
-  private var lessonService: LessonService = _
+  var lessonService: LessonService = _
 
-  private var lessonSearchHelper: LessonSearchHelper = _
+  var lessonSearchHelper: LessonSearchHelper = _
 
-  private var timeSettingService: TimeSettingService = _
+  var timeSettingService: TimeSettingService = _
 
   def index(): String = {
     setSemesterDataRealm(hasStdType)
@@ -118,17 +118,5 @@ class CourseArrangeSettingAction extends SemesterSupportAction {
       case e: Exception => return redirect("taskList", "info.action.failure", "status=" + status + "&lesson.semester.id=" + semesterId)
     }
     redirect("taskList", "info.action.success", "status=" + status + "&lesson.semester.id=" + semesterId)
-  }
-
-  def setLessonService(lessonService: LessonService) {
-    this.lessonService = lessonService
-  }
-
-  def setLessonSearchHelper(lessonSearchHelper: LessonSearchHelper) {
-    this.lessonSearchHelper = lessonSearchHelper
-  }
-
-  def setTimeSettingService(timeSettingService: TimeSettingService) {
-    this.timeSettingService = timeSettingService
   }
 }

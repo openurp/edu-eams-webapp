@@ -36,15 +36,15 @@ import org.openurp.edu.eams.teach.web.action.AbstractTeacherLessonAction
 
 class CourseTableForTeacherAction extends AbstractTeacherLessonAction {
 
-  protected var lessonFilterStrategyFactory: LessonFilterStrategyFactory = _
+  var lessonFilterStrategyFactory: LessonFilterStrategyFactory = _
 
-  protected var lessonService: LessonService = _
+  var lessonService: LessonService = _
 
-  protected var timeSettingService: TimeSettingService = _
+  var timeSettingService: TimeSettingService = _
 
-  protected var teachResourceService: TeachResourceService = _
+  var teachResourceService: TeachResourceService = _
 
-  protected var majorPlanService: MajorPlanService = _
+  var majorPlanService: MajorPlanService = _
 
   def taskTable(): String = {
     val lessonId = getLongId("lesson")
@@ -224,34 +224,6 @@ class CourseTableForTeacherAction extends AbstractTeacherLessonAction {
     put("timeSetting", timeSettingService.getClosestTimeSetting(getProject, setting.getSemester, null))
     put("tableStyle", CourseTableStyle.getStyle(getConfig.get(CourseTableStyle.STYLE_KEY).asInstanceOf[String]))
     forward()
-  }
-
-  def getLessonService(): LessonService = lessonService
-
-  def setLessonService(lessonService: LessonService) {
-    this.lessonService = lessonService
-  }
-
-  def getTimeSettingService(): TimeSettingService = timeSettingService
-
-  def setTimeSettingService(timeSettingService: TimeSettingService) {
-    this.timeSettingService = timeSettingService
-  }
-
-  def getTeachResourceService(): TeachResourceService = teachResourceService
-
-  def setTeachResourceService(teachResourceService: TeachResourceService) {
-    this.teachResourceService = teachResourceService
-  }
-
-  def getMajorPlanService(): MajorPlanService = majorPlanService
-
-  def setMajorPlanService(majorPlanService: MajorPlanService) {
-    this.majorPlanService = majorPlanService
-  }
-
-  def setLessonFilterStrategyFactory(lessonFilterStrategyFactory: LessonFilterStrategyFactory) {
-    this.lessonFilterStrategyFactory = lessonFilterStrategyFactory
   }
 
   def printAttendanceCheckList(): String = {

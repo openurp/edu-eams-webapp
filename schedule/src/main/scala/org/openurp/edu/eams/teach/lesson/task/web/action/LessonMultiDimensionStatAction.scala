@@ -82,8 +82,4 @@ class LessonMultiDimensionStatAction extends SemesterSupportAction {
     put("stats", stats)
     forward()
   }
-
-  def setLessonStatService(lessonStatService: LessonStatService) {
-    this.lessonStatService = lessonStatService
-  }
 }

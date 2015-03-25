@@ -37,13 +37,13 @@ import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
 class TeachTaskSearchAction extends SemesterSupportAction {
 
-  protected var lessonService: LessonService = _
+  var lessonService: LessonService = _
 
-  protected var lessonSearchHelper: LessonSearchHelper = _
+  var lessonSearchHelper: LessonSearchHelper = _
 
-  protected var lessonPlanRelationService: LessonPlanRelationService = _
+  var lessonPlanRelationService: LessonPlanRelationService = _
 
-  protected var courseLimitService: CourseLimitService = _
+  var courseLimitService: CourseLimitService = _
 
   def index(): String = {
     setSemesterDataRealm(hasStdTypeCollege)
@@ -287,21 +287,5 @@ class TeachTaskSearchAction extends SemesterSupportAction {
     put("gtCount", gtCount)
     put("ltCount", ltCount)
     forward()
-  }
-
-  def setLessonService(teachTaskService: LessonService) {
-    this.lessonService = teachTaskService
-  }
-
-  def setLessonSearchHelper(teachTaskSearchHelper: LessonSearchHelper) {
-    this.lessonSearchHelper = teachTaskSearchHelper
-  }
-
-  def setCourseLimitService(courseLimitService: CourseLimitService) {
-    this.courseLimitService = courseLimitService
-  }
-
-  def setLessonPlanRelationService(lessonPlanRelationService: LessonPlanRelationService) {
-    this.lessonPlanRelationService = lessonPlanRelationService
   }
 }

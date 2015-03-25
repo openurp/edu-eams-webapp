@@ -41,11 +41,11 @@ import com.google.gson.reflect.TypeToken
 
 class ArrangeSuggestAction extends SemesterSupportAction {
 
-  protected var lessonSearchHelper: LessonSearchHelper = _
+  var lessonSearchHelper: LessonSearchHelper = _
 
-  protected var timeSettingService: TimeSettingService = _
+  var timeSettingService: TimeSettingService = _
 
-  protected var lessonService: LessonService = _
+  var lessonService: LessonService = _
 
   protected override def indexSetting() {
     val project = getProject
@@ -220,17 +220,5 @@ class ArrangeSuggestAction extends SemesterSupportAction {
     val suggests = entityDao.get(classOf[ArrangeSuggest], "lesson.id", lessonIds)
     entityDao.remove(suggests)
     redirect("search", "info.delete.success")
-  }
-
-  def setLessonSearchHelper(lessonSearchHelper: LessonSearchHelper) {
-    this.lessonSearchHelper = lessonSearchHelper
-  }
-
-  def setTimeSettingService(timeSettingService: TimeSettingService) {
-    this.timeSettingService = timeSettingService
-  }
-
-  def setLessonService(lessonService: LessonService) {
-    this.lessonService = lessonService
   }
 }

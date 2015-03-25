@@ -23,7 +23,7 @@ import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
 class CurriculumChangeApplyAction extends SemesterSupportAction {
 
-  private var lessonService: LessonService = _
+  var lessonService: LessonService = _
 
   override def getEntityName(): String = {
     classOf[CurriculumChangeApplication].getName
@@ -177,9 +177,5 @@ class CurriculumChangeApplyAction extends SemesterSupportAction {
   protected override def indexSetting() {
     put("teachDepartList", lessonService.teachDepartsOfSemester(CollectUtils.newArrayList(getProject), 
       getDeparts, getAttribute("semester").asInstanceOf[Semester]))
-  }
-
-  def setLessonService(lessonService: LessonService) {
-    this.lessonService = lessonService
   }
 }

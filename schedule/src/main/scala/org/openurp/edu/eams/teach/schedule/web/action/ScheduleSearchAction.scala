@@ -29,11 +29,11 @@ import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
 class ScheduleSearchAction extends SemesterSupportAction {
 
-  private var lessonService: LessonService = _
+  var lessonService: LessonService = _
 
-  private var timeSettingService: TimeSettingService = _
+  var timeSettingService: TimeSettingService = _
 
-  private var lessonSearchHelper: LessonSearchHelper = _
+  var lessonSearchHelper: LessonSearchHelper = _
 
   protected override def indexSetting() {
     val semesterId = getInt("semester.id")
@@ -111,17 +111,5 @@ class ScheduleSearchAction extends SemesterSupportAction {
     extrator.setCourseUnit(courseUnit)
     extrator.setBuildingId(getLong("fake.building.id"))
     extrator
-  }
-
-  def setLessonService(lessonService: LessonService) {
-    this.lessonService = lessonService
-  }
-
-  def setTimeSettingService(timeSettingService: TimeSettingService) {
-    this.timeSettingService = timeSettingService
-  }
-
-  def setLessonSearchHelper(lessonSearchHelper: LessonSearchHelper) {
-    this.lessonSearchHelper = lessonSearchHelper
   }
 }

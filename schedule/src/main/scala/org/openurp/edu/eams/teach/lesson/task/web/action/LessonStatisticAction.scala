@@ -88,12 +88,4 @@ class LessonStatisticAction extends SemesterSupportAction {
     put("tasks", entityDao.search(query))
     forward()
   }
-
-  def setLessonStatService(lessonStatService: LessonStatService) {
-    this.lessonStatService = lessonStatService
-  }
-
-  def setCourseLimitService(courseLimitService: CourseLimitService) {
-    this.courseLimitService = courseLimitService
-  }
 }

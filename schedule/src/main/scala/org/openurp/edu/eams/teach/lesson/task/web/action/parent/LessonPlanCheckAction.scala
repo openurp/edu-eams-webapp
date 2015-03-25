@@ -24,9 +24,9 @@ import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
 class LessonPlanCheckAction extends SemesterSupportAction {
 
-  protected var lessonPlanCheckService: LessonPlanCheckService = _
+  var lessonPlanCheckService: LessonPlanCheckService = _
 
-  private var majorPlanSearchHelper: MajorPlanSearchHelper = _
+  var majorPlanSearchHelper: MajorPlanSearchHelper = _
 
   def index(): String = {
     setSemesterDataRealm(hasStdTypeCollege)
@@ -106,13 +106,5 @@ class LessonPlanCheckAction extends SemesterSupportAction {
     }
     put("planPackages", planPackages)
     forward()
-  }
-
-  def setMajorPlanSearchHelper(majorPlanSearchHelper: MajorPlanSearchHelper) {
-    this.majorPlanSearchHelper = majorPlanSearchHelper
-  }
-
-  def setLessonPlanCheckService(lessonPlanCheckService: LessonPlanCheckService) {
-    this.lessonPlanCheckService = lessonPlanCheckService
   }
 }

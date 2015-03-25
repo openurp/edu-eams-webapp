@@ -36,15 +36,15 @@ import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
 class TeachTaskGenAction extends SemesterSupportAction {
 
-  protected var majorPlanSearchHelper: MajorPlanSearchHelper = _
+  var majorPlanSearchHelper: MajorPlanSearchHelper = _
 
-  protected var lessonGenService: LessonGenService = _
+  var lessonGenService: LessonGenService = _
 
-  protected var lessonSeqNoGenerator: LessonSeqNoGenerator = _
+  var lessonSeqNoGenerator: LessonSeqNoGenerator = _
 
-  protected var lessonLogHelper: LessonLogHelper = _
+  var lessonLogHelper: LessonLogHelper = _
 
-  protected var teachClassNameStrategy: TeachClassNameStrategy = _
+  var teachClassNameStrategy: TeachClassNameStrategy = _
 
   def index(): String = {
     put("stateList", CommonAuditState.values)
@@ -240,25 +240,5 @@ class TeachTaskGenAction extends SemesterSupportAction {
       .limit(getPageLimit)
     put("courses", entityDao.search(query))
     forward("coursesJSON")
-  }
-
-  def setMajorPlanSearchHelper(majorPlanSearchHelper: MajorPlanSearchHelper) {
-    this.majorPlanSearchHelper = majorPlanSearchHelper
-  }
-
-  def setLessonGenService(lessonGenService: LessonGenService) {
-    this.lessonGenService = lessonGenService
-  }
-
-  def setLessonSeqNoGenerator(lessonSeqNoGenerator: LessonSeqNoGenerator) {
-    this.lessonSeqNoGenerator = lessonSeqNoGenerator
-  }
-
-  def setLessonLogHelper(lessonLogHelper: LessonLogHelper) {
-    this.lessonLogHelper = lessonLogHelper
-  }
-
-  def setTeachClassNameStrategy(teachClassNameStrategy: TeachClassNameStrategy) {
-    this.teachClassNameStrategy = teachClassNameStrategy
   }
 }

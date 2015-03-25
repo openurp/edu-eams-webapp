@@ -107,27 +107,27 @@ object LessonManagerCoreAction {
 
 abstract class LessonManagerCoreAction extends TeachTaskSearchAction {
 
-  protected var adminClassService: AdminclassService = _
+  var adminClassService: AdminclassService = _
 
-  protected var baseInfoSearchHelper: BaseInfoSearchHelper = _
+  var baseInfoSearchHelper: BaseInfoSearchHelper = _
 
-  protected var lessonDao: LessonDao = _
+  var lessonDao: LessonDao = _
 
-  protected var lessonLogHelper: LessonLogHelper = _
+  var lessonLogHelper: LessonLogHelper = _
 
-  protected var lessonMergeSplitService: LessonMergeSplitService = _
+  var lessonMergeSplitService: LessonMergeSplitService = _
 
-  protected var timeSettingService: TimeSettingService = _
+  var timeSettingService: TimeSettingService = _
 
-  protected var lessonCollegeSwitchService: LessonCollegeSwitchService = _
+  var lessonCollegeSwitchService: LessonCollegeSwitchService = _
 
-  protected var lessonExamArrangeHelper: LessonExamArrangeHelper = _
+  var lessonExamArrangeHelper: LessonExamArrangeHelper = _
 
-  protected var courseLimitMetaEnumProvider: CourseLimitMetaEnumProvider = _
+  var courseLimitMetaEnumProvider: CourseLimitMetaEnumProvider = _
 
-  protected var courseLimitItemContentProviderFactory: CourseLimitItemContentProviderFactory = _
+  var courseLimitItemContentProviderFactory: CourseLimitItemContentProviderFactory = _
 
-  protected var teachClassNameStrategy: TeachClassNameStrategy = _
+  var teachClassNameStrategy: TeachClassNameStrategy = _
 
   def operateViolationCheck(lesson: Lesson): LessonOperateViolation
 
@@ -1152,57 +1152,5 @@ abstract class LessonManagerCoreAction extends TeachTaskSearchAction {
     if (list.size > 0) list.get(0).getValue.asInstanceOf[AnyRef] else null
   }
 
-  private var lessonSeqNoGenerator: LessonSeqNoGenerator = _
-
-  def setLessonMergeSplitService(lessonMergeSplitService: LessonMergeSplitService) {
-    this.lessonMergeSplitService = lessonMergeSplitService
-  }
-
-  def setLessonDao(lessonDao: LessonDao) {
-    this.lessonDao = lessonDao
-  }
-
-  def setAdminclassService(adminClassService: AdminclassService) {
-    this.adminClassService = adminClassService
-  }
-
-  def setBaseInfoSearchHelper(baseInfoSearchHelper: BaseInfoSearchHelper) {
-    this.baseInfoSearchHelper = baseInfoSearchHelper
-  }
-
-  def setAdminClassService(adminClassService: AdminclassService) {
-    this.adminClassService = adminClassService
-  }
-
-  def setLessonLogHelper(lessonLogHelper: LessonLogHelper) {
-    this.lessonLogHelper = lessonLogHelper
-  }
-
-  def setLessonSeqNoGenerator(lessonSeqNoGenerator: LessonSeqNoGenerator) {
-    this.lessonSeqNoGenerator = lessonSeqNoGenerator
-  }
-
-  def setTimeSettingService(timeSettingService: TimeSettingService) {
-    this.timeSettingService = timeSettingService
-  }
-
-  def setLessonCollegeSwitchService(lessonCollegeSwitchService: LessonCollegeSwitchService) {
-    this.lessonCollegeSwitchService = lessonCollegeSwitchService
-  }
-
-  def setLessonExamArrangeHelper(lessonExamArrangeHelper: LessonExamArrangeHelper) {
-    this.lessonExamArrangeHelper = lessonExamArrangeHelper
-  }
-
-  def setCourseLimitMetaEnumProvider(courseLimitMetaEnumProvider: CourseLimitMetaEnumProvider) {
-    this.courseLimitMetaEnumProvider = courseLimitMetaEnumProvider
-  }
-
-  def setCourseLimitItemContentProviderFactory(courseLimitItemContentProviderFactory: CourseLimitItemContentProviderFactory) {
-    this.courseLimitItemContentProviderFactory = courseLimitItemContentProviderFactory
-  }
-
-  def setTeachClassNameStrategy(teachClassNameStrategy: TeachClassNameStrategy) {
-    this.teachClassNameStrategy = teachClassNameStrategy
-  }
+  var lessonSeqNoGenerator: LessonSeqNoGenerator = _
 }
