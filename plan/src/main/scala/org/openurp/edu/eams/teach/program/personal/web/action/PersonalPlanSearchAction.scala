@@ -26,13 +26,13 @@ import com.ekingstar.eams.web.action.common.ProjectSupportAction
 
 class PersonalPlanSearchAction extends ProjectSupportAction {
 
-  protected var planCommonDao: PlanCommonDao = _
+  var planCommonDao: PlanCommonDao = _
 
-  protected var personalPlanCompareService: PersonalPlanCompareService = _
+  var personalPlanCompareService: PersonalPlanCompareService = _
 
-  protected var personalPlanService: PersonalPlanService = _
+  var personalPlanService: PersonalPlanService = _
 
-  protected var coursePlanProvider: CoursePlanProvider = _
+  var coursePlanProvider: CoursePlanProvider = _
 
   def index(): String = {
     put("journalStatuses", baseCodeService.getCodes(classOf[StdStatus]))
@@ -150,21 +150,5 @@ class PersonalPlanSearchAction extends ProjectSupportAction {
     }
     put("multiComparisonResult", multiComparisonResult)
     forward()
-  }
-
-  def setPlanCommonDao(planCommonDao: PlanCommonDao) {
-    this.planCommonDao = planCommonDao
-  }
-
-  def setPersonalPlanCompareService(personalPlanCompareService: PersonalPlanCompareService) {
-    this.personalPlanCompareService = personalPlanCompareService
-  }
-
-  def setPersonalPlanService(personalPlanService: PersonalPlanService) {
-    this.personalPlanService = personalPlanService
-  }
-
-  def setCoursePlanProvider(coursePlanProvider: CoursePlanProvider) {
-    this.coursePlanProvider = coursePlanProvider
   }
 }

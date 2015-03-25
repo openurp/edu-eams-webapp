@@ -26,7 +26,7 @@ import org.openurp.edu.eams.teach.program.service.NoMajorProgramException
 
 class PersonalPlanAction extends PersonalPlanSearchAction {
 
-  private var personalPlanService: PersonalPlanService = _
+  var personalPlanService: PersonalPlanService = _
 
   def remove(): String = {
     val stdIds = getLongIds("std")
@@ -269,9 +269,5 @@ class PersonalPlanAction extends PersonalPlanSearchAction {
     plan.setRemark(get("plan.remark"))
     entityDao.saveOrUpdate(plan)
     redirect("search", "info.save.success")
-  }
-
-  def setPersonalPlanService(personalPlanService: PersonalPlanService) {
-    this.personalPlanService = personalPlanService
   }
 }

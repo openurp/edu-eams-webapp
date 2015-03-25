@@ -21,9 +21,9 @@ import org.openurp.edu.eams.teach.program.major.service.MajorPlanAuditService
 
 class MajorPlanAuditAction extends MajorPlanSearchAction {
 
-  private var majorPlanAuditService: MajorPlanAuditService = _
+  var majorPlanAuditService: MajorPlanAuditService = _
 
-  private var majorProgramBasicGuard: MajorProgramOperateGuard = _
+  var majorProgramBasicGuard: MajorProgramOperateGuard = _
 
   def index(): String = {
     setDataRealm(hasStdTypeCollege)
@@ -145,13 +145,5 @@ class MajorPlanAuditAction extends MajorPlanSearchAction {
     val context = CollectUtils.newHashMap()
     fillDataRealmContext(context)
     majorProgramBasicGuard.guard(operType, plan.getProgram, context)
-  }
-
-  def setMajorPlanAuditService(majorPlanAuditService: MajorPlanAuditService) {
-    this.majorPlanAuditService = majorPlanAuditService
-  }
-
-  def setMajorProgramBasicGuard(majorProgramBasicGuard: MajorProgramOperateGuard) {
-    this.majorProgramBasicGuard = majorProgramBasicGuard
   }
 }

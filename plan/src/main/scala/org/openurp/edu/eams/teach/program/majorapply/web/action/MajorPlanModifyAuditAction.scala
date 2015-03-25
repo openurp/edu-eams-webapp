@@ -16,9 +16,9 @@ import org.openurp.edu.eams.teach.program.majorapply.service.MajorPlanCourseModi
 
 class MajorPlanModifyAuditAction extends MajorPlanSearchAction {
 
-  private var majorPlanCourseModifyApplyService: MajorPlanCourseModifyApplyService = _
+  var majorPlanCourseModifyApplyService: MajorPlanCourseModifyApplyService = _
 
-  private var MajorCourseGroupModifyApplyService: MajorCourseGroupModifyApplyService = _
+  var MajorCourseGroupModifyApplyService: MajorCourseGroupModifyApplyService = _
 
   def index(): String = {
     indexSetting()
@@ -60,13 +60,5 @@ class MajorPlanModifyAuditAction extends MajorPlanSearchAction {
   def applicationSearch(): String = {
     put("departs", getDeparts)
     forward()
-  }
-
-  def setMajorPlanCourseModifyApplyService(majorPlanCourseModifyApplyService: MajorPlanCourseModifyApplyService) {
-    this.majorPlanCourseModifyApplyService = majorPlanCourseModifyApplyService
-  }
-
-  def setMajorCourseGroupModifyApplyService(MajorCourseGroupModifyApplyService: MajorCourseGroupModifyApplyService) {
-    this.MajorCourseGroupModifyApplyService = MajorCourseGroupModifyApplyService
   }
 }

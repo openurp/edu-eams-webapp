@@ -42,9 +42,9 @@ import com.ekingstar.eams.web.action.common.ProjectSupportAction
 
 class MajorPlanSearchAction extends ProjectSupportAction {
 
-  protected var majorPlanService: MajorPlanService = _
+  var majorPlanService: MajorPlanService = _
 
-  protected var majorPlanSearchHelper: MajorPlanSearchHelper = _
+  var majorPlanSearchHelper: MajorPlanSearchHelper = _
 
   def index(): String = {
     put("ACCEPTED", CommonAuditState.ACCEPTED)
@@ -68,10 +68,6 @@ class MajorPlanSearchAction extends ProjectSupportAction {
     put("SUBMITTED", CommonAuditState.SUBMITTED)
     put("courseHourTypes", baseCodeService.getCodes(classOf[CourseHourType]))
     forward()
-  }
-
-  def setMajorPlanService(majorPlanService: MajorPlanService) {
-    this.majorPlanService = majorPlanService
   }
 
   def print(): String = {
@@ -288,10 +284,6 @@ class MajorPlanSearchAction extends ProjectSupportAction {
     put("courseHourTypes", baseCodeService.getCodes(classOf[CourseHourType]))
     put("courseType", entityDao.get(classOf[CourseType], courseTypeId))
     forward()
-  }
-
-  def setMajorPlanSearchHelper(majorPlanSearchHelper: MajorPlanSearchHelper) {
-    this.majorPlanSearchHelper = majorPlanSearchHelper
   }
 
   def getEntityName(): String = classOf[MajorPlan].getName

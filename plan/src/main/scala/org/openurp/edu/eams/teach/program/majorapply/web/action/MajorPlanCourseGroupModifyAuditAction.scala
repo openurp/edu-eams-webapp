@@ -12,7 +12,7 @@ import org.openurp.edu.eams.teach.program.majorapply.service.MajorCourseGroupMod
 
 class MajorCourseGroupModifyAuditAction extends MajorCourseGroupModifyApplyAction {
 
-  private var MajorCourseGroupModifyAuditService: MajorCourseGroupModifyAuditService = _
+  var MajorCourseGroupModifyAuditService: MajorCourseGroupModifyAuditService = _
 
   def approved(): String = {
     val applyId = getLong("applyId")
@@ -71,9 +71,5 @@ class MajorCourseGroupModifyAuditAction extends MajorCourseGroupModifyApplyActio
     put("applications", entityDao.search(query))
     put("param", get("param"))
     forward()
-  }
-
-  def setMajorCourseGroupModifyAuditService(MajorCourseGroupModifyAuditService: MajorCourseGroupModifyAuditService) {
-    this.MajorCourseGroupModifyAuditService = MajorCourseGroupModifyAuditService
   }
 }

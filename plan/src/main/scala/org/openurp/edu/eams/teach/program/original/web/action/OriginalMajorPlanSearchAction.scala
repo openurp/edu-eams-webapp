@@ -13,13 +13,13 @@ import com.ekingstar.eams.web.action.common.RestrictionSupportAction
 
 class OriginalMajorPlanSearchAction extends RestrictionSupportAction {
 
-  private var majorPlanAuditService: MajorPlanAuditService = _
+  var majorPlanAuditService: MajorPlanAuditService = _
 
-  private var planCompareService: PlanCompareService = _
+  var planCompareService: PlanCompareService = _
 
-  private var planCommonDao: PlanCommonDao = _
+  var planCommonDao: PlanCommonDao = _
 
-  private var coursePlanProvider: CoursePlanProvider = _
+  var coursePlanProvider: CoursePlanProvider = _
 
   def info(): String = {
     val originalPlanId = getLongId("plan")
@@ -53,21 +53,5 @@ class OriginalMajorPlanSearchAction extends RestrictionSupportAction {
     put("majorCourseTypes", planCommonDao.getUsedCourseTypes(majorPlan))
     put("stdCourseTypes", planCommonDao.getUsedCourseTypes(originalMajorPlan))
     forward()
-  }
-
-  def setMajorPlanAuditService(majorPlanAuditService: MajorPlanAuditService) {
-    this.majorPlanAuditService = majorPlanAuditService
-  }
-
-  def setPlanCompareService(planCompareService: PlanCompareService) {
-    this.planCompareService = planCompareService
-  }
-
-  def setPlanCommonDao(planCommonDao: PlanCommonDao) {
-    this.planCommonDao = planCommonDao
-  }
-
-  def setCoursePlanProvider(coursePlanProvider: CoursePlanProvider) {
-    this.coursePlanProvider = coursePlanProvider
   }
 }

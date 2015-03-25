@@ -20,9 +20,9 @@ import com.ekingstar.eams.web.action.BaseAction
 
 class PersonalPlanCourseAction extends BaseAction {
 
-  protected var planCommonDao: PlanCommonDao = _
+  var planCommonDao: PlanCommonDao = _
 
-  private var personalPlanCourseService: PersonalPlanCourseService = _
+  var personalPlanCourseService: PersonalPlanCourseService = _
 
   def save(): String = {
     val o = extractPlanAndGroup()
@@ -125,13 +125,5 @@ class PersonalPlanCourseAction extends BaseAction {
     val plan = entityDao.get(classOf[PersonalPlan], planId)
     val group = entityDao.get(classOf[PersonalPlanCourseGroup], groupId)
     new Pair[PersonalPlan, PersonalPlanCourseGroup](plan, group)
-  }
-
-  def setPersonalPlanCourseService(personalPlanCourseService: PersonalPlanCourseService) {
-    this.personalPlanCourseService = personalPlanCourseService
-  }
-
-  def setPlanCommonDao(planCommonDao: PlanCommonDao) {
-    this.planCommonDao = planCommonDao
   }
 }

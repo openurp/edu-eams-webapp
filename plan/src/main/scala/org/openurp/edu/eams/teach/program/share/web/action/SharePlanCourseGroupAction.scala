@@ -20,9 +20,9 @@ import com.ekingstar.eams.web.action.BaseAction
 
 class SharePlanCourseGroupAction extends BaseAction {
 
-  protected var MajorCourseGroupService: MajorCourseGroupService = _
+  var MajorCourseGroupService: MajorCourseGroupService = _
 
-  protected var planCourseGroupCommonDao: PlanCourseGroupCommonDao = _
+  var planCourseGroupCommonDao: PlanCourseGroupCommonDao = _
 
   protected override def getEntityName(): String = classOf[SharePlanCourseGroup].getName
 
@@ -91,14 +91,6 @@ class SharePlanCourseGroupAction extends BaseAction {
         redirect(new Action(classOf[SharePlanAction], "groupList"), "info.save.failure")
       }
     }
-  }
-
-  def setMajorCourseGroupService(MajorCourseGroupService: MajorCourseGroupService) {
-    this.MajorCourseGroupService = MajorCourseGroupService
-  }
-
-  def setPlanCourseGroupCommonDao(planCourseGroupCommonDao: PlanCourseGroupCommonDao) {
-    this.planCourseGroupCommonDao = planCourseGroupCommonDao
   }
 
   protected def removeAndForward(entities: Iterable[_]): String = {

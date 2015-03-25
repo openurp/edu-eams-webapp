@@ -33,9 +33,9 @@ import com.ekingstar.eams.web.action.common.ProjectSupportAction
 
 class ProgramBindManageAction extends ProjectSupportAction {
 
-  private var studentProgramBindService: StudentProgramBindService = _
+  var studentProgramBindService: StudentProgramBindService = _
 
-  private var majorPlanSearchHelper: MajorPlanSearchHelper = _
+  var majorPlanSearchHelper: MajorPlanSearchHelper = _
 
   protected override def indexSetting() {
     put("stdStatuses", baseCodeService.getCodes(classOf[StdStatus]))
@@ -235,13 +235,5 @@ class ProgramBindManageAction extends ProjectSupportAction {
     }
     query.limit(QueryHelper.getPageLimit)
     query
-  }
-
-  def setStudentProgramBindService(studentProgramBindService: StudentProgramBindService) {
-    this.studentProgramBindService = studentProgramBindService
-  }
-
-  def setMajorPlanSearchHelper(majorPlanSearchHelper: MajorPlanSearchHelper) {
-    this.majorPlanSearchHelper = majorPlanSearchHelper
   }
 }

@@ -34,17 +34,17 @@ import com.ekingstar.eams.web.action.common.RestrictionSupportAction
 
 class MajorCourseGroupAction extends RestrictionSupportAction {
 
-  protected var majorPlanCourseService: MajorPlanCourseService = _
+  var majorPlanCourseService: MajorPlanCourseService = _
 
-  protected var MajorCourseGroupService: MajorCourseGroupService = _
+  var MajorCourseGroupService: MajorCourseGroupService = _
 
-  protected var majorPlanService: MajorPlanService = _
+  var majorPlanService: MajorPlanService = _
 
-  protected var planCommonDao: PlanCommonDao = _
+  var planCommonDao: PlanCommonDao = _
 
-  protected var planCourseGroupCommonDao: PlanCourseGroupCommonDao = _
+  var planCourseGroupCommonDao: PlanCourseGroupCommonDao = _
 
-  protected var MajorCourseGroupCopyDao: IPlanCourseGroupCopyDao = _
+  var MajorCourseGroupCopyDao: IPlanCourseGroupCopyDao = _
 
   def arrangeGroupCourses(): String = {
     val groupId = getLong("courseGroup.id")
@@ -362,30 +362,6 @@ class MajorCourseGroupAction extends RestrictionSupportAction {
     getFlash.put("params", get("params"))
     val extra = "&toGroupPane=1&planId=" + get("planId")
     redirect(new Action(classOf[MajorPlanAction], "edit", extra), "info.save.success")
-  }
-
-  def setMajorPlanCourseService(majorPlanCourseService: MajorPlanCourseService) {
-    this.majorPlanCourseService = majorPlanCourseService
-  }
-
-  def setMajorCourseGroupService(MajorCourseGroupService: MajorCourseGroupService) {
-    this.MajorCourseGroupService = MajorCourseGroupService
-  }
-
-  def setMajorPlanService(majorPlanService: MajorPlanService) {
-    this.majorPlanService = majorPlanService
-  }
-
-  def setPlanCourseGroupCommonDao(planCourseGroupCommonDao: PlanCourseGroupCommonDao) {
-    this.planCourseGroupCommonDao = planCourseGroupCommonDao
-  }
-
-  def setMajorCourseGroupCopyDao(MajorCourseGroupCopyDao: IPlanCourseGroupCopyDao) {
-    this.MajorCourseGroupCopyDao = MajorCourseGroupCopyDao
-  }
-
-  def setPlanCommonDao(planCommonDao: PlanCommonDao) {
-    this.planCommonDao = planCommonDao
   }
 
   def getEntityName(): String = classOf[MajorCourseGroup].getName

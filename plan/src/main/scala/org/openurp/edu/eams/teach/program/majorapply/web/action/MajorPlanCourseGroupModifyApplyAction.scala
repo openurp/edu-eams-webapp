@@ -25,11 +25,11 @@ import com.ekingstar.eams.web.action.common.RestrictionSupportAction
 
 class MajorCourseGroupModifyApplyAction extends RestrictionSupportAction {
 
-  private var majorPlanService: MajorPlanService = _
+  var majorPlanService: MajorPlanService = _
 
-  private var planCommonDao: PlanCommonDao = _
+  var planCommonDao: PlanCommonDao = _
 
-  private var MajorCourseGroupModifyApplyService: MajorCourseGroupModifyApplyService = _
+  var MajorCourseGroupModifyApplyService: MajorCourseGroupModifyApplyService = _
 
   def applyAdd(): String = {
     val plan = getMajorPlan
@@ -200,17 +200,5 @@ class MajorCourseGroupModifyApplyAction extends RestrictionSupportAction {
     extractor.setEntityDao(entityDao)
     extractor.setTextResource(getTextResource)
     extractor
-  }
-
-  def setMajorPlanService(majorPlanService: MajorPlanService) {
-    this.majorPlanService = majorPlanService
-  }
-
-  def setPlanCommonDao(planCommonDao: PlanCommonDao) {
-    this.planCommonDao = planCommonDao
-  }
-
-  def setMajorCourseGroupModifyApplyService(MajorCourseGroupModifyApplyService: MajorCourseGroupModifyApplyService) {
-    this.MajorCourseGroupModifyApplyService = MajorCourseGroupModifyApplyService
   }
 }

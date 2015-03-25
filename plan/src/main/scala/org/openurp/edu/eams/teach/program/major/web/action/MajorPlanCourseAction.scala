@@ -20,9 +20,9 @@ import com.ekingstar.eams.web.action.BaseAction
 
 class MajorPlanCourseAction extends BaseAction {
 
-  private var majorPlanCourseService: MajorPlanCourseService = _
+  var majorPlanCourseService: MajorPlanCourseService = _
 
-  private var majorPlanService: MajorPlanService = _
+  var majorPlanService: MajorPlanService = _
 
   def save(): String = {
     val o = extractMajorPlanAndGroup()
@@ -130,14 +130,6 @@ class MajorPlanCourseAction extends BaseAction {
     val plan = entityDao.get(classOf[MajorPlan], planId)
     val group = entityDao.get(classOf[MajorCourseGroup], groupId)
     new Pair[MajorPlan, MajorCourseGroup](plan, group)
-  }
-
-  def setMajorPlanCourseService(majorPlanCourseService: MajorPlanCourseService) {
-    this.majorPlanCourseService = majorPlanCourseService
-  }
-
-  def setMajorPlanService(majorPlanService: MajorPlanService) {
-    this.majorPlanService = majorPlanService
   }
 
   def getEntityName(): String = classOf[MajorPlanCourse].getName

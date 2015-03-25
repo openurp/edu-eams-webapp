@@ -34,7 +34,7 @@ import com.ekingstar.eams.web.action.common.ProjectSupportAction
 
 class MajorPlanCourseModifyApplyAction extends ProjectSupportAction {
 
-  private var majorPlanCourseModifyApplyService: MajorPlanCourseModifyApplyService = _
+  var majorPlanCourseModifyApplyService: MajorPlanCourseModifyApplyService = _
 
   private def applyAuthenticationCheck(): Boolean = false
 
@@ -305,9 +305,5 @@ class MajorPlanCourseModifyApplyAction extends ProjectSupportAction {
     extractor.setEntityDao(entityDao)
     extractor.setTextResource(getTextResource)
     extractor
-  }
-
-  def setMajorPlanCourseModifyApplyService(majorPlanCourseModifyApplyService: MajorPlanCourseModifyApplyService) {
-    this.majorPlanCourseModifyApplyService = majorPlanCourseModifyApplyService
   }
 }

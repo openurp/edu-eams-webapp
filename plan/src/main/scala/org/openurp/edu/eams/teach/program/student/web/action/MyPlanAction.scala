@@ -24,11 +24,11 @@ import com.ekingstar.eams.web.action.common.AbstractStudentProjectSupportAction
 
 class MyPlanAction extends AbstractStudentProjectSupportAction {
 
-  protected var coursePlanProvider: CoursePlanProvider = _
+  var coursePlanProvider: CoursePlanProvider = _
 
-  protected var courseSubstitutionService: CourseSubstitutionService = _
+  var courseSubstitutionService: CourseSubstitutionService = _
 
-  protected var studentService: StudentService = _
+  var studentService: StudentService = _
 
   def innerIndex(): String = {
     var acturalQueryStd = getLoginStudent
@@ -78,17 +78,5 @@ class MyPlanAction extends AbstractStudentProjectSupportAction {
       put("doc", doc)
     }
     forward()
-  }
-
-  def setStudentService(studentService: StudentService) {
-    this.studentService = studentService
-  }
-
-  def setCoursePlanProvider(coursePlanProvider: CoursePlanProvider) {
-    this.coursePlanProvider = coursePlanProvider
-  }
-
-  def setCourseSubstitutionService(courseSubstitutionService: CourseSubstitutionService) {
-    this.courseSubstitutionService = courseSubstitutionService
   }
 }

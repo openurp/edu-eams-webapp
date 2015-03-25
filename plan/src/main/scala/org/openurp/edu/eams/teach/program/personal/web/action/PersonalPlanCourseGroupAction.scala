@@ -33,13 +33,13 @@ import com.ekingstar.eams.web.action.common.RestrictionSupportAction
 
 class PersonalPlanCourseGroupAction extends RestrictionSupportAction {
 
-  protected var planCommonDao: PlanCommonDao = _
+  var planCommonDao: PlanCommonDao = _
 
-  protected var planCourseGroupCommonDao: PlanCourseGroupCommonDao = _
+  var planCourseGroupCommonDao: PlanCourseGroupCommonDao = _
 
-  protected var personalPlanCourseGroupCopyDao: IPlanCourseGroupCopyDao = _
+  var personalPlanCourseGroupCopyDao: IPlanCourseGroupCopyDao = _
 
-  protected var MajorCourseGroupService: MajorCourseGroupService = _
+  var MajorCourseGroupService: MajorCourseGroupService = _
 
   def arrangeGroupCourses(): String = {
     val groupId = getLong("courseGroup.id")
@@ -348,21 +348,5 @@ class PersonalPlanCourseGroupAction extends RestrictionSupportAction {
     getFlash.put("params", get("params"))
     val extra = "&toGroupPane=1&planId=" + get("planId")
     redirect(new Action(classOf[PersonalPlanAction], "edit", extra), "info.save.success")
-  }
-
-  def setPlanCommonDao(planCommonDao: PlanCommonDao) {
-    this.planCommonDao = planCommonDao
-  }
-
-  def setPlanCourseGroupCommonDao(planCourseGroupCommonDao: PlanCourseGroupCommonDao) {
-    this.planCourseGroupCommonDao = planCourseGroupCommonDao
-  }
-
-  def setPersonalPlanCourseGroupCopyDao(personalPlanCourseGroupCopyDao: IPlanCourseGroupCopyDao) {
-    this.personalPlanCourseGroupCopyDao = personalPlanCourseGroupCopyDao
-  }
-
-  def setMajorCourseGroupService(MajorCourseGroupService: MajorCourseGroupService) {
-    this.MajorCourseGroupService = MajorCourseGroupService
   }
 }

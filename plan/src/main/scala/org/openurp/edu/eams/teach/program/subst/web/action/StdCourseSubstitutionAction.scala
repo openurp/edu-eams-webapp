@@ -26,17 +26,9 @@ import com.ekingstar.eams.web.action.common.RestrictionSupportAction
 
 class StdCourseSubstitutionAction extends RestrictionSupportAction {
 
-  private var coursePlanProvider: CoursePlanProvider = _
+  var coursePlanProvider: CoursePlanProvider = _
 
-  private var courseService: CourseService = _
-
-  def setCoursePlanProvider(coursePlanProvider: CoursePlanProvider) {
-    this.coursePlanProvider = coursePlanProvider
-  }
-
-  def setCourseService(courseService: CourseService) {
-    this.courseService = courseService
-  }
+  var courseService: CourseService = _
 
   protected def getTopDeparts(): List[_] = {
     val topDeparts = new ArrayList()

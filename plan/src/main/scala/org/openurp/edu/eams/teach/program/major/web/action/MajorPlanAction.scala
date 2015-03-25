@@ -62,21 +62,21 @@ import com.google.gson.Gson
 
 class MajorPlanAction extends MajorPlanSearchAction {
 
-  private var MajorCourseGroupService: MajorCourseGroupService = _
+  var MajorCourseGroupService: MajorCourseGroupService = _
 
-  private var planCommonDao: PlanCommonDao = _
+  var planCommonDao: PlanCommonDao = _
 
-  private var planCourseCommonDao: PlanCourseCommonDao = _
+  var planCourseCommonDao: PlanCourseCommonDao = _
 
-  private var planCourseGroupCommonDao: PlanCourseGroupCommonDao = _
+  var planCourseGroupCommonDao: PlanCourseGroupCommonDao = _
 
-  private var majorPlanAuditService: MajorPlanAuditService = _
+  var majorPlanAuditService: MajorPlanAuditService = _
 
-  private var coursePlanProvider: CoursePlanProvider = _
+  var coursePlanProvider: CoursePlanProvider = _
 
-  private var guards: List[MajorProgramOperateGuard] = CollectUtils.newArrayList()
+  var guards: List[MajorProgramOperateGuard] = CollectUtils.newArrayList()
 
-  private var textTitleProvider: MajorProgramTextTitleProvider = _
+  var textTitleProvider: MajorProgramTextTitleProvider = _
 
   def index(): String = {
     setDataRealm(hasStdTypeDepart)
@@ -527,34 +527,6 @@ class MajorPlanAction extends MajorPlanSearchAction {
     null
   }
 
-  def setMajorCourseGroupService(MajorCourseGroupService: MajorCourseGroupService) {
-    this.MajorCourseGroupService = MajorCourseGroupService
-  }
-
-  def setMajorPlanAuditService(majorPlanAuditService: MajorPlanAuditService) {
-    this.majorPlanAuditService = majorPlanAuditService
-  }
-
-  def setPlanCommonDao(planCommonDao: PlanCommonDao) {
-    this.planCommonDao = planCommonDao
-  }
-
-  def setPlanCourseCommonDao(planCourseCommonDao: PlanCourseCommonDao) {
-    this.planCourseCommonDao = planCourseCommonDao
-  }
-
-  def setPlanCourseGroupCommonDao(planCourseGroupCommonDao: PlanCourseGroupCommonDao) {
-    this.planCourseGroupCommonDao = planCourseGroupCommonDao
-  }
-
-  def setCoursePlanProvider(coursePlanProvider: CoursePlanProvider) {
-    this.coursePlanProvider = coursePlanProvider
-  }
-
-  def setGuards(guards: List[MajorProgramOperateGuard]) {
-    this.guards = guards
-  }
-
   private def guard(operType: MajorProgramOperateType, plans: List[MajorPlan]) {
     val context = CollectUtils.newHashMap()
     fillDataRealmContext(context)
@@ -579,9 +551,5 @@ class MajorPlanAction extends MajorPlanSearchAction {
     context.put("realm/stdTypes", getStdTypes)
     context.put("realm/departs", getDeparts)
     context.put("realm/educations", getEducations)
-  }
-
-  def setTextTitleProvider(textTitleProvider: MajorProgramTextTitleProvider) {
-    this.textTitleProvider = textTitleProvider
   }
 }
