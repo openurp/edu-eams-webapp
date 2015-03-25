@@ -35,19 +35,19 @@ import com.opensymphony.xwork2.ActionContext
 
 abstract class BaseAction extends SecurityActionSupport {
 
-  protected var baseCodeService: BaseCodeService = _
+  var baseCodeService: BaseCodeService = _
 
-  protected var baseInfoService: BaseInfoService = _
+  var baseInfoService: BaseInfoService = _
 
-  protected var eventMulticaster: EventMulticaster = _
+  var eventMulticaster: EventMulticaster = _
 
-  protected var semesterService: SemesterService = _
+  var semesterService: SemesterService = _
 
-  protected var departmentService: DepartmentService = _
+  var departmentService: DepartmentService = _
 
-  protected var logHelper: LogHelper = _
+  var logHelper: LogHelper = _
 
-  protected var semesterHelper: SemesterHelper = _
+  var semesterHelper: SemesterHelper = _
 
   protected def getUserCategoryId(): java.lang.Integer = {
     var userCategoryId = ActionContext.getContext.getSession.get("security.userCategoryId").asInstanceOf[java.lang.Integer]
@@ -183,34 +183,6 @@ abstract class BaseAction extends SecurityActionSupport {
     eventMulticaster.multicast(event)
   }
 
-  def setBaseCodeService(baseCodeService: BaseCodeService) {
-    this.baseCodeService = baseCodeService
-  }
-
-  def setBaseInfoService(baseInfoService: BaseInfoService) {
-    this.baseInfoService = baseInfoService
-  }
-
-  protected def getSemesterService(): SemesterService = semesterService
-
-  def setSemesterService(semesterService: SemesterService) {
-    this.semesterService = semesterService
-  }
-
-  protected def getDepartmentService(): DepartmentService = departmentService
-
-  def setDepartmentService(departmentService: DepartmentService) {
-    this.departmentService = departmentService
-  }
-
-  def setLogHelper(logHelper: LogHelper) {
-    this.logHelper = logHelper
-  }
-
-  def setSemesterHelper(semesterHelper: SemesterHelper) {
-    this.semesterHelper = semesterHelper
-  }
-
   protected def debug(debubObj: AnyRef) {
     logger.debug(String.valueOf(debubObj))
   }
@@ -233,9 +205,5 @@ abstract class BaseAction extends SecurityActionSupport {
 
   protected def error(errorObj: AnyRef, e: Exception) {
     logger.error(String.valueOf(errorObj), e)
-  }
-
-  def setEventMulticaster(eventMulticaster: EventMulticaster) {
-    this.eventMulticaster = eventMulticaster
   }
 }

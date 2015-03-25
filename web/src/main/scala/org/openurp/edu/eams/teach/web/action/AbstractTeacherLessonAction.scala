@@ -13,7 +13,7 @@ import org.openurp.edu.eams.web.helper.RestrictionHelper
 
 abstract class AbstractTeacherLessonAction extends MultiProjectSupportAction {
 
-  protected var restrictionHelper: RestrictionHelper = _
+  var restrictionHelper: RestrictionHelper = _
 
   protected override def getProjects(): List[Project] = {
     val teacher = getLoginTeacher

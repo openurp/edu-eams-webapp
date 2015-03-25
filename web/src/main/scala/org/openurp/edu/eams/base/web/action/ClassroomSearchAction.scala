@@ -19,7 +19,7 @@ class RoomSearchAction extends BaseInfoAction {
 
   def getEntityName(): String = classOf[Room].getName
 
-  protected var classroomService: RoomService = _
+  var classroomService: RoomService = _
 
   def index(): String = {
     prepare()
@@ -69,9 +69,5 @@ class RoomSearchAction extends BaseInfoAction {
     } else {
       entityDao.get(classOf[Room], classroomIds)
     }
-  }
-
-  def setRoomService(classroomService: RoomService) {
-    this.classroomService = classroomService
   }
 }

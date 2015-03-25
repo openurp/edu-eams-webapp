@@ -15,17 +15,9 @@ import org.openurp.edu.eams.web.action.common.RestrictionSupportAction
 
 class AdminclassStudentAction extends RestrictionSupportAction {
 
-  protected var adminclassService: AdminclassService = _
+  var adminclassService: AdminclassService = _
 
-  protected var studentService: StudentService = _
-
-  def setAdminclassService(adminclassService: AdminclassService) {
-    this.adminclassService = adminclassService
-  }
-
-  def setStudentService(studentService: StudentService) {
-    this.studentService = studentService
-  }
+  var studentService: StudentService = _
 
   def search(): String = {
     if (Strings.isEmpty(getDepartmentIdSeq) || Strings.isEmpty(getStdTypeIdSeq)) {

@@ -18,7 +18,7 @@ import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
 class PreferenceAction extends SemesterSupportAction {
 
-  protected var menuService: MenuService = _
+  var menuService: MenuService = _
 
   def index(): String = {
     var calendar: Calendar = null
@@ -104,9 +104,5 @@ class PreferenceAction extends SemesterSupportAction {
     }
     put("menus", menus)
     forward()
-  }
-
-  def setMenuService(menuService: MenuService) {
-    this.menuService = menuService
   }
 }

@@ -10,7 +10,7 @@ import org.openurp.edu.eams.web.action.common.RestrictionSupportAction
 
 class CollegeSelector extends RestrictionSupportAction {
 
-  private var departmentService: DepartmentService = _
+  var departmentService: DepartmentService = _
 
   def withAuthority(): String = {
     put("depertmentSet", baseInfoService.getBaseInfos(classOf[Department]))
@@ -30,9 +30,5 @@ class CollegeSelector extends RestrictionSupportAction {
     }
     put("departmentList", entityDao.search(builder))
     "list"
-  }
-
-  def setDepartmentService(departmentService: DepartmentService) {
-    this.departmentService = departmentService
   }
 }

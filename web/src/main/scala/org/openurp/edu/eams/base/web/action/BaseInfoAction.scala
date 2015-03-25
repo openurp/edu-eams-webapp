@@ -15,9 +15,9 @@ abstract class BaseInfoAction extends BaseInfoSearchAction {
 
   def getEntityName(): String
 
-  protected var baseInfoSearchHelper: BaseInfoSearchHelper = _
+  var baseInfoSearchHelper: BaseInfoSearchHelper = _
 
-  protected var codeGenerator: CodeGenerator = _
+  var codeGenerator: CodeGenerator = _
 
   def info(): String = {
     val entity = getOpEntity
@@ -81,13 +81,5 @@ abstract class BaseInfoAction extends BaseInfoSearchAction {
 
   protected def onSave(entity: Entity) {
     entityDao.saveOrUpdate(entity)
-  }
-
-  def setBaseInfoSearchHelper(baseInfoSearchHelper: BaseInfoSearchHelper) {
-    this.baseInfoSearchHelper = baseInfoSearchHelper
-  }
-
-  def setCodeGenerator(codeGenerator: CodeGenerator) {
-    this.codeGenerator = codeGenerator
   }
 }

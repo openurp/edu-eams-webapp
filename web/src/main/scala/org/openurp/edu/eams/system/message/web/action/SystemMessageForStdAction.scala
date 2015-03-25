@@ -20,9 +20,9 @@ import org.openurp.edu.eams.web.action.common.AbstractStudentProjectSupportActio
 
 class SystemMessageForStdAction extends AbstractStudentProjectSupportAction {
 
-  protected var systemMessageService: SystemMessageService = _
+  var systemMessageService: SystemMessageService = _
 
-  protected var systemMessageConfigService: SystemMessageConfigService = _
+  var systemMessageConfigService: SystemMessageConfigService = _
 
   protected override def getEntityName(): String = classOf[SystemMessage].getName
 
@@ -294,12 +294,4 @@ class SystemMessageForStdAction extends AbstractStudentProjectSupportAction {
   override def importForm(): String = null
 
   override def importData(): String = null
-
-  def setSystemMessageService(systemMessageService: SystemMessageService) {
-    this.systemMessageService = systemMessageService
-  }
-
-  def setSystemMessageConfigService(systemMessageConfigService: SystemMessageConfigService) {
-    this.systemMessageConfigService = systemMessageConfigService
-  }
 }

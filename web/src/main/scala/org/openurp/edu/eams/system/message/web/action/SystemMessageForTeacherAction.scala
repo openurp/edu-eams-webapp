@@ -28,9 +28,9 @@ import org.openurp.edu.eams.web.action.BaseAction
 
 class SystemMessageForTeacherAction extends BaseAction {
 
-  protected var systemMessageService: SystemMessageService = _
+  var systemMessageService: SystemMessageService = _
 
-  protected var systemMessageConfigService: SystemMessageConfigService = _
+  var systemMessageConfigService: SystemMessageConfigService = _
 
   protected override def getEntityName(): String = classOf[SystemMessage].getName
 
@@ -498,13 +498,5 @@ class SystemMessageForTeacherAction extends BaseAction {
     put("INTRASH", SystemMessageType.TRASH)
     put("NEWLY", SystemMessageType.NEWLY)
     put("READED", SystemMessageType.READED)
-  }
-
-  def setSystemMessageService(systemMessageService: SystemMessageService) {
-    this.systemMessageService = systemMessageService
-  }
-
-  def setSystemMessageConfigService(systemMessageConfigService: SystemMessageConfigService) {
-    this.systemMessageConfigService = systemMessageConfigService
   }
 }

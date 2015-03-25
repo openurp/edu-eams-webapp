@@ -25,7 +25,7 @@ class AdminclassSearchAction extends BaseInfoAction {
 
   def getEntityName(): String = classOf[Adminclass].getName
 
-  protected var adminclassService: AdminclassService = _
+  var adminclassService: AdminclassService = _
 
   def search(): String = {
     if (Strings.isEmpty(getDepartmentIdSeq) || Strings.isEmpty(getStdTypeIdSeq)) {
@@ -139,9 +139,5 @@ class AdminclassSearchAction extends BaseInfoAction {
     builder.limit(getPageLimit)
     put("students", entityDao.search(builder))
     forward()
-  }
-
-  def setAdminclassService(adminclassService: AdminclassService) {
-    this.adminclassService = adminclassService
   }
 }

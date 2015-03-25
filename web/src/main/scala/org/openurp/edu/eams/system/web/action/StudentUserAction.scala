@@ -21,9 +21,9 @@ import org.openurp.edu.eams.web.action.common.RestrictionSupportAction
 
 class StudentUserAction extends RestrictionSupportAction {
 
-  private var eamsUserService: EamsUserService = _
+  var eamsUserService: EamsUserService = _
 
-  private var studentService: StudentService = _
+  var studentService: StudentService = _
 
   def search(): String = {
     val entityQuery = OqlBuilder.from(classOf[Student], "student")
@@ -158,13 +158,5 @@ class StudentUserAction extends RestrictionSupportAction {
     }
     eamsUserService.saveOrUpdate(manager.asInstanceOf[User])
     redirect("search", "info.update.success")
-  }
-
-  def setEamsUserService(eamsUserService: EamsUserService) {
-    this.eamsUserService = eamsUserService
-  }
-
-  def setStudentService(studentService: StudentService) {
-    this.studentService = studentService
   }
 }

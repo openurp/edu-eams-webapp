@@ -18,11 +18,11 @@ import org.openurp.edu.eams.web.action.BaseAction
 
 class MailValidateAction extends BaseAction {
 
-  private var mailService: MailService = _
+  var mailService: MailService = _
 
-  private var systemVersion: Version = _
+  var systemVersion: Version = _
 
-  private var challengeGenerator: ChallengeGenerator = _
+  var challengeGenerator: ChallengeGenerator = _
 
   def send(): String = {
     val user = entityDao.get(classOf[User], getUserId)
@@ -83,17 +83,5 @@ class MailValidateAction extends BaseAction {
       case e: Exception => writer.print("邮件发送失败:" + e.getMessage)
     }
     null
-  }
-
-  def setMailService(mailService: MailService) {
-    this.mailService = mailService
-  }
-
-  def setSystemVersion(systemVersion: Version) {
-    this.systemVersion = systemVersion
-  }
-
-  def setChallengeGenerator(challengeGenerator: ChallengeGenerator) {
-    this.challengeGenerator = challengeGenerator
   }
 }

@@ -13,7 +13,7 @@ import org.openurp.edu.eams.system.security.model.EamsUserBean
 @Action("/security/my")
 class MyAction extends org.beangle.ems.security.web.action.MyAction {
 
-  private var passwordValidator: PasswordValidator = _
+  var passwordValidator: PasswordValidator = _
 
   def save(): String = {
     val userId = getUserId
@@ -33,9 +33,5 @@ class MyAction extends org.beangle.ems.security.web.action.MyAction {
     entityDao.saveOrUpdate(user)
     if (!user.isMailVerified) redirect(new org.beangle.struts2.convention.route.Action(classOf[AccountInitCheckAction], 
       "index"), "info.save.success") else redirect("infolet", "info.save.success")
-  }
-
-  def setPasswordValidator(passwordValidator: PasswordValidator) {
-    this.passwordValidator = passwordValidator
   }
 }

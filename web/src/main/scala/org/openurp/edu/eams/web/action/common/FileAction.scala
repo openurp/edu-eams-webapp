@@ -15,7 +15,7 @@ import org.openurp.edu.eams.system.doc.service.DocPath
 
 class FileAction extends RestrictionSupportAction {
 
-  protected var streamDownloader: StreamDownloader = _
+  var streamDownloader: StreamDownloader = _
 
   protected def download(fileAbsolutePath: String) {
     download(fileAbsolutePath, getDownloadFileName(fileAbsolutePath))
@@ -83,9 +83,5 @@ class FileAction extends RestrictionSupportAction {
 
   protected def getFileRealPath(kind: String): String = {
     DocPath.getRealPath(getConfig, kind, ServletActionContext.getServletContext.getRealPath(DocPath.fileDirectory))
-  }
-
-  def setStreamDownloader(streamDownloader: StreamDownloader) {
-    this.streamDownloader = streamDownloader
   }
 }

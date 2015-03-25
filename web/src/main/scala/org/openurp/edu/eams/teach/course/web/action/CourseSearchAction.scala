@@ -25,7 +25,7 @@ import org.openurp.edu.eams.web.helper.BaseInfoSearchHelper
 
 class CourseSearchAction extends ProjectSupportAction {
 
-  protected var baseInfoSearchHelper: BaseInfoSearchHelper = _
+  var baseInfoSearchHelper: BaseInfoSearchHelper = _
 
   var courseService: CourseService = _
 
@@ -160,12 +160,4 @@ class CourseSearchAction extends ProjectSupportAction {
   }
 
   def getEntityName(): String = classOf[Course].getName
-
-  def setBaseInfoSearchHelper(baseInfoSearchHelper: BaseInfoSearchHelper) {
-    this.baseInfoSearchHelper = baseInfoSearchHelper
-  }
-
-  def setCourseService(courseService: CourseService) {
-    this.courseService = courseService
-  }
 }

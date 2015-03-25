@@ -17,11 +17,11 @@ import org.openurp.edu.eams.web.action.BaseAction
 
 class AccountInitCheckAction extends BaseAction with FirstLoginChecker {
 
-  private var mailService: MailService = _
+  var mailService: MailService = _
 
-  private var systemVersion: Version = _
+  var systemVersion: Version = _
 
-  private var passwordValidator: PasswordValidator = _
+  var passwordValidator: PasswordValidator = _
 
   def check(user: User): Boolean = {
     val euser = user.asInstanceOf[EamsUserBean]
@@ -102,17 +102,5 @@ class AccountInitCheckAction extends BaseAction with FirstLoginChecker {
     }
     entityDao.saveOrUpdate(userb)
     redirect("index", "info.save.success")
-  }
-
-  def setMailService(mailService: MailService) {
-    this.mailService = mailService
-  }
-
-  def setSystemVersion(systemVersion: Version) {
-    this.systemVersion = systemVersion
-  }
-
-  def setPasswordValidator(passwordValidator: PasswordValidator) {
-    this.passwordValidator = passwordValidator
   }
 }

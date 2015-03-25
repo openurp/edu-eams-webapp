@@ -57,7 +57,7 @@ import com.opensymphony.xwork2.ActionContext
 
 class AdminclassAction extends AdminclassSearchAction {
 
-  protected var importerListeners: List[_ <: TransferListener] = CollectUtils.newArrayList()
+  var importerListeners: List[_ <: TransferListener] = CollectUtils.newArrayList()
 
   def edit(): String = {
     put("departments", getDeparts)
@@ -240,12 +240,6 @@ class AdminclassAction extends AdminclassSearchAction {
     } else {
       super.getPropertyExtractor
     }
-  }
-
-  def getImporterListeners(): List[_ <: TransferListener] = importerListeners
-
-  def setImporterListeners(importerListeners: List[_ <: TransferListener]) {
-    this.importerListeners = importerListeners
   }
 
   protected def onSave(entity: Entity) {
@@ -603,17 +597,9 @@ class AdminclassAction extends AdminclassSearchAction {
 
 class AdminclassPropertyExtractor(resource: TextResource) extends DefaultPropertyExtractor(resource) {
 
-  protected var textResource: TextResource = _
+  var textResource: TextResource = _
 
-  protected var journals: List[StudentJournal] = _
-
-  def setTextResource(textResource: TextResource) {
-    this.textResource = textResource
-  }
-
-  def setJournals(journals: List[StudentJournal]) {
-    this.journals = journals
-  }
+  var journals: List[StudentJournal] = _
 
   def getPropertyValue(target: AnyRef, property: String): AnyRef = {
     val student = target.asInstanceOf[Student]

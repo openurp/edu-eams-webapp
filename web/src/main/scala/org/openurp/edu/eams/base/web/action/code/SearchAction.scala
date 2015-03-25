@@ -20,7 +20,7 @@ object SearchAction {
 
 class SearchAction extends BaseAction {
 
-  protected var codeGenerator: CodeGenerator = _
+  var codeGenerator: CodeGenerator = _
 
   def index(): String = {
     put("coders", entityDao.search(OqlBuilder.hql("from org.beangle.ems.dictionary.model.CodeMeta code order by code.category.id,code.title")))
@@ -75,9 +75,5 @@ class SearchAction extends BaseAction {
     populateConditions(query)
     query.where("codeMeta.className = :className", className)
     put("codeMeta", entityDao.search(query).get(0))
-  }
-
-  def setCodeGenerator(codeGenerator: CodeGenerator) {
-    this.codeGenerator = codeGenerator
   }
 }

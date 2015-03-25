@@ -29,7 +29,7 @@ import org.openurp.edu.eams.web.action.common.ProjectSupportAction
 
 class SystemMessageAction extends ProjectSupportAction {
 
-  private var userService: UserService = _
+  var userService: UserService = _
 
   override def edit(): String = {
     if (!systemMessageConfigService.isOpened(getUserId, getProject.id)) {
@@ -249,9 +249,9 @@ class SystemMessageAction extends ProjectSupportAction {
     set.toArray()
   }
 
-  protected var systemMessageService: SystemMessageService = _
+  var systemMessageService: SystemMessageService = _
 
-  protected var systemMessageConfigService: SystemMessageConfigService = _
+  var systemMessageConfigService: SystemMessageConfigService = _
 
   protected override def getEntityName(): String = classOf[SystemMessage].getName
 
@@ -488,16 +488,4 @@ class SystemMessageAction extends ProjectSupportAction {
   override def importForm(): String = null
 
   override def importData(): String = null
-
-  def setSystemMessageService(systemMessageService: SystemMessageService) {
-    this.systemMessageService = systemMessageService
-  }
-
-  def setSystemMessageConfigService(systemMessageConfigService: SystemMessageConfigService) {
-    this.systemMessageConfigService = systemMessageConfigService
-  }
-
-  def setUserService(userService: UserService) {
-    this.userService = userService
-  }
 }

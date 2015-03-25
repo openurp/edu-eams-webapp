@@ -44,15 +44,15 @@ import org.openurp.edu.eams.web.helper.RestrictionHelper
 
 class HomeAction extends BaseAction {
 
-  protected var systemMessageService: SystemMessageService = _
+  var systemMessageService: SystemMessageService = _
 
-  protected var authenticationManager: AuthenticationManager = _
+  var authenticationManager: AuthenticationManager = _
 
-  protected var menuService: MenuService = _
+  var menuService: MenuService = _
 
-  protected var restrictionHelper: RestrictionHelper = _
+  var restrictionHelper: RestrictionHelper = _
 
-  protected var firstLoginCheckService: FirstLoginCheckService = _
+  var firstLoginCheckService: FirstLoginCheckService = _
 
   def index(): String = {
     val userId = getUserId
@@ -225,25 +225,5 @@ class HomeAction extends BaseAction {
     }
     put("submenus", modulesTree)
     forward()
-  }
-
-  def setSystemMessageService(systemMessageService: SystemMessageService) {
-    this.systemMessageService = systemMessageService
-  }
-
-  def setMenuService(menuService: MenuService) {
-    this.menuService = menuService
-  }
-
-  def setAuthenticationManager(authenticationManager: AuthenticationManager) {
-    this.authenticationManager = authenticationManager
-  }
-
-  def setRestrictionHelper(restrictionHelper: RestrictionHelper) {
-    this.restrictionHelper = restrictionHelper
-  }
-
-  def setFirstLoginCheckService(firstLoginCheckService: FirstLoginCheckService) {
-    this.firstLoginCheckService = firstLoginCheckService
   }
 }

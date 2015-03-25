@@ -11,7 +11,7 @@ import org.openurp.edu.eams.web.action.common.RestrictionSupportAction
 
 class AdminclassSelector extends RestrictionSupportAction {
 
-  protected var adminClassService: AdminclassService = _
+  var adminClassService: AdminclassService = _
 
   def withMajor(): String = {
     var moduleName = get("moduleName")
@@ -30,9 +30,5 @@ class AdminclassSelector extends RestrictionSupportAction {
     put("adminClassId", adminClassId)
     put("selectorId", selectorId)
     forward("success")
-  }
-
-  def setAdminclassService(adminClassService: AdminclassService) {
-    this.adminClassService = adminClassService
   }
 }
