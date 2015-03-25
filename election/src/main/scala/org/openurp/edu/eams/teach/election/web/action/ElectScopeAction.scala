@@ -40,11 +40,11 @@ import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
 class ElectScopeAction extends SemesterSupportAction {
 
-  protected var courseLimitExtractorService: CourseLimitExtractorService = _
+  var courseLimitExtractorService: CourseLimitExtractorService = _
 
-  protected var lessonSearchHelper: LessonSearchHelper = _
+  var lessonSearchHelper: LessonSearchHelper = _
 
-  protected var courseLimitService: CourseLimitService = _
+  var courseLimitService: CourseLimitService = _
 
   def index(): String = {
     val semester = putSemester(null)
@@ -337,17 +337,5 @@ class ElectScopeAction extends SemesterSupportAction {
     put("datas", datas)
     put("type", `type`)
     "batch/showSelect"
-  }
-
-  def setCourseLimitExtractorService(courseLimitExtractorService: CourseLimitExtractorService) {
-    this.courseLimitExtractorService = courseLimitExtractorService
-  }
-
-  def setLessonSearchHelper(lessonSearchHelper: LessonSearchHelper) {
-    this.lessonSearchHelper = lessonSearchHelper
-  }
-
-  def setCourseLimitService(courseLimitService: CourseLimitService) {
-    this.courseLimitService = courseLimitService
   }
 }

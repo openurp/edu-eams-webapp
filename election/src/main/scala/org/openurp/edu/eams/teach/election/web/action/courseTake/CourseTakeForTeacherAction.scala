@@ -21,11 +21,11 @@ import org.openurp.edu.eams.web.helper.AdminclassSearchHelper
 
 class CourseTakeForTeacherAction extends SemesterSupportAction {
 
-  private var adminclassSearchHelper: AdminclassSearchHelper = _
+  var adminclassSearchHelper: AdminclassSearchHelper = _
 
-  private var courseTakeService: CourseTakeService = _
+  var courseTakeService: CourseTakeService = _
 
-  private var timeSettingService: TimeSettingService = _
+  var timeSettingService: TimeSettingService = _
 
   protected def indexSetting() {
     val teacher = getLoginTeacher
@@ -100,17 +100,5 @@ class CourseTakeForTeacherAction extends SemesterSupportAction {
       condition.params(weekList)
     }
     condition
-  }
-
-  def setCourseTakeService(courseTakeService: CourseTakeService) {
-    this.courseTakeService = courseTakeService
-  }
-
-  def setAdminclassSearchHelper(adminclassSearchHelper: AdminclassSearchHelper) {
-    this.adminclassSearchHelper = adminclassSearchHelper
-  }
-
-  def setTimeSettingService(timeSettingService: TimeSettingService) {
-    this.timeSettingService = timeSettingService
   }
 }

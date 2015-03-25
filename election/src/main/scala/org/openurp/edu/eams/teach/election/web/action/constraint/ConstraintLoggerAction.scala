@@ -15,7 +15,7 @@ import org.openurp.edu.eams.teach.election.model.constraint.ConstraintLogger
 
 class ConstraintLoggerAction extends ActionSupport {
 
-  private var entityDao: EntityDao = _
+  var entityDao: EntityDao = _
 
   def index(): String = {
     ContextHelper.put("constraintTypes", ConstraintType.values)
@@ -33,9 +33,5 @@ class ConstraintLoggerAction extends ActionSupport {
     builder.orderBy(Params.get(Order.ORDER_STR))
     ContextHelper.put("loggers", entityDao.search(builder))
     forward()
-  }
-
-  def setEntityDao(entityDao: EntityDao) {
-    this.entityDao = entityDao
   }
 }

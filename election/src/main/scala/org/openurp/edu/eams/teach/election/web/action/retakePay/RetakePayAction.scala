@@ -37,15 +37,15 @@ import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
 class RetakePayAction extends SemesterSupportAction {
 
-  private var retakeFeeConfigService: RetakeFeeConfigService = _
+  var retakeFeeConfigService: RetakeFeeConfigService = _
 
-  private var paymentService: PaymentService = _
+  var paymentService: PaymentService = _
 
-  private var billService: BillService = _
+  var billService: BillService = _
 
-  private var retakeBillCodeGenerator: BillCodeGenerator = _
+  var retakeBillCodeGenerator: BillCodeGenerator = _
 
-  private var retakeBillAmountCalculator: BillAmountCalculator = _
+  var retakeBillAmountCalculator: BillAmountCalculator = _
 
   protected override def getQueryBuilder(): OqlBuilder[_] = {
     val builder = OqlBuilder.from(classOf[CourseTake], "courseTake")
@@ -415,14 +415,6 @@ class RetakePayAction extends SemesterSupportAction {
     forward()
   }
 
-  def setRetakeFeeConfigService(retakeFeeConfigService: RetakeFeeConfigService) {
-    this.retakeFeeConfigService = retakeFeeConfigService
-  }
-
-  def setPaymentService(paymentService: PaymentService) {
-    this.paymentService = paymentService
-  }
-
   def orderCheckList(): String = {
     var status = getInt("status")
     if (status == null) {
@@ -462,17 +454,5 @@ class RetakePayAction extends SemesterSupportAction {
 
     }
     forward()
-  }
-
-  def setRetakeBillCodeGenerator(billCodeGenerator: BillCodeGenerator) {
-    this.retakeBillCodeGenerator = billCodeGenerator
-  }
-
-  def setBillService(billService: BillService) {
-    this.billService = billService
-  }
-
-  def setRetakeBillAmountCalculator(retakeBillAmountCalculator: BillAmountCalculator) {
-    this.retakeBillAmountCalculator = retakeBillAmountCalculator
   }
 }

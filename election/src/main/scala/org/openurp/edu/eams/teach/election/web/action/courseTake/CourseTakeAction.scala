@@ -56,15 +56,15 @@ import com.opensymphony.xwork2.util.ClassLoaderUtil
 
 class CourseTakeAction extends CourseTakeSearchAction {
 
-  protected var courseTakeService: CourseTakeService = _
+   var courseTakeService: CourseTakeService = _
 
-  protected var userService: UserService = _
+   var userService: UserService = _
 
-  protected var electionDao: ElectionDao = _
+   var electionDao: ElectionDao = _
 
-  protected var electionProfileService: ElectionProfileService = _
+   var electionProfileService: ElectionProfileService = _
 
-  protected var systemMessageService: SystemMessageService = _
+   var systemMessageService: SystemMessageService = _
 
   def search(): String = super.search()
 
@@ -492,25 +492,5 @@ class CourseTakeAction extends CourseTakeSearchAction {
       electionProfileService.initDataByChance(profileId)
     }
     null
-  }
-
-  def setUserService(userService: UserService) {
-    this.userService = userService
-  }
-
-  def setElectionDao(electionDao: ElectionDao) {
-    this.electionDao = electionDao
-  }
-
-  def setCourseTakeService(courseTakeService: CourseTakeService) {
-    this.courseTakeService = courseTakeService
-  }
-
-  def setElectionProfileService(electionProfileService: ElectionProfileService) {
-    this.electionProfileService = electionProfileService
-  }
-
-  def setSystemMessageService(systemMessageService: SystemMessageService) {
-    this.systemMessageService = systemMessageService
   }
 }

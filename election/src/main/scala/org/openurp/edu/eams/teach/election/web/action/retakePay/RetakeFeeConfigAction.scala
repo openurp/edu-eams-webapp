@@ -15,9 +15,9 @@ import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
 class RetakeFeeConfigAction extends SemesterSupportAction {
 
-  private var retakeFeeConfigService: RetakeFeeConfigService = _
+  var retakeFeeConfigService: RetakeFeeConfigService = _
 
-  private var paymentService: PaymentService = _
+  var paymentService: PaymentService = _
 
   protected override def getEntityName(): String = classOf[RetakeFeeConfig].getName
 
@@ -109,13 +109,5 @@ class RetakeFeeConfigAction extends SemesterSupportAction {
   def queryFeeTypeCodes(): String = {
     put("feeTypeCodes", paymentService.queryFeeTypeCodes(new HashMap[String, Any]()))
     forward()
-  }
-
-  def setRetakeFeeConfigService(retakeFeeConfigService: RetakeFeeConfigService) {
-    this.retakeFeeConfigService = retakeFeeConfigService
-  }
-
-  def setPaymentService(paymentService: PaymentService) {
-    this.paymentService = paymentService
   }
 }

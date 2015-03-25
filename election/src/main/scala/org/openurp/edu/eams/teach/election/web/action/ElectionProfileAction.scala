@@ -88,7 +88,7 @@ object ElectionProfileAction {
 
 class ElectionProfileAction extends SemesterSupportAction {
 
-  protected var electionProfileService: ElectionProfileService = _
+  var electionProfileService: ElectionProfileService = _
 
   protected override def getEntityName(): String = classOf[ElectionProfile].getName
 
@@ -608,9 +608,5 @@ class ElectionProfileAction extends SemesterSupportAction {
     put("type", `type`)
     put("now", new Date())
     forward(view)
-  }
-
-  def setElectionProfileService(electionProfileService: ElectionProfileService) {
-    this.electionProfileService = electionProfileService
   }
 }

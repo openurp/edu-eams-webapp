@@ -31,7 +31,7 @@ import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
 class StdTotalCreditConstraintAction extends SemesterSupportAction {
 
-  private var creditConstraintService: CreditConstraintService = _
+  var creditConstraintService: CreditConstraintService = _
 
   protected override def getEntityName(): String = {
     classOf[StdTotalCreditConstraint].getName
@@ -343,9 +343,5 @@ class StdTotalCreditConstraintAction extends SemesterSupportAction {
       }
     }
     redirect("search", "info.remove.success")
-  }
-
-  def setCreditConstraintService(creditConstraintService: CreditConstraintService) {
-    this.creditConstraintService = creditConstraintService
   }
 }

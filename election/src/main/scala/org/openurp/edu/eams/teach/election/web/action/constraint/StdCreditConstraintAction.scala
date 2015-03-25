@@ -34,7 +34,7 @@ import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
 class StdCreditConstraintAction extends SemesterSupportAction {
 
-  private var gpaStatService: GpaStatService = _
+  var gpaStatService: GpaStatService = _
 
   protected override def getEntityName(): String = classOf[StdCreditConstraint].getName
 
@@ -441,9 +441,5 @@ class StdCreditConstraintAction extends SemesterSupportAction {
       }
     }
     redirect("search", "info.remove.success")
-  }
-
-  def setGpaStatService(gpaStatService: GpaStatService) {
-    this.gpaStatService = gpaStatService
   }
 }

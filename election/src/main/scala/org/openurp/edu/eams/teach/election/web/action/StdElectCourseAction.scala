@@ -96,25 +96,25 @@ object StdElectCourseAction {
 
 class StdElectCourseAction extends AbstractStudentProjectSupportAction {
 
-  protected var electionProfileService: ElectionProfileService = _
+   var electionProfileService: ElectionProfileService = _
 
-  protected var coursePlanProvider: CoursePlanProvider = _
+   var coursePlanProvider: CoursePlanProvider = _
 
-  protected var lessonSearchHelper: LessonSearchHelper = _
+   var lessonSearchHelper: LessonSearchHelper = _
 
-  protected var lessonService: LessonService = _
+   var lessonService: LessonService = _
 
-  protected var stdElectionService: StdElectionService = _
+   var stdElectionService: StdElectionService = _
 
-  protected var userService: UserService = _
+   var userService: UserService = _
 
-  protected var planAuditService: PlanAuditService = _
+   var planAuditService: PlanAuditService = _
 
-  protected var courseTakeService: CourseTakeService = _
+   var courseTakeService: CourseTakeService = _
 
-  protected var timeSettingService: TimeSettingService = _
+   var timeSettingService: TimeSettingService = _
 
-  protected var ruleExecutorBuilder: RuleExecutorBuilder = _
+   var ruleExecutorBuilder: RuleExecutorBuilder = _
 
   override def innerIndex(): String = {
     val std = getLoginStudent
@@ -751,43 +751,4 @@ class StdElectCourseAction extends AbstractStudentProjectSupportAction {
     courseApplyMap
   }
 
-  def setPlanAuditService(planAuditService: PlanAuditService) {
-    this.planAuditService = planAuditService
-  }
-
-  def setCourseTakeService(courseTakeService: CourseTakeService) {
-    this.courseTakeService = courseTakeService
-  }
-
-  def setTimeSettingService(timeSettingService: TimeSettingService) {
-    this.timeSettingService = timeSettingService
-  }
-
-  def setRuleExecutorBuilder(ruleExecutorBuilder: RuleExecutorBuilder) {
-    this.ruleExecutorBuilder = ruleExecutorBuilder
-  }
-
-  def setElectionProfileService(electionProfileService: ElectionProfileService) {
-    this.electionProfileService = electionProfileService
-  }
-
-  def setCoursePlanProvider(coursePlanProvider: CoursePlanProvider) {
-    this.coursePlanProvider = coursePlanProvider
-  }
-
-  def setLessonSearchHelper(lessonSearchHelper: LessonSearchHelper) {
-    this.lessonSearchHelper = lessonSearchHelper
-  }
-
-  def setLessonService(lessonService: LessonService) {
-    this.lessonService = lessonService
-  }
-
-  def setStdElectionService(stdElectionService: StdElectionService) {
-    this.stdElectionService = stdElectionService
-  }
-
-  def setUserService(userService: UserService) {
-    this.userService = userService
-  }
 }

@@ -33,13 +33,13 @@ import org.openurp.edu.teach.lesson.CourseTake
 
 class RetakePayForStdAction extends PaymentSupportAction {
 
-  private var retakeFeeConfigService: RetakeFeeConfigService = _
+  var retakeFeeConfigService: RetakeFeeConfigService = _
 
-  protected var retakeBillCodeGenerator: BillCodeGenerator = _
+  var retakeBillCodeGenerator: BillCodeGenerator = _
 
-  protected var retakeBillAmountCalculator: BillAmountCalculator = _
+  var retakeBillAmountCalculator: BillAmountCalculator = _
 
-  private var retakeFeeCalculator: RetakeFeeCalculator = _
+  var retakeFeeCalculator: RetakeFeeCalculator = _
 
   protected override def preparePaymentContext(context: PaymentContext) {
     val project = getProject
@@ -231,27 +231,4 @@ class RetakePayForStdAction extends PaymentSupportAction {
     redirect("search", "成功退订" + successSize + "条;" + notSaveSize + "条已支付,不可退订")
   }
 
-  def setRetakeFeeConfigService(retakeFeeConfigService: RetakeFeeConfigService) {
-    this.retakeFeeConfigService = retakeFeeConfigService
-  }
-
-  def setPaymentService(paymentService: PaymentService) {
-    this.paymentService = paymentService
-  }
-
-  def setBillService(billService: BillService) {
-    this.billService = billService
-  }
-
-  def setRetakeBillCodeGenerator(retakeBillCodeGenerator: BillCodeGenerator) {
-    this.retakeBillCodeGenerator = retakeBillCodeGenerator
-  }
-
-  def setRetakeBillAmountCalculator(retakeBillAmountCalculator: BillAmountCalculator) {
-    this.retakeBillAmountCalculator = retakeBillAmountCalculator
-  }
-
-  def setRetakeFeeCalculator(retakeFeeCalculator: RetakeFeeCalculator) {
-    this.retakeFeeCalculator = retakeFeeCalculator
-  }
 }

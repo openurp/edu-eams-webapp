@@ -65,29 +65,29 @@ import org.openurp.edu.eams.web.util.OutputWebObserver
 
 class CourseTakeForTaskAction extends SemesterSupportAction {
 
-  protected var lessonService: LessonService = _
+  var lessonService: LessonService = _
 
-  protected var courseTakeService: CourseTakeService = _
+  var courseTakeService: CourseTakeService = _
 
-  protected var lessonSearchHelper: LessonSearchHelper = _
+  var lessonSearchHelper: LessonSearchHelper = _
 
-  protected var stdSearchHelper: StdSearchHelper = _
+  var stdSearchHelper: StdSearchHelper = _
 
-  protected var userService: UserService = _
+  var userService: UserService = _
 
-  protected var courseLimitService: CourseLimitService = _
+  var courseLimitService: CourseLimitService = _
 
-  protected var electionProfileService: ElectionProfileService = _
+  var electionProfileService: ElectionProfileService = _
 
-  protected var lessonDao: LessonDao = _
+  var lessonDao: LessonDao = _
 
-  protected var lessonPlanRelationService: LessonPlanRelationService = _
+  var lessonPlanRelationService: LessonPlanRelationService = _
 
-  protected var lessonLogHelper: LessonLogHelper = _
+  var lessonLogHelper: LessonLogHelper = _
 
-  protected var lessonPlanRelationDao: LessonPlanRelationDao = _
+  var lessonPlanRelationDao: LessonPlanRelationDao = _
 
-  protected var filterMessageService: FilterMessageService = _
+  var filterMessageService: FilterMessageService = _
 
   def index(): String = {
     val semester = putSemester(null)
@@ -514,61 +514,5 @@ class CourseTakeForTaskAction extends SemesterSupportAction {
     put("genders", genders)
     put("genderCountMap", genderCountMap)
     forward()
-  }
-
-  def setLessonDao(lessonDao: LessonDao) {
-    this.lessonDao = lessonDao
-  }
-
-  def setLessonPlanRelationService(lessonPlanRelationService: LessonPlanRelationService) {
-    this.lessonPlanRelationService = lessonPlanRelationService
-  }
-
-  def setLessonLogHelper(lessonLogHelper: LessonLogHelper) {
-    this.lessonLogHelper = lessonLogHelper
-  }
-
-  def getLessonService(): LessonService = lessonService
-
-  def setLessonService(lessonService: LessonService) {
-    this.lessonService = lessonService
-  }
-
-  def getLessonSearchHelper(): LessonSearchHelper = lessonSearchHelper
-
-  def setLessonSearchHelper(lessonSearchHelper: LessonSearchHelper) {
-    this.lessonSearchHelper = lessonSearchHelper
-  }
-
-  def getStdSearchHelper(): StdSearchHelper = stdSearchHelper
-
-  def setStdSearchHelper(stdSearchHelper: StdSearchHelper) {
-    this.stdSearchHelper = stdSearchHelper
-  }
-
-  def getUserService(): UserService = userService
-
-  def setUserService(userService: UserService) {
-    this.userService = userService
-  }
-
-  def setCourseTakeService(courseTakeService: CourseTakeService) {
-    this.courseTakeService = courseTakeService
-  }
-
-  def setCourseLimitService(courseLimitService: CourseLimitService) {
-    this.courseLimitService = courseLimitService
-  }
-
-  def setLessonPlanRelationDao(lessonPlanRelationDao: LessonPlanRelationDao) {
-    this.lessonPlanRelationDao = lessonPlanRelationDao
-  }
-
-  def setElectionProfileService(electionProfileService: ElectionProfileService) {
-    this.electionProfileService = electionProfileService
-  }
-
-  def setFilterMessageService(filterMessageService: FilterMessageService) {
-    this.filterMessageService = filterMessageService
   }
 }

@@ -2,8 +2,6 @@ package org.openurp.edu.eams.teach.election.web.action.constraint
 
 import java.util.Date
 
-
-
 import org.apache.commons.collections.CollectionUtils
 import org.apache.commons.collections.ListUtils
 import org.apache.commons.collections.MapUtils
@@ -37,13 +35,11 @@ import org.openurp.edu.eams.teach.program.service.CoursePlanProvider
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 import com.opensymphony.xwork2.ActionContext
 
-
-
 class StdCourseCountConstraintAction extends SemesterSupportAction {
 
-  private var coursePlanProvider: CoursePlanProvider = _
+  var coursePlanProvider: CoursePlanProvider = _
 
-  private var courseTakeService: CourseTakeService = _
+  var courseTakeService: CourseTakeService = _
 
   protected override def getEntityName(): String = {
     classOf[StdCourseCountConstraint].getName
@@ -111,7 +107,7 @@ class StdCourseCountConstraintAction extends SemesterSupportAction {
       logger.setCreatedAt(createdAt)
       logger.setOperator(getUsername)
       loggers.add(logger)
-      val removedCourseTypeLimits = ListUtils.removeAll(constraint.getCourseTypeMaxCourseCount.keySet, 
+      val removedCourseTypeLimits = ListUtils.removeAll(constraint.getCourseTypeMaxCourseCount.keySet,
         maxCourseCount.keySet)
       for (courseType <- removedCourseTypeLimits) {
         val courseTypeLogger = ConstraintLogger.genLogger(constraint, courseType, "DELETE")
@@ -120,7 +116,7 @@ class StdCourseCountConstraintAction extends SemesterSupportAction {
         loggers.add(logger)
       }
       for (courseType <- constraint.getCourseTypeMaxCourseCount.keySet if !removedCourseTypeLimits.contains(courseType)) {
-        val `type` = if (null == 
+        val `type` = if (null ==
           constraint.getCourseTypeMaxCourseCount.get(courseType)) "CREATE" else "UPDATE"
         val courseTypeLogger = ConstraintLogger.genLogger(constraint, courseType, `type`)
         courseTypeLogger.setCreatedAt(createdAt)
@@ -134,7 +130,7 @@ class StdCourseCountConstraintAction extends SemesterSupportAction {
       entityDao.execute(Operation.saveOrUpdate(stdCourseCountConstraints).saveOrUpdate(loggers))
       return redirect("search", "info.save.success")
     } catch {
-      case e: Exception => 
+      case e: Exception =>
     }
     redirect("search", "info.save.failure")
   }
@@ -207,7 +203,7 @@ class StdCourseCountConstraintAction extends SemesterSupportAction {
         val stdTypes = getStdTypes
         val educations = getEducations
         val departments = getDeparts
-        if (null == project || stdTypes.isEmpty || educations.isEmpty || 
+        if (null == project || stdTypes.isEmpty || educations.isEmpty ||
           departments.isEmpty) {
           put("stds", stds)
         }
@@ -220,12 +216,12 @@ class StdCourseCountConstraintAction extends SemesterSupportAction {
           }
           val stdCourseCountConstraintBuilder = OqlBuilder.from(classOf[StdCourseCountConstraint], "stdCourseCountConstraint")
           stdCourseCountConstraintBuilder.where("stdCourseCountConstraint.std.project =:project", project)
-          stdCourseCountConstraintBuilder.where("stdCourseCountConstraint.std.department in(:departments)", 
+          stdCourseCountConstraintBuilder.where("stdCourseCountConstraint.std.department in(:departments)",
             departments)
           stdCourseCountConstraintBuilder.where("stdCourseCountConstraint.std.type in(:types)", stdTypes)
-          stdCourseCountConstraintBuilder.where("stdCourseCountConstraint.std.education in(:educations)", 
+          stdCourseCountConstraintBuilder.where("stdCourseCountConstraint.std.education in(:educations)",
             educations)
-          stdCourseCountConstraintBuilder.where("stdCourseCountConstraint.id in(:ids)", ArrayUtils.subarray(entityIds, 
+          stdCourseCountConstraintBuilder.where("stdCourseCountConstraint.id in(:ids)", ArrayUtils.subarray(entityIds,
             i, end))
           stdCourseCountConstraintBuilder.where("stdCourseCountConstraint.semester=:semester", semester)
           populateConditions(stdCourseCountConstraintBuilder)
@@ -248,7 +244,7 @@ class StdCourseCountConstraintAction extends SemesterSupportAction {
           if (end > stdIds.length) {
             end = stdIds.length
           }
-          stdSet.addAll(entityDao.search(getStdBuilder(semester, ArrayUtils.subarray(stdIds, i, end), 
+          stdSet.addAll(entityDao.search(getStdBuilder(semester, ArrayUtils.subarray(stdIds, i, end),
             true)))
           i += 500
         }
@@ -294,12 +290,12 @@ class StdCourseCountConstraintAction extends SemesterSupportAction {
     val stdTypes = getStdTypes
     val educations = getEducations
     val departments = getDeparts
-    if (null == project || stdTypes.isEmpty || educations.isEmpty || 
+    if (null == project || stdTypes.isEmpty || educations.isEmpty ||
       departments.isEmpty) {
       put("message", "权限不足")
       return forward()
     } else if (ArrayUtils.isNotEmpty(codes)) {
-      val stds = entityDao.get(classOf[Student], Array("code", "project", "department", "type", "education"), 
+      val stds = entityDao.get(classOf[Student], Array("code", "project", "department", "type", "education"),
         Array(codes, project, departments, stdTypes, educations))
       val stdMap = CollectUtils.newHashMap()
       for (student <- stds) {
@@ -340,7 +336,7 @@ class StdCourseCountConstraintAction extends SemesterSupportAction {
       forwardError("error.parameters.illegal")
     } else {
       val builder = getStdBuilder(semester, null, true)
-      val conditions = QueryHelper.extractConditions(classOf[StdCourseCountConstraint], "stdCourseCountConstraint", 
+      val conditions = QueryHelper.extractConditions(classOf[StdCourseCountConstraint], "stdCourseCountConstraint",
         "stdCourseCountConstraint.id,stdCourseCountConstraint.semester.id")
       for (condition <- conditions) {
         builder.where(condition.getContent.replaceAll("stdCourseCountConstraint.std", "student"), condition.getParams)
@@ -355,21 +351,21 @@ class StdCourseCountConstraintAction extends SemesterSupportAction {
     val stdTypes = getStdTypes
     val educations = getEducations
     val builder = OqlBuilder.from(classOf[Student], "student")
-    if (CollectUtils.isEmpty(departs) || CollectUtils.isEmpty(stdTypes) || 
+    if (CollectUtils.isEmpty(departs) || CollectUtils.isEmpty(stdTypes) ||
       CollectUtils.isEmpty(educations)) {
       builder.where("1=2")
     } else {
-      builder.where((if (noCreditsConstraint) "not " else "") + "exists (from " + 
-        classOf[StdCourseCountConstraint].getName + 
-        " stdCourseCountConstraint " + 
-        "where stdCourseCountConstraint.std=student " + 
+      builder.where((if (noCreditsConstraint) "not " else "") + "exists (from " +
+        classOf[StdCourseCountConstraint].getName +
+        " stdCourseCountConstraint " +
+        "where stdCourseCountConstraint.std=student " +
         "and stdCourseCountConstraint.semester=:semester)", semester)
       populateConditions(builder)
       builder.where("student.project=:project", getProject)
-      builder.where("student.department in (:departs) and student.type in(:stdTypes) and student.education in(:educations)", 
+      builder.where("student.department in (:departs) and student.type in(:stdTypes) and student.education in(:educations)",
         departs, stdTypes, educations)
-      builder.where("exists (from " + classOf[StudentJournal].getName + 
-        " journal where journal.std=student and journal.beginOn <= :semEndOn and journal.endOn >= :semBeginOn and journal.endOn is not null)", 
+      builder.where("exists (from " + classOf[StudentJournal].getName +
+        " journal where journal.std=student and journal.beginOn <= :semEndOn and journal.endOn >= :semBeginOn and journal.endOn is not null)",
         semester.getEndOn, semester.beginOn)
       if (ArrayUtils.isNotEmpty(stdIds)) {
         builder.where("student.id in (:stdIds)", stdIds)
@@ -381,7 +377,7 @@ class StdCourseCountConstraintAction extends SemesterSupportAction {
   def setMaxCourseCount(): String = {
     val ids = getLongIds(getShortName)
     val maxCourseCount = getInt("maxCourseCount")
-    if (ArrayUtils.isNotEmpty(ids) && null != maxCourseCount && 
+    if (ArrayUtils.isNotEmpty(ids) && null != maxCourseCount &&
       maxCourseCount > -1) {
       val constraints = entityDao.get(classOf[StdCourseCountConstraint], ids)
       val loggers = CollectUtils.newArrayList()
@@ -397,7 +393,7 @@ class StdCourseCountConstraintAction extends SemesterSupportAction {
         entityDao.execute(Operation.saveOrUpdate(constraints).saveOrUpdate(loggers))
         return redirect("search", "info.save.success")
       } catch {
-        case e: Exception => 
+        case e: Exception =>
       }
     }
     redirect("search", "info.save.failure")
@@ -410,24 +406,24 @@ class StdCourseCountConstraintAction extends SemesterSupportAction {
     val stdTypes = getStdTypes
     val educations = getEducations
     val constraintBuilder = OqlBuilder.from(classOf[StdCourseCountConstraint], "stdCourseCountConstraint")
-    val conditions = QueryHelper.extractConditions(constraintBuilder.getEntityClass, constraintBuilder.getAlias, 
+    val conditions = QueryHelper.extractConditions(constraintBuilder.getEntityClass, constraintBuilder.getAlias,
       "stdCourseCountConstraint.id")
     constraintBuilder.where("stdCourseCountConstraint.std.project = :project", project)
       .where("stdCourseCountConstraint.std.type in (:stdTypes)", stdTypes)
       .where("stdCourseCountConstraint.std.department in (:departs)", departs)
       .where("stdCourseCountConstraint.std.education in  (:educations)", educations)
       .where("stdCourseCountConstraint.semester=:semester", semester)
-      .where("exists (from " + classOf[StudentJournal].getName + 
-      " journal where journal.std=stdCourseCountConstraint.std and journal.beginOn <= :semEndOn and journal.endOn >= :semBeginOn and journal.endOn is not null)", 
-      semester.getEndOn, semester.beginOn)
+      .where("exists (from " + classOf[StudentJournal].getName +
+        " journal where journal.std=stdCourseCountConstraint.std and journal.beginOn <= :semEndOn and journal.endOn >= :semBeginOn and journal.endOn is not null)",
+        semester.getEndOn, semester.beginOn)
       .where(conditions)
     val constraints = entityDao.search(constraintBuilder)
     val stdBuilder = OqlBuilder.from(classOf[Student].getName, "student")
-    stdBuilder.where("exists (from " + classOf[StudentJournal].getName + 
-      " journal where journal.std=student and journal.beginOn <= :semEndOn and journal.endOn >= :semBeginOn and journal.endOn is not null)", 
+    stdBuilder.where("exists (from " + classOf[StudentJournal].getName +
+      " journal where journal.std=student and journal.beginOn <= :semEndOn and journal.endOn >= :semBeginOn and journal.endOn is not null)",
       semester.getEndOn, semester.beginOn)
     for (condition <- conditions if condition.getContent.startsWith("stdCourseCountConstraint.std")) {
-      val majorPlanCondition = new Condition(condition.getContent.replace("stdCourseCountConstraint.std", 
+      val majorPlanCondition = new Condition(condition.getContent.replace("stdCourseCountConstraint.std",
         "student"))
       majorPlanCondition.params(condition.getParams)
       stdBuilder.where(majorPlanCondition)
@@ -499,11 +495,4 @@ class StdCourseCountConstraintAction extends SemesterSupportAction {
     redirect("search", "info.remove.success")
   }
 
-  def setCoursePlanProvider(coursePlanProvider: CoursePlanProvider) {
-    this.coursePlanProvider = coursePlanProvider
-  }
-
-  def setCourseTakeService(courseTakeService: CourseTakeService) {
-    this.courseTakeService = courseTakeService
-  }
 }
