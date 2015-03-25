@@ -11,7 +11,7 @@ import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
 class GradeFailCreditStatsAction extends SemesterSupportAction {
 
-  protected var studentService: StudentService = _
+  var studentService: StudentService = _
 
   def index(): String = {
     setSemesterDataRealm(hasStdTypeCollege)
@@ -39,9 +39,5 @@ class GradeFailCreditStatsAction extends SemesterSupportAction {
     put("grades", entityDao.search(query))
     put("std", studentService.getStudent(stdId))
     forward()
-  }
-
-  def setStudentService(studentService: StudentService) {
-    this.studentService = studentService
   }
 }

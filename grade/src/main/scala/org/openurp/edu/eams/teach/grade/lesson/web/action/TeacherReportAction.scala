@@ -43,19 +43,19 @@ import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
 class TeacherReportAction extends SemesterSupportAction {
 
-  protected var lessonService: LessonService = _
+  var lessonService: LessonService = _
 
-  protected var courseGradeService: CourseGradeService = _
+  var courseGradeService: CourseGradeService = _
 
-  protected var lessonGradeService: LessonGradeService = _
+  var lessonGradeService: LessonGradeService = _
 
-  protected var teachClassGradeHelper: TeachClassGradeHelper = _
+  var teachClassGradeHelper: TeachClassGradeHelper = _
 
-  protected var lessonSearchHelper: LessonSearchHelper = _
+  var lessonSearchHelper: LessonSearchHelper = _
 
-  private var settings: CourseGradeSettings = _
+  var settings: CourseGradeSettings = _
 
-  private var makeupStdStrategy: MakeupStdStrategy = _
+  var makeupStdStrategy: MakeupStdStrategy = _
 
   protected def checkLessonPermission(lesson: Lesson, teacher: Teacher): String = {
     if (null == teacher) {
@@ -309,35 +309,5 @@ class TeacherReportAction extends SemesterSupportAction {
 
   def printStdListForDuty(): String = {
     forward(new Action("teachTask", "printStdListForDuty"))
-  }
-
-  def getLessonService(): LessonService = lessonService
-
-  def setLessonService(lessonService: LessonService) {
-    this.lessonService = lessonService
-  }
-
-  def setCourseGradeService(courseGradeService: CourseGradeService) {
-    this.courseGradeService = courseGradeService
-  }
-
-  def setLessonGradeService(lessonGradeService: LessonGradeService) {
-    this.lessonGradeService = lessonGradeService
-  }
-
-  def setTeachClassGradeHelper(teachClassGradeHelper: TeachClassGradeHelper) {
-    this.teachClassGradeHelper = teachClassGradeHelper
-  }
-
-  def setLessonSearchHelper(lessonSearchHelper: LessonSearchHelper) {
-    this.lessonSearchHelper = lessonSearchHelper
-  }
-
-  def setSettings(settings: CourseGradeSettings) {
-    this.settings = settings
-  }
-
-  def setMakeupStdStrategy(makeupStdStrategy: MakeupStdStrategy) {
-    this.makeupStdStrategy = makeupStdStrategy
   }
 }

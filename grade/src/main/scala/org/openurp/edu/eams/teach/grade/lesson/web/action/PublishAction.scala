@@ -20,11 +20,11 @@ import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
 class PublishAction extends SemesterSupportAction {
 
-  protected var courseGradeService: CourseGradeService = _
+  var courseGradeService: CourseGradeService = _
 
-  private var settings: CourseGradeSettings = _
+  var settings: CourseGradeSettings = _
 
-  private var examTakeGeneratePublishListener: ExamTakeGeneratePublishListener = _
+  var examTakeGeneratePublishListener: ExamTakeGeneratePublishListener = _
 
   def publish(): String = {
     val gradeTypeId = getInt("gradeTypeId")
@@ -59,17 +59,5 @@ class PublishAction extends SemesterSupportAction {
     }
     put("size", size)
     forward()
-  }
-
-  def setCourseGradeService(courseGradeService: CourseGradeService) {
-    this.courseGradeService = courseGradeService
-  }
-
-  def setSettings(settings: CourseGradeSettings) {
-    this.settings = settings
-  }
-
-  def setExamTakeGeneratePublishListener(examTakeGeneratePublishListener: ExamTakeGeneratePublishListener) {
-    this.examTakeGeneratePublishListener = examTakeGeneratePublishListener
   }
 }

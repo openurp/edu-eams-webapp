@@ -29,9 +29,9 @@ import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
 class RetakeAction extends SemesterSupportAction {
 
-  private var lessonSeqNoGenerator: LessonSeqNoGenerator = _
+  var lessonSeqNoGenerator: LessonSeqNoGenerator = _
 
-  private var lessonPlanRelationDao: LessonPlanRelationDao = _
+  var lessonPlanRelationDao: LessonPlanRelationDao = _
 
   def search(): String = {
     val datas = stats(null)
@@ -186,13 +186,5 @@ class RetakeAction extends SemesterSupportAction {
       lessonPlanRelationDao.saveRelation(null, lesson)
     }
     redirect("search", "info.action.success")
-  }
-
-  def setLessonSeqNoGenerator(lessonSeqNoGenerator: LessonSeqNoGenerator) {
-    this.lessonSeqNoGenerator = lessonSeqNoGenerator
-  }
-
-  def setLessonPlanRelationDao(lessonPlanRelationDao: LessonPlanRelationDao) {
-    this.lessonPlanRelationDao = lessonPlanRelationDao
   }
 }

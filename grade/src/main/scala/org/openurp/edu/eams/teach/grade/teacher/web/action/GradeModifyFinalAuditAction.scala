@@ -19,9 +19,9 @@ import org.openurp.edu.teach.grade.ExamGrade
 
 class GradeModifyFinalAuditAction extends GradeModifyAuditSearchAction {
 
-  private var calculator: CourseGradeCalculator = _
+  var calculator: CourseGradeCalculator = _
 
-  private var courseGradeService: CourseGradeService = _
+  var courseGradeService: CourseGradeService = _
 
   override def search(): String = {
     put("gradeModifyApplys", search(getQueryBuilder))
@@ -80,17 +80,5 @@ class GradeModifyFinalAuditAction extends GradeModifyAuditSearchAction {
     }
     publish(new CourseGradeModifyEvent(CollectUtils.newArrayList(courseGrades.values)))
     redirect("search", "info.save.success", get("params"))
-  }
-
-  def setCourseGradeService(courseGradeService: CourseGradeService) {
-    this.courseGradeService = courseGradeService
-  }
-
-  def setCalculator(calculator: CourseGradeCalculator) {
-    this.calculator = calculator
-  }
-
-  def setCourseGradeCalculator(calculator: CourseGradeCalculator) {
-    this.calculator = calculator
   }
 }

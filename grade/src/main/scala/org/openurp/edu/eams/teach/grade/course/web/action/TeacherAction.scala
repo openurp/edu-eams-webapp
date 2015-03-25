@@ -73,35 +73,35 @@ class TeacherAction extends AbstractTeacherLessonAction {
     null
   }
 
-  protected var lessonFilterStrategyFactory: LessonFilterStrategyFactory = _
+  var lessonFilterStrategyFactory: LessonFilterStrategyFactory = _
 
-  protected var makeupStdStrategy: MakeupStdStrategy = _
+  var makeupStdStrategy: MakeupStdStrategy = _
 
-  protected var gradeInputSwitchService: GradeInputSwitchService = _
+  var gradeInputSwitchService: GradeInputSwitchService = _
 
-  protected var lessonService: LessonService = _
+  var lessonService: LessonService = _
 
-  protected var courseGradeService: CourseGradeService = _
+  var courseGradeService: CourseGradeService = _
 
-  protected var lessonGradeService: LessonGradeService = _
+  var lessonGradeService: LessonGradeService = _
 
-  protected var courseGradeHelper: CourseGradeHelper = _
+  var courseGradeHelper: CourseGradeHelper = _
 
-  protected var calculator: CourseGradeCalculator = _
+  var calculator: CourseGradeCalculator = _
 
-  protected var gradeRateService: GradeRateService = _
+  var gradeRateService: GradeRateService = _
 
-  protected var teachClassGradeHelper: TeachClassGradeHelper = _
+  var teachClassGradeHelper: TeachClassGradeHelper = _
 
-  protected var gradeTypePolicy: GradeTypePolicy = _
+  var gradeTypePolicy: GradeTypePolicy = _
 
-  protected var markStyleStrategy: MarkStyleStrategy = _
+  var markStyleStrategy: MarkStyleStrategy = _
 
-  protected var settings: CourseGradeSettings = _
+  var settings: CourseGradeSettings = _
 
-  protected var studentService: StudentService = _
+  var studentService: StudentService = _
 
-  protected var gradeCourseTypeProvider: GradeCourseTypeProvider = _
+  var gradeCourseTypeProvider: GradeCourseTypeProvider = _
 
   protected def checkState(): String = {
     val lessonId = getLong("lessonId")
@@ -762,73 +762,7 @@ class TeacherAction extends AbstractTeacherLessonAction {
     forward(new Action("", "reportForExam"))
   }
 
-  def setGradeRateService(gradeRateService: GradeRateService) {
-    this.gradeRateService = gradeRateService
-  }
-
-  def setCourseGradeService(courseGradeService: CourseGradeService) {
-    this.courseGradeService = courseGradeService
-  }
-
-  def setLessonGradeService(lessonGradeService: LessonGradeService) {
-    this.lessonGradeService = lessonGradeService
-  }
-
-  def setTeachClassGradeHelper(teachClassGradeHelper: TeachClassGradeHelper) {
-    this.teachClassGradeHelper = teachClassGradeHelper
-  }
-
-  def setCourseGradeCalculator(calculator: CourseGradeCalculator) {
-    this.calculator = calculator
-  }
-
   protected def getGradeState(): CourseGradeState = {
     getAttribute("gradeState").asInstanceOf[CourseGradeState]
-  }
-
-  def setCourseGradeHelper(courseGradeHelper: CourseGradeHelper) {
-    this.courseGradeHelper = courseGradeHelper
-  }
-
-  def setLessonService(lessonService: LessonService) {
-    this.lessonService = lessonService
-  }
-
-  def setCalculator(calculator: CourseGradeCalculator) {
-    this.calculator = calculator
-  }
-
-  def setGradeTypePolicy(gradeTypePolicy: GradeTypePolicy) {
-    this.gradeTypePolicy = gradeTypePolicy
-  }
-
-  def getGradeTypePolicy(): GradeTypePolicy = gradeTypePolicy
-
-  def setMarkStyleStrategy(markStyleStrategy: MarkStyleStrategy) {
-    this.markStyleStrategy = markStyleStrategy
-  }
-
-  def setSettings(settings: CourseGradeSettings) {
-    this.settings = settings
-  }
-
-  def setStudentService(studentService: StudentService) {
-    this.studentService = studentService
-  }
-
-  def setMakeupStdStrategy(makeupStdStrategy: MakeupStdStrategy) {
-    this.makeupStdStrategy = makeupStdStrategy
-  }
-
-  def setGradeInputSwitchService(gradeInputSwitchService: GradeInputSwitchService) {
-    this.gradeInputSwitchService = gradeInputSwitchService
-  }
-
-  def setGradeCourseTypeProvider(gradeCourseTypeProvider: GradeCourseTypeProvider) {
-    this.gradeCourseTypeProvider = gradeCourseTypeProvider
-  }
-
-  def setLessonFilterStrategyFactory(lessonFilterStrategyFactory: LessonFilterStrategyFactory) {
-    this.lessonFilterStrategyFactory = lessonFilterStrategyFactory
   }
 }

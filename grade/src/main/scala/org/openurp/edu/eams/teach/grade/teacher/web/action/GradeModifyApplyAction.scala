@@ -33,9 +33,9 @@ import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
 class GradeModifyApplyAction extends SemesterSupportAction {
 
-  private var courseGradeService: CourseGradeService = _
+  var courseGradeService: CourseGradeService = _
 
-  private var gradeRateService: GradeRateService = _
+  var gradeRateService: GradeRateService = _
 
   override def getEntityName(): String = classOf[CourseGrade].getName
 
@@ -205,13 +205,5 @@ class GradeModifyApplyAction extends SemesterSupportAction {
         redirect("search", "info.save.failure")
       }
     }
-  }
-
-  def setCourseGradeService(courseGradeService: CourseGradeService) {
-    this.courseGradeService = courseGradeService
-  }
-
-  def setGradeRateService(gradeRateService: GradeRateService) {
-    this.gradeRateService = gradeRateService
   }
 }

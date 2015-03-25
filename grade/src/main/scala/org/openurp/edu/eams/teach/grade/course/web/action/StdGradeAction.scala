@@ -46,19 +46,19 @@ import org.openurp.edu.teach.lesson.Lesson
 
 class StdGradeAction extends StdGradeSearchAction {
 
-  protected var calculator: CourseGradeCalculator = _
+  var calculator: CourseGradeCalculator = _
 
-  protected var courseGradeHelper: CourseGradeHelper = _
+  var courseGradeHelper: CourseGradeHelper = _
 
-  protected var gradeRateService: GradeRateService = _
+  var gradeRateService: GradeRateService = _
 
-  protected var markStyleHelper: MarkStyleHelper = _
+  var markStyleHelper: MarkStyleHelper = _
 
-  private var stdGradeService: StdGradeService = _
+  var stdGradeService: StdGradeService = _
 
-  private var stringBuilderHelper: StringBuilderHelper = _
+  var stringBuilderHelper: StringBuilderHelper = _
 
-  protected var gradeCourseTypeProvider: GradeCourseTypeProvider = _
+  var gradeCourseTypeProvider: GradeCourseTypeProvider = _
 
   def batchAdd(): String = {
     putSemester(getProject)
@@ -643,33 +643,5 @@ class StdGradeAction extends StdGradeSearchAction {
       put("semester", semester)
       forward("batchAddResult")
     }
-  }
-
-  def setCourseGradeHelper(courseGradeHelper: CourseGradeHelper) {
-    this.courseGradeHelper = courseGradeHelper
-  }
-
-  def setCalculator(calculator: CourseGradeCalculator) {
-    this.calculator = calculator
-  }
-
-  def setMarkStyleHelper(markStyleHelper: MarkStyleHelper) {
-    this.markStyleHelper = markStyleHelper
-  }
-
-  def setStringBuilderHelper(stringBuilderHelper: StringBuilderHelper) {
-    this.stringBuilderHelper = stringBuilderHelper
-  }
-
-  def setStdGradeService(stdGradeService: StdGradeService) {
-    this.stdGradeService = stdGradeService
-  }
-
-  def setGradeRateService(gradeRateService: GradeRateService) {
-    this.gradeRateService = gradeRateService
-  }
-
-  def setGradeCourseTypeProvider(gradeCourseTypeProvider: GradeCourseTypeProvider) {
-    this.gradeCourseTypeProvider = gradeCourseTypeProvider
   }
 }

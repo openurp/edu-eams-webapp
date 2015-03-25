@@ -16,7 +16,7 @@ import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
 class StdGradeSearchAction extends SemesterSupportAction {
 
-  protected var courseGradeService: CourseGradeService = _
+  var courseGradeService: CourseGradeService = _
 
   protected override def indexSetting() {
     put("courseTakeTypes", baseCodeService.getCodes(classOf[CourseTakeType]))
@@ -92,9 +92,5 @@ class StdGradeSearchAction extends SemesterSupportAction {
     put("gradeState", courseGradeService.getState(courseGrade.getLesson))
     put("examGradeAlterInfos", gradeAlterations)
     forward()
-  }
-
-  def setCourseGradeService(courseGradeService: CourseGradeService) {
-    this.courseGradeService = courseGradeService
   }
 }

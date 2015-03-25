@@ -29,9 +29,9 @@ import com.opensymphony.xwork2.ActionContext
 
 class TranscriptAction extends BaseAction {
 
-  private var reportTemplateService: ReportTemplateService = _
+  var reportTemplateService: ReportTemplateService = _
 
-  private var dataProviderRegistry: SpringTranscriptDataProviderRegistry = _
+  var dataProviderRegistry: SpringTranscriptDataProviderRegistry = _
 
   def index(): String = {
     val me = getLoginStudent
@@ -110,13 +110,5 @@ class TranscriptAction extends BaseAction {
     var templateResult = sw.toString
     templateResult = Strings.replace(templateResult, "src=\"" + request.getContextPath, "src=\"" + builder.buildUrl())
     templateResult
-  }
-
-  def setReportTemplateService(reportTemplateService: ReportTemplateService) {
-    this.reportTemplateService = reportTemplateService
-  }
-
-  def setDataProviderRegistry(dataProviderRegistry: SpringTranscriptDataProviderRegistry) {
-    this.dataProviderRegistry = dataProviderRegistry
   }
 }

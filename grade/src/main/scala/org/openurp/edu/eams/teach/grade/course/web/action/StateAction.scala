@@ -34,11 +34,11 @@ import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
 class StateAction extends SemesterSupportAction {
 
-  protected var lessonGradeService: LessonGradeService = _
+  var lessonGradeService: LessonGradeService = _
 
-  protected var courseGradeService: CourseGradeService = _
+  var courseGradeService: CourseGradeService = _
 
-  protected var gradeRateService: GradeRateService = _
+  var gradeRateService: GradeRateService = _
 
   protected def indexSetting() {
     put("examModes", baseCodeService.getCodes(classOf[ExamMode]))
@@ -339,17 +339,5 @@ class StateAction extends SemesterSupportAction {
       }
     }
     courseMap
-  }
-
-  def setLessonGradeService(lessonGradeService: LessonGradeService) {
-    this.lessonGradeService = lessonGradeService
-  }
-
-  def setCourseGradeService(courseGradeService: CourseGradeService) {
-    this.courseGradeService = courseGradeService
-  }
-
-  def setGradeRateService(gradeRateService: GradeRateService) {
-    this.gradeRateService = gradeRateService
   }
 }

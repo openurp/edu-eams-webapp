@@ -32,11 +32,11 @@ import com.opensymphony.xwork2.ActionContext
 
 class GpaAction extends GpaStatAction {
 
-  protected var gpaStatService: GpaStatService = _
+  var gpaStatService: GpaStatService = _
 
-  protected var stdSearchHelper: StdSearchHelper = _
+  var stdSearchHelper: StdSearchHelper = _
 
-  protected var lessonGradeService: LessonGradeService = _
+  var lessonGradeService: LessonGradeService = _
 
   protected override def getEntityName(): String = classOf[StdGpa].getName
 
@@ -191,18 +191,6 @@ class GpaAction extends GpaStatAction {
         entityDao.executeUpdate(hql, null.asInstanceOf[Array[Any]])
       }
     }
-  }
-
-  def setGpaStatService(gpaStatService: GpaStatService) {
-    this.gpaStatService = gpaStatService
-  }
-
-  def setStdSearchHelper(stdSearchHelper: StdSearchHelper) {
-    this.stdSearchHelper = stdSearchHelper
-  }
-
-  def setLessonGradeService(lessonGradeService: LessonGradeService) {
-    this.lessonGradeService = lessonGradeService
   }
 
   protected def sendParams(include: String, string: String, exclude: String): String = {

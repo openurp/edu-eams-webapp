@@ -31,11 +31,11 @@ import com.opensymphony.xwork2.ActionContext
 
 class FinalAction extends SemesterSupportAction {
 
-  private var dataProviderRegistry: SpringTranscriptDataProviderRegistry = _
+  var dataProviderRegistry: SpringTranscriptDataProviderRegistry = _
 
-  private var reportTemplateService: ReportTemplateService = _
+  var reportTemplateService: ReportTemplateService = _
 
-  private var stdSearchHelper: StdSearchHelper = _
+  var stdSearchHelper: StdSearchHelper = _
 
   def stdList(): String = {
     put("students", entityDao.search(stdSearchHelper.buildStdQuery()))
@@ -124,17 +124,5 @@ class FinalAction extends SemesterSupportAction {
     var templateResult = sw.toString
     templateResult = Strings.replace(templateResult, "src=\"" + request.getContextPath, "src=\"" + builder.buildUrl())
     templateResult
-  }
-
-  def setStdSearchHelper(stdSearchHelper: StdSearchHelper) {
-    this.stdSearchHelper = stdSearchHelper
-  }
-
-  def setReportTemplateService(reportTemplateService: ReportTemplateService) {
-    this.reportTemplateService = reportTemplateService
-  }
-
-  def setDataProviderRegistry(dataProviderRegistry: SpringTranscriptDataProviderRegistry) {
-    this.dataProviderRegistry = dataProviderRegistry
   }
 }

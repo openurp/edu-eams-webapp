@@ -46,23 +46,23 @@ import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
 class GaAction extends SemesterSupportAction {
 
-  protected var courseGradeService: CourseGradeService = _
+  var courseGradeService: CourseGradeService = _
 
-  protected var lessonGradeService: LessonGradeService = _
+  var lessonGradeService: LessonGradeService = _
 
-  protected var calculator: CourseGradeCalculator = _
+  var calculator: CourseGradeCalculator = _
 
-  protected var lessonService: LessonService = _
+  var lessonService: LessonService = _
 
-  protected var teachClassGradeHelper: TeachClassGradeHelper = _
+  var teachClassGradeHelper: TeachClassGradeHelper = _
 
-  protected var courseGradeHelper: CourseGradeHelper = _
+  var courseGradeHelper: CourseGradeHelper = _
 
-  protected var makeupStdStrategy: MakeupStdStrategy = _
+  var makeupStdStrategy: MakeupStdStrategy = _
 
-  protected var gradeRateService: GradeRateService = _
+  var gradeRateService: GradeRateService = _
 
-  protected var settings: CourseGradeSettings = _
+  var settings: CourseGradeSettings = _
 
   def batchEditExtraInputer(): String = {
     val courseGradeStates = CollectUtils.newArrayList()
@@ -413,45 +413,5 @@ class GaAction extends SemesterSupportAction {
   def unPassedGrades(): String = {
     put("unPassedGrades", entityDao.search(buildUnPassedGradeQuery()))
     forward()
-  }
-
-  def setCalculator(calculator: CourseGradeCalculator) {
-    this.calculator = calculator
-  }
-
-  def setCourseGradeCalculator(courseGradeCalculator: CourseGradeCalculator) {
-    this.calculator = courseGradeCalculator
-  }
-
-  def setCourseGradeHelper(courseGradeHelper: CourseGradeHelper) {
-    this.courseGradeHelper = courseGradeHelper
-  }
-
-  def setCourseGradeService(courseGradeService: CourseGradeService) {
-    this.courseGradeService = courseGradeService
-  }
-
-  def setLessonService(lessonService: LessonService) {
-    this.lessonService = lessonService
-  }
-
-  def setMakeupStdStrategy(makeupStdStrategy: MakeupStdStrategy) {
-    this.makeupStdStrategy = makeupStdStrategy
-  }
-
-  def setSettings(settings: CourseGradeSettings) {
-    this.settings = settings
-  }
-
-  def setTeachClassGradeHelper(teachClassGradeHelper: TeachClassGradeHelper) {
-    this.teachClassGradeHelper = teachClassGradeHelper
-  }
-
-  def setLessonGradeService(lessonGradeService: LessonGradeService) {
-    this.lessonGradeService = lessonGradeService
-  }
-
-  def setGradeRateService(gradeRateService: GradeRateService) {
-    this.gradeRateService = gradeRateService
   }
 }

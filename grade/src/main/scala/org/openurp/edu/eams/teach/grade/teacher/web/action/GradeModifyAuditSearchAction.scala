@@ -15,7 +15,7 @@ import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
 class GradeModifyAuditSearchAction extends SemesterSupportAction {
 
-  protected var gradeModifyApplyService: GradeModifyApplyService = _
+  var gradeModifyApplyService: GradeModifyApplyService = _
 
   override def getEntityName(): String = classOf[GradeModifyApplyBean].getName
 
@@ -48,9 +48,5 @@ class GradeModifyAuditSearchAction extends SemesterSupportAction {
     builder.where("gradeModifyApply.project = :project", getProject)
     builder.orderBy(get(Order.ORDER_STR)).limit(getPageLimit)
     builder
-  }
-
-  def setGradeModifyApplyService(gradeModifyApplyService: GradeModifyApplyService) {
-    this.gradeModifyApplyService = gradeModifyApplyService
   }
 }

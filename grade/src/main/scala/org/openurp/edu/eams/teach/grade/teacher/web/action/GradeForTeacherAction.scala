@@ -13,9 +13,9 @@ import org.openurp.edu.eams.web.helper.AdminclassSearchHelper
 
 class GradeForTeacherAction extends SemesterSupportAction {
 
-  private var adminclassSearchHelper: AdminclassSearchHelper = _
+  var adminclassSearchHelper: AdminclassSearchHelper = _
 
-  private var courseGradeService: CourseGradeService = _
+  var courseGradeService: CourseGradeService = _
 
   override def index(): String = {
     val teacher = getLoginTeacher
@@ -51,13 +51,5 @@ class GradeForTeacherAction extends SemesterSupportAction {
     put("courseGradeStateMap", Collections.emptyMap())
     put("examGradeAlterMap", Collections.emptyMap())
     forward()
-  }
-
-  def setAdminclassSearchHelper(adminclassSearchHelper: AdminclassSearchHelper) {
-    this.adminclassSearchHelper = adminclassSearchHelper
-  }
-
-  def setCourseGradeService(courseGradeService: CourseGradeService) {
-    this.courseGradeService = courseGradeService
   }
 }

@@ -16,7 +16,7 @@ import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
 class IndexAction extends SemesterSupportAction {
 
-  protected var gpaStatService: GpaStatService = _
+  var gpaStatService: GpaStatService = _
 
   protected override def indexSetting() {
     val std = getLoginStudent
@@ -61,9 +61,5 @@ class IndexAction extends SemesterSupportAction {
     put("grades", entityDao.search(builder))
     putGradeTypes()
     forward()
-  }
-
-  def setGpaStatService(gpaStatService: GpaStatService) {
-    this.gpaStatService = gpaStatService
   }
 }

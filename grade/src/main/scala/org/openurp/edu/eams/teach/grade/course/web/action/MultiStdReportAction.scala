@@ -28,13 +28,13 @@ import org.openurp.edu.eams.web.helper.BaseInfoSearchHelper
 
 class MultiStdReportAction extends SemesterSupportAction {
 
-  private var baseInfoSearchHelper: BaseInfoSearchHelper = _
+  var baseInfoSearchHelper: BaseInfoSearchHelper = _
 
-  private var courseGradeService: CourseGradeService = _
+  var courseGradeService: CourseGradeService = _
 
-  private var gpaService: GpaService = _
+  var gpaService: GpaService = _
 
-  private var settings: CourseGradeSettings = _
+  var settings: CourseGradeSettings = _
 
   def adminClassList(): String = {
     put("adminclasses", baseInfoSearchHelper.searchAdminclass())
@@ -103,21 +103,5 @@ class MultiStdReportAction extends SemesterSupportAction {
     val allGrades = entityDao.search(query)
     for (g <- allGrades) gradeMap.get(g.getStd).add(g)
     gradeMap
-  }
-
-  def setBaseInfoSearchHelper(baseInfoSearchHelper: BaseInfoSearchHelper) {
-    this.baseInfoSearchHelper = baseInfoSearchHelper
-  }
-
-  def setCourseGradeService(courseGradeService: CourseGradeService) {
-    this.courseGradeService = courseGradeService
-  }
-
-  def setGpaService(gpaService: GpaService) {
-    this.gpaService = gpaService
-  }
-
-  def setSettings(settings: CourseGradeSettings) {
-    this.settings = settings
   }
 }

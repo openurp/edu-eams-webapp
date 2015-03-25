@@ -16,9 +16,9 @@ import org.openurp.edu.eams.web.helper.BaseInfoSearchHelper
 
 class MultiStdAction extends RestrictionSupportAction {
 
-  private var baseInfoSearchHelper: BaseInfoSearchHelper = _
+  var baseInfoSearchHelper: BaseInfoSearchHelper = _
 
-  private var gpaStatService: GpaStatService = _
+  var gpaStatService: GpaStatService = _
 
   def index(): String = {
     setDataRealm(hasStdTypeCollege)
@@ -52,13 +52,5 @@ class MultiStdAction extends RestrictionSupportAction {
     }
     put("multiStdGpas", multiStdGpas)
     forward()
-  }
-
-  def setBaseInfoSearchHelper(baseInfoSearchHelper: BaseInfoSearchHelper) {
-    this.baseInfoSearchHelper = baseInfoSearchHelper
-  }
-
-  def setGpaStatService(gpaStatService: GpaStatService) {
-    this.gpaStatService = gpaStatService
   }
 }

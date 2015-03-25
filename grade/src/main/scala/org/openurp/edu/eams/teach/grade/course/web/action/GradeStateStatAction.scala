@@ -22,7 +22,7 @@ import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
 class GradeStateStatAction extends SemesterSupportAction {
 
-  private var lessonService: LessonService = _
+  var lessonService: LessonService = _
 
   protected override def indexSetting() {
     put("gradeTypes", baseCodeService.getCodes(classOf[GradeType]))
@@ -131,10 +131,6 @@ class GradeStateStatAction extends SemesterSupportAction {
     put("unInputLessonMap", unInputLessonMap)
     put("results", results)
     forward()
-  }
-
-  def setLessonService(lessonService: LessonService) {
-    this.lessonService = lessonService
   }
 
   protected def getPropertyExtractor(): PropertyExtractor = new GradeStatExtractor(getTextResource)

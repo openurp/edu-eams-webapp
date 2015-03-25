@@ -35,11 +35,11 @@ object MakeupAction {
 
 class MakeupAction extends SemesterSupportAction {
 
-  protected var courseGradeService: CourseGradeService = _
+  var courseGradeService: CourseGradeService = _
 
-  protected var lessonService: LessonService = _
+  var lessonService: LessonService = _
 
-  protected var calcualtor: CourseGradeCalculator = _
+  var calcualtor: CourseGradeCalculator = _
 
   protected override def getEntityName(): String = classOf[ExamTake].getName
 
@@ -175,21 +175,5 @@ class MakeupAction extends SemesterSupportAction {
     }
     entityDao.saveOrUpdate(grades)
     redirect("search", "info.save.success")
-  }
-
-  def setCourseGradeCalculator(calcualtor: CourseGradeCalculator) {
-    this.calcualtor = calcualtor
-  }
-
-  def setCourseGradeService(courseGradeService: CourseGradeService) {
-    this.courseGradeService = courseGradeService
-  }
-
-  def setLessonService(lessonService: LessonService) {
-    this.lessonService = lessonService
-  }
-
-  def setCalcualtor(calcualtor: CourseGradeCalculator) {
-    this.calcualtor = calcualtor
   }
 }

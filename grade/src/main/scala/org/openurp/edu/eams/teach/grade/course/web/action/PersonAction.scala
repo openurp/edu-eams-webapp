@@ -28,15 +28,15 @@ import org.openurp.edu.eams.web.action.common.AbstractStudentProjectSupportActio
 
 class PersonAction extends AbstractStudentProjectSupportAction {
 
-  protected var lessonGradeService: LessonGradeService = _
+  var lessonGradeService: LessonGradeService = _
 
-  protected var semesterService: SemesterService = _
+  var semesterService: SemesterService = _
 
-  protected var gpaStatService: GpaStatService = _
+  var gpaStatService: GpaStatService = _
 
-  private var studentService: StudentService = _
+  var studentService: StudentService = _
 
-  private var courseGradeProvider: CourseGradeProvider = _
+  var courseGradeProvider: CourseGradeProvider = _
 
   override def innerIndex(): String = {
     var acturalQueryStd = getLoginStudent
@@ -159,25 +159,5 @@ class PersonAction extends AbstractStudentProjectSupportAction {
     put("semesterName", SEMESTER_LIST)
     put("examModel", entityDao.get(classOf[ExamMode], ExamMode.NORMAL))
     forward()
-  }
-
-  def setCourseGradeProvider(courseGradeProvider: CourseGradeProvider) {
-    this.courseGradeProvider = courseGradeProvider
-  }
-
-  def setGpaStatService(gpaStatService: GpaStatService) {
-    this.gpaStatService = gpaStatService
-  }
-
-  def setLessonGradeService(lessonGradeService: LessonGradeService) {
-    this.lessonGradeService = lessonGradeService
-  }
-
-  def setSemesterService(semesterService: SemesterService) {
-    this.semesterService = semesterService
-  }
-
-  def setStudentService(studentService: StudentService) {
-    this.studentService = studentService
   }
 }

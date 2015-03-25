@@ -41,9 +41,9 @@ import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
 class CollegeAction extends SemesterSupportAction {
 
-  private var courseGradeService: CourseGradeService = _
+  var courseGradeService: CourseGradeService = _
 
-  private var calculator: CourseGradeCalculator = _
+  var calculator: CourseGradeCalculator = _
 
   override def getEntityName(): String = classOf[ExamGrade].getName
 
@@ -251,17 +251,5 @@ class CollegeAction extends SemesterSupportAction {
     builder.where("examGrade.courseGrade.project = :project", getProject)
     builder.orderBy(get(Order.ORDER_STR)).limit(getPageLimit)
     builder
-  }
-
-  def setCourseGradeService(courseGradeService: CourseGradeService) {
-    this.courseGradeService = courseGradeService
-  }
-
-  def setCourseGradeCalculator(calculator: CourseGradeCalculator) {
-    this.calculator = calculator
-  }
-
-  def setCalculator(calculator: CourseGradeCalculator) {
-    this.calculator = calculator
   }
 }

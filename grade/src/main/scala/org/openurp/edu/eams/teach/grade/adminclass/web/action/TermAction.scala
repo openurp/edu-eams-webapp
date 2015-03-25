@@ -21,9 +21,9 @@ import org.openurp.edu.eams.web.action.common.ProjectSupportAction
 
 class TermAction extends ProjectSupportAction {
 
-  private var courseGradeProvider: CourseGradeProvider = _
+  var courseGradeProvider: CourseGradeProvider = _
 
-  private var gpaService: GpaService = _
+  var gpaService: GpaService = _
 
   def index(): String = {
     pushGradeData()
@@ -69,13 +69,5 @@ class TermAction extends ProjectSupportAction {
     put("adminclass", adminclass)
     put("semester", semester)
     put("semesters", semesters)
-  }
-
-  def setGpaService(gpaService: GpaService) {
-    this.gpaService = gpaService
-  }
-
-  def setCourseGradeProvider(courseGradeProvider: CourseGradeProvider) {
-    this.courseGradeProvider = courseGradeProvider
   }
 }

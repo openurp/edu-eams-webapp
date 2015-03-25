@@ -30,11 +30,11 @@ import org.openurp.edu.eams.web.helper.StdSearchHelper
 
 class TermReportAction extends SemesterSupportAction {
 
-  private var gpaService: GpaService = _
+  var gpaService: GpaService = _
 
-  private var courseGradeProvider: CourseGradeProvider = _
+  var courseGradeProvider: CourseGradeProvider = _
 
-  private var stdSearchHelper: StdSearchHelper = _
+  var stdSearchHelper: StdSearchHelper = _
 
   def stdList(): String = {
     put("students", entityDao.search(stdSearchHelper.buildStdQuery()))
@@ -115,17 +115,5 @@ class TermReportAction extends SemesterSupportAction {
     query.orderBy(Order.parse(get("orderBy")))
     put("stdTCs", entityDao.search(query))
     forward()
-  }
-
-  def setGpaService(gpaService: GpaService) {
-    this.gpaService = gpaService
-  }
-
-  def setStdSearchHelper(stdSearchHelper: StdSearchHelper) {
-    this.stdSearchHelper = stdSearchHelper
-  }
-
-  def setCourseGradeProvider(courseGradeProvider: CourseGradeProvider) {
-    this.courseGradeProvider = courseGradeProvider
   }
 }
