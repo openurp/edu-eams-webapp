@@ -3,7 +3,7 @@ package org.openurp.edu.eams.teach.election.service.context
 import java.io.Serializable
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.entity.metadata.Model
 import org.openurp.edu.base.Course
 import org.openurp.edu.base.code.CourseType
@@ -33,10 +33,10 @@ class ElectCourseGroup( val courseType: CourseType) extends Serializable() {
   var takedCredits: Float = _
 
   
-  val courses = CollectUtils.newHashSet()
+  val courses = Collections.newSet[Any]
 
   
-  var children: List[ElectCourseGroup] = CollectUtils.newArrayList()
+  var children: List[ElectCourseGroup] = Collections.newBuffer[Any]
 
   
   var hasLesson: Boolean = false

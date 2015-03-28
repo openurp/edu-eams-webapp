@@ -3,7 +3,7 @@ package org.openurp.edu.eams.teach.grade.lesson.service.impl
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
@@ -27,7 +27,7 @@ class GradeStatServiceImpl extends BaseServiceImpl with GradeStatService {
       gradeTypes: List[GradeType], 
       teacher: Teacher): List[LessonSegStat] = {
     val tasks = entityDao.get(classOf[Lesson], Strings.splitToLong(lessonIdSeq))
-    val stats = CollectUtils.newArrayList()
+    val stats = Collections.newBuffer[Any]
     var iter = tasks.iterator()
     while (iter.hasNext) {
       val lesson = iter.next()
@@ -52,7 +52,7 @@ class GradeStatServiceImpl extends BaseServiceImpl with GradeStatService {
       scoreSegments: List[FloatSegment], 
       gradeTypes: List[GradeType], 
       semester: Semester): List[CourseSegStat] = {
-    val stats = CollectUtils.newArrayList()
+    val stats = Collections.newBuffer[Any]
     var iter = courses.iterator()
     while (iter.hasNext) {
       val course = iter.next()

@@ -12,11 +12,11 @@ import java.util.Comparator
 import java.util.TreeSet
 import org.apache.commons.collections.CollectionUtils
 import org.openurp.edu.base.Adminclass
-import org.openurp.edu.teach.lesson.CourseLimitMeta.Operator
+import org.openurp.edu.teach.lesson.LessonLimitMeta.Operator
 import org.openurp.edu.teach.lesson.CourseTake
 import org.openurp.edu.teach.exam.ExamTake
 import org.openurp.edu.teach.lesson.TeachClass
-import org.openurp.edu.eams.teach.lesson.service.CourseLimitService
+import org.openurp.edu.eams.teach.lesson.service.LessonLimitService
 import org.openurp.edu.eams.teach.lesson.service.TeachClassNameStrategy
 import org.openurp.edu.eams.teach.lesson.task.service.helper.CourseTakeOfClassPredicate
 import org.openurp.edu.eams.teach.lesson.util.LessonElectionUtil
@@ -52,13 +52,13 @@ object AbstractTeachClassSplitter {
 
   splitModes.put(NUMBER_SPLIT.name, NUMBER_SPLIT)
 
-  def getMode(modeName: String, util: CourseLimitService, teachClassNameStrategy: TeachClassNameStrategy): AbstractTeachClassSplitter = {
+  def getMode(modeName: String, util: LessonLimitService, teachClassNameStrategy: TeachClassNameStrategy): AbstractTeachClassSplitter = {
     var mode: AbstractTeachClassSplitter = null
     mode = if ("adminclass_split" == modeName) new AdminclassGroupMode() else splitModes.get(modeName).asInstanceOf[AbstractTeachClassSplitter]
     if (mode == null) {
       return null
     }
-    mode.setLessonCourseLimitUtil(util)
+    mode.setLessonLessonLimitUtil(util)
     mode.setTeachClassNameStrategy(teachClassNameStrategy)
     mode
   }
@@ -68,7 +68,7 @@ abstract class AbstractTeachClassSplitter {
 
   protected var name: String = _
 
-  protected var util: CourseLimitService = _
+  protected var util: LessonLimitService = _
 
   protected var teachClassNameStrategy: TeachClassNameStrategy = _
 
@@ -164,7 +164,7 @@ abstract class AbstractTeachClassSplitter {
     this.splitStdNums = splitStdNums
   }
 
-  def setLessonCourseLimitUtil(util: CourseLimitService) {
+  def setLessonLessonLimitUtil(util: LessonLimitService) {
     this.util = util
   }
 

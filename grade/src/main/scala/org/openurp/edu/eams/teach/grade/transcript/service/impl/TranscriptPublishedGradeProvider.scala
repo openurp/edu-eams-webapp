@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.grade.transcript.service.impl
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.openurp.edu.base.Student
 import org.openurp.edu.eams.teach.grade.service.CourseGradeProvider
 import org.openurp.edu.eams.teach.grade.service.impl.GradeFilter
@@ -27,7 +27,7 @@ class TranscriptPublishedGradeProvider extends TranscriptDataProvider {
   }
 
   def getDatas[T](stds: List[Student], options: Map[String, String]): Map[Student, T] = {
-    val datas = CollectUtils.newHashMap()
+    val datas = Collections.newMap[Any]
     val matched = getFilters(options)
     val gradeMap = courseGradeProvider.getPublished(stds)
     for (std <- stds) {

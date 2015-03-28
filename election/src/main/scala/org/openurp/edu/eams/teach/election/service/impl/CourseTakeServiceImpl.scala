@@ -7,7 +7,7 @@ import java.util.Date
 
 
 import org.apache.commons.lang3.ArrayUtils
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.beangle.commons.dao.query.builder.Condition
 import org.beangle.data.jpa.dao.OqlBuilder
@@ -40,15 +40,15 @@ import org.openurp.edu.eams.teach.election.service.CourseTakeService
 import org.openurp.edu.eams.teach.election.service.ElectLoggerService
 import org.openurp.edu.eams.teach.election.service.context.CourseTakeStat
 import org.openurp.edu.eams.teach.election.service.event.ElectCourseEvent
-import org.openurp.edu.eams.teach.election.service.helper.CourseLimitGroupHelper
+import org.openurp.edu.eams.teach.election.service.helper.LessonLimitGroupHelper
 import org.openurp.edu.eams.teach.election.service.helper.FreeMarkerHelper
 import org.openurp.edu.teach.schedule.CourseActivity
-import org.openurp.edu.teach.lesson.CourseLimitGroup
+import org.openurp.edu.teach.lesson.LessonLimitGroup
 import org.openurp.edu.teach.lesson.CourseTake
 import org.openurp.edu.eams.teach.lesson.CourseTime
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.teach.lesson.model.CourseTakeBean
-import org.openurp.edu.eams.teach.lesson.service.CourseLimitService
+import org.openurp.edu.eams.teach.lesson.service.LessonLimitService
 import org.openurp.edu.eams.web.helper.AdminclassSearchHelper
 import org.openurp.edu.eams.web.util.OutputObserver
 import org.openurp.edu.eams.web.util.OutputProcessObserver
@@ -61,7 +61,7 @@ class CourseTakeServiceImpl extends BaseServiceImpl with CourseTakeService {
   
   var electLoggerService: ElectLoggerService = _
 
-  private var courseLimitService: CourseLimitService = _
+  private var lessonLimitService: LessonLimitService = _
 
   private var adminclassSearchHelper: AdminclassSearchHelper = _
 
@@ -82,18 +82,18 @@ class CourseTakeServiceImpl extends BaseServiceImpl with CourseTakeService {
       unCheckTimeConflict: Boolean): List[Message] = {
     synchronized {
       val date = new Date()
-      val results = CollectUtils.newArrayList()
+      val results = Collections.newBuffer[Any]
       var successCount = 0
       var failureCount = 0
       val successMsg = new Message("0")
       val failureMsg = new Message("0")
       results.add(successMsg)
       results.add(failureMsg)
-      val failureMessages = CollectUtils.newHashMap()
-      val lessonSet = CollectUtils.newHashSet(lessonCollection)
-      val electedLessons = CollectUtils.newHashSet()
-      val candidateLessons = CollectUtils.newHashSet()
-      val successLessons = CollectUtils.newArrayList()
+      val failureMessages = Collections.newMap[Any]
+      val lessonSet = Collections.newHashSet(lessonCollection)
+      val electedLessons = Collections.newSet[Any]
+      val candidateLessons = Collections.newSet[Any]
+      val successLessons = Collections.newBuffer[Any]
       if (!unCheckTimeConflict) {
         for (courseTake <- existedTakes if courseTake.getStd == student) {
           electedLessons.add(courseTake.getLesson)
@@ -104,7 +104,7 @@ class CourseTakeServiceImpl extends BaseServiceImpl with CourseTakeService {
           }
           var failureMsgsSet = failureMessages.get(lesson)
           if (null == failureMsgsSet) {
-            failureMsgsSet = CollectUtils.newHashSet()
+            failureMsgsSet = Collections.newSet[Any]
           }
           for (l <- electedLessons) {
             if (lesson.getCourse.getCode == l.getCourse.getCode) {
@@ -160,7 +160,7 @@ class CourseTakeServiceImpl extends BaseServiceImpl with CourseTakeService {
         val logger = electLoggerService.genLogger(courseTake, ElectRuleType.ELECTION, null, date)
         try {
           lesson.getTeachClass.setStdCount(lesson.getTeachClass.getStdCount + 1)
-          val limitGroup = CourseLimitGroupHelper.getMatchCourseLimitGroup(lesson, student)
+          val limitGroup = LessonLimitGroupHelper.getMatchLessonLimitGroup(lesson, student)
           if (limitGroup != null) {
             limitGroup.setCurCount(limitGroup.getCurCount + 1)
             courseTake.setLimitGroup(limitGroup)
@@ -172,7 +172,7 @@ class CourseTakeServiceImpl extends BaseServiceImpl with CourseTakeService {
         } catch {
           case e: Exception => {
             failureCount += 1
-            failureMessages.put(lesson, CollectUtils.newHashSet("添加失败"))
+            failureMessages.put(lesson, Collections.newHashSet("添加失败"))
           }
         }
       }
@@ -205,21 +205,21 @@ class CourseTakeServiceImpl extends BaseServiceImpl with CourseTakeService {
       unCheckTimeConflict: Boolean): List[Message] = {
     synchronized {
       val date = new Date()
-      val results = CollectUtils.newArrayList()
+      val results = Collections.newBuffer[Any]
       val successMsg = new Message("0")
       val failureMsg = new Message("0")
       var successCount = 0
       var failureCount = 0
-      val failureMessages = CollectUtils.newHashMap()
-      val successStds = CollectUtils.newArrayList()
+      val failureMessages = Collections.newMap[Any]
+      val successStds = Collections.newBuffer[Any]
       results.add(successMsg)
       results.add(failureMsg)
-      val courseTakeMap = CollectUtils.newHashMap()
-      val stds = CollectUtils.newHashSet()
+      val courseTakeMap = Collections.newMap[Any]
+      val stds = Collections.newSet[Any]
       for (courseTake <- electedCourseTakes) {
         var stdElectedLessons = courseTakeMap.get(courseTake.getStd)
         if (null == stdElectedLessons) {
-          stdElectedLessons = CollectUtils.newHashSet()
+          stdElectedLessons = Collections.newSet[Any]
         }
         stdElectedLessons.add(courseTake.getLesson)
         courseTakeMap.put(courseTake.getStd, stdElectedLessons)
@@ -233,7 +233,7 @@ class CourseTakeServiceImpl extends BaseServiceImpl with CourseTakeService {
           }
           var failureMsgsSet = failureMessages.get(lesson)
           if (null == failureMsgsSet) {
-            failureMsgsSet = CollectUtils.newHashSet()
+            failureMsgsSet = Collections.newSet[Any]
           }
           for (l <- stdElectedLessons) {
             if (lesson == l) {
@@ -288,7 +288,7 @@ class CourseTakeServiceImpl extends BaseServiceImpl with CourseTakeService {
         val logger = electLoggerService.genLogger(courseTake, ElectRuleType.ELECTION, null, date)
         try {
           lesson.getTeachClass.setStdCount(lesson.getTeachClass.getStdCount + 1)
-          val limitGroup = CourseLimitGroupHelper.getMatchCourseLimitGroup(lesson, student)
+          val limitGroup = LessonLimitGroupHelper.getMatchLessonLimitGroup(lesson, student)
           if (limitGroup != null) {
             limitGroup.setCurCount(limitGroup.getCurCount + 1)
             courseTake.setLimitGroup(limitGroup)
@@ -300,7 +300,7 @@ class CourseTakeServiceImpl extends BaseServiceImpl with CourseTakeService {
         } catch {
           case e: Exception => {
             failureCount += 1
-            failureMessages.put(student, CollectUtils.newHashSet("添加失败"))
+            failureMessages.put(student, Collections.newHashSet("添加失败"))
           }
         }
       }
@@ -314,11 +314,11 @@ class CourseTakeServiceImpl extends BaseServiceImpl with CourseTakeService {
 
   def filter(amount: Int, takes: List[CourseTake], params: Map[String, Any]): List[Message] = {
     val toBeRemoved = courseTakeFilterStrategy.getToBeRemoved(amount, takes, params)
-    val stdId2Messages = CollectUtils.newHashMap()
+    val stdId2Messages = Collections.newMap[Any]
     for (courseTake <- toBeRemoved) {
       var messages = stdId2Messages.get(courseTake.getStd.id)
       if (null == messages) {
-        messages = CollectUtils.newArrayList()
+        messages = Collections.newBuffer[Any]
         stdId2Messages.put(courseTake.getStd.id, messages)
       }
       val std = courseTake.getStd
@@ -347,7 +347,7 @@ class CourseTakeServiceImpl extends BaseServiceImpl with CourseTakeService {
         }
       }
     }
-    val result = CollectUtils.newArrayList()
+    val result = Collections.newBuffer[Any]
     for (messages <- stdId2Messages.values) {
       result.addAll(messages)
     }
@@ -357,11 +357,11 @@ class CourseTakeServiceImpl extends BaseServiceImpl with CourseTakeService {
   def withdraw(courseTakes: List[CourseTake], sender: User): List[Message] = {
     synchronized {
       val template = if (null == sender) null else entityDao.get(classOf[ElectMailTemplate], ElectMailTemplate.WITHDRAW)
-      val stdId2Messages = CollectUtils.newHashMap()
+      val stdId2Messages = Collections.newMap[Any]
       for (courseTake <- courseTakes) {
         var messages = stdId2Messages.get(courseTake.getStd.id)
         if (null == messages) {
-          messages = CollectUtils.newArrayList()
+          messages = Collections.newBuffer[Any]
           stdId2Messages.put(courseTake.getStd.id, messages)
         }
         val std = courseTake.getStd
@@ -404,7 +404,7 @@ class CourseTakeServiceImpl extends BaseServiceImpl with CourseTakeService {
           }
         }
       }
-      val result = CollectUtils.newArrayList()
+      val result = Collections.newBuffer[Any]
       for (messages <- stdId2Messages.values) {
         result.addAll(messages)
       }
@@ -413,8 +413,8 @@ class CourseTakeServiceImpl extends BaseServiceImpl with CourseTakeService {
   }
 
   def getCourseTakes(students: Iterable[Student], semester: Semester): Map[Student, List[CourseTake]] = {
-    var courseTakes = CollectUtils.newArrayList()
-    val result = CollectUtils.newHashMap()
+    var courseTakes = Collections.newBuffer[Any]
+    val result = Collections.newMap[Any]
     for (student <- students) {
       result.put(student, new ArrayList[CourseTake]())
     }
@@ -430,7 +430,7 @@ class CourseTakeServiceImpl extends BaseServiceImpl with CourseTakeService {
         if (end > stdArray.length) {
           end = stdArray.length
         }
-        val parameterMap = CollectUtils.newHashMap()
+        val parameterMap = Collections.newMap[Any]
         parameterMap.put("stds", ArrayUtils.subarray(stdArray, i, end))
         parameterMap.put("semester", semester)
         courseTakes.addAll(entityDao.search(builder.params(parameterMap).build()))
@@ -440,7 +440,7 @@ class CourseTakeServiceImpl extends BaseServiceImpl with CourseTakeService {
     for (courseTake <- courseTakes) {
       var takes = result.get(courseTake.getStd)
       if (null == takes) {
-        takes = CollectUtils.newArrayList()
+        takes = Collections.newBuffer[Any]
         result.put(courseTake.getStd, takes)
       }
       takes.add(courseTake)
@@ -461,7 +461,7 @@ class CourseTakeServiceImpl extends BaseServiceImpl with CourseTakeService {
     val builder = OqlBuilder.from(classOf[CourseTake], "courseTake")
     builder.where("courseTake.lesson.semester=:semester", semester)
     builder.where("courseTake.std=:std", student)
-    builder.where("courseTake.lesson.courseSchedule.startWeek <=:week and courseTake.lesson.courseSchedule.endWeek >=:week", 
+    builder.where("courseTake.lesson.schedule.startWeek <=:week and courseTake.lesson.schedule.endWeek >=:week", 
       week)
     entityDao.search(builder)
   }
@@ -473,7 +473,7 @@ class CourseTakeServiceImpl extends BaseServiceImpl with CourseTakeService {
       while (i <= courseActivity.getTime.getEndUnit - 1) {
         if (null == 
           courseTable(i)(courseActivity.getTime.day - 1)) {
-          courseTable(i)(courseActivity.getTime.day - 1) = CollectUtils.newArrayList()
+          courseTable(i)(courseActivity.getTime.day - 1) = Collections.newBuffer[Any]
         }
         courseTable(i)(courseActivity.getTime.day - 1)
           .add(courseTake)
@@ -504,7 +504,7 @@ class CourseTakeServiceImpl extends BaseServiceImpl with CourseTakeService {
       outPutObserver.notifyStart(outPutObserver.messageOf("info.setCourseTake") + "(" + 
         lessons.size + 
         ")", lessons.size, null)
-      val lessonIds = CollectUtils.newHashSet()
+      val lessonIds = Collections.newSet[Any]
       for (lesson <- lessons) {
         lessonIds.add(lesson.id)
         try {
@@ -542,7 +542,7 @@ class CourseTakeServiceImpl extends BaseServiceImpl with CourseTakeService {
             sb.append(") ")
           }
         }
-        val sb2 = new StringBuilder("update " + classOf[CourseLimitGroup].getName + " cg " + 
+        val sb2 = new StringBuilder("update " + classOf[LessonLimitGroup].getName + " cg " + 
           "set cg.curCount =(" + 
           "select count(courseTake.id) from " + 
           classOf[CourseTake].getName + 
@@ -566,7 +566,7 @@ class CourseTakeServiceImpl extends BaseServiceImpl with CourseTakeService {
 
   private def assignStds(lesson: Lesson, `type`: AssignStdType): Int = {
     var result = 0
-    val adminclasses = courseLimitService.extractAdminclasses(lesson.getTeachClass)
+    val adminclasses = lessonLimitService.extractAdminclasses(lesson.getTeachClass)
     val builder = OqlBuilder.from(classOf[CourseTake], "courseTake")
     builder.where("courseTake.lesson=:lesson", lesson)
     if (!adminclasses.isEmpty) {
@@ -580,10 +580,10 @@ class CourseTakeServiceImpl extends BaseServiceImpl with CourseTakeService {
     if (!adminclasses.isEmpty) {
       stdBuilder.where("courseTake.std.adminclass in (:adminclasses)", adminclasses)
     }
-    val stds = CollectUtils.newHashSet(entityDao.search(stdBuilder))
+    val stds = Collections.newHashSet(entityDao.search(stdBuilder))
     val courseTakes = entityDao.search(builder)
-    val removeEntities = CollectUtils.newArrayList()
-    val otherCourseTakeTypeCourseTakes = CollectUtils.newHashMap()
+    val removeEntities = Collections.newBuffer[Any]
+    val otherCourseTakeTypeCourseTakes = Collections.newMap[Any]
     for (courseTake <- courseTakes) {
       if (courseTake.getCourseTakeType.id == CourseTakeType.NORMAL) {
         removeEntities.add(courseTake)
@@ -591,7 +591,7 @@ class CourseTakeServiceImpl extends BaseServiceImpl with CourseTakeService {
         otherCourseTakeTypeCourseTakes.put(courseTake.getStd, courseTake)
       }
     }
-    val saveEntities = CollectUtils.newArrayList()
+    val saveEntities = Collections.newBuffer[Any]
     val date = new Date()
     val normalCourseTakeType = Model.newInstance(classOf[CourseTakeType], CourseTakeType.NORMAL)
     val assignedMode = Model.newInstance(classOf[ElectionMode], ElectionMode.ASSIGEND)
@@ -606,7 +606,7 @@ class CourseTakeServiceImpl extends BaseServiceImpl with CourseTakeService {
           //continue
         }
         val courseTake = genCourseTake(lesson, std, normalCourseTakeType, assignedMode, date)
-        val limitGroup = CourseLimitGroupHelper.getMatchCourseLimitGroup(lesson, std)
+        val limitGroup = LessonLimitGroupHelper.getMatchLessonLimitGroup(lesson, std)
         if (limitGroup != null) {
           courseTake.setLimitGroup(limitGroup)
         }
@@ -629,8 +629,8 @@ class CourseTakeServiceImpl extends BaseServiceImpl with CourseTakeService {
     this.studentService = studentService
   }
 
-  def setCourseLimitService(courseLimitService: CourseLimitService) {
-    this.courseLimitService = courseLimitService
+  def setLessonLimitService(lessonLimitService: LessonLimitService) {
+    this.lessonLimitService = lessonLimitService
   }
 
   def setElectionDao(electionDao: ElectionDao) {
@@ -648,7 +648,7 @@ class CourseTakeServiceImpl extends BaseServiceImpl with CourseTakeService {
       weekCondition: Condition, 
       project: Project, 
       adminclasses: Iterable[Adminclass]): List[CourseTake] = {
-    if (CollectUtils.isNotEmpty(adminclasses)) {
+    if (Collections.isNotEmpty(adminclasses)) {
       val builder = OqlBuilder.from(classOf[CourseTake], "courseTake")
       builder.where("courseTake.std.adminclass in(:adminclasses)", adminclasses)
       builder.where("courseTake.lesson.project=:project", project)
@@ -685,7 +685,7 @@ class CourseTakeServiceImpl extends BaseServiceImpl with CourseTakeService {
   }
 
   def stateGender(project: Project, semester: Semester, ids: java.lang.Long*): List[CourseTakeStat[String]] = {
-    stateGender(project, CollectUtils.newArrayList(semester), ids)
+    stateGender(project, Collections.newBuffer[Any](semester), ids)
   }
 
   def stateGender(project: Project, semester: List[Semester], ids: java.lang.Long*): List[CourseTakeStat[String]] = {
@@ -697,7 +697,7 @@ class CourseTakeServiceImpl extends BaseServiceImpl with CourseTakeService {
       genders: List[Gender], 
       semesters: List[Semester], 
       ids: java.lang.Long*): List[CourseTakeStat[String]] = {
-    var result = CollectUtils.newArrayList()
+    var result = Collections.newBuffer[Any]
     if (ids.length > 0) {
       var i = 0
       val maxLength = 498 - genders.size - semesters.size

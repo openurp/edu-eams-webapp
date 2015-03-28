@@ -5,7 +5,7 @@ import java.util.Date
 
 
 import javax.persistence.EntityExistsException
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model
@@ -117,7 +117,7 @@ class MajorAction extends MajorSearchAction {
       duplicateQuery.where("major.id <> :majorId", majorId)
     }
     val majors = entityDao.search(duplicateQuery)
-    if (CollectUtils.isNotEmpty(majors)) {
+    if (Collections.isNotEmpty(majors)) {
       builderMajorParamsForPage(populateEntity(classOf[Major], "major"))
       addError(getText("error.code.existed"))
       return "edit"
@@ -165,7 +165,7 @@ class MajorAction extends MajorSearchAction {
     }
     major.getJournals.clear()
     entityDao.save(major)
-    val mdCahe = CollectUtils.newHashSet()
+    val mdCahe = Collections.newSet[Any]
     var i = 0
     while (i <= count) {
       val md = populate(classOf[MajorJournal], "md" + i)
@@ -199,7 +199,7 @@ class MajorAction extends MajorSearchAction {
   }
 
   protected def getImporterListeners(): List[TransferListener] = {
-    val listeners = CollectUtils.newArrayList()
+    val listeners = Collections.newBuffer[Any]
     listeners.add(new ImporterForeignerListener(entityDao))
     listeners.add(new MajorImportListener(entityDao))
     listeners

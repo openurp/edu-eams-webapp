@@ -4,7 +4,7 @@ import java.util.Arrays
 
 
 import org.apache.commons.lang3.ArrayUtils
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model
 import org.openurp.base.Department
@@ -51,14 +51,14 @@ class AllocateLessonForArrangeAction extends SemesterSupportAction {
     builder.where("lessonForDepart.project = :project", getProject)
     builder.select("lessonForDepart,lessonId")
     val lessonForDepartAndLessonIds = entityDao.search(builder).asInstanceOf[List[Array[Any]]]
-    val wastedLessonIds = CollectUtils.newHashMap()
+    val wastedLessonIds = Collections.newMap[Any]
     for (objects <- lessonForDepartAndLessonIds) {
       val department = objects(0).asInstanceOf[LessonForDepart].department
       val lessonId = objects(1).asInstanceOf[java.lang.Long]
       if (wastedLessonIds.keySet.contains(department)) {
         wastedLessonIds.get(department).add(lessonId)
       } else {
-        wastedLessonIds.put(department, CollectUtils.newHashSet(lessonId))
+        wastedLessonIds.put(department, Collections.newHashSet(lessonId))
       }
     }
     wastedLessonIds
@@ -78,15 +78,15 @@ class AllocateLessonForArrangeAction extends SemesterSupportAction {
     builder.where("lessonForDepart.project = :project", project)
     builder.select("lessonForDepart,lessonId")
     val lessonForDepartAndLessonIds = entityDao.search(builder).asInstanceOf[List[Array[Any]]]
-    val toSave = CollectUtils.newArrayList()
-    val wastedLessonIds = CollectUtils.newHashMap()
+    val toSave = Collections.newBuffer[Any]
+    val wastedLessonIds = Collections.newMap[Any]
     for (objects <- lessonForDepartAndLessonIds) {
       val lessonForDepart = objects(0).asInstanceOf[LessonForDepart]
       val lessonId = objects(1).asInstanceOf[java.lang.Long]
       if (wastedLessonIds.keySet.contains(lessonForDepart)) {
         wastedLessonIds.get(lessonForDepart).add(lessonId)
       } else {
-        wastedLessonIds.put(lessonForDepart, CollectUtils.newHashSet(lessonId))
+        wastedLessonIds.put(lessonForDepart, Collections.newHashSet(lessonId))
       }
     }
     for (lessonForDepart <- wastedLessonIds.keySet) {
@@ -110,7 +110,7 @@ class AllocateLessonForArrangeAction extends SemesterSupportAction {
       query.where("lesson.project = :project", project)
       lessons = entityDao.search(query)
     }
-    val departmentLesson = CollectUtils.newHashMap()
+    val departmentLesson = Collections.newMap[Any]
     val lessonForDeparts = entityDao.search(getLessonForDepartsBySemester(semester, departments))
     var size = 0
     for (lessonForDepart <- lessonForDeparts) {
@@ -145,7 +145,7 @@ class AllocateLessonForArrangeAction extends SemesterSupportAction {
     val semester = getSemester
     val notLocate = getBool("notLocate")
     val departmentId = getInt("departmentId")
-    val departments = lessonService.teachDepartsOfSemester(CollectUtils.newArrayList(getProject), getDeparts, 
+    val departments = lessonService.teachDepartsOfSemester(Collections.newBuffer[Any](getProject), getDeparts, 
       semester)
     put("notLocate", notLocate)
     if (notLocate) {
@@ -170,7 +170,7 @@ class AllocateLessonForArrangeAction extends SemesterSupportAction {
     put("courseStatusEnums", CourseStatusEnum.values)
     put("semester", semester)
     if (!notLocate && departmentId == null) {
-      val lessonDepartMap = CollectUtils.newHashMap()
+      val lessonDepartMap = Collections.newMap[Any]
       val lessonForDeparts = entityDao.search(getLessonForDepartsBySemester(semester, departments))
       for (lessonForDepart <- lessonForDeparts; lessonId <- lessonForDepart.getLessonIds) {
         lessonDepartMap.put(entityDao.get(classOf[Lesson], lessonId), lessonForDepart.department)
@@ -183,7 +183,7 @@ class AllocateLessonForArrangeAction extends SemesterSupportAction {
 
   def batchEditArrangeTime(): String = {
     val semester = getSemester
-    val departments = lessonService.teachDepartsOfSemester(CollectUtils.newArrayList(getProject), getDeparts, 
+    val departments = lessonService.teachDepartsOfSemester(Collections.newBuffer[Any](getProject), getDeparts, 
       semester)
     val lessonForDeparts = entityDao.search(getLessonForDepartsBySemester(getSemester, departments))
     var lessonForDepartIds = ""
@@ -227,7 +227,7 @@ class AllocateLessonForArrangeAction extends SemesterSupportAction {
     if (lessonIds.length != lessons.size) {
       return forwardError("所选任务可能已被删除")
     }
-    val lessonIdSet = CollectUtils.newHashSet(Arrays.asList(lessonIds:_*))
+    val lessonIdSet = Collections.newHashSet(Arrays.asList(lessonIds:_*))
     val lessonForDeparts = entityDao.search(OqlBuilder.from(classOf[LessonForDepart], "lessonForDepart")
       .where("lessonForDepart.department.id = :departmentId", departmentId)
       .where("lessonForDepart.semester = :semester", semester)
@@ -293,10 +293,10 @@ class AllocateLessonForArrangeAction extends SemesterSupportAction {
       .where("lesson.semester = :semester", semester)
       .where("lesson.project = :project", project)
     val lessons = entityDao.search(builder)
-    val departmentRestricts = lessonService.teachDepartsOfSemester(CollectUtils.newArrayList(project), 
+    val departmentRestricts = lessonService.teachDepartsOfSemester(Collections.newBuffer[Any](project), 
       getDeparts, semester)
     val lessonForDeparts = entityDao.search(getLessonForDepartsBySemester(semester, departmentRestricts))
-    val lessonForDepartMap = CollectUtils.newHashMap()
+    val lessonForDepartMap = Collections.newMap[Any]
     for (lessonForDepart <- lessonForDeparts) {
       lessonForDepartMap.put(lessonForDepart.department, lessonForDepart)
     }

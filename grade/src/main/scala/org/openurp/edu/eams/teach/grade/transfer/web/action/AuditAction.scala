@@ -4,7 +4,7 @@ package org.openurp.edu.eams.teach.grade.transfer.web.action
 
 
 import org.beangle.commons.lang.Strings
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.openurp.base.Semester
@@ -29,9 +29,9 @@ class AuditAction extends StdGradeSearchAction {
     val query1 = OqlBuilder.from(classOf[CourseGrade], "grade")
     query1.where("grade.id in (:gradeId)", Strings.splitToLong(courseGradeIdSeq))
     val courseGrades = entityDao.search(query1)
-    val untransferGrades = CollectUtils.newArrayList()
-    val toSaveGrades = CollectUtils.newArrayList()
-    val cacheSemesterMap = CollectUtils.newHashMap()
+    val untransferGrades = Collections.newBuffer[Any]
+    val toSaveGrades = Collections.newBuffer[Any]
+    val cacheSemesterMap = Collections.newMap[Any]
     for (grade <- courseGrades) {
       val student = grade.getStd
       grade.setProject(student.getProject)
@@ -47,7 +47,7 @@ class AuditAction extends StdGradeSearchAction {
       toSaveGrades.add(grade)
     }
     entityDao.saveOrUpdate(toSaveGrades)
-    if (CollectUtils.isNotEmpty(untransferGrades)) {
+    if (Collections.isNotEmpty(untransferGrades)) {
       put("untransferGrades", untransferGrades)
       return forward("problemGrade", "info.action.portionOfSuccess.no_minor")
     }

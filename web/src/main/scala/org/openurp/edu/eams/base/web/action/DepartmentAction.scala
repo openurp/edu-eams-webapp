@@ -4,7 +4,7 @@ package org.openurp.edu.eams.base.web.action
 
 
 import javax.persistence.EntityExistsException
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.util.HierarchyEntityUtils
 import org.beangle.commons.lang.Strings
@@ -23,14 +23,14 @@ class DepartmentAction extends DepartmentSearchAction {
   }
 
   private def getMyFamily(depart: Department): List[Department] = {
-    val departs = CollectUtils.newArrayList()
+    val departs = Collections.newBuffer[Any]
     departs.add(depart)
     findChildren(depart, departs)
     departs
   }
 
   private def findChildren(depart: Department, children: List[Department]) {
-    if (CollectUtils.isEmpty(depart.getChildren)) {
+    if (Collections.isEmpty(depart.getChildren)) {
       return
     }
     for (one <- depart.getChildren) {

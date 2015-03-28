@@ -3,7 +3,7 @@ package org.openurp.edu.eams.teach.election.service.impl
 
 import java.util.Date
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.entity.metadata.Model
 import org.openurp.edu.teach.code.ElectionMode
 import org.openurp.edu.eams.teach.election.ElectLogger
@@ -33,7 +33,7 @@ class ElectLoggerServiceImpl extends ElectLoggerService {
   }
 
   def genLogger(courseTakes: Iterable[CourseTake], `type`: ElectRuleType, date: Date): List[ElectLogger] = {
-    val loggers = CollectUtils.newArrayList()
+    val loggers = Collections.newBuffer[Any]
     for (courseTake <- courseTakes) {
       loggers.add(genLogger(courseTake, `type`, null, date))
     }
@@ -42,7 +42,7 @@ class ElectLoggerServiceImpl extends ElectLoggerService {
 
   def genLogger(courseTakes: Iterable[CourseTake], `type`: ElectRuleType, turn: java.lang.Integer): List[ElectLogger] = {
     val date = new Date()
-    val loggers = CollectUtils.newArrayList()
+    val loggers = Collections.newBuffer[Any]
     for (courseTake <- courseTakes) {
       loggers.add(genLogger(courseTake, `type`, turn, date))
     }
@@ -50,7 +50,7 @@ class ElectLoggerServiceImpl extends ElectLoggerService {
   }
 
   def genLogger(courseTakes: Iterable[CourseTake], `type`: ElectRuleType): List[ElectLogger] = {
-    val loggers = CollectUtils.newArrayList()
+    val loggers = Collections.newBuffer[Any]
     for (courseTake <- courseTakes) {
       loggers.add(genLogger(courseTake, `type`))
     }

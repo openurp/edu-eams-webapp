@@ -4,7 +4,7 @@ package org.openurp.edu.eams.teach.schedule.web.action
 
 
 import org.apache.commons.lang3.ArrayUtils
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.base.Room
 import org.openurp.base.Department
@@ -51,7 +51,7 @@ class ArrangeSuggestToScheduleAction extends ProjectSupportAction {
   protected override def indexSetting() {
     val project = getProject
     val semester = putSemester(null)
-    val teachDeparts = CollectUtils.newArrayList()
+    val teachDeparts = Collections.newBuffer[Any]
     val departs = getTeachDeparts
     for (department <- getDeparts if departs.contains(department)) {
       teachDeparts.add(department)
@@ -95,7 +95,7 @@ class ArrangeSuggestToScheduleAction extends ProjectSupportAction {
     val gson = ArrangeSuggestGsonBuilder.build()
     val departments = getDeparts
     var optionalRooms = Collections.emptyList()
-    if (CollectUtils.isNotEmpty(departments)) {
+    if (Collections.isNotEmpty(departments)) {
       optionalRooms = entityDao.search(OqlBuilder.from(classOf[Room], "room").where("exists(from room.departments department where department in (:departments))", 
         departments)
         .where("room.effectiveAt <= current_time() and (room.invalidAt is null or room.invalidAt >= current_time())")
@@ -114,7 +114,7 @@ class ArrangeSuggestToScheduleAction extends ProjectSupportAction {
   }
 
   private def lessonId2SuggestRoomsJSON(suggests: Iterable[ArrangeSuggest]): Map[String, String] = {
-    val lessonId2SuggestRoomsJSON = CollectUtils.newHashMap()
+    val lessonId2SuggestRoomsJSON = Collections.newMap[Any]
     val gson = ArrangeSuggestGsonBuilder.build()
     for (suggest <- suggests) {
       lessonId2SuggestRoomsJSON.put(suggest.getLesson.id.toString, gson.toJson(suggest.getRooms))
@@ -123,7 +123,7 @@ class ArrangeSuggestToScheduleAction extends ProjectSupportAction {
   }
 
   private def makeArrangeDigest(lessons: Iterable[Lesson]): Map[String, String] = {
-    val arrangeInfo = CollectUtils.newHashMap()
+    val arrangeInfo = Collections.newMap[Any]
     val digestor = CourseActivityDigestor.getInstance
     for (oneTask <- lessons) {
       arrangeInfo.put(oneTask.id.toString, digestor.digest(getTextResource, oneTask, ":teacher+ :day :units :weeks :room"))
@@ -132,9 +132,9 @@ class ArrangeSuggestToScheduleAction extends ProjectSupportAction {
   }
 
   private def makeSuggestDigest(lessons: Iterable[Lesson]): Map[String, String] = {
-    val arrangeInfo = CollectUtils.newHashMap()
+    val arrangeInfo = Collections.newMap[Any]
     val digestor = SuggestActivityDigestor.getInstance
-    if (CollectUtils.isNotEmpty(lessons)) {
+    if (Collections.isNotEmpty(lessons)) {
       val suggestQuery = OqlBuilder.from(classOf[ArrangeSuggest], "suggest")
       suggestQuery.where("suggest.lesson in (:lessons)", lessons)
       val suggests = entityDao.search(suggestQuery)
@@ -155,7 +155,7 @@ class ArrangeSuggestToScheduleAction extends ProjectSupportAction {
     val lessonId2roomIdsJSON = get("lessonId2roomIdsJSON")
     val gson = new GsonBuilder().create()
     val raw_lessonIdString2roomIdList = gson.fromJson(lessonId2roomIdsJSON, classOf[AnyRef]).asInstanceOf[Map[String, Any]]
-    val lessonId2roomIdArray = CollectUtils.newHashMap()
+    val lessonId2roomIdArray = Collections.newMap[Any]
     for (key <- raw_lessonIdString2roomIdList.keySet) {
       val objs = raw_lessonIdString2roomIdList.get(key).asInstanceOf[List[_]]
       val longs = Array.ofDim[Integer](objs.size)
@@ -167,9 +167,9 @@ class ArrangeSuggestToScheduleAction extends ProjectSupportAction {
     val query = OqlBuilder.from(classOf[ArrangeSuggest], "suggest")
     query.where("suggest.lesson.id in (:lessonIds)", lessonIds)
     val suggests = entityDao.search(query)
-    val failedContexts = CollectUtils.newArrayList()
+    val failedContexts = Collections.newBuffer[Any]
     for (suggest <- suggests) {
-      val courseActivities = CollectUtils.newArrayList()
+      val courseActivities = Collections.newBuffer[Any]
       for (suggestActivity <- suggest.getActivities) {
         courseActivities.add(suggestActivity.toCourseActivity())
       }
@@ -182,8 +182,8 @@ class ArrangeSuggestToScheduleAction extends ProjectSupportAction {
         failedContexts.add(context)
       }
     }
-    if (CollectUtils.isNotEmpty(failedContexts)) {
-      val failedLessonIds = CollectUtils.newHashSet()
+    if (Collections.isNotEmpty(failedContexts)) {
+      val failedLessonIds = Collections.newSet[Any]
       for (context <- failedContexts) {
         failedLessonIds.add(context.getLesson.id)
       }

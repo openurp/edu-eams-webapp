@@ -4,7 +4,7 @@ import java.util.Date
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.page.PageLimit
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.beangle.commons.dao.query.builder.Condition
@@ -27,7 +27,7 @@ class ScheduleRoomServiceImpl extends BaseServiceImpl with ScheduleRoomService {
 
   def getFreeRoomsOf(departments: List[Department], courseTimes: Array[CourseTime], activity: CourseActivity): OqlBuilder[Room] = {
     val hql = new StringBuilder(" from org.openurp.edu.eams.classroom.Occupancy occupancy where occupancy.room = classroom")
-    val params = CollectUtils.newHashMap()
+    val params = Collections.newMap[Any]
     var ocuupy = ""
     val timeUnits = YearWeekTimeUtil.convertToYearWeekTimes(activity.getLesson, courseTimes)
     for (i <- 0 until timeUnits.length) {
@@ -108,7 +108,7 @@ class ScheduleRoomServiceImpl extends BaseServiceImpl with ScheduleRoomService {
 
   def getOccupancyRoomsOf(departments: List[Department], courseTimes: Array[CourseTime], activity: CourseActivity): OqlBuilder[Room] = {
     val hql = new StringBuilder(" from org.openurp.edu.eams.classroom.Occupancy occupancy where occupancy.room = classroom")
-    val params = CollectUtils.newHashMap()
+    val params = Collections.newMap[Any]
     var ocuupy = ""
     val timeUnits = YearWeekTimeUtil.convertToYearWeekTimes(activity.getLesson, courseTimes)
     for (i <- 0 until timeUnits.length) {

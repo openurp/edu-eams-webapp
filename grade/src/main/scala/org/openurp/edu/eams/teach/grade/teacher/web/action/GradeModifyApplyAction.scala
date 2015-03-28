@@ -4,7 +4,7 @@ import java.util.Date
 
 
 import org.beangle.commons.lang.Strings
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.data.model.Entity
@@ -102,7 +102,7 @@ class GradeModifyApplyAction extends SemesterSupportAction {
     query.orderBy("examStatus.code")
     put("gradeState", gradeState)
     val configs = entityDao.get(classOf[GradeRateConfig], "scoreMarkStyle", gradeState.getScoreMarkStyle)
-    if (CollectUtils.isNotEmpty(configs)) {
+    if (Collections.isNotEmpty(configs)) {
       put("gradeConverterConfig", configs.get(0))
     }
     var tempGa = true
@@ -112,7 +112,7 @@ class GradeModifyApplyAction extends SemesterSupportAction {
       //break
     }
     val examGrades = courseGrade.getExamGrades
-    val toUpdates = CollectUtils.newArrayList()
+    val toUpdates = Collections.newBuffer[Any]
     for (examGrade <- examGrades) {
       if ((!tempGa && 
         GradeTypeConstants.GA_ID == examGrade.gradeType.id) || 
@@ -139,8 +139,8 @@ class GradeModifyApplyAction extends SemesterSupportAction {
     val courseGrade = entityDao.get(classOf[CourseGrade], courseGradeId)
     val examGrades = getModels(classOf[ExamGrade], getLongIds("examGrade"))
     val date = new Date()
-    val applies = CollectUtils.newArrayList()
-    val endStatusList = CollectUtils.newArrayList()
+    val applies = Collections.newBuffer[Any]
+    val endStatusList = Collections.newBuffer[Any]
     endStatusList.add(GradeModifyStatus.FINAL_AUDIT_PASSED)
     endStatusList.add(GradeModifyStatus.FINAL_AUDIT_UNPASSED)
     endStatusList.add(GradeModifyStatus.DEPART_AUDIT_UNPASSED)

@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.election.service.rule.election.filter
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.edu.teach.code.CourseTakeType
 import org.openurp.edu.eams.teach.election.model.Enum.ElectRuleType
@@ -46,6 +46,6 @@ class UniquePassRetakeFilter extends AbstractElectableLessonFilter with ElectRul
       "and passed.project=grade.project " + 
       "and passedGrade.courseTakeType!=grade.courseTakeType)")
     builder.select("grade.course.id")
-    context.getState.getParams.put("passedRetakedCourseIds", CollectUtils.newHashSet(entityDao.search(builder)))
+    context.getState.getParams.put("passedRetakedCourseIds", Collections.newHashSet(entityDao.search(builder)))
   }
 }

@@ -5,7 +5,7 @@ import java.util.Date
 import javax.persistence.Entity
 import javax.persistence.ManyToMany
 import javax.validation.constraints.NotNull
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.entity.pojo.NumberIdTimeObject
 import org.beangle.ems.rule.model.RuleConfig
 import org.openurp.edu.eams.teach.election.ElectPlan
@@ -40,7 +40,7 @@ class ElectPlanBean extends NumberIdTimeObject[Long]() with ElectPlan {
 
   @ManyToMany
   
-  var ruleConfigs: Set[RuleConfig] = CollectUtils.newHashSet()
+  var ruleConfigs: Set[RuleConfig] = Collections.newSet[Any]
 
   private def this(name: String, description: String, ruleConfigs: Set[RuleConfig]) {
     this()

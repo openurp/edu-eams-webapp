@@ -5,7 +5,7 @@ import java.util.Date
 
 import org.apache.commons.collections.CollectionUtils
 import org.apache.commons.lang3.ArrayUtils
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.commons.dao.query.builder.Condition
 import org.beangle.data.jpa.dao.OqlBuilder
@@ -39,7 +39,7 @@ class CourseArrangeAlterationAction extends SemesterSupportAction {
       builder.where("lesson.semester.id = :semesterId", semesterId)
       put("semester", entityDao.get(classOf[Semester], semesterId))
     }
-    builder.where("lesson.courseSchedule.status = 'ARRANGED'")
+    builder.where("lesson.schedule.status = 'ARRANGED'")
     populateConditions(builder)
     val teacherName = get("teacherName")
     if (Strings.isNotEmpty(teacherName)) {
@@ -87,7 +87,7 @@ class CourseArrangeAlterationAction extends SemesterSupportAction {
       query.orderBy(Order.parse(orderBy))
     }
     val alterations = entityDao.search(query)
-    val alterationMap = CollectUtils.newHashMap()
+    val alterationMap = Collections.newMap[Any]
     for (courseArrangeAlteration <- alterations) {
       alterationMap.put(courseArrangeAlteration, entityDao.get(classOf[Lesson], courseArrangeAlteration.getLessonId))
     }
@@ -155,13 +155,13 @@ class CourseArrangeAlterationAction extends SemesterSupportAction {
     courseMailSetting.setName("默认模板")
     courseMailSetting.setModule("$(username),您好:\n\t我们将对$(lesson)进行调整,具体调整如下:$(content)本次调课生效时间为$(alterTime),特此通知.")
     put("defaultMailSetting", courseMailSetting)
-    if (CollectUtils.isNotEmpty(courseMailSettings)) {
+    if (Collections.isNotEmpty(courseMailSettings)) {
       put("courseMailSettings", courseMailSettings)
       val builder = OqlBuilder.from(classOf[CourseMailSetting], "courseMailSetting")
       builder.where("courseMailSetting.creator.id = :userId", getUserId)
       builder.orderBy("courseMailSetting.updatedAt desc")
       val myCourseMailSettings = entityDao.search(builder)
-      if (CollectUtils.isNotEmpty(myCourseMailSettings)) {
+      if (Collections.isNotEmpty(myCourseMailSettings)) {
         put("myCourseMailSetting", myCourseMailSettings.get(0))
       } else {
         put("myCourseMailSetting", courseMailSetting)

@@ -3,7 +3,7 @@ package org.openurp.edu.eams.teach.lesson.task.service.helper
 import java.text.SimpleDateFormat
 import java.util.Date
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model
@@ -66,7 +66,7 @@ class LessonExamArrangeHelper extends BaseServiceImpl {
     query.where("examTurn.beginTime =:beginTime", java.lang.Integer.valueOf(sdf.format(activity.getStartAt)))
     query.where("examTurn.endTime =:endTime", java.lang.Integer.valueOf(sdf.format(activity.getEndAt)))
     val examTurns = entityDao.search(query)
-    if (CollectUtils.isNotEmpty(examTurns)) examTurns.get(0) else null
+    if (Collections.isNotEmpty(examTurns)) examTurns.get(0) else null
   }
 
   def getExamActivityByLesson(lesson: Lesson): ExamActivity = {
@@ -74,6 +74,6 @@ class LessonExamArrangeHelper extends BaseServiceImpl {
     query.where("activity.examType.id =:examTypeId", ExamType.FINAL)
     query.where("activity.lesson =:lesson", lesson)
     val activities = entityDao.search(query)
-    if (CollectUtils.isNotEmpty(activities)) activities.get(0) else null
+    if (Collections.isNotEmpty(activities)) activities.get(0) else null
   }
 }

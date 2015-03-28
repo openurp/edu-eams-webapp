@@ -18,7 +18,7 @@ class MajorPlanStatDaoHibernate extends HibernateEntityDao with MajorPlanStatDao
       " and plan.department.id in (:departIds)" + 
       " and plan.program.stdType.id in (:stdTypeIds)" + 
       " group by  plan.department.id"
-    val query = getSession.createQuery(statHql)
+    val query = currentSession.createQuery(statHql)
     query.setParameterList("departIds", Strings.splitToLong(realm.getDepartmentIdSeq))
     query.setParameterList("stdTypeIds", Strings.splitToLong(realm.getStudentTypeIdSeq))
     query.setParameter("grade", grade)
@@ -32,7 +32,7 @@ class MajorPlanStatDaoHibernate extends HibernateEntityDao with MajorPlanStatDao
       " and plan.department.id in (:departIds)" + 
       " and plan.program.stdType.id in (:stdTypeIds)" + 
       " group by  plan.program.stdType.id"
-    val query = getSession.createQuery(statHql)
+    val query = currentSession.createQuery(statHql)
     query.setParameterList("departIds", Strings.splitToLong(realm.getDepartmentIdSeq))
     query.setParameterList("stdTypeIds", Strings.splitToLong(realm.getStudentTypeIdSeq))
     query.setParameter("grade", grade)
@@ -44,7 +44,7 @@ class MajorPlanStatDaoHibernate extends HibernateEntityDao with MajorPlanStatDao
       " where plan.department.id in (:departIds) " + 
       " and plan.program.stdType.id in(:stdTypeIds)" + 
       " order by  plan.program.grade desc"
-    val query = getSession.createQuery(statHql)
+    val query = currentSession.createQuery(statHql)
     query.setParameterList("departIds", Strings.splitToLong(realm.getDepartmentIdSeq))
     query.setParameterList("stdTypeIds", Strings.splitToLong(realm.getStudentTypeIdSeq))
     query.list()

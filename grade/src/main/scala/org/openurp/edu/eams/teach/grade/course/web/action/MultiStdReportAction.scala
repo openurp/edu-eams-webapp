@@ -5,7 +5,7 @@ package org.openurp.edu.eams.teach.grade.course.web.action
 
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.bean.comparators.PropertyComparator
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
@@ -68,7 +68,7 @@ class MultiStdReportAction extends SemesterSupportAction {
       adminclassIds = get("adminclass.ids")
     }
     val adminclasses = entityDao.get(classOf[Adminclass], Strings.splitToInt(adminclassIds))
-    val multiStdGrades = CollectUtils.newArrayList()
+    val multiStdGrades = Collections.newBuffer[Any]
     for (adminclass <- adminclasses) {
       val grades = getCourseGrades(semester, adminclass.getStudents)
       val multiStdGrade = new MultiStdGrade(semester, grades, ratio)
@@ -79,7 +79,7 @@ class MultiStdReportAction extends SemesterSupportAction {
     }
     put("setting", setting)
     val orders = Order.parse(get("orderBy"))
-    if (CollectUtils.isNotEmpty(orders)) {
+    if (Collections.isNotEmpty(orders)) {
       val order = orders.get(0)
       if (Strings.isNotBlank(order.getProperty) && order.getProperty != "null") {
         Collections.sort(multiStdGrades, new PropertyComparator(order.getProperty, order.isAscending))
@@ -92,7 +92,7 @@ class MultiStdReportAction extends SemesterSupportAction {
   }
 
   private def getCourseGrades(semester: Semester, stds: Iterable[Student]): Map[Student, List[CourseGrade]] = {
-    val gradeMap = CollectUtils.newHashMap()
+    val gradeMap = Collections.newMap[Any]
     for (std <- stds) {
       gradeMap.put(std, new ArrayList[CourseGrade]())
     }

@@ -3,7 +3,7 @@ package org.openurp.edu.eams.teach.schedule.util
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.model.Entity
 import org.openurp.base.Room
 import org.openurp.edu.base.Adminclass
@@ -29,7 +29,7 @@ object CourseTable {
 
   val PROGRAM = "program"
 
-  val resourceClass = CollectUtils.newHashMap()
+  val resourceClass = Collections.newMap[Any]
 
   resourceClass.put(CLASS, classOf[Adminclass])
 
@@ -55,7 +55,7 @@ class CourseTable(var resource: Entity[_], var kind: String) {
 
   var lessons: List[Lesson] = _
 
-  var activities: List[CourseActivity] = CollectUtils.newArrayList()
+  var activities: List[CourseActivity] = Collections.newBuffer[Any]
 
   var credits: java.lang.Float = null
 
@@ -79,14 +79,14 @@ class CourseTable(var resource: Entity[_], var kind: String) {
     if (null == activities) {
       return
     }
-    val lessonSet = CollectUtils.newHashSet()
+    val lessonSet = Collections.newSet[Any]
     for (activity <- activities) {
       val taskInActivity = activity.getLesson
       if (!lessonSet.contains(taskInActivity)) {
         lessonSet.add(taskInActivity)
       }
     }
-    lessons = CollectUtils.newArrayList(lessonSet)
+    lessons = Collections.newBuffer[Any](lessonSet)
   }
 
   def getKind(): String = kind

@@ -3,7 +3,7 @@ package org.openurp.edu.eams.teach.grade.course.web.dwr
 
 
 import org.beangle.commons.lang.Strings
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.beangle.commons.dao.query.builder.Condition
 import org.beangle.data.jpa.dao.OqlBuilder
@@ -47,7 +47,7 @@ class TeachTaskDwrService extends BaseServiceImpl {
         return null
       }
       val task = (list).get(0).asInstanceOf[Lesson]
-      val taskMap = CollectUtils.newHashMap()
+      val taskMap = Collections.newMap[Any]
       taskMap.put("id", task.id)
       taskMap.put("course.code", task.getCourse.getCode)
       taskMap.put("course.name", task.getCourse.getName)

@@ -18,7 +18,7 @@ import org.apache.commons.collections.Transformer
 import org.apache.commons.lang3.ArrayUtils
 import org.apache.commons.lang3.exception.ExceptionUtils
 import org.apache.poi.ss.usermodel.DateUtil
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.page.PageLimit
 import org.beangle.commons.collection.page.SinglePage
 import org.beangle.commons.dao.Operation
@@ -51,8 +51,8 @@ import org.openurp.edu.eams.core.service.TimeSettingService
 import org.openurp.edu.eams.teach.code.industry.TeachLangType
 import org.openurp.edu.eams.teach.code.school.CourseHourType
 import org.openurp.edu.teach.schedule.CourseActivity
-import org.openurp.edu.teach.lesson.CourseLimitItem
-import org.openurp.edu.teach.lesson.CourseLimitMeta.Operator
+import org.openurp.edu.teach.lesson.LessonLimitItem
+import org.openurp.edu.teach.lesson.LessonLimitMeta.Operator
 import org.openurp.edu.eams.teach.lesson.CourseSchedule
 import org.openurp.edu.teach.lesson.CourseTake
 import org.openurp.edu.eams.teach.lesson.CourseTime
@@ -63,10 +63,10 @@ import org.openurp.edu.eams.teach.lesson.helper.LessonSearchHelper
 import org.openurp.edu.eams.teach.lesson.model.CourseActivityBean
 import org.openurp.edu.eams.teach.lesson.model.CourseScheduleBean
 import org.openurp.edu.eams.teach.lesson.model.CourseScheduleBean.CourseStatusEnum
-import org.openurp.edu.eams.teach.lesson.service.CourseLimitUtils
+import org.openurp.edu.eams.teach.lesson.service.LessonLimitUtils
 import org.openurp.edu.eams.teach.lesson.service.CourseTableStyle
 import org.openurp.edu.eams.teach.lesson.service.LessonService
-import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnum
+import org.openurp.edu.eams.teach.lesson.service.limit.LessonLimitMetaEnum
 import org.openurp.edu.eams.teach.lesson.util.CourseActivityDigestor
 import org.openurp.edu.eams.teach.lesson.util.YearWeekTimeUtil
 import org.openurp.edu.eams.teach.schedule.log.ScheduleLogBuilder
@@ -191,7 +191,7 @@ class MultiManualArrangeAction extends SemesterSupportAction {
     val response = getResponse
     response.setContentType("text/html")
     response.setCharacterEncoding("utf-8")
-    if (CollectUtils.isNotEmpty(classrooms)) {
+    if (Collections.isNotEmpty(classrooms)) {
       try {
         val writer = response.getWriter
         val classroom = classrooms.get(0)
@@ -214,9 +214,9 @@ class MultiManualArrangeAction extends SemesterSupportAction {
     val semesterId = getInt("semester.id")
     val semester = if (semesterId == null) getAttribute("semester").asInstanceOf[Semester] else entityDao.get(classOf[Semester], 
       semesterId)
-    put("courseTypes", lessonService.courseTypesOfSemester(CollectUtils.newArrayList(project), getDeparts, 
+    put("courseTypes", lessonService.courseTypesOfSemester(Collections.newBuffer[Any](project), getDeparts, 
       semester))
-    put("teachDepartList", lessonService.teachDepartsOfSemester(CollectUtils.newArrayList(project), getDeparts, 
+    put("teachDepartList", lessonService.teachDepartsOfSemester(Collections.newBuffer[Any](project), getDeparts, 
       semester))
     val builder = OqlBuilder.from(classOf[Adminclass], "adminclass").where("adminclass.project = :project", 
       project)
@@ -247,8 +247,8 @@ class MultiManualArrangeAction extends SemesterSupportAction {
     val builderSchedule = OqlBuilder.from(classOf[Lesson], "lesson").where("lesson.project =:project", 
       project)
       .where("lesson.semester = :semester", semester)
-      .select("distinct lesson.courseSchedule.startWeek,lesson.courseSchedule.endWeek")
-      .orderBy("lesson.courseSchedule.startWeek,lesson.courseSchedule.endWeek")
+      .select("distinct lesson.schedule.startWeek,lesson.schedule.endWeek")
+      .orderBy("lesson.schedule.startWeek,lesson.schedule.endWeek")
     entityDao.search(builderSchedule)
   }
 
@@ -395,7 +395,7 @@ class MultiManualArrangeAction extends SemesterSupportAction {
     if (Strings.isNotEmpty(startWeekToEndWeek)) {
       var beginIndex = 0
       var index = 0
-      val weeks = CollectUtils.newArrayList()
+      val weeks = Collections.newBuffer[Any]
       while (index < startWeekToEndWeek.length) {
         if (startWeekToEndWeek.charAt(index) == '-') {
           if (index > beginIndex) {
@@ -414,23 +414,23 @@ class MultiManualArrangeAction extends SemesterSupportAction {
       if (index > beginIndex) {
         weeks.add(java.lang.Integer.valueOf(startWeekToEndWeek.substring(beginIndex, index)))
       }
-      builder.where("lesson.courseSchedule.startWeek = :startWeek", weeks.get(0))
-        .where("lesson.courseSchedule.endWeek = :endWeek", weeks.get(1))
+      builder.where("lesson.schedule.startWeek = :startWeek", weeks.get(0))
+        .where("lesson.schedule.endWeek = :endWeek", weeks.get(1))
     }
     val occupancied = getBoolean("occupancied")
     if (null != occupancied) {
       if (true == occupancied) {
-        builder.where("exists(from lesson.courseSchedule.activities activity where size(activity.rooms)>0)")
+        builder.where("exists(from lesson.schedule.activities activity where size(activity.rooms)>0)")
       } else {
-        builder.where("exists(from lesson.courseSchedule.activities activity where size(activity.rooms)=0)")
+        builder.where("exists(from lesson.schedule.activities activity where size(activity.rooms)=0)")
       }
     }
     val adminclassId = getInt("adminclassId")
     if (null != adminclassId) {
-      val con = CourseLimitUtils.build(entityDao.get(classOf[Adminclass], adminclassId), "lgi")
+      val con = LessonLimitUtils.build(entityDao.get(classOf[Adminclass], adminclassId), "lgi")
       val params = con.getParams
       builder.where("exists(from lesson.teachClass.limitGroups lg join lg.items as lgi where (lgi.operator='" + 
-        Operator.EQUAL.name() + 
+        Operator.Equals.name() + 
         "' or lgi.operator='" + 
         Operator.IN.name() + 
         "') and " + 
@@ -441,12 +441,12 @@ class MultiManualArrangeAction extends SemesterSupportAction {
     val isArrangeCompleted = get("status")
     if (Strings.isNotEmpty(isArrangeCompleted)) {
       if (isArrangeCompleted == CourseStatusEnum.NEED_ARRANGE.toString) {
-        builder.where("lesson.courseSchedule.status = :status", CourseStatusEnum.NEED_ARRANGE)
+        builder.where("lesson.schedule.status = :status", CourseStatusEnum.NEED_ARRANGE)
       } else if (isArrangeCompleted == CourseStatusEnum.ARRANGED.toString) {
-        builder.where("lesson.courseSchedule.status = :status", CourseStatusEnum.ARRANGED)
+        builder.where("lesson.schedule.status = :status", CourseStatusEnum.ARRANGED)
       }
     } else {
-      builder.where("lesson.courseSchedule.status <> :status", CourseStatusEnum.DONT_ARRANGE)
+      builder.where("lesson.schedule.status <> :status", CourseStatusEnum.DONT_ARRANGE)
     }
     val guapai = getBoolean("guapai")
     if (null != guapai) {
@@ -492,7 +492,7 @@ class MultiManualArrangeAction extends SemesterSupportAction {
       Collections.sort(lessons, new PropertyCollectionComparator[Lesson](arrangeOrder, false))
     }
     put("currangeOrder", arrangeOrder)
-    val lessonTeachers = CollectUtils.newHashMap()
+    val lessonTeachers = Collections.newMap[Any]
     for (lesson <- lessons) {
       val teachers = lesson.getTeachers
       var teacherNames = ""
@@ -546,22 +546,22 @@ class MultiManualArrangeAction extends SemesterSupportAction {
     val taskActivities = lesson.getCourseSchedule.getActivities
     val time = YearWeekTimeUtil.buildYearWeekTimes(2, lesson.getCourseSchedule.getStartWeek, lesson.getCourseSchedule.getEndWeek, 
       CourseTime.CONTINUELY)
-    val adminClasses = CollectUtils.newHashSet()
-    val builder = OqlBuilder.from(classOf[CourseLimitItem], "courseLimitItem")
-      .where("courseLimitItem.group.lesson=:lesson", lesson)
-      .where("courseLimitItem.meta.id =:meta", CourseLimitMetaEnum.ADMINCLASS.getMetaId)
-      .where("courseLimitItem.operator =:operator1 or courseLimitItem.operator =:operator2", Operator.IN, 
-      Operator.EQUAL)
-    val courseLimitItems = entityDao.search(builder)
+    val adminClasses = Collections.newSet[Any]
+    val builder = OqlBuilder.from(classOf[LessonLimitItem], "lessonLimitItem")
+      .where("lessonLimitItem.group.lesson=:lesson", lesson)
+      .where("lessonLimitItem.meta.id =:meta", LessonLimitMeta.Adminclass.getMetaId)
+      .where("lessonLimitItem.operator =:operator1 or lessonLimitItem.operator =:operator2", Operator.IN, 
+      Operator.Equals)
+    val lessonLimitItems = entityDao.search(builder)
     var adminClassIds = ""
-    for (courseLimitItem <- courseLimitItems) {
-      adminClassIds += courseLimitItem.getContent
+    for (lessonLimitItem <- lessonLimitItems) {
+      adminClassIds += lessonLimitItem.getContent
     }
     val adminclassIdSeq = Strings.splitToInt(adminClassIds.replaceAll(",,", ","))
     if (ArrayUtils.isNotEmpty(adminclassIdSeq)) {
       adminClasses.addAll(entityDao.get(classOf[Adminclass], adminclassIdSeq))
     }
-    val adminClassActivities = CollectUtils.newArrayList()
+    val adminClassActivities = Collections.newBuffer[Any]
     for (adminClass <- adminClasses if Strings.isNotEmpty(time.state) && adminClass.isPersisted) {
       adminClassActivities.addAll(teachResourceService.getAdminclassActivities(adminClass, time, lesson.getSemester))
     }
@@ -575,7 +575,7 @@ class MultiManualArrangeAction extends SemesterSupportAction {
       teacherActivities.addAll(teachResourceService.getTeacherActivities(teacher, time, lesson.getSemester))
     }
     teacherActivities.removeAll(taskActivities)
-    val classrooms = CollectUtils.newHashSet()
+    val classrooms = Collections.newSet[Any]
     for (activity <- taskActivities) {
       classrooms.addAll(activity.getRooms)
     }
@@ -624,7 +624,7 @@ class MultiManualArrangeAction extends SemesterSupportAction {
       if (maxStdCount != null && maxStdCount.intValue() >= 0) {
         lesson.getTeachClass.setLimitCount(maxStdCount)
       }
-      val activityList = CollectUtils.newArrayList(count.intValue())
+      val activityList = Collections.newBuffer[Any](count.intValue())
       for (i <- 0 until count.intValue()) {
         val activity = populate(classOf[CourseActivity], "activity" + i)
         val teacherIds = Strings.splitToLong(get("teacherIds" + i))
@@ -648,7 +648,7 @@ class MultiManualArrangeAction extends SemesterSupportAction {
       }
       if (true == detectCollision) {
         val collisionTakes = courseActivityService.collisionTakes(lesson, mergedActivityList)
-        if (CollectUtils.isNotEmpty(collisionTakes)) {
+        if (Collections.isNotEmpty(collisionTakes)) {
           put("courseTakes", collisionTakes)
           put("activities", mergedActivityList)
           put("lesson", lesson)
@@ -674,11 +674,11 @@ class MultiManualArrangeAction extends SemesterSupportAction {
         val beforeMsg = "Delete activities Before SAVE new activity and lesson No.:" + 
           lesson.getNo
         logHelper.info(beforeMsg)
-        val lessonOccupancyRooms = CollectUtils.newHashSet()
+        val lessonOccupancyRooms = Collections.newSet[Any]
         for (activity <- lesson.getCourseSchedule.getActivities; classroom <- activity.getRooms) {
           lessonOccupancyRooms.add(classroom)
         }
-        val occupancies = CollectUtils.newHashSet()
+        val occupancies = Collections.newSet[Any]
         var period = 0
         val allowConflict = isAllowConflictOnPurpose
         for (activity <- mergedActivityList) {
@@ -705,7 +705,7 @@ class MultiManualArrangeAction extends SemesterSupportAction {
               .append("小节-第")
               .append(activity.getTime.getEndUnit)
               .append("小节")
-            return forwardError(Array(getText("lesson.courseSchedule.roomIsOccupied"), errMsg.toString))
+            return forwardError(Array(getText("lesson.schedule.roomIsOccupied"), errMsg.toString))
           }
           if (!allowConflict && 
             courseActivityService.isCourseActivityTeacherOccupied(activity)) {
@@ -729,7 +729,7 @@ class MultiManualArrangeAction extends SemesterSupportAction {
             if (!allowConflict && !freeRooms.contains(room) && !lessonOccupancyRooms.contains(room)) {
               val errMsg = new StringBuilder()
               errMsg.append(room.getName + "被排考或者教室借用占用,请选择其他教室!")
-              return forwardError(Array(getText("lesson.courseSchedule.roomIsOccupied"), errMsg.toString))
+              return forwardError(Array(getText("lesson.schedule.roomIsOccupied"), errMsg.toString))
             }
             for (timeUnit <- timeUnits) {
               val occupancy = new OccupancyBean()
@@ -819,7 +819,7 @@ class MultiManualArrangeAction extends SemesterSupportAction {
         lesson.getTeachClass.setLimitCount(maxStdCount)
       }
       var alterationBefore = ""
-      val activityList = CollectUtils.newArrayList(count.intValue())
+      val activityList = Collections.newBuffer[Any](count.intValue())
       for (i <- 0 until count.intValue()) {
         val activity = populate(classOf[CourseActivity], "activity" + i)
         val teacherIds = Strings.splitToLong(get("teacherIds" + i))
@@ -843,7 +843,7 @@ class MultiManualArrangeAction extends SemesterSupportAction {
       }
       if (true == detectCollision) {
         val collisionTakes = courseActivityService.collisionTakes(lesson, mergedActivityList)
-        if (CollectUtils.isNotEmpty(collisionTakes)) {
+        if (Collections.isNotEmpty(collisionTakes)) {
           put("courseTakes", collisionTakes)
           put("activities", mergedActivityList)
           put("lesson", lesson)
@@ -870,8 +870,8 @@ class MultiManualArrangeAction extends SemesterSupportAction {
           lesson.getNo
         logHelper.info(beforeMsg)
         alterationBefore = CourseActivityDigestor.getInstance.digest(null, lesson)
-        val occupancies = CollectUtils.newHashSet()
-        val lessonOccupancyRooms = CollectUtils.newHashSet()
+        val occupancies = Collections.newSet[Any]
+        val lessonOccupancyRooms = Collections.newSet[Any]
         for (activity <- lesson.getCourseSchedule.getActivities; classroom <- activity.getRooms) {
           lessonOccupancyRooms.add(classroom)
         }
@@ -901,7 +901,7 @@ class MultiManualArrangeAction extends SemesterSupportAction {
               .append("小节-第")
               .append(activity.getTime.getEndUnit)
               .append("小节")
-            return forwardError(Array(getText("lesson.courseSchedule.roomIsOccupied"), errMsg.toString))
+            return forwardError(Array(getText("lesson.schedule.roomIsOccupied"), errMsg.toString))
           }
           if (!allowConflict && 
             courseActivityService.isCourseActivityTeacherOccupied(activity)) {
@@ -925,7 +925,7 @@ class MultiManualArrangeAction extends SemesterSupportAction {
             if (!allowConflict && !freeRooms.contains(room) && !lessonOccupancyRooms.contains(room)) {
               val errMsg = new StringBuilder()
               errMsg.append(room.getName + "被排考或者教室借用占用,请选择其他教室!")
-              return forwardError(Array(getText("lesson.courseSchedule.roomIsOccupied"), errMsg.toString))
+              return forwardError(Array(getText("lesson.schedule.roomIsOccupied"), errMsg.toString))
             }
             for (timeUnit <- timeUnits) {
               val occupancy = new OccupancyBean()
@@ -1013,7 +1013,7 @@ class MultiManualArrangeAction extends SemesterSupportAction {
       .orderBy("activity.lesson.no")
     val activitys = entityDao.search(builder)
     put("courseActivities", activitys)
-    val utilizations = CollectUtils.newHashMap()
+    val utilizations = Collections.newMap[Any]
     for (courseActivity <- activitys) {
       val rooms = courseActivity.getRooms
       var capacity = 0
@@ -1048,7 +1048,7 @@ class MultiManualArrangeAction extends SemesterSupportAction {
       .orderBy("activity.lesson.no")
     val activitys = entityDao.search(builder)
     put("courseActivities", activitys)
-    val utilizations = CollectUtils.newHashMap()
+    val utilizations = Collections.newMap[Any]
     for (courseActivity <- activitys) {
       val rooms = courseActivity.getRooms
       var capacity = 0

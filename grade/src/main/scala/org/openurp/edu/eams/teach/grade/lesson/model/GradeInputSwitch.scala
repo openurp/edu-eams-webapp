@@ -7,7 +7,7 @@ import javax.persistence.FetchType
 import javax.persistence.ManyToMany
 import javax.persistence.ManyToOne
 import javax.validation.constraints.NotNull
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.entity.pojo.LongIdObject
 import org.openurp.base.Semester
 import org.openurp.edu.base.Project
@@ -38,7 +38,7 @@ class GradeInputSwitch extends LongIdObject {
 
   @ManyToMany
   
-  var types: Set[GradeType] = CollectUtils.newHashSet()
+  var types: Set[GradeType] = Collections.newSet[Any]
 
   
   var opened: Boolean = _

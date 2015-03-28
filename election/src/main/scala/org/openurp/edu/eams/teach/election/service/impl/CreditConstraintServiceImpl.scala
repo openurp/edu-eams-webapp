@@ -6,7 +6,7 @@ import java.util.Date
 
 
 import org.apache.commons.lang3.ArrayUtils
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.dao.Operation
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.beangle.commons.dao.query.builder.Condition
@@ -76,8 +76,8 @@ class CreditConstraintServiceImpl extends BaseServiceImpl with CreditConstraintS
     val stdTypes = restrictionHelper.stdTypes
     val departs = restrictionHelper.getDeparts
     val educations = restrictionHelper.educations
-    if (CollectUtils.isEmpty(stdTypes) || CollectUtils.isEmpty(departs) || 
-      CollectUtils.isEmpty(educations) || 
+    if (Collections.isEmpty(stdTypes) || Collections.isEmpty(departs) || 
+      Collections.isEmpty(educations) || 
       null == project) {
       return "初始化失败,权限不足"
     }
@@ -135,7 +135,7 @@ class CreditConstraintServiceImpl extends BaseServiceImpl with CreditConstraintS
         " courseTake " + 
         "where courseTake.std=student),0) <=:electedTotalCreditTo", electedTotalCreditTo)
     }
-    val students = CollectUtils.newHashSet(entityDao.search(stdBuilder))
+    val students = Collections.newHashSet(entityDao.search(stdBuilder))
     val plans = getCoursePlans(students)
     for (stdTotalCreditConstraint <- constraints) {
       val std = stdTotalCreditConstraint.getStd
@@ -150,7 +150,7 @@ class CreditConstraintServiceImpl extends BaseServiceImpl with CreditConstraintS
     }
     try {
       val createdAt = new Date()
-      val loggers = CollectUtils.newArrayList()
+      val loggers = Collections.newBuffer[Any]
       for (stdTotalCreditConstraint <- constraints) {
         val logger = ConstraintLogger.genLogger(stdTotalCreditConstraint, "INIT")
         logger.setCreatedAt(createdAt)
@@ -176,7 +176,7 @@ class CreditConstraintServiceImpl extends BaseServiceImpl with CreditConstraintS
   }
 
   def getCoursePlans(students: Iterable[Student]): Map[Long, CoursePlan] = {
-    val plans = CollectUtils.newHashMap()
+    val plans = Collections.newMap[Any]
     val stdPlans = coursePlanProvider.getCoursePlans(students)
     for ((key, value) <- stdPlans) {
       plans.put(key.id, value)
@@ -185,14 +185,14 @@ class CreditConstraintServiceImpl extends BaseServiceImpl with CreditConstraintS
   }
 
   private def get[T](builder: OqlBuilder[T], multipleParamName: String, multipleParamValue: AnyRef*): List[T] = {
-    val rs = CollectUtils.newArrayList()
+    val rs = Collections.newBuffer[Any]
     var i = 0
     while (i < multipleParamValue.length) {
       var end = i + 500
       if (end > multipleParamValue.length) {
         end = multipleParamValue.length
       }
-      val parameterMap = CollectUtils.newHashMap()
+      val parameterMap = Collections.newMap[Any]
       parameterMap.put(multipleParamName, ArrayUtils.subarray(multipleParamValue, i, end))
       rs.addAll(entityDao.search(builder.params(parameterMap).build()))
       i += 500

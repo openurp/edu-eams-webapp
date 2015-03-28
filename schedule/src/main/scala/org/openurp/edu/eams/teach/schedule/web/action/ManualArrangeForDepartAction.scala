@@ -5,7 +5,7 @@ import java.sql.Timestamp
 import java.util.Date
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.commons.dao.query.builder.Condition
 import org.beangle.data.jpa.dao.OqlBuilder
@@ -37,13 +37,13 @@ class ManualArrangeForDepartAction extends ManualArrangeAction {
     put("teacherIsNull", getBool("fake.teacher.null"))
     if (Strings.isNotEmpty(isArrangeCompleted)) {
       if (isArrangeCompleted == CourseStatusEnum.NEED_ARRANGE.toString) {
-        query.where("lesson.courseSchedule.status = :status", CourseStatusEnum.NEED_ARRANGE)
+        query.where("lesson.schedule.status = :status", CourseStatusEnum.NEED_ARRANGE)
         put("courseStatusEnum", CourseStatusEnum.NEED_ARRANGE)
       } else if (isArrangeCompleted == CourseStatusEnum.DONT_ARRANGE.toString) {
-        query.where("lesson.courseSchedule.status = :status", CourseStatusEnum.DONT_ARRANGE)
+        query.where("lesson.schedule.status = :status", CourseStatusEnum.DONT_ARRANGE)
         put("courseStatusEnum", CourseStatusEnum.DONT_ARRANGE)
       } else if (isArrangeCompleted == CourseStatusEnum.ARRANGED.toString) {
-        query.where("lesson.courseSchedule.status = :status", CourseStatusEnum.ARRANGED)
+        query.where("lesson.schedule.status = :status", CourseStatusEnum.ARRANGED)
         put("courseStatusEnum", CourseStatusEnum.ARRANGED)
       }
     }
@@ -79,7 +79,7 @@ class ManualArrangeForDepartAction extends ManualArrangeAction {
     val lessons = entityDao.search(query)
     put("lessons", lessons)
     val digestor = CourseActivityDigestor.getInstance.setDelimeter("<br>")
-    val arrangeInfo = CollectUtils.newHashMap()
+    val arrangeInfo = Collections.newMap[Any]
     for (oneTask <- lessons) {
       arrangeInfo.put(oneTask.id.toString, digestor.digest(getTextResource, oneTask, ":teacher+ :day :units :weeks :room"))
     }
@@ -97,7 +97,7 @@ class ManualArrangeForDepartAction extends ManualArrangeAction {
       query.limit(QueryHelper.getPageLimit)
       return query
     }
-    QueryHelper.populateConditions(query, "lesson.courseSchedule.status")
+    QueryHelper.populateConditions(query, "lesson.schedule.status")
     val courseTypeName = Params.get("lesson.courseType.name")
     val courseTypeNameNotLike = Params.getBool("fake.courseType.name.notLike")
     if (Strings.isNotBlank(Strings.trim(courseTypeName))) {
@@ -112,7 +112,7 @@ class ManualArrangeForDepartAction extends ManualArrangeAction {
     if (teacherIsNull) {
       query.where("size(lesson.teachers) = 0")
     }
-    if (CollectUtils.isNotEmpty(teacherConditions)) {
+    if (Collections.isNotEmpty(teacherConditions)) {
       query.join("left outer", "lesson.teachers", "teacher1")
       query.join("lesson.teachers", "teacher")
       query.where(teacherConditions)
@@ -124,9 +124,9 @@ class ManualArrangeForDepartAction extends ManualArrangeAction {
     val courseActiviyConditions = QueryHelper.extractConditions(classOf[CourseActivity], "courseActivity", 
       "courseActivity.time.startUnit")
     val startUnit = Params.getInt("courseActivity.time.startUnit")
-    if (CollectUtils.isNotEmpty(courseActiviyConditions) || null != startUnit) {
-      query.join("lesson.courseSchedule.activities", "courseActivity")
-      if (CollectUtils.isNotEmpty(courseActiviyConditions)) {
+    if (Collections.isNotEmpty(courseActiviyConditions) || null != startUnit) {
+      query.join("lesson.schedule.activities", "courseActivity")
+      if (Collections.isNotEmpty(courseActiviyConditions)) {
         query.where(courseActiviyConditions)
       }
       if (null != startUnit) {
@@ -134,31 +134,31 @@ class ManualArrangeForDepartAction extends ManualArrangeAction {
         query.where("courseActivity.time.endUnit >= :endUnit", startUnit)
       }
     }
-    val courseScheduleStatus = Params.get("lesson.courseSchedule.status")
+    val courseScheduleStatus = Params.get("lesson.schedule.status")
     if (Strings.isNotEmpty(courseScheduleStatus)) {
-      query.where("str(lesson.courseSchedule.status) = :status", courseScheduleStatus)
+      query.where("str(lesson.schedule.status) = :status", courseScheduleStatus)
     }
     val weeks = Params.getInt("fake.weeks")
     if (null != weeks) {
-      query.where("(lesson.courseSchedule.endWeek - lesson.courseSchedule.startWeek  + 1 )= :weeks", 
+      query.where("(lesson.schedule.endWeek - lesson.schedule.startWeek  + 1 )= :weeks", 
         weeks)
     }
     val weekHour = getInt("fake.weekHour")
     if (null != weekHour) {
-      query.where("lesson.course.period / (lesson.courseSchedule.endWeek - lesson.courseSchedule.startWeek  + 1 )= :weekHour", 
+      query.where("lesson.course.period / (lesson.schedule.endWeek - lesson.schedule.startWeek  + 1 )= :weekHour", 
         weekHour)
     }
     val startWeek = Params.getInt("fake.week.start")
     if (null != startWeek) {
-      query.where("lesson.courseSchedule.startWeek = :startWeek", startWeek)
+      query.where("lesson.schedule.startWeek = :startWeek", startWeek)
     }
     val endWeek = Params.getInt("fake.week.end")
     if (null != endWeek) {
-      query.where("lesson.courseSchedule.endWeek = :endWeek", endWeek)
+      query.where("lesson.schedule.endWeek = :endWeek", endWeek)
     }
     val lessThan_EndWeek = Params.getInt("lessThanEndWeek")
     if (null != lessThan_EndWeek) {
-      query.where("lesson.courseSchedule.endWeek <= :lessThanEndWeek", lessThan_EndWeek)
+      query.where("lesson.schedule.endWeek <= :lessThanEndWeek", lessThan_EndWeek)
     }
     val limitCountStart = Params.getInt("fake.limitCount.start")
     if (null != limitCountStart) {
@@ -196,12 +196,12 @@ class ManualArrangeForDepartAction extends ManualArrangeAction {
     }
     val weekday = Params.getInt("fake.time.day")
     if (null != weekday) {
-      query.where("exists (select activity.id from lesson.courseSchedule.activities activity where activity.time.day=:weekday)", 
+      query.where("exists (select activity.id from lesson.schedule.activities activity where activity.time.day=:weekday)", 
         weekday)
     }
     val unit = Params.getInt("fake.time.unit")
     if (null != unit) {
-      query.where("exists (select activity.id from lesson.courseSchedule.activities activity where activity.time.startUnit <= :unit and :unit <= activity.time.endUnit)", 
+      query.where("exists (select activity.id from lesson.schedule.activities activity where activity.time.startUnit <= :unit and :unit <= activity.time.endUnit)", 
         unit)
     }
     var isExamArrangeComplete = Params.getInt("isExamArrangeComplete")
@@ -216,7 +216,7 @@ class ManualArrangeForDepartAction extends ManualArrangeAction {
     if (isExamArrangeComplete == 1) {
       var activitySubQuery = "exists( from org.openurp.edu.teach.exam.ExamActivity examActivity left join examActivity.lessons activityLesson" + 
         " where activityLesson=lesson and examActivity.examType.id=:examTypeId"
-      val activityParams = CollectUtils.newArrayList()
+      val activityParams = Collections.newBuffer[Any]
       activityParams.add(examTypeId)
       val examRoom = Params.get("exam.room.name")
       if (Strings.isNotEmpty(examRoom)) {
@@ -261,7 +261,7 @@ class ManualArrangeForDepartAction extends ManualArrangeAction {
           "where lesson in elements(examGroup.lessons) and examGroup.id =:mygroupId) ", mygroupId)
       }
     } else {
-      var hql = "exists (from lesson.courseSchedule.examGroups examGroup where examGroup.id = :examGroupId and exists (from examGroup.lessons lesson1 where lesson1 = lesson))"
+      var hql = "exists (from lesson.schedule.examGroups examGroup where examGroup.id = :examGroupId and exists (from examGroup.lessons lesson1 where lesson1 = lesson))"
       if (false == queryGrouped) {
         hql = "not " + hql
       }
@@ -272,9 +272,9 @@ class ManualArrangeForDepartAction extends ManualArrangeAction {
       query.orderBy("lesson.no")
     } else {
       if ("fake.weekHour asc" == Params.get("orderBy")) {
-        query.orderBy("(lesson.course.period / (lesson.courseSchedule.endWeek + 1 - lesson.courseSchedule.startWeek)) asc")
+        query.orderBy("(lesson.course.period / (lesson.schedule.endWeek + 1 - lesson.schedule.startWeek)) asc")
       } else if ("fake.weekHour desc" == Params.get("orderBy")) {
-        query.orderBy("(lesson.course.period / (lesson.courseSchedule.endWeek + 1 - lesson.courseSchedule.startWeek)) desc")
+        query.orderBy("(lesson.course.period / (lesson.schedule.endWeek + 1 - lesson.schedule.startWeek)) desc")
       } else {
         query.orderBy(Order.parse(Params.get("orderBy")))
       }

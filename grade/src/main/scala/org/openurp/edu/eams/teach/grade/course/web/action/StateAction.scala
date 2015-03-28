@@ -5,7 +5,7 @@ package org.openurp.edu.eams.teach.grade.course.web.action
 
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.bean.comparators.PropertyComparator
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.commons.dao.query.builder.Condition
 import org.beangle.data.jpa.dao.OqlBuilder
@@ -55,7 +55,7 @@ class StateAction extends SemesterSupportAction {
     val courseMap = getCourseOfLessons(lessons)
     val query = OqlBuilder.from(classOf[CourseGrade], "grade")
     query.where("grade.semester.id = :semesterId", getInt("semester.id"))
-    if (CollectUtils.isEmpty(courses)) {
+    if (Collections.isEmpty(courses)) {
       query.join("grade.course", "course")
       builder.where(QueryHelper.extractConditions(classOf[Course], "course", null))
     } else {
@@ -82,7 +82,7 @@ class StateAction extends SemesterSupportAction {
     val departments = getDeparts
     val query = OqlBuilder.from(classOf[Lesson], "lesson")
     populateConditions(query)
-    if (CollectUtils.isEmpty(projects) || CollectUtils.isNotEmpty(departments)) {
+    if (Collections.isEmpty(projects) || Collections.isNotEmpty(departments)) {
     }
     query.join("lesson.course", "course")
     query.where(QueryHelper.extractConditions(classOf[Course], "course", null))
@@ -99,7 +99,7 @@ class StateAction extends SemesterSupportAction {
 
   def info(): String = {
     val courseGradeStates = entityDao.get(classOf[CourseGradeState], "lesson.id", getLong("lessonId"))
-    if (CollectUtils.isNotEmpty(courseGradeStates)) {
+    if (Collections.isNotEmpty(courseGradeStates)) {
       put("gradeState", courseGradeStates.get(0))
       put("lesson", courseGradeStates.get(0).getLesson)
     }
@@ -162,13 +162,13 @@ class StateAction extends SemesterSupportAction {
   def statusStat(): String = {
     val gradeTypes = baseCodeService.getCodes(classOf[GradeType])
     val departments = getDeparts
-    val results = CollectUtils.newArrayList()
+    val results = Collections.newBuffer[Any]
     var iter = gradeTypes.iterator()
     while (iter.hasNext) {
       val gradeType = iter.next()
       val query = OqlBuilder.from(classOf[CourseGradeState], "gradeState")
       populateConditions(query)
-      if (getProject == null || CollectUtils.isNotEmpty(departments)) {
+      if (getProject == null || Collections.isNotEmpty(departments)) {
         query.where("gradeState is null")
       } else {
         query.where("gradeState.lesson.project = :project", getProject)
@@ -200,7 +200,7 @@ class StateAction extends SemesterSupportAction {
     val gradeTypes = entityDao.search(buildhGradeTypeQuery())
     val projects = getProjects
     val departments = getDeparts
-    val results = CollectUtils.newArrayList()
+    val results = Collections.newBuffer[Any]
     var iter = gradeTypes.iterator()
     while (iter.hasNext) {
       val gradeType = iter.next()
@@ -208,7 +208,7 @@ class StateAction extends SemesterSupportAction {
       obj(0) = gradeType
       val query = OqlBuilder.from(classOf[CourseGradeState], "gradeState")
       populateConditions(query)
-      if (CollectUtils.isEmpty(projects) || CollectUtils.isNotEmpty(departments)) {
+      if (Collections.isEmpty(projects) || Collections.isNotEmpty(departments)) {
         query.where("gradeState is null")
       } else {
         query.where("gradeState.lesson.project in (:project)", getProjects)
@@ -226,7 +226,7 @@ class StateAction extends SemesterSupportAction {
       }
       query.select("count(*)")
       val queryResults = entityDao.search(query)
-      if (CollectUtils.isNotEmpty(queryResults)) {
+      if (Collections.isNotEmpty(queryResults)) {
         obj(1) = queryResults.get(0)
         obj(2) = if (queryResults.size > 1) queryResults.get(1) else new java.lang.Integer("0")
       } else {
@@ -241,12 +241,12 @@ class StateAction extends SemesterSupportAction {
 
   def percentStat(): String = {
     val gradeTypes = lessonGradeService.getCanInputGradeTypes(true)
-    val gradeTypeMap = CollectUtils.newHashMap()
+    val gradeTypeMap = Collections.newMap[Any]
     for (gradeType <- gradeTypes) {
       gradeTypeMap.put(gradeType.id, gradeType)
     }
     val lessons = entityDao.get(classOf[Lesson], "semester.id", getInt("semester.id"))
-    val results = CollectUtils.newHashMap()
+    val results = Collections.newMap[Any]
     for (lesson <- lessons) {
       val key = new StringBuilder()
       getState(key, lesson, gradeTypeMap.get(GradeTypeConstants.USUAL_ID).asInstanceOf[GradeType])
@@ -269,7 +269,7 @@ class StateAction extends SemesterSupportAction {
   protected def getState(key: StringBuilder, lesson: Lesson, gradeType: GradeType) {
     val courseGradeStates = entityDao.get(classOf[CourseGradeState], "lesson", lesson)
     var gradeState: CourseGradeState = null
-    if (CollectUtils.isNotEmpty(courseGradeStates)) {
+    if (Collections.isNotEmpty(courseGradeStates)) {
       gradeState = courseGradeStates.get(0)
     }
     if (null == gradeState) {
@@ -290,26 +290,26 @@ class StateAction extends SemesterSupportAction {
 
   protected def getCourseOfLessons(lessons: Iterable[Lesson]): Map[String, Array[Any]] = {
     val isPercentSetting = getBoolean("isPercentSetting")
-    val courseMap = CollectUtils.newHashMap()
-    val gradeStateMap = CollectUtils.newHashMap()
+    val courseMap = Collections.newMap[Any]
+    val gradeStateMap = Collections.newMap[Any]
     for (lesson <- lessons) {
       val courseGradeStates = entityDao.get(classOf[CourseGradeState], "lesson", lesson)
       var gradeState: CourseGradeState = null
-      if (CollectUtils.isNotEmpty(courseGradeStates)) {
+      if (Collections.isNotEmpty(courseGradeStates)) {
         gradeState = courseGradeStates.get(0)
       }
       val courseKey = lesson.getCourse.id.toString
       if (!courseMap.containsKey(courseKey)) {
-        courseMap.put(courseKey, Array(CollectUtils.newArrayList(), CollectUtils.newArrayList(), null))
+        courseMap.put(courseKey, Array(Collections.newBuffer[Any], Collections.newBuffer[Any], null))
       }
       val obj = courseMap.get(courseKey).asInstanceOf[Array[Any]]
       val courseOfTasks = obj(0).asInstanceOf[List[Lesson]]
       courseOfTasks.add(lesson)
       if (true == isPercentSetting) {
         val pc = new PropertyComparator("gradeType.id")
-        val states = CollectUtils.newArrayList(gradeState.getStates)
+        val states = Collections.newBuffer[Any](gradeState.getStates)
         Collections.sort(states, pc)
-        if (CollectUtils.isNotEmpty(states)) {
+        if (Collections.isNotEmpty(states)) {
           val gradeStateKey = new StringBuilder()
           gradeStateKey.append(courseKey + ":")
           var it2 = states.iterator()

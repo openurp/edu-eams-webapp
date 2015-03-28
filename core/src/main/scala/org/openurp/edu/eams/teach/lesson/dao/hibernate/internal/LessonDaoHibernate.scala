@@ -2,57 +2,48 @@ package org.openurp.edu.eams.teach.lesson.dao.hibernate.internal
 
 import java.io.Serializable
 
+import scala.collection.JavaConversions._
 
-
-
-
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.page.Page
 import org.beangle.commons.collection.page.PageLimit
-import org.beangle.commons.dao.query.builder.Conditions
+import org.beangle.commons.lang.annotation.description
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.data.jpa.hibernate.HibernateEntityDao
-import org.hibernate.Cache
+import org.beangle.data.jpa.hibernate.QuerySupport
+import org.beangle.data.model.dao.Conditions
 import org.hibernate.FlushMode
-import org.hibernate.Query
+import org.hibernate.SessionFactory
 import org.openurp.base.Semester
-import org.openurp.edu.eams.classroom.Occupancy
+import org.openurp.edu.base.States
 import org.openurp.edu.eams.classroom.util.RoomUseridGenerator
 import org.openurp.edu.eams.classroom.util.RoomUseridGenerator.Usage
-import org.openurp.edu.eams.core.CommonAuditState
-import org.openurp.edu.eams.teach.lesson.ArrangeSuggest
-import org.openurp.edu.teach.lesson.CourseLimitGroup
-import org.openurp.edu.teach.lesson.Lesson
-import org.openurp.edu.teach.lesson.LessonPlanRelation
 import org.openurp.edu.eams.teach.lesson.dao.LessonDao
-import org.openurp.edu.eams.teach.lesson.dao.LessonPlanRelationDao
 import org.openurp.edu.eams.teach.lesson.dao.LessonSeqNoGenerator
 import org.openurp.edu.eams.teach.lesson.service.LessonFilterStrategy
+import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.teach.plan.MajorPlan
+import org.openurp.lg.room.Occupancy
 
+class LessonDaoHibernate(sf: SessionFactory) extends HibernateEntityDao(sf) with LessonDao {
 
-class LessonDaoHibernate extends HibernateEntityDao with LessonDao {
-
-  private var lessonSeqNoGenerator: LessonSeqNoGenerator = _
-
-  private var lessonPlanRelationDao: LessonPlanRelationDao = _
+  var lessonSeqNoGenerator: LessonSeqNoGenerator = _
 
   private def evictLessonRegion() {
-    val cache = sessionFactory.cache
+    val cache = sessionFactory.getCache
     if (null != cache) {
       cache.evictEntityRegion(classOf[Lesson])
     }
   }
 
-  def getLessonsByCategory(id: Serializable, 
-      strategy: LessonFilterStrategy, 
-      semester: Semester, 
-      pageNo: Int, 
-      pageSize: Int): Page[Lesson] = {
-    val params = new HashMap[String, Any](3)
-    if (strategy.name == "teacher") {
-      id = "%" + id + "%"
-    }
+  def getLessonsByCategory(sid: Serializable,
+    strategy: LessonFilterStrategy,
+    semester: Semester,
+    pageNo: Int,
+    pageSize: Int): Page[Lesson] = {
+    val params = Collections.newMap[String, Any]
+    val id = if (strategy.name == "teacher") "%" + sid + "%" else sid
+
     params.put("id", id)
     params.put("semesterId", semester.id)
     val queryStr = strategy.queryString(null, " and task.semester.id= :semesterId ")
@@ -60,15 +51,15 @@ class LessonDaoHibernate extends HibernateEntityDao with LessonDao {
     lessons.asInstanceOf[Page[Lesson]]
   }
 
-  def getLessonsByCategory(id: Serializable, strategy: LessonFilterStrategy, semesters: Iterable[Semester]): List[Lesson] = {
-    val taskQuery = strategy.createQuery(getSession, "select distinct task.id from Lesson as task ", 
+  def getLessonsByCategory(id: Serializable, strategy: LessonFilterStrategy, semesters: Iterable[Semester]): Seq[Lesson] = {
+    val taskQuery = strategy.createQuery(currentSession, "select distinct task.id from Lesson as task ",
       " and task.semester in (:semesters) ")
-    taskQuery.parameter="id", id
-    taskQuery.parameterList="semesters", semesters
-    get(classOf[Lesson], taskQuery.list())
+    taskQuery.setParameter("id", id)
+    taskQuery.setParameterList("semesters", semesters)
+    find(classOf[Lesson], taskQuery.list().toArray().asInstanceOf[Array[java.lang.Long]])
   }
 
-  def getLessonsOfStd(stdId: Serializable, semesters: List[Semester]): List[Lesson] = {
+  def getLessonsOfStd(stdId: Serializable, semesters: List[Semester]): Seq[Lesson] = {
     val queryBuilder = OqlBuilder.from(classOf[Lesson], "lesson")
     queryBuilder.join("lesson.teachClass.courseTakes", "courseTake")
     queryBuilder.where("courseTake.std.id =:stdId", stdId)
@@ -76,22 +67,22 @@ class LessonDaoHibernate extends HibernateEntityDao with LessonDao {
     search(queryBuilder)
   }
 
-  def updateLessonByCategory(attr: String, 
-      value: AnyRef, 
-      id: java.lang.Long, 
-      strategy: LessonFilterStrategy, 
-      semester: Semester): Int = {
+  def updateLessonByCategory(attr: String,
+    value: AnyRef,
+    id: java.lang.Long,
+    strategy: LessonFilterStrategy,
+    semester: Semester): Int = {
     evictLessonRegion()
     val queryStr = strategy.queryString("update TeachTask set " + attr + " = :value ", " and semester.id = :semesterId")
     executeUpdate(queryStr, Array(value, semester.id))
   }
 
-  private def getUpdateQueryString(attr: String, 
-      value: AnyRef, 
-      task: Lesson, 
-      stdTypeIds: Array[Integer], 
-      departIds: Array[Long], 
-      newParamsMap: Map[String, Any]): String = {
+  private def getUpdateQueryString(attr: String,
+    value: AnyRef,
+    task: Lesson,
+    stdTypeIds: Array[Integer],
+    departIds: Array[Long],
+    newParamsMap: collection.Map[String, Any]): String = {
     val entityQuery = OqlBuilder.from(classOf[Lesson], "task")
     entityQuery.where(Conditions.extractConditions("task", task))
     if (null != stdTypeIds && 0 != stdTypeIds.length) {
@@ -107,25 +98,25 @@ class LessonDaoHibernate extends HibernateEntityDao with LessonDao {
     updateSql.toString
   }
 
-  def updateLessonByCriteria(attr: String, 
-      value: AnyRef, 
-      task: Lesson, 
-      stdTypeIds: Array[Integer], 
-      departIds: Array[Long]): Int = {
+  def updateLessonByCriteria(attr: String,
+    value: AnyRef,
+    task: Lesson,
+    stdTypeIds: Array[Integer],
+    departIds: Array[Long]): Int = {
     evictLessonRegion()
-    val newParamsMap = CollectUtils.newHashMap()
+    val newParamsMap = Collections.newMap[String, Any]
     val updateSql = getUpdateQueryString(attr, value, task, stdTypeIds, departIds, newParamsMap)
-    val query = getSession.createQuery(updateSql)
-    QuerySupport.parameter=query, newParamsMap
+    val query = currentSession.createQuery(updateSql)
+    QuerySupport.setParameters(query, newParamsMap)
     query.executeUpdate()
   }
 
-  def countLesson(id: Serializable, strategy: LessonFilterStrategy, semester: Semester): Int = {
-    val countQuery = strategy.createQuery(getSession, "select count(task.id) from TeachTask as task ", 
+  def countLesson(sid: Serializable, strategy: LessonFilterStrategy, semester: Semester): Int = {
+    val countQuery = strategy.createQuery(currentSession, "select count(task.id) from TeachTask as task ",
       " and task.semester.id  = :semesterId")
-    if (strategy.name == "teacher") id = "%" + id + "%"
-    countQuery.parameter="id", id
-    countQuery.parameter="semesterId", semester.id
+    val id = if (strategy.name == "teacher") "%" + sid + "%" else sid
+    countQuery.setParameter("id", id)
+    countQuery.setParameter("semesterId", semester.id)
     val rsList = countQuery.list()
     rsList.get(0).asInstanceOf[Number].intValue()
   }
@@ -141,61 +132,40 @@ class LessonDaoHibernate extends HibernateEntityDao with LessonDao {
   }
 
   def remove(lesson: Lesson) {
-    val removeEntities = CollectUtils.newArrayList()
+    val removeEntities = Collections.newBuffer[Any]
     val occupancies = getOccupancies(lesson)
     removeEntities.addAll(occupancies)
-    val relations = lessonPlanRelationDao.relations(lesson)
-    removeEntities.addAll(relations)
-    val lessonMaterials = get(classOf[LessonMaterial], "lesson", lesson)
-    removeEntities.addAll(lessonMaterials)
-    val suggests = get(classOf[ArrangeSuggest], "lesson", lesson)
-    removeEntities.addAll(suggests)
     removeEntities.add(lesson)
     super.remove(removeEntities)
   }
 
-  def getOccupancies(lesson: Lesson): List[Occupancy] = {
-    val builder = OqlBuilder.from(classOf[Occupancy], "occupancy").where("occupancy.userid in( :lessonIds)", 
+  def getOccupancies(lesson: Lesson): Seq[Occupancy] = {
+    val builder = OqlBuilder.from(classOf[Occupancy], "occupancy").where("occupancy.userid in( :lessonIds)",
       RoomUseridGenerator.gen(lesson, Usage.COURSE, Usage.EXAM))
     search(builder)
   }
 
-  def saveGenResult(plan: MajorPlan, 
-      semester: Semester, 
-      lessons: List[Lesson], 
-      removeExists: Boolean) {
-    if (removeExists) {
-      val existsLessons = lessonPlanRelationDao.relatedLessons(plan, semester)
-      for (lesson <- existsLessons) {
-        remove(lesson)
-      }
-    }
-    getSession.flushMode=FlushMode.COMMIT
+  def saveGenResult(plan: MajorPlan,
+    semester: Semester,
+    lessons: List[Lesson],
+    removeExists: Boolean) {
+    currentSession.setFlushMode(FlushMode.COMMIT)
     lessonSeqNoGenerator.genLessonSeqNos(lessons)
     for (lesson <- lessons) {
-      lesson.auditStatus=CommonAuditState.UNSUBMITTED
+      lesson.state = States.Draft
       super.saveOrUpdate(lesson)
-      lessonPlanRelationDao.saveRelation(plan, lesson)
     }
-    getSession.flush()
+    currentSession.flush()
   }
 
   def saveOrUpdate(lesson: Lesson) {
     val iter = lesson.teachClass.limitGroups.iterator()
     while (iter.hasNext) {
-      if (CollectUtils.isEmpty(iter.next().items)) {
+      if (Collections.isEmpty(iter.next().items)) {
         iter.remove()
       }
     }
     lessonSeqNoGenerator.genLessonSeqNo(lesson)
     super.saveOrUpdate(lesson)
-  }
-
-  def setLessonSeqNoGenerator(lessonSeqNoGenerator: LessonSeqNoGenerator) {
-    this.lessonSeqNoGenerator = lessonSeqNoGenerator
-  }
-
-  def setLessonPlanRelationDao(lessonPlanRelationDao: LessonPlanRelationDao) {
-    this.lessonPlanRelationDao = lessonPlanRelationDao
   }
 }

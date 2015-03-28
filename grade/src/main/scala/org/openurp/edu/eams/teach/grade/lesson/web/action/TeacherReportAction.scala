@@ -5,7 +5,7 @@ package org.openurp.edu.eams.teach.grade.lesson.web.action
 
 import org.apache.commons.collections.CollectionUtils
 import org.beangle.commons.bean.comparators.PropertyComparator
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Objects
@@ -85,7 +85,7 @@ class TeacherReportAction extends SemesterSupportAction {
       " cgs where lesson.id = cgs.lesson.id and cgs.status = :status)", Grade.Status.PUBLISHED)
     builder.where("exists(from " + builder.getAlias + ".teachers teacher where teacher=:teacher)", teacher)
     val lessons = entityDao.search(builder)
-    val unpassedMap = CollectUtils.newHashMap()
+    val unpassedMap = Collections.newMap[Any]
     if (!lessons.isEmpty) {
       val builder2 = OqlBuilder.from(classOf[CourseGrade], "cg")
       builder2.where("cg.lesson in(:lessons) and cg.passed=false", lessons)
@@ -111,8 +111,8 @@ class TeacherReportAction extends SemesterSupportAction {
     val query = OqlBuilder.from(classOf[CourseGrade], "courseGrade")
     query.where("courseGrade.lesson = :lesson and courseGrade.passed=false", lesson)
     val grades = entityDao.search(query)
-    val gradeTypes = CollectUtils.newArrayList()
-    val exited = CollectUtils.newHashSet()
+    val gradeTypes = Collections.newBuffer[Any]
+    val exited = Collections.newSet[Any]
     for (grade <- grades; eg <- grade.getExamGrades) exited.add(eg.gradeType)
     gradeTypes.addAll(exited)
     var orderBy = get("orderBy")
@@ -122,7 +122,7 @@ class TeacherReportAction extends SemesterSupportAction {
       if (orderBy.startsWith("courseGrade.")) orderBy = Strings.substringAfter(orderBy, "courseGrade.")
     }
     val orders = Order.parse(orderBy)
-    if (CollectUtils.isNotEmpty(orders)) {
+    if (Collections.isNotEmpty(orders)) {
       val order = orders.get(0)
       Collections.sort(grades, new CourseGradeComparator(order.getProperty, order.isAscending, gradeTypes))
     }
@@ -143,12 +143,12 @@ class TeacherReportAction extends SemesterSupportAction {
     if (null == gradeTypeIdArray) {
       gradeTypeIdArray = Array(GradeTypeConstants.USUAL_ID, GradeTypeConstants.MIDDLE_ID, GradeTypeConstants.END_ID, GradeTypeConstants.GA_ID)
     }
-    val gradeTypeIds = CollectUtils.newHashSet(gradeTypeIdArray)
-    val makeupIds = CollectUtils.newHashSet(GradeTypeConstants.MAKEUP_ID, GradeTypeConstants.DELAY_ID)
+    val gradeTypeIds = Collections.newHashSet(gradeTypeIdArray)
+    val makeupIds = Collections.newHashSet(GradeTypeConstants.MAKEUP_ID, GradeTypeConstants.DELAY_ID)
     val isMakeup = CollectionUtils.containsAny(gradeTypeIds, makeupIds)
     if (isMakeup) gradeTypeIds.addAll(makeupIds)
     val lessons = entityDao.get(classOf[Lesson], lessonIds)
-    val ownLessons = CollectUtils.newArrayList()
+    val ownLessons = Collections.newBuffer[Any]
     val teacher = getLoginTeacher
     if (null == teacher) {
       return forwardError("对不起,该功能只开放给教师用户!")
@@ -160,7 +160,7 @@ class TeacherReportAction extends SemesterSupportAction {
     teachClassGradeHelper.report(ownLessons, gradeTypeIds.toArray(Array.ofDim[Integer](gradeTypeIds.size)))
     val query = OqlBuilder.from(classOf[GradeRateConfig], "config")
       .where("config.project=:project", getProject)
-    val gradeConfigMap = CollectUtils.newHashMap()
+    val gradeConfigMap = Collections.newMap[Any]
     for (config <- entityDao.search(query)) {
       gradeConfigMap.put(String.valueOf(config.getScoreMarkStyle.id), config)
     }
@@ -174,7 +174,7 @@ class TeacherReportAction extends SemesterSupportAction {
   def blank(): String = {
     val lessonIds = getLongIds("lesson")
     val lessonList = entityDao.get(classOf[Lesson], lessonIds)
-    val lessons = CollectUtils.newArrayList()
+    val lessons = Collections.newBuffer[Any]
     val teacher = getLoginTeacher
     if (null == teacher) {
       return forwardError("对不起,该功能只开放给教师用户!")
@@ -184,8 +184,8 @@ class TeacherReportAction extends SemesterSupportAction {
     }
     if (lessons.isEmpty) return forwardError("没有权限")
     put("lessons", lessons)
-    var gradeTypes = CollectUtils.newArrayList()
-    val courseTakes = CollectUtils.newHashMap()
+    var gradeTypes = Collections.newBuffer[Any]
+    val courseTakes = Collections.newMap[Any]
     var makeup = getBool("makeup")
     val gradeTypeId = getInt("gradeType.id")
     if (null != gradeTypeId && 
@@ -195,12 +195,12 @@ class TeacherReportAction extends SemesterSupportAction {
     if (makeup) {
       gradeTypes = baseCodeService.getCodes(classOf[GradeType], GradeTypeConstants.DELAY_ID, GradeTypeConstants.MAKEUP_ID)
       for (lesson <- lessons) courseTakes.put(lesson, makeupStdStrategy.getCourseTakes(lesson))
-      val examTypes = CollectUtils.newHashSet()
+      val examTypes = Collections.newSet[Any]
       for (`type` <- gradeTypes) examTypes.add(`type`.getExamType)
       put("stdExamTakeMap", getStdExamTakeMap(lessons, examTypes))
     } else {
       for (lesson <- lessons) {
-        val takes = CollectUtils.newArrayList(lesson.getTeachClass.getCourseTakes)
+        val takes = Collections.newBuffer[Any](lesson.getTeachClass.getCourseTakes)
         courseTakes.put(lesson, takes)
       }
       val setting = settings.getSetting(getProject)
@@ -220,12 +220,12 @@ class TeacherReportAction extends SemesterSupportAction {
 
   protected def getStdExamTakeMap(lessons: List[Lesson], examTypes: Set[ExamType]): Map[String, ExamTake] = {
     if (examTypes.isEmpty) {
-      return CollectUtils.newHashMap()
+      return Collections.newMap[Any]
     }
     val query = OqlBuilder.from(classOf[ExamTake], "examTake").where("examTake.lesson  in(:lessons)", 
       lessons)
-    if (CollectUtils.isNotEmpty(examTypes)) query.where("examTake.examType in (:examTypes)", examTypes)
-    val stdExamTypeMap = CollectUtils.newHashMap()
+    if (Collections.isNotEmpty(examTypes)) query.where("examTake.examType in (:examTypes)", examTypes)
+    val stdExamTypeMap = Collections.newMap[Any]
     val examTakes = entityDao.search(query)
     for (examTake <- examTakes) {
       stdExamTypeMap.put(examTake.getLesson.id + "_" + examTake.getStd.id, examTake)
@@ -245,7 +245,7 @@ class TeacherReportAction extends SemesterSupportAction {
         return forwardError("error.parameters.needed")
       }
       val lessons = entityDao.get(classOf[Lesson], lessonIdSeq)
-      val ownLessons = CollectUtils.newArrayList()
+      val ownLessons = Collections.newBuffer[Any]
       for (lesson <- lessons if null == checkLessonPermission(lesson, teacher)) {
         ownLessons.add(lesson)
       }
@@ -299,7 +299,7 @@ class TeacherReportAction extends SemesterSupportAction {
       entityDao.search(builder)
     } else {
       val lessons = entityDao.get(classOf[Lesson], Strings.splitToLong(lessonIdSeq))
-      val result = CollectUtils.newArrayList()
+      val result = Collections.newBuffer[Any]
       for (lesson <- lessons if null == checkLessonPermission(lesson, teacher)) {
         result.add(lesson)
       }

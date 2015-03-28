@@ -2,7 +2,7 @@ package org.openurp.edu.eams.teach.grade.course.web.dwr
 
 
 import org.beangle.commons.lang.Strings
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.model.dao.EntityDao
 import org.beangle.commons.entity.metadata.Model
 import org.openurp.edu.teach.code.GradeType
@@ -26,12 +26,12 @@ class GradeCalcualtorDwr {
   var courseGradeCalculator: CourseGradeCalculator = _
 
   private def getParams(contents: Array[String]): Map[String, Map[String, Any]] = {
-    val paramMaps = CollectUtils.newHashMap()
+    val paramMaps = Collections.newMap[Any]
     for (content <- contents) {
       val prefix = Strings.substringBefore(content, ".")
       var params = paramMaps.get(prefix)
       if (null == params) {
-        params = CollectUtils.newHashMap()
+        params = Collections.newMap[Any]
         paramMaps.put(prefix, params)
       }
       params.put(Strings.substringBetween(content, prefix + ".", "="), Strings.substringAfter(content, 

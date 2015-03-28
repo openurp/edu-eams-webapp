@@ -8,7 +8,7 @@ import java.util.Date
 
 import org.apache.commons.lang3.ArrayUtils
 import org.apache.commons.lang3.Validate
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.data.model.Entity
@@ -64,19 +64,19 @@ class ElectionProfileServiceImpl extends BaseServiceImpl with ElectionProfileSer
   def setDatas(profile: ElectionProfile, idsMap: Map[Class[_], String], project: Project): String = {
     for (clazz <- idsMap.keySet) {
       if (classOf[StdType] == clazz) {
-        val selecteds = CollectUtils.newHashSet(getDatas(classOf[StdType], idsMap, project).get(1))
+        val selecteds = Collections.newHashSet(getDatas(classOf[StdType], idsMap, project).get(1))
         addIds(profile.stdTypes, selecteds)
       } else if (classOf[Education] == clazz) {
-        val selecteds = CollectUtils.newHashSet(getDatas(classOf[Education], idsMap, project).get(1))
+        val selecteds = Collections.newHashSet(getDatas(classOf[Education], idsMap, project).get(1))
         addIds(profile.educations, selecteds)
       } else if (classOf[Department] == clazz) {
-        val selecteds = CollectUtils.newHashSet(getDatas(classOf[Department], idsMap, project).get(1))
+        val selecteds = Collections.newHashSet(getDatas(classOf[Department], idsMap, project).get(1))
         addIds(profile.getDeparts, selecteds)
       } else if (classOf[Major] == clazz) {
-        val selecteds = CollectUtils.newHashSet(getDatas(classOf[Major], idsMap, project).get(1))
+        val selecteds = Collections.newHashSet(getDatas(classOf[Major], idsMap, project).get(1))
         addIds(profile.majors, selecteds)
       } else if (classOf[Direction] == clazz) {
-        val selecteds = CollectUtils.newHashSet(getDatas(classOf[Direction], idsMap, project).get(1))
+        val selecteds = Collections.newHashSet(getDatas(classOf[Direction], idsMap, project).get(1))
         addIds(profile.directions, selecteds)
       }
     }
@@ -84,8 +84,8 @@ class ElectionProfileServiceImpl extends BaseServiceImpl with ElectionProfileSer
   }
 
   def getDatas[T](clazz: Class[T], idsMap: Map[Class[_], String], project: Project): List[List[T]] = {
-    var selecteds = CollectUtils.newArrayList(0)
-    var datas = CollectUtils.newArrayList(0)
+    var selecteds = Collections.newBuffer[Any](0)
+    var datas = Collections.newBuffer[Any](0)
     var idSeq: String = null
     if (null != clazz) {
       idSeq = idsMap.get(clazz)
@@ -93,7 +93,7 @@ class ElectionProfileServiceImpl extends BaseServiceImpl with ElectionProfileSer
     val departs = restrictionHelper.getColleges.asInstanceOf[List[Department]]
     if ((classOf[Department] != clazz && classOf[Major] != clazz && 
       classOf[Direction] != clazz) || 
-      CollectUtils.isNotEmpty(departs)) {
+      Collections.isNotEmpty(departs)) {
       val now = new Date()
       val builder = OqlBuilder.from(clazz, "data")
       if (classOf[Major] == clazz) {
@@ -128,24 +128,24 @@ class ElectionProfileServiceImpl extends BaseServiceImpl with ElectionProfileSer
         now)
       if (classOf[StdType] == clazz) {
         datas = restrictionHelper.stdTypes.asInstanceOf[List[T]]
-        val types = CollectUtils.newHashSet(project.getTypes)
-        val result = CollectUtils.newArrayList()
+        val types = Collections.newHashSet(project.getTypes)
+        val result = Collections.newBuffer[Any]
         for (t <- datas if types.contains(t)) {
           result.add(t)
         }
         datas = result
       } else if (classOf[Department] == clazz) {
         datas = departs.asInstanceOf[List[T]]
-        val departments = CollectUtils.newHashSet(project.departments)
-        val result = CollectUtils.newArrayList()
+        val departments = Collections.newHashSet(project.departments)
+        val result = Collections.newBuffer[Any]
         for (t <- datas if departments.contains(t)) {
           result.add(t)
         }
         datas = result
       } else if (classOf[Education] == clazz) {
         datas = entityDao.search(builder)
-        val educations = CollectUtils.newHashSet(project.educations)
-        val result = CollectUtils.newArrayList()
+        val educations = Collections.newHashSet(project.educations)
+        val result = Collections.newBuffer[Any]
         for (t <- datas if educations.contains(t)) {
           result.add(t)
         }
@@ -161,7 +161,7 @@ class ElectionProfileServiceImpl extends BaseServiceImpl with ElectionProfileSer
       }
       datas.removeAll(selecteds)
     }
-    CollectUtils.newArrayList(datas, selecteds)
+    Collections.newBuffer[Any](datas, selecteds)
   }
 
   def getRuleConfigs(`type`: ElectRuleType): List[RuleConfig] = {
@@ -175,19 +175,19 @@ class ElectionProfileServiceImpl extends BaseServiceImpl with ElectionProfileSer
     case ELECTION => 
       profile.getElectConfigs.clear()
       if (configIds.length > 0) {
-        profile.setElectConfigs(CollectUtils.newHashSet(entityDao.get(classOf[RuleConfig], configIds)))
+        profile.setElectConfigs(Collections.newHashSet(entityDao.get(classOf[RuleConfig], configIds)))
       }
 
     case GENERAL => 
       profile.getGeneralConfigs.clear()
       if (configIds.length > 0) {
-        profile.setGeneralConfigs(CollectUtils.newHashSet(entityDao.get(classOf[RuleConfig], configIds)))
+        profile.setGeneralConfigs(Collections.newHashSet(entityDao.get(classOf[RuleConfig], configIds)))
       }
 
     case _ => 
       profile.getWithdrawConfigs.clear()
       if (configIds.length > 0) {
-        profile.setWithdrawConfigs(CollectUtils.newHashSet(entityDao.get(classOf[RuleConfig], configIds)))
+        profile.setWithdrawConfigs(Collections.newHashSet(entityDao.get(classOf[RuleConfig], configIds)))
       }
 
   }
@@ -209,12 +209,12 @@ class ElectionProfileServiceImpl extends BaseServiceImpl with ElectionProfileSer
   }
 
   def getDatasMap(profiles: List[ElectionProfile]): Map[Class[_], Map[Any, Entity[_]]] = {
-    val departIds = CollectUtils.newHashSet()
-    val majorIds = CollectUtils.newHashSet()
-    val stdTypeIds = CollectUtils.newHashSet()
-    val directionIds = CollectUtils.newHashSet()
-    val educationIds = CollectUtils.newHashSet()
-    val stdIds = CollectUtils.newHashSet()
+    val departIds = Collections.newSet[Any]
+    val majorIds = Collections.newSet[Any]
+    val stdTypeIds = Collections.newSet[Any]
+    val directionIds = Collections.newSet[Any]
+    val educationIds = Collections.newSet[Any]
+    val stdIds = Collections.newSet[Any]
     for (electionProfile <- profiles) {
       departIds.addAll(electionProfile.getDeparts)
       majorIds.addAll(electionProfile.majors)
@@ -224,8 +224,8 @@ class ElectionProfileServiceImpl extends BaseServiceImpl with ElectionProfileSer
       educationIds.addAll(electionProfile.educations)
       stdIds.addAll(electionProfile.getStds)
     }
-    val result = CollectUtils.newHashMap()
-    val emptyList = CollectUtils.newArrayList()
+    val result = Collections.newMap[Any]
+    val emptyList = Collections.newBuffer[Any]
     result.put(classOf[Department], getDataMap(if (departIds.isEmpty) emptyList else entityDao.get(classOf[Department], 
       departIds)))
     result.put(classOf[Major], getDataMap(if (majorIds.isEmpty) emptyList else entityDao.get(classOf[Major], 
@@ -242,7 +242,7 @@ class ElectionProfileServiceImpl extends BaseServiceImpl with ElectionProfileSer
   }
 
   private def getDataMap(entities: List[_ <: Entity[_]]): Map[Any, Entity[_]] = {
-    val result = CollectUtils.newHashMap()
+    val result = Collections.newMap[Any]
     for (longIdEntity <- entities) {
       result.put(longIdEntity.id, longIdEntity)
     }

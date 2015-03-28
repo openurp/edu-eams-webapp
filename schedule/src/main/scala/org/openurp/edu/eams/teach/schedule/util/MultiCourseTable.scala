@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.schedule.util
 
 import org.beangle.commons.bean.comparators.PropertyComparator
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.data.model.Entity
 
@@ -9,9 +9,9 @@ import org.beangle.data.model.Entity
 
 class MultiCourseTable {
 
-  var tables: List[CourseTable] = CollectUtils.newArrayList()
+  var tables: List[CourseTable] = Collections.newBuffer[Any]
 
-  var resources: List[Entity[_]] = CollectUtils.newArrayList()
+  var resources: List[Entity[_]] = Collections.newBuffer[Any]
 
   var order: Order = _
 

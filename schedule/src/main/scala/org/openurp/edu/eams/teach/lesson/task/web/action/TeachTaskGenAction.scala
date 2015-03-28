@@ -5,7 +5,7 @@ import java.sql.Date
 
 
 import javax.servlet.http.HttpServletResponse
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
@@ -58,7 +58,7 @@ class TeachTaskGenAction extends SemesterSupportAction {
     query.where("plan.program.major.project in (:projects)", getProjects)
       .where("plan.program.department in (:departments)", getDeparts)
       .where("plan.program.stdType in (:stdTypes)", getStdTypes)
-    if (CollectUtils.isNotEmpty(getEducations)) {
+    if (Collections.isNotEmpty(getEducations)) {
       query.where("plan.program.education in (:educations)", getEducations)
     }
     val semester = semesterService.getSemester(getInt("semester.id"))
@@ -118,7 +118,7 @@ class TeachTaskGenAction extends SemesterSupportAction {
   }
 
   protected def getGenContext(): Map[String, Any] = {
-    val params = CollectUtils.newHashMap()
+    val params = Collections.newMap[Any]
     params.put("planIds", Strings.splitToLong(get("planIds")))
     params.put("semester", entityDao.get(classOf[Semester], getInt("params.semester.id")))
     params.put("startWeek", getInt("params.startWeek"))
@@ -146,7 +146,7 @@ class TeachTaskGenAction extends SemesterSupportAction {
     val semesterId = getInt("semester.id")
     val semester = entityDao.get(classOf[Semester], semesterId)
     val sharePlanCourses = getModels(classOf[SharePlanCourse], ids("targetCourse", classOf[Long]))
-    val lessons = CollectUtils.newArrayList()
+    val lessons = Collections.newBuffer[Any]
     for (sharePlanCourse <- sharePlanCourses) {
       val course = sharePlanCourse.getCourse
       val lesson = LessonBean.getDefault
@@ -210,9 +210,9 @@ class TeachTaskGenAction extends SemesterSupportAction {
       builder.orderBy(orderBy)
     }
     val sharePlanCourses = entityDao.search(builder)
-    val spCourses = CollectUtils.newArrayList()
-    val courseTypes = CollectUtils.newHashSet()
-    val departments = CollectUtils.newHashSet()
+    val spCourses = Collections.newBuffer[Any]
+    val courseTypes = Collections.newSet[Any]
+    val departments = Collections.newSet[Any]
     for (sharePlanCourse <- sharePlanCourses if TermCalculator.inTerm(sharePlanCourse.getTerms, term)) {
       spCourses.add(sharePlanCourse)
       courseTypes.add(sharePlanCourse.getCourseGroup.getCourseType)

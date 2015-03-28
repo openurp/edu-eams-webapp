@@ -6,7 +6,7 @@ import java.sql.Date
 
 import java.util.regex.Matcher
 import java.util.regex.Pattern
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.lang.Numbers
 import org.beangle.commons.lang.Strings
 import org.slf4j.Logger
@@ -19,13 +19,13 @@ import TermCalculator._
 
 object TermCalculator {
 
-  private var termMap: Map[String, Set[Integer]] = CollectUtils.newHashMap()
+  private var termMap: Map[String, Set[Integer]] = Collections.newMap[Any]
 
-  val autumn = CollectUtils.newHashSet(1, 3, 5, 7, 9, 11)
+  val autumn = Collections.newHashSet(1, 3, 5, 7, 9, 11)
 
-  val spring = CollectUtils.newHashSet(2, 3, 4, 8, 10, 12)
+  val spring = Collections.newHashSet(2, 3, 4, 8, 10, 12)
 
-  val all = CollectUtils.newHashSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)
+  val all = Collections.newHashSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)
 
   termMap.put("春", spring)
 
@@ -72,7 +72,7 @@ class TermCalculator(private var semesterService: SemesterService, private var s
 
   protected val logger = LoggerFactory.getLogger(this.getClass)
 
-  private var termCalcCache: Map[String, Integer] = CollectUtils.newHashMap()
+  private var termCalcCache: Map[String, Integer] = Collections.newMap[Any]
 
   this.semester.calendar.id
 

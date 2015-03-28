@@ -6,6 +6,7 @@ package org.openurp.edu.eams.teach.lesson.service
 import org.beangle.commons.lang.Strings
 import org.openurp.edu.base.Teacher
 import org.openurp.edu.teach.lesson.Lesson
+import org.beangle.commons.collection.Collections
 
 
 
@@ -44,8 +45,8 @@ object LessonLogBuilder {
     implicit def convertValue(v: Value): Operation = v.asInstanceOf[Operation]
   }
 
-  private def makeInformations(lesson: Lesson): Map[String, String] = {
-    val empty = new HashMap[String, String]()
+  private def makeInformations(lesson: Lesson): collection.mutable.Map[String, String] = {
+    val empty = Collections.newMap[String, String]
     for (i <- 0 until LOG_FIELDS.length) {
       empty.put(LOG_FIELDS(i), "")
     }
@@ -58,7 +59,7 @@ object LessonLogBuilder {
     empty
   }
 
-  private def toString(informations: Map[String, String]): String = {
+  private def toString(informations: collection.Map[String, String]): String = {
     val sb = new StringBuilder()
     for (i <- 0 until LOG_FIELDS.length) {
       sb.append(LOG_FIELDS(i)).append("=").append(informations.get(LOG_FIELDS(i)))
@@ -71,7 +72,7 @@ object LessonLogBuilder {
 
   def create(lesson: Lesson, reason: String): String = {
     val map = makeInformations(lesson)
-    map.put(TYPE, LessonLogBuilder.Operation.CREATE.name())
+    map.put(TYPE, LessonLogBuilder.Operation.CREATE.toString)
     map.put(DETAIL, stringify(lesson))
     if (Strings.isNotEmpty(reason)) {
       map.put(REASON, reason)
@@ -81,7 +82,7 @@ object LessonLogBuilder {
 
   def delete(lesson: Lesson, reason: String): String = {
     val map = makeInformations(lesson)
-    map.put(TYPE, LessonLogBuilder.Operation.DELETE.name())
+    map.put(TYPE, LessonLogBuilder.Operation.DELETE.toString)
     if (Strings.isNotEmpty(reason)) {
       map.put(REASON, reason)
     }
@@ -90,7 +91,7 @@ object LessonLogBuilder {
 
   def update(lesson: Lesson, reason: String): String = {
     val map = makeInformations(lesson)
-    map.put(TYPE, LessonLogBuilder.Operation.UPDATE.name())
+    map.put(TYPE, LessonLogBuilder.Operation.UPDATE.toString)
     map.put(DETAIL, stringify(lesson))
     if (Strings.isNotEmpty(reason)) {
       map.put(REASON, reason)
@@ -108,7 +109,7 @@ object LessonLogBuilder {
     append(sb, "课程类别", lesson.courseType.name)
     append(sb, "开课院系", lesson.teachDepart.name)
     val tsb = new StringBuilder()
-    var iter = lesson.teachers.iterator()
+    var iter = lesson.teachers.iterator
     while (iter.hasNext) {
       val teacher = iter.next()
       tsb.append(teacher.name + '[' + teacher.code + ']')
@@ -137,15 +138,15 @@ object LessonLogBuilder {
     }
     append(sb, "实际人数", lesson.teachClass.stdCount)
     append(sb, "人数上限", lesson.teachClass.limitCount)
-    append(sb, "起始周", lesson.courseSchedule.startWeek)
-    append(sb, "结束周", lesson.courseSchedule.endWeek)
-    append(sb, "课时", lesson.courseSchedule.period)
+    append(sb, "起始周", lesson.schedule.startWeek)
+    append(sb, "结束周", lesson.schedule.endWeek)
+    append(sb, "课时", lesson.schedule.period)
     append(sb, "备注", lesson.remark)
     sb.replace(sb.length - 1, sb.length, "")
     sb.toString
   }
 
-  private def append(sb: StringBuilder, fieldName: String, value: AnyRef) {
+  private def append(sb: StringBuilder, fieldName: String, value: Any) {
     if (value == null) {
       sb.append(fieldName).append("=空\n")
     } else {

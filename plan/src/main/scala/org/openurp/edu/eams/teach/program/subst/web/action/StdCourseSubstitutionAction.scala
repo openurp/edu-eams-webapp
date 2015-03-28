@@ -5,7 +5,7 @@ import java.sql.Date
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.data.model.Entity
@@ -47,7 +47,7 @@ class StdCourseSubstitutionAction extends RestrictionSupportAction {
     val studentCode = get("studentCode")
     val students = entityDao.get(classOf[Student], "code", studentCode)
     val courses = new ArrayList[Course]()
-    if (CollectUtils.isNotEmpty(students)) {
+    if (Collections.isNotEmpty(students)) {
       val plan = coursePlanProvider.getCoursePlan(students.get(0))
       if (plan != null) {
         for (courseGroup <- plan.getGroups; planCourse <- courseGroup.getPlanCourses) {
@@ -92,10 +92,10 @@ class StdCourseSubstitutionAction extends RestrictionSupportAction {
       builder.orderBy(get(Order.ORDER_STR))
     }
     builder.where("stdCourseSubstitution.std.department in (:departments)", getDeparts)
-    if (CollectUtils.isNotEmpty(getStdTypes)) {
+    if (Collections.isNotEmpty(getStdTypes)) {
       builder.where("stdCourseSubstitution.std.type in (:stdTypes)", getStdTypes)
     }
-    if (CollectUtils.isNotEmpty(getEducations)) {
+    if (Collections.isNotEmpty(getEducations)) {
       builder.where("stdCourseSubstitution.std.education in (:educations)", getEducations)
     }
     builder.limit(getPageLimit)

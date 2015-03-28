@@ -7,7 +7,7 @@ import java.text.MessageFormat
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.lang.Strings
 import org.openurp.base.Semester
 import org.openurp.edu.eams.base.code.school.RoomType
@@ -22,8 +22,8 @@ import org.openurp.edu.teach.lesson.LessonPlanRelation
 import org.openurp.edu.teach.lesson.TeachClass
 import org.openurp.edu.eams.teach.lesson.dao.LessonDao
 import org.openurp.edu.eams.teach.lesson.model.LessonBean
-import org.openurp.edu.eams.teach.lesson.service.CourseLimitGroupBuilder
-import org.openurp.edu.eams.teach.lesson.service.CourseLimitService
+import org.openurp.edu.eams.teach.lesson.service.LessonLimitGroupBuilder
+import org.openurp.edu.eams.teach.lesson.service.LessonLimitService
 import org.openurp.edu.eams.teach.lesson.service.LessonLogBuilder
 import org.openurp.edu.eams.teach.lesson.service.LessonLogHelper
 import org.openurp.edu.eams.teach.lesson.task.biz.LessonGenPreview
@@ -50,7 +50,7 @@ class ClassicLessonGenStrategy extends AbstractLessonGenStrategy {
 
   private var lessonPlanRelationService: LessonPlanRelationService = _
 
-  private var courseLimitService: CourseLimitService = _
+  private var lessonLimitService: LessonLimitService = _
 
   protected override def iDo(source: String): Boolean = "MAJOR_PROGRAM" == source.toUpperCase()
 
@@ -131,7 +131,7 @@ class ClassicLessonGenStrategy extends AbstractLessonGenStrategy {
 
   private def getPlanCourses(preview: LessonGenPreview): List[MajorPlanCourse] = {
     val planCourses = PlanUtils.getPlanCourses(preview.getPlan, preview.getTerm)
-    if (CollectUtils.isEmpty(planCourses)) {
+    if (Collections.isEmpty(planCourses)) {
       preview.setError(MessageFormat.format("该计划在第{0}学期没有课程", preview.getTerm))
     }
     planCourses
@@ -145,14 +145,14 @@ class ClassicLessonGenStrategy extends AbstractLessonGenStrategy {
       override def shouldRemove(planCourse: MajorPlanCourse): Boolean = {
         val allowNoAdminclass = true == params.get("allowNoAdminclass")
         val adminclasses = other.asInstanceOf[List[Adminclass]]
-        if (CollectUtils.isEmpty(adminclasses) && !allowNoAdminclass) {
+        if (Collections.isEmpty(adminclasses) && !allowNoAdminclass) {
           return true
         }
         return false
       }
     }
       .filter()
-    if (CollectUtils.isEmpty(adminclasses) && CollectUtils.isEmpty(planCourses)) {
+    if (Collections.isEmpty(adminclasses) && Collections.isEmpty(planCourses)) {
       return "没有行政班无法生成任务"
     }
     val existCourses = new HashSet[Course]()
@@ -174,14 +174,14 @@ class ClassicLessonGenStrategy extends AbstractLessonGenStrategy {
       }
     }
       .filter()
-    if (CollectUtils.isNotEmpty(existCourses) && CollectUtils.isEmpty(planCourses)) {
+    if (Collections.isNotEmpty(existCourses) && Collections.isEmpty(planCourses)) {
       return "所有课程都已生成过任务"
     }
     new MajorPlanCourseFilter(planCourses, params) {
 
       override def shouldRemove(planCourse: MajorPlanCourse): Boolean = {
         val onlyGenCourseTypes = params.get("onlyGenCourseTypes").asInstanceOf[List[CourseType]]
-        if (CollectUtils.isNotEmpty(onlyGenCourseTypes) && 
+        if (Collections.isNotEmpty(onlyGenCourseTypes) && 
           !onlyGenCourseTypes.contains(planCourse.getCourseGroup.getCourseType)) {
           return true
         }
@@ -193,7 +193,7 @@ class ClassicLessonGenStrategy extends AbstractLessonGenStrategy {
 
       override def shouldRemove(planCourse: MajorPlanCourse): Boolean = {
         val onlyGenCourses = params.get("onlyGenCourses").asInstanceOf[List[Course]]
-        if (CollectUtils.isNotEmpty(onlyGenCourses) && !onlyGenCourses.contains(planCourse.getCourse)) {
+        if (Collections.isNotEmpty(onlyGenCourses) && !onlyGenCourses.contains(planCourse.getCourse)) {
           return true
         }
         return false
@@ -204,7 +204,7 @@ class ClassicLessonGenStrategy extends AbstractLessonGenStrategy {
 
       override def shouldRemove(planCourse: MajorPlanCourse): Boolean = {
         val dontGenCourses = params.get("dontGenCourses").asInstanceOf[List[Course]]
-        if (CollectUtils.isNotEmpty(dontGenCourses) && dontGenCourses.contains(planCourse.getCourse)) {
+        if (Collections.isNotEmpty(dontGenCourses) && dontGenCourses.contains(planCourse.getCourse)) {
           return true
         }
         return false
@@ -216,11 +216,11 @@ class ClassicLessonGenStrategy extends AbstractLessonGenStrategy {
 
   private def makeLessons(plan: MajorPlan, planCourses: List[MajorPlanCourse], params: Map[String, Any]): List[Lesson] = {
     val res = new ArrayList[Lesson]()
-    if (CollectUtils.isEmpty(planCourses)) {
+    if (Collections.isEmpty(planCourses)) {
       return res
     }
     val adminclasses = entityDao.search(AdminclassQueryBuilder.build(plan))
-    if (CollectUtils.isNotEmpty(adminclasses)) {
+    if (Collections.isNotEmpty(adminclasses)) {
       for (adminclass <- adminclasses) {
         val lessons = new ArrayList[Lesson]()
         for (planCourse <- planCourses) {
@@ -265,7 +265,7 @@ class ClassicLessonGenStrategy extends AbstractLessonGenStrategy {
     val teachClass = lesson.getTeachClass
     teachClass.setGrade(plan.getProgram.grade)
     teachClass.setDepart(plan.getProgram.department)
-    val builder = courseLimitService.builder(teachClass)
+    val builder = lessonLimitService.builder(teachClass)
     if (null != adminClass) {
       if (adminClass.getStdCount == 0) {
         teachClass.setLimitCount(adminClass.getPlanCount)
@@ -316,8 +316,8 @@ class ClassicLessonGenStrategy extends AbstractLessonGenStrategy {
     this.lessonPlanRelationService = lessonPlanRelationService
   }
 
-  def setCourseLimitService(courseLimitService: CourseLimitService) {
-    this.courseLimitService = courseLimitService
+  def setLessonLimitService(lessonLimitService: LessonLimitService) {
+    this.lessonLimitService = lessonLimitService
   }
 }
 

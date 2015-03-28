@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat
 
 
 import org.beangle.commons.bean.comparators.MultiPropertyComparator
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.lang.BitStrings
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.text.i18n.TextResource
@@ -67,7 +67,7 @@ class CourseActivityDigestor private () {
   }
 
   def digest(textResource: TextResource, lesson: Lesson, format: String): String = {
-    digest(textResource, lesson.courseSchedule.activities, format)
+    digest(textResource, lesson.schedule.activities, format)
   }
 
   def digest(textResource: TextResource, activities: Iterable[CourseActivity]): String = {
@@ -75,18 +75,18 @@ class CourseActivityDigestor private () {
   }
 
   def digest(textResource: TextResource, activities: Iterable[CourseActivity], format: String): String = {
-    if (CollectUtils.isEmpty(activities)) return ""
+    if (Collections.isEmpty(activities)) return ""
     if (Strings.isEmpty(format)) format = defaultFormat
     val semester = activities.iterator().next().lesson.semester
-    val mergedActivities = CollectUtils.newArrayList()
-    val teachers = CollectUtils.newHashSet()
+    val mergedActivities = Collections.newBuffer[Any]
+    val teachers = Collections.newSet[Any]
     val hasRoom = Strings.contains(format, room)
     val hasTeacher = Strings.contains(format, "teacher")
-    val activitiesList = CollectUtils.newArrayList(activities)
+    val activitiesList = Collections.newBuffer[Any](activities)
     Collections.sort(activitiesList)
     for (activity <- activitiesList) {
       if (hasTeacher) {
-        if (CollectUtils.isNotEmpty(activity.teachers)) teachers.addAll(activity.teachers)
+        if (Collections.isNotEmpty(activity.teachers)) teachers.addAll(activity.teachers)
       }
       var merged = false
       for (added <- mergedActivities if added.isSameActivityExcept(activity, hasTeacher, hasRoom)) {

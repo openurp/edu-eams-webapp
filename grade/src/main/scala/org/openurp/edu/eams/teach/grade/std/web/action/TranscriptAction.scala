@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest
 import org.apache.commons.io.FileUtils
 import org.beangle.commons.lang.Strings
 import org.apache.struts2.views.freemarker.FreemarkerResult
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.web.url.UrlBuilder
 import org.beangle.security.codec.EncryptUtil
 import org.openurp.edu.base.Student
@@ -46,9 +46,9 @@ class TranscriptAction extends BaseAction {
     var template: ReportTemplate = null
     val templateName = get("template")
     if (null != templateName) template = reportTemplateService.getTemplate(me.getProject, templateName)
-    var options = CollectUtils.newHashMap()
+    var options = Collections.newMap[Any]
     if (null != template) options = new Gson().fromJson(template.getOptions, classOf[Map[_,_]])
-    if (null == options) options = CollectUtils.newHashMap()
+    if (null == options) options = Collections.newMap[Any]
     for (provider <- dataProviderRegistry.getProviders(options.get("providers"))) {
       put(provider.getDataName, provider.getDatas(students, options))
     }

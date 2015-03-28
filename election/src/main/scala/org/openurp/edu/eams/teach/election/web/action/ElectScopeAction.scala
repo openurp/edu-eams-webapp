@@ -7,7 +7,7 @@ package org.openurp.edu.eams.teach.election.web.action
 import org.apache.commons.collections.CollectionUtils
 import org.apache.commons.collections.Predicate
 import org.apache.commons.lang3.ArrayUtils
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.lang.Strings
@@ -26,13 +26,13 @@ import org.openurp.edu.eams.teach.code.industry.ExamMode
 import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.eams.teach.election.ElectionProfile
 import org.openurp.edu.teach.schedule.CourseActivity
-import org.openurp.edu.teach.lesson.CourseLimitGroup
+import org.openurp.edu.teach.lesson.LessonLimitGroup
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.teach.lesson.LessonTag
 import org.openurp.edu.eams.teach.lesson.helper.LessonSearchHelper
-import org.openurp.edu.eams.teach.lesson.service.CourseLimitExtractorService
-import org.openurp.edu.eams.teach.lesson.service.CourseLimitGroupBuilder
-import org.openurp.edu.eams.teach.lesson.service.CourseLimitService
+import org.openurp.edu.eams.teach.lesson.service.LessonLimitExtractorService
+import org.openurp.edu.eams.teach.lesson.service.LessonLimitGroupBuilder
+import org.openurp.edu.eams.teach.lesson.service.LessonLimitService
 import org.openurp.edu.eams.teach.lesson.task.util.ProjectUtils
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
@@ -40,11 +40,11 @@ import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
 class ElectScopeAction extends SemesterSupportAction {
 
-  var courseLimitExtractorService: CourseLimitExtractorService = _
+  var lessonLimitExtractorService: LessonLimitExtractorService = _
 
   var lessonSearchHelper: LessonSearchHelper = _
 
-  var courseLimitService: CourseLimitService = _
+  var lessonLimitService: LessonLimitService = _
 
   def index(): String = {
     val semester = putSemester(null)
@@ -88,13 +88,13 @@ class ElectScopeAction extends SemesterSupportAction {
     val scopes = new ArrayList[Map[String, Any]]()
     for (limitGroup <- lesson.getTeachClass.getLimitGroups) {
       val scopeMap = new HashMap[String, Any]()
-      scopeMap.put("grades", courseLimitExtractorService.extractGrade(limitGroup))
-      scopeMap.put("educations", courseLimitExtractorService.extractEducations(limitGroup))
-      scopeMap.put("stdTypes", courseLimitExtractorService.extractStdTypes(limitGroup))
-      scopeMap.put("attendDeparts", courseLimitExtractorService.extractAttendDeparts(limitGroup))
-      scopeMap.put("majors", courseLimitExtractorService.extractMajors(limitGroup))
-      scopeMap.put("directions", courseLimitExtractorService.extractDirections(limitGroup))
-      scopeMap.put("adminclasses", courseLimitExtractorService.extractAdminclasses(limitGroup))
+      scopeMap.put("grades", lessonLimitExtractorService.extractGrade(limitGroup))
+      scopeMap.put("educations", lessonLimitExtractorService.extractEducations(limitGroup))
+      scopeMap.put("stdTypes", lessonLimitExtractorService.extractStdTypes(limitGroup))
+      scopeMap.put("attendDeparts", lessonLimitExtractorService.extractAttendDeparts(limitGroup))
+      scopeMap.put("majors", lessonLimitExtractorService.extractMajors(limitGroup))
+      scopeMap.put("directions", lessonLimitExtractorService.extractDirections(limitGroup))
+      scopeMap.put("adminclasses", lessonLimitExtractorService.extractAdminclasses(limitGroup))
       scopes.add(scopeMap)
     }
     put("lesson", lesson)
@@ -113,12 +113,12 @@ class ElectScopeAction extends SemesterSupportAction {
     val scopes = new ArrayList[Map[String, Any]]()
     for (scope <- lesson.getTeachClass.getLimitGroups) {
       val scopeMap = new HashMap[String, Any]()
-      scopeMap.put("grades", courseLimitExtractorService.extractGrade(scope))
-      scopeMap.put("stdTypes", courseLimitExtractorService.extractStdTypes(scope))
-      scopeMap.put("attendDeparts", courseLimitExtractorService.extractAttendDeparts(scope))
-      scopeMap.put("majors", courseLimitExtractorService.extractMajors(scope))
-      scopeMap.put("directions", courseLimitExtractorService.extractDirections(scope))
-      scopeMap.put("adminclasses", courseLimitExtractorService.extractAdminclasses(scope))
+      scopeMap.put("grades", lessonLimitExtractorService.extractGrade(scope))
+      scopeMap.put("stdTypes", lessonLimitExtractorService.extractStdTypes(scope))
+      scopeMap.put("attendDeparts", lessonLimitExtractorService.extractAttendDeparts(scope))
+      scopeMap.put("majors", lessonLimitExtractorService.extractMajors(scope))
+      scopeMap.put("directions", lessonLimitExtractorService.extractDirections(scope))
+      scopeMap.put("adminclasses", lessonLimitExtractorService.extractAdminclasses(scope))
       scopes.add(scopeMap)
     }
     put("scopes", scopes)
@@ -152,7 +152,7 @@ class ElectScopeAction extends SemesterSupportAction {
     val majorIds = getIntIds("major")
     val directionIds = getIntIds("direction")
     val adminclassIds = getIntIds("adminclass")
-    val limitGroupBuilder = courseLimitService.builder()
+    val limitGroupBuilder = lessonLimitService.builder()
     if (Strings.isNotEmpty(grades)) {
       limitGroupBuilder.inGrades(Strings.split(grades))
     }
@@ -209,7 +209,7 @@ class ElectScopeAction extends SemesterSupportAction {
     val limitGroup = limitGroupBuilder.build()
     limitGroup.setForClass(false)
     for (lesson <- lessons) {
-      lesson.getTeachClass.addLimitGroups(limitGroup.clone().asInstanceOf[CourseLimitGroup])
+      lesson.getTeachClass.addLimitGroups(limitGroup.clone().asInstanceOf[LessonLimitGroup])
     }
   }
 
@@ -222,7 +222,7 @@ class ElectScopeAction extends SemesterSupportAction {
       CollectionUtils.filter(lesson.getTeachClass.getLimitGroups, new Predicate() {
 
         def evaluate(`object`: AnyRef): Boolean = {
-          `object`.asInstanceOf[CourseLimitGroup].isForClass
+          `object`.asInstanceOf[LessonLimitGroup].isForClass
         }
       })
     }
@@ -249,7 +249,7 @@ class ElectScopeAction extends SemesterSupportAction {
   }
 
   def showSelect(): String = {
-    val idsMap = CollectUtils.newHashMap()
+    val idsMap = Collections.newMap[Any]
     val grades = Strings.split(get("grades"))
     val educationIds = Strings.splitToInt(get("educationIds"))
     val stdTypeIds = Strings.splitToInt(get("stdTypeIds"))

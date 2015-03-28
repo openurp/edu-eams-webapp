@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.grade.transcript.service.impl
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.springframework.beans.factory.InitializingBean
 import org.openurp.edu.base.Student
 import org.openurp.edu.eams.teach.grade.service.CourseGradeProvider
@@ -40,7 +40,7 @@ class TranscriptGpaProvider extends TranscriptDataProvider with InitializingBean
 
   def getDatas[T](stds: List[Student], options: Map[String, String]): Map[Student, T] = {
     val matched = getFilters(options)
-    val datas = CollectUtils.newHashMap()
+    val datas = Collections.newMap[Any]
     val gradeMap = courseGradeProvider.getPublished(stds)
     for (std <- stds) {
       var grades = gradeMap.get(std)

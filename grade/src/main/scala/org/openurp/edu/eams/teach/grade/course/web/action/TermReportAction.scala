@@ -4,7 +4,7 @@ import java.util.Date
 
 
 import org.beangle.commons.bean.comparators.PropertyComparator
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
@@ -52,7 +52,7 @@ class TermReportAction extends SemesterSupportAction {
     val stdList = entityDao.get(classOf[Student], Strings.splitToLong(get("std.ids")))
     val semesterId = getInt("semester.id")
     val semester = semesterService.getSemester(semesterId)
-    val stdGradeReports = CollectUtils.newArrayList()
+    val stdGradeReports = Collections.newBuffer[Any]
     for (std <- stdList) {
       val grades = courseGradeProvider.getPublished(std, semester)
       val stdTermGrade = new StdTermGrade(std, grades, null, new ArrayList[GradeFilter]())
@@ -65,7 +65,7 @@ class TermReportAction extends SemesterSupportAction {
     }
     put("setting", setting)
     val orders = Order.parse(get("orderBy"))
-    if (CollectUtils.isNotEmpty(orders)) {
+    if (Collections.isNotEmpty(orders)) {
       val order = orders.get(0)
       if (Strings.isNotBlank(order.getProperty) && order.getProperty != "null") {
         val orderCmp = new PropertyComparator(order.getProperty, order.isAscending)
@@ -103,7 +103,7 @@ class TermReportAction extends SemesterSupportAction {
     put("setting", setting)
     put("multiStdGrades", Collections.singletonList(multiStdGrade))
     put("FINAL_ID", GradeTypeConstants.FINAL_ID)
-    put("semesters", CollectUtils.newArrayList(semester))
+    put("semesters", Collections.newBuffer[Any](semester))
     forward()
   }
 

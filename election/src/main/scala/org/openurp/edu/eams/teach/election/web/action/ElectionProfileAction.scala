@@ -7,7 +7,7 @@ import java.util.Calendarimport java.util.Date
 
 import org.apache.commons.beanutils.PropertyUtils
 import org.apache.commons.lang3.time.DateUtils
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.data.model.Entity
@@ -123,7 +123,7 @@ class ElectionProfileAction extends SemesterSupportAction {
     if (null != semesterId && ArrayUtils.isNotEmpty(profileIds)) {
       val semester = entityDao.get(classOf[Semester], semesterId)
       val origProfiles = entityDao.get(classOf[ElectionProfile], profileIds)
-      val destProfiles = CollectUtils.newArrayList(origProfiles.size)
+      val destProfiles = Collections.newBuffer[Any](origProfiles.size)
       val date = new Date()
       for (origProfile <- origProfiles) {
         val destProfile = new ElectionProfileBean()
@@ -131,19 +131,19 @@ class ElectionProfileAction extends SemesterSupportAction {
           PropertyUtils.copyProperties(destProfile, origProfile)
           destProfile.setName(origProfile.getName + "-复制")
           destProfile.setId(null)
-          destProfile.setProjects(CollectUtils.newHashSet(destProfile.getProjects))
-          destProfile.setDeparts(CollectUtils.newHashSet(destProfile.getDeparts))
-          destProfile.setDirections(CollectUtils.newHashSet(destProfile.directions))
-          destProfile.setEducations(CollectUtils.newHashSet(destProfile.educations))
-          destProfile.setElectableLessons(CollectUtils.newHashSet(destProfile.getElectableLessons))
-          destProfile.setElectConfigs(CollectUtils.newHashSet(destProfile.getElectConfigs))
-          destProfile.setGeneralConfigs(CollectUtils.newHashSet(destProfile.getGeneralConfigs))
-          destProfile.setGrades(CollectUtils.newHashSet(destProfile.grades))
-          destProfile.setMajors(CollectUtils.newHashSet(destProfile.majors))
-          destProfile.setStdTypes(CollectUtils.newHashSet(destProfile.stdTypes))
-          destProfile.setStds(CollectUtils.newHashSet(destProfile.getStds))
-          destProfile.setWithdrawableLessons(CollectUtils.newHashSet(destProfile.getWithdrawableLessons))
-          destProfile.setWithdrawConfigs(CollectUtils.newHashSet(destProfile.getWithdrawConfigs))
+          destProfile.setProjects(Collections.newHashSet(destProfile.getProjects))
+          destProfile.setDeparts(Collections.newHashSet(destProfile.getDeparts))
+          destProfile.setDirections(Collections.newHashSet(destProfile.directions))
+          destProfile.setEducations(Collections.newHashSet(destProfile.educations))
+          destProfile.setElectableLessons(Collections.newHashSet(destProfile.getElectableLessons))
+          destProfile.setElectConfigs(Collections.newHashSet(destProfile.getElectConfigs))
+          destProfile.setGeneralConfigs(Collections.newHashSet(destProfile.getGeneralConfigs))
+          destProfile.setGrades(Collections.newHashSet(destProfile.grades))
+          destProfile.setMajors(Collections.newHashSet(destProfile.majors))
+          destProfile.setStdTypes(Collections.newHashSet(destProfile.stdTypes))
+          destProfile.setStds(Collections.newHashSet(destProfile.getStds))
+          destProfile.setWithdrawableLessons(Collections.newHashSet(destProfile.getWithdrawableLessons))
+          destProfile.setWithdrawConfigs(Collections.newHashSet(destProfile.getWithdrawConfigs))
           destProfile.setSemester(semester)
           destProfile.setCreatedAt(date)
           destProfile.setUpdatedAt(date)
@@ -178,7 +178,7 @@ class ElectionProfileAction extends SemesterSupportAction {
 
   protected def editSetting(entity: Entity[_]) {
     val profile = entity.asInstanceOf[ElectionProfile]
-    val datasMap = electionProfileService.getDatasMap(CollectUtils.newArrayList(profile))
+    val datasMap = electionProfileService.getDatasMap(Collections.newBuffer[Any](profile))
     put("departsMap", datasMap.get(classOf[Department]))
     put("stdTypesMap", datasMap.get(classOf[StdType]))
     put("majorsMap", datasMap.get(classOf[Major]))
@@ -186,9 +186,9 @@ class ElectionProfileAction extends SemesterSupportAction {
     put("educationsMap", datasMap.get(classOf[Education]))
     put("stdsMap", datasMap.get(classOf[Student]))
     put("electionProfileTypes", ElectionProfileType.values)
-    val lessonIds = CollectUtils.newHashSet(profile.getElectableLessons)
+    val lessonIds = Collections.newHashSet(profile.getElectableLessons)
     lessonIds.addAll(profile.getWithdrawableLessons)
-    val paramsMap = CollectUtils.newHashMap()
+    val paramsMap = Collections.newMap[Any]
     val electionConfigs = electionProfileService.getRuleConfigs(ElectRuleType.ELECTION)
     for (ruleConfig <- electionConfigs; configParam <- ruleConfig.getParams) {
       paramsMap.put(configParam.getParam, configParam)
@@ -227,12 +227,12 @@ class ElectionProfileAction extends SemesterSupportAction {
     val grades = get("grades")
     profile.grades.clear()
     if (Strings.isNotBlank(grades)) {
-      profile.setGrades(CollectUtils.newHashSet(grades.split(",")))
+      profile.setGrades(Collections.newHashSet(grades.split(",")))
     }
     val stdCodes = get("stdCodes")
     profile.getStds.clear()
     if (Strings.isNotBlank(stdCodes)) {
-      val codes = CollectUtils.newHashSet(Arrays.asList(stdCodes.replace("\r\n", "\n").split("\n"):_*))
+      val codes = Collections.newHashSet(Arrays.asList(stdCodes.replace("\r\n", "\n").split("\n"):_*))
         .toArray()
       val stds = entityDao.get(classOf[Student], "code", codes)
       if (stds.size != codes.length) {
@@ -244,7 +244,7 @@ class ElectionProfileAction extends SemesterSupportAction {
         }
       }
     }
-    val idsMap = CollectUtils.newHashMap()
+    val idsMap = Collections.newMap[Any]
     idsMap.put(classOf[Education], get("educationIds"))
     idsMap.put(classOf[StdType], get("stdTypeIds"))
     idsMap.put(classOf[Department], get("departIds"))
@@ -253,17 +253,17 @@ class ElectionProfileAction extends SemesterSupportAction {
     profile.getElectConfigs.clear()
     val electConfigIds = getIntIds("electionConfig")
     if (ArrayUtils.isNotEmpty(electConfigIds)) {
-      profile.setElectConfigs(CollectUtils.newHashSet(entityDao.get(classOf[RuleConfig], electConfigIds)))
+      profile.setElectConfigs(Collections.newHashSet(entityDao.get(classOf[RuleConfig], electConfigIds)))
     }
     profile.getWithdrawConfigs.clear()
     val withdrawConfigIds = getIntIds("withdrawConfig")
     if (ArrayUtils.isNotEmpty(withdrawConfigIds)) {
-      profile.setWithdrawConfigs(CollectUtils.newHashSet(entityDao.get(classOf[RuleConfig], withdrawConfigIds)))
+      profile.setWithdrawConfigs(Collections.newHashSet(entityDao.get(classOf[RuleConfig], withdrawConfigIds)))
     }
     profile.getGeneralConfigs.clear()
     val generalConfigsIds = getIntIds("generalConfig")
     if (ArrayUtils.isNotEmpty(generalConfigsIds)) {
-      profile.setGeneralConfigs(CollectUtils.newHashSet(entityDao.get(classOf[RuleConfig], generalConfigsIds)))
+      profile.setGeneralConfigs(Collections.newHashSet(entityDao.get(classOf[RuleConfig], generalConfigsIds)))
     }
     try {
       electionProfileService.setDatas(profile, idsMap, getProject)
@@ -299,7 +299,7 @@ class ElectionProfileAction extends SemesterSupportAction {
     val datas = if (`type`) "electableLessons" else "withdrawableLessons"
     val builder = OqlBuilder.from(classOf[Lesson], "lesson")
     val departments = getDeparts
-    if (CollectUtils.isEmpty(departments)) {
+    if (Collections.isEmpty(departments)) {
       builder.where("1=2")
     } else {
       builder.where("lesson.teachDepart in(:departs)", departments)
@@ -316,7 +316,7 @@ class ElectionProfileAction extends SemesterSupportAction {
         }
       } else {
         if (null == profileId) {
-          put("lessons", CollectUtils.newArrayList())
+          put("lessons", Collections.newBuffer[Any])
           return
         } else {
           builder.where("exists(from " + classOf[ElectionProfile].getName + " electProfile " + 
@@ -363,11 +363,11 @@ class ElectionProfileAction extends SemesterSupportAction {
       val isArrangeCompleted = get("status")
       if (Strings.isNotEmpty(isArrangeCompleted)) {
         if (isArrangeCompleted == CourseStatusEnum.NEED_ARRANGE.toString) {
-          builder.where("lesson.courseSchedule.status = :status", CourseStatusEnum.NEED_ARRANGE)
+          builder.where("lesson.schedule.status = :status", CourseStatusEnum.NEED_ARRANGE)
         } else if (isArrangeCompleted == CourseStatusEnum.DONT_ARRANGE.toString) {
-          builder.where("lesson.courseSchedule.status = :status", CourseStatusEnum.DONT_ARRANGE)
+          builder.where("lesson.schedule.status = :status", CourseStatusEnum.DONT_ARRANGE)
         } else if (isArrangeCompleted == CourseStatusEnum.ARRANGED.toString) {
-          builder.where("lesson.courseSchedule.status = :status", CourseStatusEnum.ARRANGED)
+          builder.where("lesson.schedule.status = :status", CourseStatusEnum.ARRANGED)
         }
       }
       builder.orderBy(get(Order.ORDER_STR)).limit(getPageLimit)
@@ -388,7 +388,7 @@ class ElectionProfileAction extends SemesterSupportAction {
     var ids: Array[Long] = null
     val departments = getDeparts
     val profile = getModel(getEntityName, profileId).asInstanceOf[ElectionProfile]
-    if (CollectUtils.isEmpty(departments)) {
+    if (Collections.isEmpty(departments)) {
       ids = Array.ofDim[Long](0)
     } else {
       val builder = OqlBuilder.from(classOf[Lesson].getName + " lesson")
@@ -410,22 +410,22 @@ class ElectionProfileAction extends SemesterSupportAction {
       } else if ("sameAsElectable" == actionType) {
         if (!profile.getWithdrawableLessons.isEmpty) {
           val lessons = entityDao.get(classOf[Lesson], profile.getWithdrawableLessons)
-          val departSet = CollectUtils.newHashSet(departments)
+          val departSet = Collections.newHashSet(departments)
           for (lesson <- lessons if departSet.contains(lesson.getTeachDepart)) {
             profile.getWithdrawableLessons.remove(lesson.id)
           }
         }
         if (!profile.getWithdrawableLessons.isEmpty) {
           val lessons = entityDao.get(classOf[Lesson], profile.getWithdrawableLessons)
-          val departSet = CollectUtils.newHashSet(departments)
+          val departSet = Collections.newHashSet(departments)
           for (lesson <- lessons if departSet.contains(lesson.getTeachDepart)) {
             profile.getWithdrawableLessons.remove(lesson.id)
           }
         }
-        val idsList = CollectUtils.newArrayList()
+        val idsList = Collections.newBuffer[Any]
         if (!profile.getElectableLessons.isEmpty) {
           val lessons = entityDao.get(classOf[Lesson], profile.getElectableLessons)
-          val departSet = CollectUtils.newHashSet(departments)
+          val departSet = Collections.newHashSet(departments)
           for (lesson <- lessons if departSet.contains(lesson.getTeachDepart)) {
             idsList.add(lesson.id)
           }
@@ -434,7 +434,7 @@ class ElectionProfileAction extends SemesterSupportAction {
       } else if ("clearAllWithdrawableLesson" == actionType) {
         if (!profile.getWithdrawableLessons.isEmpty) {
           val lessons = entityDao.get(classOf[Lesson], profile.getWithdrawableLessons)
-          val departSet = CollectUtils.newHashSet(departments)
+          val departSet = Collections.newHashSet(departments)
           for (lesson <- lessons if departSet.contains(lesson.getTeachDepart)) {
             profile.getWithdrawableLessons.remove(lesson.id)
           }
@@ -443,7 +443,7 @@ class ElectionProfileAction extends SemesterSupportAction {
       } else if ("clearAllElectableLesson" == actionType) {
         if (!profile.getElectableLessons.isEmpty) {
           val lessons = entityDao.get(classOf[Lesson], profile.getElectableLessons)
-          val departSet = CollectUtils.newHashSet(departments)
+          val departSet = Collections.newHashSet(departments)
           for (lesson <- lessons if departSet.contains(lesson.getTeachDepart)) {
             profile.getElectableLessons.remove(lesson.id)
           }
@@ -451,10 +451,10 @@ class ElectionProfileAction extends SemesterSupportAction {
         ids = Array.ofDim[Long](0)
       } else {
         val lessonIds = getLongIds("lesson")
-        val idsList = CollectUtils.newArrayList()
+        val idsList = Collections.newBuffer[Any]
         if (null != lessonIds && lessonIds.length > 0) {
           val lessons = entityDao.get(classOf[Lesson], lessonIds)
-          val departSet = CollectUtils.newHashSet(departments)
+          val departSet = Collections.newHashSet(departments)
           for (lesson <- lessons if departSet.contains(lesson.getTeachDepart)) {
             idsList.add(lesson.id)
           }
@@ -566,7 +566,7 @@ class ElectionProfileAction extends SemesterSupportAction {
   }
 
   def ajaxQuery(): String = {
-    val idsMap = CollectUtils.newHashMap()
+    val idsMap = Collections.newMap[Any]
     idsMap.put(classOf[Education], get("educationIds"))
     idsMap.put(classOf[StdType], get("stdTypeIds"))
     idsMap.put(classOf[Department], get("departIds"))
@@ -583,15 +583,15 @@ class ElectionProfileAction extends SemesterSupportAction {
         if (Strings.isNotBlank(stdCodes)) {
           val codes = stdCodes.replace("\r\n", "\n").split("\n")
           val stds = entityDao.get(classOf[Student], "code", codes)
-          val stdsMap = CollectUtils.newHashMap()
+          val stdsMap = Collections.newMap[Any]
           for (student <- stds) {
             stdsMap.put(student.getCode, student)
           }
           put("datas", stdsMap)
           put("selecteds", codes)
         } else {
-          put("datas", CollectUtils.newHashMap())
-          put("selecteds", CollectUtils.newArrayList(0))
+          put("datas", Collections.newMap[Any])
+          put("selecteds", Collections.newBuffer[Any](0))
         }
       } else {
         datas = electionProfileService.getDatas(ScopeType.value(`type`).getType, idsMap, getProject)
@@ -600,8 +600,8 @@ class ElectionProfileAction extends SemesterSupportAction {
       }
     } catch {
       case e: Exception => {
-        put("datas", CollectUtils.newArrayList(0))
-        put("selecteds", CollectUtils.newArrayList(0))
+        put("datas", Collections.newBuffer[Any](0))
+        put("selecteds", Collections.newBuffer[Any](0))
       }
     }
     put("title", get("title"))

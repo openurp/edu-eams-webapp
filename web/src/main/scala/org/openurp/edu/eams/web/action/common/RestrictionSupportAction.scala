@@ -3,7 +3,7 @@ package org.openurp.edu.eams.web.action.common
 
 
 import org.apache.commons.collections.CollectionUtils
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.lang.Strings
 import org.openurp.base.Department
 import org.openurp.edu.eams.base.School
@@ -67,9 +67,9 @@ abstract class RestrictionSupportAction extends BaseAction {
   protected def getEducations(): List[Education] = {
     val project = getProject
     if (null != project) {
-      val data = CollectUtils.newHashSet(Strings.split(restrictionHelper.educationIdSeq))
+      val data = Collections.newHashSet(Strings.split(restrictionHelper.educationIdSeq))
       if (data.contains("*")) return project.educations
-      val rs = CollectUtils.newArrayList()
+      val rs = Collections.newBuffer[Any]
       for (d <- project.educations if data.contains(d.id.toString)) rs.add(d)
       rs
     } else {
@@ -80,9 +80,9 @@ abstract class RestrictionSupportAction extends BaseAction {
   protected def getStdTypes(): List[StdType] = {
     val project = getProject
     if (null != getProject) {
-      val data = CollectUtils.newHashSet(Strings.split(restrictionHelper.stdTypeIdSeq))
+      val data = Collections.newHashSet(Strings.split(restrictionHelper.stdTypeIdSeq))
       if (data.contains("*")) return project.getTypes
-      val rs = CollectUtils.newArrayList()
+      val rs = Collections.newBuffer[Any]
       for (d <- project.getTypes if data.contains(d.id.toString)) rs.add(d)
       rs
     } else {
@@ -93,9 +93,9 @@ abstract class RestrictionSupportAction extends BaseAction {
   protected def getDeparts(): List[Department] = {
     val project = getProject
     if (null != getProject) {
-      val data = CollectUtils.newHashSet(Strings.split(restrictionHelper.departmentIdSeq))
+      val data = Collections.newHashSet(Strings.split(restrictionHelper.departmentIdSeq))
       if (data.contains("*")) return project.departments
-      val rs = CollectUtils.newArrayList()
+      val rs = Collections.newBuffer[Any]
       for (d <- project.departments if data.contains(d.id.toString)) rs.add(d)
       rs
     } else {
@@ -104,7 +104,7 @@ abstract class RestrictionSupportAction extends BaseAction {
   }
 
   protected def getCollegeOfDeparts(): List[Department] = {
-    val departments = CollectUtils.newArrayList()
+    val departments = Collections.newBuffer[Any]
     for (department <- getDeparts if department.isCollege) {
       departments.add(department)
     }

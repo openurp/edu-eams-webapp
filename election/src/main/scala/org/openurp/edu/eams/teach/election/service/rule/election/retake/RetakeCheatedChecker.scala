@@ -2,7 +2,7 @@ package org.openurp.edu.eams.teach.election.service.rule.election.retake
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.lang.Strings
@@ -42,7 +42,7 @@ class RetakeCheatedChecker extends AbstractElectableLessonFilter with ElectRuleP
 
   def prepare(context: PrepareContext) {
     if (!context.isPreparedData(PreparedDataName.CHECTED_COURSES)) {
-      val cheatedCourseSubstitutionIds = CollectUtils.newHashSet()
+      val cheatedCourseSubstitutionIds = Collections.newSet[Any]
       var examStatusNames: Array[String] = null
       val params = getParams(context.getState.getProfile(entityDao).getElectConfigs)
       var violationParam: RuleConfigParam = null
@@ -60,7 +60,7 @@ class RetakeCheatedChecker extends AbstractElectableLessonFilter with ElectRuleP
       if (null != violationParam && Strings.isNotBlank(violationParam.getValue)) {
         examStatusNames = Strings.split(Strings.trim(violationParam.getValue), ",")
       }
-      val cheatedCourses = CollectUtils.newHashMap()
+      val cheatedCourses = Collections.newMap[Any]
       if (null != examStatusNames) {
         val builder = OqlBuilder.from(classOf[CourseGrade].getName + " courseGrade")
         builder.select("select distinct courseGrade.course")
@@ -73,7 +73,7 @@ class RetakeCheatedChecker extends AbstractElectableLessonFilter with ElectRuleP
             builder.where("courseGrade.semester = :prevSemester", prevSemester)
           }
         }
-        val cheatedCourseSet = CollectUtils.newHashSet(entityDao.search(builder))
+        val cheatedCourseSet = Collections.newHashSet(entityDao.search(builder))
         for (course <- cheatedCourseSet) {
           for (courseSubstitution <- context.getState.getCourseSubstitutions if courseSubstitution.getOrigins.contains(course.id)) {
             cheatedCourseSubstitutionIds.addAll(courseSubstitution.getSubstitutes)

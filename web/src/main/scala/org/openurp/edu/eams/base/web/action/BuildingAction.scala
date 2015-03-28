@@ -2,7 +2,7 @@ package org.openurp.edu.eams.base.web.action
 
 
 import java.util.Date
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
@@ -69,7 +69,7 @@ class BuildingAction extends BaseInfoAction {
     if (null != building.id) {
       query.where("building != :building", building)
     }
-    if (CollectUtils.isNotEmpty(entityDao.search(query))) {
+    if (Collections.isNotEmpty(entityDao.search(query))) {
       setting()
       put("building", building)
       addError("error.code.existed")
@@ -104,7 +104,7 @@ class BuildingAction extends BaseInfoAction {
   }
 
   def checkDuplicated(): String = {
-    put("duplicated", CollectUtils.isNotEmpty(entityDao.get(classOf[Building], "code", get("code"))))
+    put("duplicated", Collections.isNotEmpty(entityDao.get(classOf[Building], "code", get("code"))))
     forward()
   }
 

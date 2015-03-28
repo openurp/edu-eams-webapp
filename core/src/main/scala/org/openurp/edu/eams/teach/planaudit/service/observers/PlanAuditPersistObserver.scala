@@ -4,7 +4,7 @@ import java.util.Date
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.edu.base.Student
@@ -87,44 +87,44 @@ class PlanAuditPersistObserver extends BaseServiceImpl with PlanAuditObserver {
     }
     target.auditStat=source.auditStat
     target.passed=source.isPassed
-    val targetGroupResults = CollectUtils.newHashMap()
-    val sourceGroupResults = CollectUtils.newHashMap()
+    val targetGroupResults = Collections.newMap[Any]
+    val sourceGroupResults = Collections.newMap[Any]
     for (result <- target.children) targetGroupResults.put(result.name, result)
     for (result <- source.children) sourceGroupResults.put(result.name, result)
-    val targetCourseResults = CollectUtils.newHashMap()
-    val sourceCourseResults = CollectUtils.newHashMap()
+    val targetCourseResults = Collections.newMap[Any]
+    val sourceCourseResults = Collections.newMap[Any]
     for (courseResult <- target.courseResults) targetCourseResults.put(courseResult.course, courseResult)
     for (courseResult <- source.courseResults) sourceCourseResults.put(courseResult.course, courseResult)
-    val removed = CollectUtils.subtract(targetGroupResults.keySet, sourceGroupResults.keySet)
+    val removed = Collections.subtract(targetGroupResults.keySet, sourceGroupResults.keySet)
     for (groupName <- removed) {
       val gg = targetGroupResults.get(groupName)
       gg.detach()
       target.removeChild(gg)
     }
-    val added = CollectUtils.subtract(sourceGroupResults.keySet, targetGroupResults.keySet)
+    val added = Collections.subtract(sourceGroupResults.keySet, targetGroupResults.keySet)
     for (groupName <- added) {
       val groupResult = sourceGroupResults.get(groupName).asInstanceOf[GroupAuditResult]
       target.addChild(groupResult)
       groupResult.attachTo(existedResult)
     }
-    val common = CollectUtils.intersection(sourceGroupResults.keySet, targetGroupResults.keySet)
+    val common = Collections.intersection(sourceGroupResults.keySet, targetGroupResults.keySet)
     for (groupName <- common) {
       mergeGroupResult(existedResult, targetGroupResults.get(groupName), sourceGroupResults.get(groupName), 
         updates)
     }
-    val removedCourses = CollectUtils.subtract(targetCourseResults.keySet, sourceCourseResults.keySet)
+    val removedCourses = Collections.subtract(targetCourseResults.keySet, sourceCourseResults.keySet)
     for (course <- removedCourses) {
       val courseResult = targetCourseResults.get(course).asInstanceOf[CourseAuditResult]
       target.courseResults.remove(courseResult)
     }
-    val addedCourses = CollectUtils.subtract(sourceCourseResults.keySet, targetCourseResults.keySet)
+    val addedCourses = Collections.subtract(sourceCourseResults.keySet, targetCourseResults.keySet)
     for (course <- addedCourses) {
       val courseResult = sourceCourseResults.get(course).asInstanceOf[CourseAuditResult]
       courseResult.groupResult.courseResults.remove(courseResult)
       courseResult.groupResult=target
       target.courseResults.add(courseResult)
     }
-    val commonCourses = CollectUtils.intersection(sourceCourseResults.keySet, targetCourseResults.keySet)
+    val commonCourses = Collections.intersection(sourceCourseResults.keySet, targetCourseResults.keySet)
     for (course <- commonCourses) {
       val targetCourseResult = targetCourseResults.get(course)
       val sourceCourseResult = sourceCourseResults.get(course)

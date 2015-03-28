@@ -15,6 +15,6 @@ class SharePlanDaoHibernate extends HibernateEntityDao with SharePlanDao {
     if (educationId != null && "" != educationId) {
       str += " and sharePlan.education.id=" + educationId
     }
-    getSession.createQuery(str).list()
+    currentSession.createQuery(str).list()
   }
 }

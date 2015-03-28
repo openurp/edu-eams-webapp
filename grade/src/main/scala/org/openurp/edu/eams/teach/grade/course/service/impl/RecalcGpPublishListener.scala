@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.grade.course.service.impl
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.dao.Operation
 import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.eams.teach.grade.service.CourseGradeCalculator
@@ -25,7 +25,7 @@ class RecalcGpPublishListener extends CourseGradePublishListener {
   }
 
   def onPublish(grades: Iterable[CourseGrade], gradeState: CourseGradeState, gradeTypes: Array[GradeType]): List[Operation] = {
-    val operations = CollectUtils.newArrayList()
+    val operations = Collections.newBuffer[Any]
     var hasMakeupOrDelay = false
     for (gradeType <- gradeTypes if gradeType.id == GradeTypeConstants.MAKEUP_ID || gradeType.id == GradeTypeConstants.DELAY_ID) {
       hasMakeupOrDelay = true

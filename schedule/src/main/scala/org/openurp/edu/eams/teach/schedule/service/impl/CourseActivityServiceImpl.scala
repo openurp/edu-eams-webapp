@@ -10,7 +10,7 @@ import java.util.Calendar
 import org.apache.commons.beanutils.BeanUtils
 import org.apache.commons.lang3.ArrayUtils
 import org.beangle.commons.bean.transformers.PropertyTransformer
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.conversion.impl.DefaultConversion
 import org.beangle.commons.dao.Operation
 import org.beangle.commons.dao.impl.BaseServiceImpl
@@ -40,8 +40,8 @@ import org.openurp.edu.eams.system.msg.SystemMessage
 import org.openurp.edu.eams.system.msg.SystemMessageType
 import org.openurp.edu.eams.system.msg.model.MessageContentBean
 import org.openurp.edu.teach.schedule.CourseActivity
-import org.openurp.edu.teach.lesson.CourseLimitItem
-import org.openurp.edu.teach.lesson.CourseLimitMeta.Operator
+import org.openurp.edu.teach.lesson.LessonLimitItem
+import org.openurp.edu.teach.lesson.LessonLimitMeta.Operator
 import org.openurp.edu.teach.lesson.CourseTake
 import org.openurp.edu.eams.teach.lesson.CourseTime
 import org.openurp.edu.eams.teach.lesson.ExamMonitor
@@ -49,7 +49,7 @@ import org.openurp.edu.teach.exam.ExamRoom
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.teach.lesson.model.CourseScheduleBean.CourseStatusEnum
 import org.openurp.edu.eams.teach.lesson.service.LessonService
-import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnum
+import org.openurp.edu.eams.teach.lesson.service.limit.LessonLimitMetaEnum
 import org.openurp.edu.eams.teach.lesson.util.CourseActivityDigestor
 import org.openurp.edu.eams.teach.lesson.util.SemesterUtil
 import org.openurp.edu.eams.teach.lesson.util.YearWeekTimeUtil
@@ -75,7 +75,7 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
   protected var scheduleLogHelper: ScheduleLogHelper = _
 
   def saveActivities(lessons: Iterable[Lesson]) {
-    if (CollectUtils.isNotEmpty(lessons)) {
+    if (Collections.isNotEmpty(lessons)) {
       entityDao.saveOrUpdate(lessons)
     }
   }
@@ -88,7 +88,7 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
 
   def removeActivities(lessonIds: Array[Long], semester: Semester) {
     if (ArrayUtils.isNotEmpty(lessonIds) && semester != null) {
-      var occupancies = CollectUtils.newArrayList()
+      var occupancies = Collections.newBuffer[Any]
       var lessonIdCondition = ""
       for (i <- 0 until lessonIds.length) {
         if (i > 0) {
@@ -117,18 +117,18 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
   def getCourseUnits(lessonId: java.lang.Long, date: Date): List[CourseUnit] = {
     val lesson = entityDao.get(classOf[Lesson], lessonId)
     if (null == lesson) {
-      CollectUtils.newArrayList()
+      Collections.newBuffer[Any]
     } else {
       val semester = lesson.getSemester
-      val timeCourseUnits = CollectUtils.newHashSet()
+      val timeCourseUnits = Collections.newSet[Any]
       if (!semester.contains(date)) {
-        return CollectUtils.newArrayList()
+        return Collections.newBuffer[Any]
       }
       val units = Array.ofDim[Boolean](timeCourseUnits.size)
       for (activity <- lesson.getCourseSchedule.getActivities if activity.contains(date); i <- activity.getTime.getStartUnit until activity.getTime.getEndUnit + 1) {
         units(i - 1) = true
       }
-      val courseUnits = CollectUtils.newArrayList()
+      val courseUnits = Collections.newBuffer[Any]
       for (courseUnit <- timeCourseUnits if units(courseUnit.getIndexno - 1)) courseUnits.add(courseUnit)
       Collections.sort(courseUnits)
       courseUnits
@@ -145,14 +145,14 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
       lessonId: java.lang.Long): Iterable[CollisionInfo] = {
     var entityClass: Class[_ <: Entity[_ <: Number]] = null
     var query: OqlBuilder[_] = null
-    val collisionInfos = CollectUtils.newHashMap()
-    val collisionInfos2 = CollectUtils.newHashMap()
-    val collisionInfos3 = CollectUtils.newHashMap()
+    val collisionInfos = Collections.newMap[Any]
+    val collisionInfos2 = Collections.newMap[Any]
+    val collisionInfos3 = Collections.newMap[Any]
     `type` match {
       case ADMINCLASS => 
         var resources = beforeDetectCollision(semester, `type`)
         entityClass = classOf[Adminclass]
-        var params = CollectUtils.newHashMap()
+        var params = Collections.newMap[Any]
         var hql = "select activity.lesson,activity1.lesson,activity.time from " + 
           classOf[CourseActivity].getName + 
           " activity," + 
@@ -191,7 +191,7 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
           val courseTime = objs(0).asInstanceOf[CourseTime]
           val occupancyRoom = objs(1).asInstanceOf[Room]
           val timeUnits = YearWeekTimeUtil.convertToYearWeekTimes(semester, courseTime)
-          params = CollectUtils.newHashMap()
+          params = Collections.newMap[Any]
           for (timeUnit <- timeUnits) {
             hql = "exists(select occupancy.room.id from org.openurp.edu.eams.classroom.Occupancy occupancy " + 
               "where bitand(occupancy.time.state," + 
@@ -306,9 +306,9 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
         }
         var activities = entityDao.get(classOf[ExamRoom], "semester", semester)
         if (!activities.isEmpty) {
-          val infos2 = CollectUtils.newHashSet()
+          val infos2 = Collections.newSet[Any]
           for (examRoom <- activities) {
-            val teachers = CollectUtils.newHashSet()
+            val teachers = Collections.newSet[Any]
             teachers.add(examRoom.getExaminer)
             for (monitor <- examRoom.getMonitors) {
               teachers.add(monitor.getTeacher)
@@ -366,14 +366,14 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
   }
 
   private def beforeDetectCollision(semester: Semester, `type`: ResourceType): Map[Integer, Set[Lesson]] = {
-    val collisionResources = CollectUtils.newHashMap()
-    val collisionResource = CollectUtils.newArrayList()
-    val query = OqlBuilder.from(classOf[CourseLimitItem], "courseLimitItem")
-      .where("courseLimitItem.group.lesson.semester = :semester", semester)
-      .where("courseLimitItem.meta.id = :metaId", if (ResourceType.ADMINCLASS == `type`) CourseLimitMetaEnum.ADMINCLASS.getMetaId else CourseLimitMetaEnum.PROGRAM.getMetaId)
-      .where("courseLimitItem.operator =:operator1 or courseLimitItem.operator =:operator2", Operator.IN, 
-      Operator.EQUAL)
-      .select("distinct courseLimitItem.group.lesson,courseLimitItem.content")
+    val collisionResources = Collections.newMap[Any]
+    val collisionResource = Collections.newBuffer[Any]
+    val query = OqlBuilder.from(classOf[LessonLimitItem], "lessonLimitItem")
+      .where("lessonLimitItem.group.lesson.semester = :semester", semester)
+      .where("lessonLimitItem.meta.id = :metaId", if (ResourceType.ADMINCLASS == `type`) LessonLimitMeta.Adminclass.getMetaId else LessonLimitMeta.Program.getMetaId)
+      .where("lessonLimitItem.operator =:operator1 or lessonLimitItem.operator =:operator2", Operator.IN, 
+      Operator.Equals)
+      .select("distinct lessonLimitItem.group.lesson,lessonLimitItem.content")
     val collisionResourceClass = entityDao.search(query).asInstanceOf[List[Array[Any]]]
     for (objects <- collisionResourceClass) {
       val adminclassIds = Strings.splitToInt(objects(1).asInstanceOf[String])
@@ -388,7 +388,7 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
       val lesson = objects(0).asInstanceOf[Lesson]
       var conflictLessons = collisionResources.get(adminclassId)
       if (conflictLessons == null) {
-        conflictLessons = CollectUtils.newHashSet(lesson)
+        conflictLessons = Collections.newHashSet(lesson)
         collisionResources.put(adminclassId, conflictLessons)
       } else {
         conflictLessons.add(lesson)
@@ -399,9 +399,9 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
 
   private def fillCollisionEntities[T <: Entity[_ <: Number]](entityClass: Class[T], semester: Semester, collisionInfos: Map[String, CollisionInfo]*): Iterable[CollisionInfo] = {
     if (ArrayUtils.isEmpty(collisionInfos)) {
-      return CollectUtils.newArrayList()
+      return Collections.newBuffer[Any]
     }
-    val collisionInfoResults = CollectUtils.newHashSet()
+    val collisionInfoResults = Collections.newSet[Any]
     val nClass = entityClass
     for (collisionInfosMap <- collisionInfos) {
       if (collisionInfosMap.isEmpty) {
@@ -409,7 +409,7 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
       }
       val idSet = collisionInfosMap.keySet
       val idClazz = Model.getType(nClass).idType
-      val rsList = CollectUtils.newArrayList()
+      val rsList = Collections.newBuffer[Any]
       for (a <- idSet) {
         rsList.add(DefaultConversion.Instance.convert(a, idClazz))
       }
@@ -426,10 +426,10 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
   }
 
   def collisionTakes(lesson: Lesson, activities: Iterable[CourseActivity]): Iterable[CourseTake] = {
-    if (CollectUtils.isNotEmpty(lesson.getTeachClass.getCourseTakes)) {
-      val stdIds = CollectUtils.collect(lesson.getTeachClass.getNormalCourseTakes, new PropertyTransformer("std.id"))
+    if (Collections.isNotEmpty(lesson.getTeachClass.getCourseTakes)) {
+      val stdIds = Collections.collect(lesson.getTeachClass.getNormalCourseTakes, new PropertyTransformer("std.id"))
       if (!stdIds.isEmpty) {
-        val collisionTakes = CollectUtils.newArrayList()
+        val collisionTakes = Collections.newBuffer[Any]
         for (courseActivity <- activities if isStdsOccupied(courseActivity.getTime, stdIds, lesson); 
              stdId <- stdIds) {
           val courseTakes = getCourseTakes(stdId, courseActivity.getTime, lesson.getSemester)
@@ -440,7 +440,7 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
         return collisionTakes
       }
     }
-    CollectUtils.newArrayList()
+    Collections.newBuffer[Any]
   }
 
   def isStdsOccupied(time: CourseTime, stdIds: Iterable[Long], except: Lesson): Boolean = {
@@ -454,16 +454,16 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
     builder.where("activity.lesson <> :lesson", except)
     builder.where("activity.lesson.semester = :semester", except.getSemester)
     val courseActivities = entityDao.search(builder)
-    CollectUtils.isNotEmpty(courseActivities)
+    Collections.isNotEmpty(courseActivities)
   }
 
   def getCourseTakes(stdId: java.lang.Long, time: CourseTime, semester: Semester): List[CourseTake] = {
     if (null == stdId) {
-      return CollectUtils.newArrayList()
+      return Collections.newBuffer[Any]
     }
     val query = OqlBuilder.from(classOf[CourseTake], "take")
     query.where("take.std.id = :stdId", stdId)
-    val conditions = CollectUtils.newArrayList()
+    val conditions = Collections.newBuffer[Any]
     if (null != time) {
       if (0 != time.day) {
         conditions.add(new Condition("activity.time.day = :weekday", time.day))
@@ -481,8 +481,8 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
     if (semester != null) {
       query.where("take.lesson.semester = :semester", semester)
     }
-    if (CollectUtils.isNotEmpty(conditions)) {
-      query.join("take.lesson.courseSchedule.activities", "activity")
+    if (Collections.isNotEmpty(conditions)) {
+      query.join("take.lesson.schedule.activities", "activity")
       query.where(conditions)
     }
     entityDao.search(query)
@@ -539,7 +539,7 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
       val content = Model.newInstance(classOf[MessageContentBean])
       content.setSender(user)
       content.setSubject("调课通知！")
-      val messages = CollectUtils.newHashSet()
+      val messages = Collections.newSet[Any]
       content.setText(strMsg.toString)
       content.setCreatedAt(new java.util.Date())
       content.setActiveOn(content.getCreatedAt)
@@ -551,7 +551,7 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
       for (teacher <- task.getTeachers) {
         val message = Model.newInstance(classOf[SystemMessage])
         val users = entityDao.get(classOf[User], "name", teacher.getCode)
-        if (CollectUtils.isEmpty(users)) {
+        if (Collections.isEmpty(users)) {
           //continue
         }
         message.setRecipient(users.get(0))
@@ -564,7 +564,7 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
   }
 
   def isCourseActivityRoomOccupied(activity: CourseActivity): Boolean = {
-    if (CollectUtils.isEmpty(activity.getRooms)) {
+    if (Collections.isEmpty(activity.getRooms)) {
       return false
     }
     val query = OqlBuilder.from(classOf[CourseActivity], "activity")
@@ -578,11 +578,11 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
     query.where("exists(from org.openurp.edu.teach.lesson.Lesson lesson2 where activity.lesson=lesson2 and lesson2.semester=:semester)", 
       activity.getLesson.getSemester)
     query.select("distinct activity")
-    CollectUtils.isNotEmpty(entityDao.search(query))
+    Collections.isNotEmpty(entityDao.search(query))
   }
 
   def isCourseActivityTeacherOccupied(activity: CourseActivity): Boolean = {
-    if (CollectUtils.isEmpty(activity.getTeachers)) {
+    if (Collections.isEmpty(activity.getTeachers)) {
       return false
     }
     val query = OqlBuilder.from(classOf[CourseActivity], "activity")
@@ -596,7 +596,7 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
     query.where("exists(from org.openurp.edu.teach.lesson.Lesson lesson2 where activity.lesson=lesson2 and lesson2.semester=:semester)", 
       activity.getLesson.getSemester)
     query.select("distinct activity")
-    CollectUtils.isNotEmpty(entityDao.search(query))
+    Collections.isNotEmpty(entityDao.search(query))
   }
 
   def shift(lesson: Lesson, 
@@ -638,7 +638,7 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
       toWeekEnd: Int, 
       timeSetting: TimeSetting, 
       to: Semester): Iterable[Entity[Long]] = {
-    val keeped = CollectUtils.newArrayList()
+    val keeped = Collections.newBuffer[Any]
     for (activity <- activities) {
       processShift(keeped, activity, fromWeekStart, fromWeekEnd, toWeekStart, toWeekEnd, timeSetting, 
         to)
@@ -711,8 +711,8 @@ class CourseActivityServiceImpl extends BaseServiceImpl with CourseActivityServi
   }
 
   def mergeActivites(tobeMerged: List[CourseActivity]): List[CourseActivity] = {
-    val mergedActivityList = CollectUtils.newArrayList()
-    if (CollectUtils.isEmpty(tobeMerged)) return mergedActivityList
+    val mergedActivityList = Collections.newBuffer[Any]
+    if (Collections.isEmpty(tobeMerged)) return mergedActivityList
     Collections.sort(tobeMerged)
     val activityIter = tobeMerged.iterator()
     var toMerged = activityIter.next()

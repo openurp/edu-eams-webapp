@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.grade.setting.web.action
 
 import java.util.Date
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.openurp.edu.base.ProjectConfig
@@ -57,8 +57,8 @@ class ConfigAction extends ProjectSupportAction {
     val setting_finalCandinateTypes = Strings.splitToInt(get("setting.finalCandinateTypes"))
     setting.setFinalCandinateTypes(entityDao.get(classOf[GradeType], setting_finalCandinateTypes))
     setting.setGaElementTypes(entityDao.get(classOf[GradeType], Strings.splitToInt(get("setting.gaElementTypes"))))
-    setting.setAllowExamStatuses(CollectUtils.newHashSet(entityDao.get(classOf[ExamStatus], Strings.splitToInt(get("setting.allowExamStatuses")))))
-    setting.setEmptyScoreStatuses(CollectUtils.newHashSet(entityDao.get(classOf[ExamStatus], Strings.splitToInt(get("setting.emptyScoreStatuses")))))
+    setting.setAllowExamStatuses(Collections.newHashSet(entityDao.get(classOf[ExamStatus], Strings.splitToInt(get("setting.allowExamStatuses")))))
+    setting.setEmptyScoreStatuses(Collections.newHashSet(entityDao.get(classOf[ExamStatus], Strings.splitToInt(get("setting.emptyScoreStatuses")))))
     setting.setPublishableTypes(entityDao.get(classOf[GradeType], Strings.splitToInt(get("setting.publishableTypes"))))
     setting.setCalcGaExamStatus(getBool("setting.calcGaExamStatus"))
     setting.setSubmitIsPublish(getBool("setting.submitIsPublish"))

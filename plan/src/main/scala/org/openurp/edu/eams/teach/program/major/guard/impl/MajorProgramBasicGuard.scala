@@ -2,7 +2,7 @@ package org.openurp.edu.eams.teach.program.major.guard.impl
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import com.ekingstar.eams.base.Department
 import com.ekingstar.eams.core.Project
 import com.ekingstar.eams.core.code.industry.Education
@@ -31,14 +31,14 @@ class MajorProgramBasicGuard extends AbstractMajorProgramGuard {
       if (program.getMajor.getProject != project) {
         throw new EamsException("对不起，您没有权限！")
       }
-      if (CollectUtils.isEmpty(departs) || !departs.contains(program.getDepartment)) {
+      if (Collections.isEmpty(departs) || !departs.contains(program.getDepartment)) {
         throw new EamsException("对不起，您没有权限！")
       }
-      if (CollectUtils.isEmpty(stdTypes) || !stdTypes.contains(program.getStdType)) {
+      if (Collections.isEmpty(stdTypes) || !stdTypes.contains(program.getStdType)) {
         throw new EamsException("对不起，您没有权限！")
       }
       if (program.getEducation != null && 
-        (CollectUtils.isEmpty(educations) || !educations.contains(program.getEducation))) {
+        (Collections.isEmpty(educations) || !educations.contains(program.getEducation))) {
         throw new EamsException("对不起，您没有权限！")
       }
     }

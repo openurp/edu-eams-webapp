@@ -2,7 +2,7 @@ package org.openurp.edu.eams.teach.grade.transcript.service.impl
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.edu.base.Student
@@ -16,7 +16,7 @@ class TranscriptStdExamineeProvider extends BaseServiceImpl with TranscriptDataP
   def getDataName(): String = "stdExaminees"
 
   def getDatas[T](stds: List[Student], options: Map[String, String]): Map[Student, T] = {
-    val datas = CollectUtils.newHashMap()
+    val datas = Collections.newMap[Any]
     for (std <- stds) {
       datas.put(std, getData(std, options).asInstanceOf[T])
     }

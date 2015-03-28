@@ -4,7 +4,7 @@ import java.util.Date
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.data.model.Entity
@@ -166,12 +166,12 @@ class RetakePayForStdAction extends PaymentSupportAction {
     }
     val bills = getModels(classOf[Bill], getLongIds("bill"))
     val courseTakes = entityDao.get(classOf[CourseTake], "bill", bills)
-    val saveBills = CollectUtils.newHashMap()
-    val cancelBills = CollectUtils.newHashSet()
-    val cancelCourseTakes = CollectUtils.newHashSet()
-    val paidBills = CollectUtils.newHashSet()
-    val paidCourseTakes = CollectUtils.newHashSet()
-    val saveEntities = CollectUtils.newHashSet()
+    val saveBills = Collections.newMap[Any]
+    val cancelBills = Collections.newSet[Any]
+    val cancelCourseTakes = Collections.newSet[Any]
+    val paidBills = Collections.newSet[Any]
+    val paidCourseTakes = Collections.newSet[Any]
+    val saveEntities = Collections.newSet[Any]
     val date = new Date()
     for (courseTake <- courseTakes) {
       var unPaid: java.lang.Boolean = null

@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest
 import org.beangle.commons.lang.Strings
 import org.apache.struts2.ServletActionContext
 import org.beangle.commons.bean.comparators.PropertyComparator
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model
@@ -48,7 +48,7 @@ class GpaAction extends GpaStatAction {
     }
     populateConditions(query)
     if (getProject != null) query.where("stdGpa.std.project =:project", getProject)
-    if (CollectUtils.isNotEmpty(getDeparts)) query.where("stdGpa.std.department in (:departments)", getDeparts)
+    if (Collections.isNotEmpty(getDeparts)) query.where("stdGpa.std.department in (:departments)", getDeparts)
     query.limit(getPageLimit)
     query.orderBy(Order.parse(if (Strings.isBlank(get("orderBy"))) "stdGpa.std.code" else get("orderBy")))
     query
@@ -72,7 +72,7 @@ class GpaAction extends GpaStatAction {
     var isMinor = getBoolean("stdGpa.minor")
     if (null == isMinor) isMinor = false
     put("isMinor", isMinor)
-    val stdGpas = CollectUtils.newArrayList()
+    val stdGpas = Collections.newBuffer[Any]
     for (std <- stds) {
       stdGpas.add(gpaStatService.statGpa(std))
     }
@@ -112,7 +112,7 @@ class GpaAction extends GpaStatAction {
     val query = stdSearchHelper.buildStdQuery().asInstanceOf[OqlBuilder[Student]]
     query.where("not exists(from " + classOf[StdGpa].getName + " gpa where gpa.std=std)")
     val stds = entityDao.search(query)
-    if (CollectUtils.isEmpty(stds)) return redirect("search", "没有未统计的学生")
+    if (Collections.isEmpty(stds)) return redirect("search", "没有未统计的学生")
     val msg = gpaStatService.statGpas(stds)
     try {
       entityDao.saveOrUpdate(msg.getStdGpas)
@@ -139,7 +139,7 @@ class GpaAction extends GpaStatAction {
 
   def reStatGp(): String = {
     val stdGpaIdStr = get("stdGpaIds")
-    var stdGpas = CollectUtils.newArrayList()
+    var stdGpas = Collections.newBuffer[Any]
     stdGpas = if (Strings.isNotEmpty(stdGpaIdStr)) entityDao.get(classOf[StdGpa], Strings.splitToLong(stdGpaIdStr)) else entityDao.search(getQueryBuilder)
     for (stdGpa <- stdGpas) {
       val newGpa = gpaStatService.statGpa(stdGpa.getStd)
@@ -148,7 +148,7 @@ class GpaAction extends GpaStatAction {
       stdGpa.setGpa(newGpa.getGpa)
       stdGpa.setCredits(newGpa.getCredits)
       stdGpa.setCount(newGpa.getCount)
-      val semesterGpaCache = CollectUtils.newHashMap()
+      val semesterGpaCache = Collections.newMap[Any]
       for (gpterm <- stdGpa.getSemesterGpas) {
         semesterGpaCache.put(gpterm.getSemester, gpterm)
       }

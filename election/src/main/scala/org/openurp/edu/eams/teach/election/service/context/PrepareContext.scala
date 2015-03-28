@@ -3,7 +3,7 @@ package org.openurp.edu.eams.teach.election.service.context
 import java.io.Serializable
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.openurp.edu.base.Student
 import org.openurp.edu.eams.teach.election.ElectionProfile
 import org.openurp.edu.teach.lesson.CourseTake
@@ -66,7 +66,7 @@ class PrepareContext( val profile: ElectionProfile,
      val takes: List[CourseTake], 
      val plan: CoursePlan) extends Serializable() {
 
-  private var preparedDataNames: Set[PreparedDataName] = CollectUtils.newHashSet()
+  private var preparedDataNames: Set[PreparedDataName] = Collections.newSet[Any]
 
   def isPreparedData(preparedDataName: PreparedDataName): Boolean = {
     preparedDataNames.contains(preparedDataName)

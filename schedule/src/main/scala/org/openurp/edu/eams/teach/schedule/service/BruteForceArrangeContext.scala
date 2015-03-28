@@ -5,7 +5,7 @@ import java.util.LinkedHashMap
 
 
 import org.apache.commons.collections.MapUtils
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.openurp.base.Room
 import org.openurp.edu.base.Teacher
 import org.openurp.edu.teach.schedule.CourseActivity
@@ -53,7 +53,7 @@ class BruteForceArrangeContext( var lesson: Lesson, transientActivities: Iterabl
     {
 
   
-  var lessonOccupiedRooms: Set[Room] = CollectUtils.newHashSet()
+  var lessonOccupiedRooms: Set[Room] = Collections.newSet[Any]
 
   private var activities: Iterable[CourseActivity] = transientActivities
 

@@ -35,7 +35,7 @@ class SpringGradeFilterRegistry extends GradeFilterRegistry with ApplicationCont
   def getFilters(name: String): List[GradeFilter] = {
     if (Strings.isBlank(name)) return Collections.emptyList()
     val filterNames = Strings.split(name, Array('|', ','))
-    val myFilters = CollectUtils.newArrayList()
+    val myFilters = Collections.newBuffer[Any]
     for (filterName <- filterNames) {
       val filter = filters.get(filterName)
       if (null != filter) myFilters.add(filter)

@@ -6,7 +6,7 @@ import java.util.Comparator
 
 
 import org.beangle.commons.bean.comparators.MultiPropertyComparator
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.page.PageLimit
 import org.beangle.commons.dao.query.builder.Condition
 import org.beangle.data.jpa.dao.OqlBuilder
@@ -87,7 +87,7 @@ class PersonalPlanCourseGroupAction extends RestrictionSupportAction {
     for (code <- codeArr) {
       val t = entityDao.get(classOf[Course], "code", code)
       var b = false
-      if (CollectUtils.isNotEmpty(t)) {
+      if (Collections.isNotEmpty(t)) {
         val course = t.get(0)
         if (course.isEnabled && course.getProject.id == projectId && 
           !courseList.contains(course)) {
@@ -138,7 +138,7 @@ class PersonalPlanCourseGroupAction extends RestrictionSupportAction {
     if (null == personalPlan) {
       return forwardError("error.model.notExist")
     }
-    val params = CollectUtils.newHashMap()
+    val params = Collections.newMap[Any]
     var grade = personalPlan.getStd.getGrade
     if (Strings.isNotEmpty(grade) && grade.length > 4) {
       grade = grade.substring(0, 4)
@@ -264,7 +264,7 @@ class PersonalPlanCourseGroupAction extends RestrictionSupportAction {
       personalPlan.setCredits(planCommonDao.statPlanCredits(personalPlan))
       newList.add(personalPlan)
     }
-    if (CollectUtils.isNotEmpty(newList)) {
+    if (Collections.isNotEmpty(newList)) {
       entityDao.saveOrUpdate(newList)
     }
     getFlash.put("params", get("params"))

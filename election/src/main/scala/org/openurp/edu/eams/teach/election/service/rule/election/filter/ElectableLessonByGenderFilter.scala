@@ -1,12 +1,12 @@
 package org.openurp.edu.eams.teach.election.service.rule.election.filter
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.openurp.edu.eams.teach.election.service.context.ElectState
 import org.openurp.edu.eams.teach.election.service.context.ElectionCourseContext
-import org.openurp.edu.eams.teach.election.service.helper.CourseLimitGroupHelper
+import org.openurp.edu.eams.teach.election.service.helper.LessonLimitGroupHelper
 import org.openurp.edu.eams.teach.election.service.rule.AbstractElectRuleExecutor
 import org.openurp.edu.teach.lesson.Lesson
-import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnum
+import org.openurp.edu.eams.teach.lesson.service.limit.LessonLimitMetaEnum
 
 
 
@@ -15,10 +15,10 @@ class ElectableLessonByGenderFilter extends AbstractElectableLessonFilter {
   order = AbstractElectRuleExecutor.Priority.FIFTH.ordinal()
 
   def isElectable(lesson: Lesson, state: ElectState): Boolean = {
-    if (CollectUtils.isEmpty(lesson.getTeachClass.getLimitGroups)) {
+    if (Collections.isEmpty(lesson.getTeachClass.getLimitGroups)) {
       return true
     }
-    CourseLimitGroupHelper.isElectable(lesson, state, CourseLimitMetaEnum.GENDER)
+    LessonLimitGroupHelper.isElectable(lesson, state, LessonLimitMeta.Gender)
   }
 
   protected override def onExecuteRuleReturn(result: Boolean, context: ElectionCourseContext): Boolean = {

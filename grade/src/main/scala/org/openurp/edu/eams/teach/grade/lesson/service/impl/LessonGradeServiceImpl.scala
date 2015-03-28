@@ -3,7 +3,7 @@ import java.util.Date
 
 
 import org.apache.commons.beanutils.BeanComparator
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model
@@ -30,7 +30,7 @@ class LessonGradeServiceImpl extends BaseServiceImpl with LessonGradeService {
     val examGradeStates = state.getStates
     var canInputTypes: List[GradeType] = null
     if (!examGradeStates.isEmpty) {
-      canInputTypes = CollectUtils.newArrayList()
+      canInputTypes = Collections.newBuffer[Any]
       for (gradeTypeState <- examGradeStates) {
         canInputTypes.add(gradeTypeState.gradeType)
       }
@@ -57,8 +57,8 @@ class LessonGradeServiceImpl extends BaseServiceImpl with LessonGradeService {
     if (null == lesson || null == states) {
       return null
     }
-    val gradeTypes = CollectUtils.newArrayList()
-    if (CollectUtils.isNotEmpty(states)) {
+    val gradeTypes = Collections.newBuffer[Any]
+    if (Collections.isNotEmpty(states)) {
       for (state <- states.get(0).getStates if state.getStatus > Grade.Status.NEW if state.gradeType.id == GradeTypeConstants.GA_ID || 
         (state.getPercent != null && state.getPercent > 0)) {
         gradeTypes.add(entityDao.get(classOf[GradeType], state.gradeType.id))
@@ -85,7 +85,7 @@ class LessonGradeServiceImpl extends BaseServiceImpl with LessonGradeService {
     query.where("exists (from scope.educations ss where ss = :education)", std.education)
     query.join("left", "scope.stdTypes", "stdType")
     query.where("instr(',' || scope.enrollYears || ',', ',' || :enrollYear || ',') > 0", std.grade)
-    CollectUtils.isNotEmpty(entityDao.search(query))
+    Collections.isNotEmpty(entityDao.search(query))
   }
 
   def getState(gradeType: GradeType, gradeState: CourseGradeState, precision: java.lang.Integer): ExamGradeState = {

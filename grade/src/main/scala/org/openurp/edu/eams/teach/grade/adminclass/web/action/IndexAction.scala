@@ -3,7 +3,7 @@ import java.util.Date
 
 
 import org.beangle.commons.bean.comparators.PropertyComparator
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.security.blueprint.SecurityUtils
 import org.openurp.base.Department
@@ -18,14 +18,14 @@ class IndexAction extends SemesterSupportAction {
     var builder = OqlBuilder.from(classOf[Adminclass], "adc").join("adc.instructors", "instructor")
     builder.where("instructor.code=:myname", SecurityUtils.getUsername)
     builder.where("adc.effectiveAt <=:now and (adc.invalidAt is null or adc.invalidAt >=:now)", new Date())
-    val classes = CollectUtils.newHashSet(entityDao.search(builder))
+    val classes = Collections.newHashSet(entityDao.search(builder))
     val departs = getDeparts
     if (!departs.isEmpty) {
       builder = OqlBuilder.from(classOf[Adminclass], "adc").where("adc.department in(:departs)", departs)
       builder.where("adc.effectiveAt <=:now and (adc.invalidAt is null or adc.invalidAt >=:now)", new Date())
       classes.addAll(entityDao.search(builder))
     }
-    val adminclasses = CollectUtils.newArrayList(classes)
+    val adminclasses = Collections.newBuffer[Any](classes)
     Collections.sort(adminclasses, new PropertyComparator("name desc"))
     put("adminclasses", adminclasses)
   }

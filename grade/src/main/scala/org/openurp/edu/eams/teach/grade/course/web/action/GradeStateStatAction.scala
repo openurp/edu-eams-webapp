@@ -2,7 +2,7 @@ package org.openurp.edu.eams.teach.grade.course.web.action
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model
@@ -26,7 +26,7 @@ class GradeStateStatAction extends SemesterSupportAction {
 
   protected override def indexSetting() {
     put("gradeTypes", baseCodeService.getCodes(classOf[GradeType]))
-    put("departments", lessonService.teachDepartsOfSemester(CollectUtils.newArrayList(getProject), getDeparts, 
+    put("departments", lessonService.teachDepartsOfSemester(Collections.newBuffer[Any](getProject), getDeparts, 
       putSemester(null)))
     put("finalId", GradeTypeConstants.FINAL_ID)
     put("GA_ID", GradeTypeConstants.GA_ID)
@@ -78,8 +78,8 @@ class GradeStateStatAction extends SemesterSupportAction {
 
   def statusStat(): String = {
     val gradeTypeId = getInt("gradeType.id")
-    var gradeTypes = CollectUtils.newArrayList()
-    val teachDeparts = lessonService.teachDepartsOfSemester(CollectUtils.newArrayList(getProject), getDeparts, 
+    var gradeTypes = Collections.newBuffer[Any]
+    val teachDeparts = lessonService.teachDepartsOfSemester(Collections.newBuffer[Any](getProject), getDeparts, 
       putSemester(null))
     if (null != gradeTypeId) {
       gradeTypes.add(baseCodeService.getCode(classOf[GradeType], gradeTypeId))
@@ -87,15 +87,15 @@ class GradeStateStatAction extends SemesterSupportAction {
       gradeTypes = baseCodeService.getCodes(classOf[GradeType])
     }
     val departmentId = getInt("department.id")
-    var departments = CollectUtils.newArrayList()
+    var departments = Collections.newBuffer[Any]
     if (null != departmentId) {
       departments.add(entityDao.get(classOf[Department], departmentId))
     } else {
       departments = teachDeparts
     }
-    val results = CollectUtils.newArrayList()
+    val results = Collections.newBuffer[Any]
     val semester = putSemester(null)
-    val unInputLessonMap = CollectUtils.newHashMap()
+    val unInputLessonMap = Collections.newMap[Any]
     for (department <- departments; gradeType <- gradeTypes) {
       val lessonBuilder = OqlBuilder.from(classOf[Lesson], "lesson")
       lessonBuilder.where("lesson.teachDepart = :department", department)

@@ -2,7 +2,7 @@ package org.openurp.edu.eams.teach.lesson.task.service.impl
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.openurp.edu.eams.teach.lesson.task.service.LessonGenService
 import org.openurp.edu.eams.teach.lesson.task.service.TaskGenObserver
@@ -12,7 +12,7 @@ import org.openurp.edu.eams.teach.lesson.task.service.genstrategy.LessonGenStrat
 
 class LessonGenServiceImpl extends BaseServiceImpl with LessonGenService {
 
-  private var strategies: List[LessonGenStrategy] = CollectUtils.newArrayList()
+  private var strategies: List[LessonGenStrategy] = Collections.newBuffer[Any]
 
   def gen(source: String, context: Map[String, Any], progressBar: TaskGenObserver) {
     for (strategy <- strategies) {

@@ -3,7 +3,7 @@ package org.openurp.edu.eams.teach.election.service.helper
 import java.io.StringWriter
 import java.io.Writer
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.openurp.edu.eams.teach.election.model.ElectMailTemplate
 import org.openurp.edu.teach.lesson.CourseTake
 import freemarker.cache.StringTemplateLoader
@@ -15,7 +15,7 @@ import freemarker.template.Template
 object FreeMarkerHelper {
 
   def dynamicCompileTemplate(template: ElectMailTemplate, courseTake: CourseTake): ElectMailTemplate = {
-    val attrs = CollectUtils.newHashMap()
+    val attrs = Collections.newMap[Any]
     attrs.put("courseTake", courseTake)
     val title = dynamicCompile(classOf[ElectMailTemplate].getName + template.id + 
       ".title", template.getTitle, attrs)
@@ -32,7 +32,7 @@ object FreeMarkerHelper {
     cfg.setNumberFormat("#")
     val loader = new StringTemplateLoader()
     if (null == data) {
-      data = CollectUtils.newHashMap()
+      data = Collections.newMap[Any]
     }
     loader.putTemplate(name, templateSource)
     cfg.setTemplateLoader(loader)

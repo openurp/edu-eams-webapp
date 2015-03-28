@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.election.service.rule.withdraw
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.ems.rule.Context
 import org.openurp.edu.teach.code.ElectionMode
 import org.openurp.edu.eams.teach.election.model.Enum.ElectRuleType
@@ -36,7 +36,7 @@ class AssignedWithdrawPrepare extends AbstractElectRuleExecutor with ElectRulePr
 
   def prepare(context: PrepareContext) {
     if (!context.isPreparedData(PreparedDataName.ASSIGNED_LESSON_IDS)) {
-      val assignedLessonIds = CollectUtils.newHashSet()
+      val assignedLessonIds = Collections.newSet[Any]
       for (take <- context.getTakes if ElectionMode.ASSIGEND == take.getElectionMode.id) {
         assignedLessonIds.add(take.getLesson.id)
         context.getState.getUnWithdrawableLessonIds.put(take.getLesson.id, ERROR_WITHDRAW_ASSIGNED)

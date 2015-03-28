@@ -4,7 +4,7 @@ import java.util.Date
 
 
 import org.apache.commons.lang3.ArrayUtils
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.struts2.helper.QueryHelper
 import com.ekingstar.eams.core.Student
@@ -114,10 +114,10 @@ class PersonalPlanSearchAction extends ProjectSupportAction {
     }
     query.where("std.project = :project", getProject)
     query.where("std.department in (:departments)", getDeparts)
-    if (CollectUtils.isNotEmpty(getStdTypes)) {
+    if (Collections.isNotEmpty(getStdTypes)) {
       query.where("std.type in (:stdTypes)", getStdTypes)
     }
-    if (CollectUtils.isNotEmpty(getEducations)) {
+    if (Collections.isNotEmpty(getEducations)) {
       query.where("std.education in (:educations)", getEducations)
     }
     query.limit(QueryHelper.getPageLimit)

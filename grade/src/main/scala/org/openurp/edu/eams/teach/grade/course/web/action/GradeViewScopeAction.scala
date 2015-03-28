@@ -2,7 +2,7 @@ package org.openurp.edu.eams.teach.grade.course.web.action
 
 
 import org.beangle.commons.lang.Strings
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
@@ -48,7 +48,7 @@ class GradeViewScopeAction extends RestrictionSupportAction {
     val departments = getDeparts
     put("projects", projects)
     val query = OqlBuilder.from(classOf[Student], "student")
-    if (CollectUtils.isEmpty(projects) || CollectUtils.isEmpty(departments)) {
+    if (Collections.isEmpty(projects) || Collections.isEmpty(departments)) {
       query.where("student is null")
     } else {
       query.where("student.project in (:projects)", getStdTypes)

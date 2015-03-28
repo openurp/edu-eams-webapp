@@ -4,7 +4,7 @@ package org.openurp.edu.eams.teach.election.model.exception
 
 
 @SerialVersionUID(-2937891371653678238L)
-class ElectCourseLimitCountException extends Exception() {
+class ElectLessonLimitCountException extends Exception() {
 
   def this(message: String, cause: Throwable) {
     super(message, cause)

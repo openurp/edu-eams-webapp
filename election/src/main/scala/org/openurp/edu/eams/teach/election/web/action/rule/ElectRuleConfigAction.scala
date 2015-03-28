@@ -6,7 +6,7 @@ import java.util.Date
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.data.model.Entity
 import org.beangle.commons.lang.Strings
@@ -45,12 +45,12 @@ class ElectRuleConfigAction extends BaseAction {
     builder.where("rule.business in (:businesses)", ElectRuleType.strValues())
     val rules = entityDao.search(builder)
     val configParams = config.getParams
-    var ruleParameters = CollectUtils.newArrayList()
+    var ruleParameters = Collections.newBuffer[Any]
     val paramBuilder = OqlBuilder.from(classOf[RuleParameter], "ruleParam")
     if (config.isPersisted) {
       paramBuilder.where("ruleParam.rule=:rule", config.getRule)
       if (!configParams.isEmpty) {
-        val params = CollectUtils.newArrayList()
+        val params = Collections.newBuffer[Any]
         for (configParam <- configParams) {
           params.add(configParam.getParam)
         }

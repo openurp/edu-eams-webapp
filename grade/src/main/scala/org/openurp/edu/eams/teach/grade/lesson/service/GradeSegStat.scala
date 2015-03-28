@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.grade.lesson.service
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.openurp.edu.eams.teach.Grade
 import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.eams.util.stat.FloatSegment
@@ -16,7 +16,7 @@ class GradeSegStat( var gradeType: GradeType, scoreSegments: List[FloatSegment],
   var stdCount: Int = grades.size
 
   
-  var scoreSegments: List[FloatSegment] = CollectUtils.newArrayList()
+  var scoreSegments: List[FloatSegment] = Collections.newBuffer[Any]
 
   
   var heighest: java.lang.Float = grades.get(0).asInstanceOf[Grade].getScore

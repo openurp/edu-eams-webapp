@@ -8,7 +8,7 @@ import java.util.Properties
 import java.util.TreeMap
 import java.util.concurrent.YearWeekTime
 import org.apache.commons.beanutils.BeanUtils
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.lang.Strings
 import org.beangle.struts2.view.component.Form
 import org.beangle.struts2.view.component.UIBean
@@ -32,7 +32,7 @@ object AbstractSemesterCalendarUI {
     def getRule(method: Method, params: Array[Any]): Rule = new Rule(method, params)
 
     def getRules(rulesStr: String, paramTypeMap: Map[String, Class[_]]): List[Rule] = {
-      val result = CollectUtils.newArrayList()
+      val result = Collections.newBuffer[Any]
       val rules = rulesStr.split(":")
       for (s <- rules) {
         val entry = s.substring(0, s.length - 1).split("\\(")
@@ -93,7 +93,7 @@ object AbstractSemesterCalendarUI {
 
     paramTypeMap.put("charAt", classOf[Int])
 
-    protected var paramTypeMap: Map[String, Class[_]] = CollectUtils.newHashMap()
+    protected var paramTypeMap: Map[String, Class[_]] = Collections.newMap[Any]
 
     private def updateConfig(timeToLiveMills: java.lang.Long, defaultUiType: String) {
       if (null == timeToLiveMills) {
@@ -136,11 +136,11 @@ abstract class AbstractSemesterCalendarUI(stack: ValueStack) extends UIBean(stac
 
   protected var uiType: String = _
 
-  protected var indexes: List[Integer] = CollectUtils.newArrayList()
+  protected var indexes: List[Integer] = Collections.newBuffer[Any]
 
-  protected var tRules: List[Rule] = CollectUtils.newArrayList()
+  protected var tRules: List[Rule] = Collections.newBuffer[Any]
 
-  protected var yRules: List[Rule] = CollectUtils.newArrayList()
+  protected var yRules: List[Rule] = Collections.newBuffer[Any]
 
   protected var onChange: String = _
 
@@ -220,7 +220,7 @@ abstract class AbstractSemesterCalendarUI(stack: ValueStack) extends UIBean(stac
     }
     if (null != items) {
       if (items.isInstanceOf[Iterable[_]]) {
-        val c = CollectUtils.newArrayList(items.asInstanceOf[Iterable[Semester]])
+        val c = Collections.newBuffer[Any](items.asInstanceOf[Iterable[Semester]])
         Collections.sort(c)
         val termFormat = null != format && format.contains("T")
         val yearFormat = null != format && format.matches("^yy(-T)?$")
@@ -249,7 +249,7 @@ abstract class AbstractSemesterCalendarUI(stack: ValueStack) extends UIBean(stac
           }
           var terms = semesterTree.get(key)
           if (null == terms) {
-            terms = CollectUtils.newArrayList()
+            terms = Collections.newBuffer[Any]
           }
           semesterTree.put(key, terms)
           terms.add(colneSemester)

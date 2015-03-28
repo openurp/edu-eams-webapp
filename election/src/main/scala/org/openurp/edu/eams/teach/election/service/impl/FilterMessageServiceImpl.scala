@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.beangle.data.jpa.dao.OqlBuilder
 
@@ -129,7 +129,7 @@ class FilterMessageServiceImpl extends BaseServiceImpl with FilterMessageService
       sender: User) {
     val logs = searchLogs(project, semester, profile.getBeginAt, profile.getEndAt, lessonIds)
     val no2lessons = getNo2LessonMap(project, semester, lessonIds)
-    val std2lessons = CollectUtils.newHashMap()
+    val std2lessons = Collections.newMap[Any]
     for (log <- logs) {
       val std = new Pair[String, String](log.getStdCode, log.getStdName)
       var lessons = std2lessons.get(std)
@@ -156,7 +156,7 @@ class FilterMessageServiceImpl extends BaseServiceImpl with FilterMessageService
       sender: User) {
     val logs = searchLogs(project, semester, startAt, endAt, lessonIds)
     val no2lessons = getNo2LessonMap(project, semester, lessonIds)
-    val std2lessons = CollectUtils.newHashMap()
+    val std2lessons = Collections.newMap[Any]
     for (log <- logs) {
       val std = new Pair[String, String](log.getStdCode, log.getStdName)
       var lessons = std2lessons.get(std)

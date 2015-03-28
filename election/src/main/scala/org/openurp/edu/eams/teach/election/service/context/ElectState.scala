@@ -4,7 +4,7 @@ import java.io.Serializable
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.model.dao.EntityDao
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.base.Semester
@@ -53,25 +53,25 @@ class ElectState extends Serializable() {
   var semesterId: java.lang.Integer = _
 
   
-  var courseSubstitutions: List[ElectCourseSubstitution] = CollectUtils.newArrayList()
+  var courseSubstitutions: List[ElectCourseSubstitution] = Collections.newBuffer[Any]
 
   
-  var hisCourses: Map[Long, Boolean] = CollectUtils.newHashMap()
+  var hisCourses: Map[Long, Boolean] = Collections.newMap[Any]
 
   
   var electedCredit: Float = _
 
   
-  val electedCourseIds = CollectUtils.newHashMap()
+  val electedCourseIds = Collections.newMap[Any]
 
   
-  val electableLessonIds = CollectUtils.newArrayList()
+  val electableLessonIds = Collections.newBuffer[Any]
 
   
   var table: YearWeekTime = _
 
   
-  var compulsoryCourseIds: Set[Long] = CollectUtils.newHashSet()
+  var compulsoryCourseIds: Set[Long] = Collections.newSet[Any]
 
   
   var checkTimeConflict: Boolean = _
@@ -86,13 +86,13 @@ class ElectState extends Serializable() {
   var checkMinLimitCount: Boolean = _
 
   
-  val params = CollectUtils.newHashMap()
+  val params = Collections.newMap[Any]
 
   
-  var unElectableLessonIds: Set[Long] = CollectUtils.newHashSet()
+  var unElectableLessonIds: Set[Long] = Collections.newSet[Any]
 
   
-  var unWithdrawableLessonIds: Map[Long, String] = CollectUtils.newHashMap()
+  var unWithdrawableLessonIds: Map[Long, String] = Collections.newMap[Any]
 
   
   var creditConstraint: ElectConstraintWrapper[Float] = _
@@ -103,7 +103,7 @@ class ElectState extends Serializable() {
   
   var courseCountConstraint: ElectConstraintWrapper[Integer] = _
 
-  private var courseTypeCourseCountConstraints: Map[CourseType, ElectConstraintWrapper[Integer]] = CollectUtils.newHashMap()
+  private var courseTypeCourseCountConstraints: Map[CourseType, ElectConstraintWrapper[Integer]] = Collections.newMap[Any]
 
   def electSuccess(lesson: Lesson) {
     if (coursePlan != null) {
@@ -171,7 +171,7 @@ class ElectState extends Serializable() {
     if (null == hisCourses) {
       Collections.EMPTY_SET
     } else {
-      val unPassedCourseIds = CollectUtils.newHashSet()
+      val unPassedCourseIds = Collections.newSet[Any]
       val courseSet = hisCourses.keySet
       for (courseId <- courseSet) {
         val rs = hisCourses.get(courseId)

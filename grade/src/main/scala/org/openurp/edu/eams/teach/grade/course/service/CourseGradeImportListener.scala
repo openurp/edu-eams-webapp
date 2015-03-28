@@ -7,7 +7,7 @@ import java.util.Date
 import javax.validation.ConstraintViolation
 import javax.validation.ConstraintViolationException
 import org.beangle.commons.lang.Strings
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.model.dao.EntityDao
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.data.model.Entity
@@ -186,8 +186,8 @@ class CourseGradeImportListener(protected var entityDao: EntityDao, protected va
   private def setExamGrades(courseGrade: CourseGrade, tr: TransferResult, cgs: CourseGradeState) {
     var examGrades = courseGrade.getExamGrades
     val gradeTypes = entityDao.getAll(classOf[GradeType])
-    if (CollectUtils.isEmpty(examGrades)) {
-      examGrades = CollectUtils.newHashSet()
+    if (Collections.isEmpty(examGrades)) {
+      examGrades = Collections.newSet[Any]
     }
     var examStatus = getPropEntity(classOf[ExamStatus], tr, "examStatus", false)
     if (examStatus == null) {

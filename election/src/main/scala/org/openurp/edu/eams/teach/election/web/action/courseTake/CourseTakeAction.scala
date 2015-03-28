@@ -17,7 +17,7 @@ import org.apache.poi.ss.usermodel.Cell
 import org.apache.poi.ss.usermodel.Row
 import org.apache.poi.ss.usermodel.Sheet
 import org.apache.poi.ss.usermodel.Workbook
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.commons.collection.page.PageLimit
 import org.beangle.data.jpa.dao.OqlBuilder
@@ -74,7 +74,7 @@ class CourseTakeAction extends CourseTakeSearchAction {
     if (ArrayUtils.isNotEmpty(ids)) {
       val courseTakeType = getEntity(classOf[CourseTakeType], "courseTakeType")
       try {
-        val parameterMap = CollectUtils.newHashMap()
+        val parameterMap = Collections.newMap[Any]
         parameterMap.put("courseTakeType", courseTakeType)
         parameterMap.put("ids", ids)
         parameterMap.put("updatedAt", new Date())
@@ -98,7 +98,7 @@ class CourseTakeAction extends CourseTakeSearchAction {
   override def importForm(): String = forward()
 
   protected def getImporterListeners(): List[ItemImporterListener] = {
-    val listeners = CollectUtils.newArrayList()
+    val listeners = Collections.newBuffer[Any]
     listeners.add(new CourseTakeImportListener(electionDao, putSemester(null), getProject))
     listeners
   }
@@ -190,10 +190,10 @@ class CourseTakeAction extends CourseTakeSearchAction {
     val lessonNos = Strings.split(get("lessonNos"))
     val lessonIds = Strings.splitToLong(get("lessonIds"))
     val stdCodes = Strings.split(get("stdCodes"))
-    val messages = CollectUtils.newArrayList()
+    val messages = Collections.newBuffer[Any]
     if ((ArrayUtils.isEmpty(lessonNos) && ArrayUtils.isEmpty(lessonIds)) || 
       ArrayUtils.isEmpty(stdCodes)) {
-      put("messages", CollectUtils.newArrayList(new Message("0", Array(Collections.emptyList())), new Message("0", 
+      put("messages", Collections.newBuffer[Any](new Message("0", Array(Collections.emptyList())), new Message("0", 
         Array(Collections.emptyMap()))))
       return "addResult"
     }
@@ -221,7 +221,7 @@ class CourseTakeAction extends CourseTakeSearchAction {
 
   def withdraw(): String = {
     val ids = Strings.transformToLong(Strings.split(get("courseTakeIds"), ","))
-    var messages = CollectUtils.newArrayList()
+    var messages = Collections.newBuffer[Any]
     if (ArrayUtils.isNotEmpty(ids)) {
       val courseTakes = entityDao.get(classOf[CourseTake], ids)
       val sendMessage = getBool("sendMessage")
@@ -247,7 +247,7 @@ class CourseTakeAction extends CourseTakeSearchAction {
     var template: ElectMailTemplate = null
     if (ArrayUtils.isNotEmpty(ids)) {
       val courseTakes = entityDao.get(classOf[CourseTake], ids)
-      val stdMessageContents = CollectUtils.newHashMap()
+      val stdMessageContents = Collections.newMap[Any]
       val templateId = getLong("electMailTemplate.id")
       if (null != templateId) {
         template = entityDao.get(classOf[ElectMailTemplate], templateId)
@@ -269,7 +269,7 @@ class CourseTakeAction extends CourseTakeSearchAction {
   def sendMessage(): String = {
     var receiptorName: String = null
     val username = getUsername
-    val messages = CollectUtils.newArrayList()
+    val messages = Collections.newBuffer[Any]
     var i = 0
     while (null != (receiptorName = get("std" + i + "Code"))) {
       val text = get("std" + i + "ContentText")
@@ -307,7 +307,7 @@ class CourseTakeAction extends CourseTakeSearchAction {
       electBuilder.orderBy("electLogger.updatedAt")
       put("loggers", entityDao.search(electBuilder))
     } else {
-      put("loggers", CollectUtils.newArrayList())
+      put("loggers", Collections.newBuffer[Any])
     }
     forward()
   }
@@ -317,8 +317,8 @@ class CourseTakeAction extends CourseTakeSearchAction {
     val builder = OqlBuilder.from(classOf[CourseTake].getName + " courseTake," + classOf[CourseTake].getName + 
       " courseTake2")
     builder.select("distinct courseTake.id,courseTake2.id")
-      .join("courseTake.lesson.courseSchedule.activities", "courseActivity")
-      .join("courseTake2.lesson.courseSchedule.activities", "courseActivity2")
+      .join("courseTake.lesson.schedule.activities", "courseActivity")
+      .join("courseTake2.lesson.schedule.activities", "courseActivity2")
       .where("courseTake.std=courseTake2.std")
       .where("courseTake.lesson.semester=courseTake2.lesson.semester")
       .where("courseTake.lesson.semester=:semestrer", semester)
@@ -328,8 +328,8 @@ class CourseTakeAction extends CourseTakeSearchAction {
       .where("courseActivity.time.end >= courseActivity2.time.start ")
       .where("courseTake.id <> courseTake2.id")
     val rows = entityDao.search(builder)
-    val courseTakeIds = CollectUtils.newHashSet()
-    val wrapperMap = CollectUtils.newHashMap()
+    val courseTakeIds = Collections.newSet[Any]
+    val wrapperMap = Collections.newMap[Any]
     for (row <- rows) {
       val id = row(0).asInstanceOf[java.lang.Long]
       val conflictId = row(1).asInstanceOf[java.lang.Long]
@@ -343,7 +343,7 @@ class CourseTakeAction extends CourseTakeSearchAction {
       wrapper.getConflicts.add(conflictId)
     }
     val takes = entityDao.get(classOf[CourseTake], courseTakeIds)
-    val courseTakes = CollectUtils.newHashMap()
+    val courseTakes = Collections.newMap[Any]
     for (courseTake <- takes) {
       courseTakes.put(courseTake.id, courseTake)
     }
@@ -389,24 +389,24 @@ class CourseTakeAction extends CourseTakeSearchAction {
     builder.where("courseTake.lesson.semester=:semester", putSemester(null))
     builder.where("courseTake.electionMode.id=:electionModeId", ElectionMode.ASSIGEND)
     val courseTakes = entityDao.search(builder)
-    val courseTakeMap = CollectUtils.newHashMap()
+    val courseTakeMap = Collections.newMap[Any]
     for (courseTake <- courseTakes) {
       var takes = courseTakeMap.get(courseTake.getStd)
       if (null == takes) {
-        takes = CollectUtils.newArrayList()
+        takes = Collections.newBuffer[Any]
         courseTakeMap.put(courseTake.getStd, takes)
       }
       takes.add(courseTake)
     }
-    val conflictMap = CollectUtils.newHashMap()
+    val conflictMap = Collections.newMap[Any]
     for (takes <- courseTakeMap.values; courseTake <- takes; courseTake2 <- takes if isConflict(courseTake.getLesson, 
       courseTake2.getLesson)) {
       var conflicts = conflictMap.get(courseTake.getStd)
       if (null == conflicts) {
-        conflicts = CollectUtils.newHashSet()
+        conflicts = Collections.newSet[Any]
         conflictMap.put(courseTake.getStd, conflicts)
       }
-      val lessons = CollectUtils.newArrayList(courseTake.getLesson, courseTake2.getLesson)
+      val lessons = Collections.newBuffer[Any](courseTake.getLesson, courseTake2.getLesson)
       Collections.sort(lessons, new Comparator[Lesson]() {
 
         def compare(o1: Lesson, o2: Lesson): Int = return (o1.id - o2.id).toInt
@@ -426,14 +426,14 @@ class CourseTakeAction extends CourseTakeSearchAction {
     val builder = OqlBuilder.from(classOf[Lesson], "lesson")
     builder.where("lesson.semester=:semester", semester)
     val lessons = entityDao.search(builder)
-    val conflicts = CollectUtils.newHashMap()
+    val conflicts = Collections.newMap[Any]
     for (lesson1 <- lessons; lesson2 <- lessons if lesson1 != lesson2 && 
       lesson1.getCourse.getCode != lesson2.getCourse.getCode) {
       val msgs = getConflict(lesson1, lesson2)
       if (!msgs.isEmpty) {
         var conflictLessons = conflicts.get(lesson1)
         if (null == conflictLessons) {
-          conflictLessons = CollectUtils.newHashMap()
+          conflictLessons = Collections.newMap[Any]
           conflicts.put(lesson1, conflictLessons)
         }
         conflictLessons.put(lesson2, msgs)
@@ -447,7 +447,7 @@ class CourseTakeAction extends CourseTakeSearchAction {
   private def getConflict(lesson: Lesson, lesson2: Lesson): List[String] = {
     val activities = lesson.getCourseSchedule.getActivities
     val activities2 = lesson2.getCourseSchedule.getActivities
-    val result = CollectUtils.newArrayList()
+    val result = Collections.newBuffer[Any]
     for (courseActivity <- activities) {
       val time = courseActivity.getTime
       for (courseActivity2 <- activities2) {

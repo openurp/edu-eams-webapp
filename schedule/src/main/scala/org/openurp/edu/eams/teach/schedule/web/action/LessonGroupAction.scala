@@ -5,7 +5,7 @@ import java.util.Date
 
 
 import org.apache.commons.lang3.ArrayUtils
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.commons.dao.Operation
 import org.beangle.commons.dao.Operation.Builder
@@ -103,32 +103,32 @@ class LessonGroupAction extends SemesterSupportAction {
     builder.where("lpr.lesson.semester=:semester", semester)
     builder.orderBy("lpr.plan.id")
     val lprs = entityDao.search(builder)
-    val planLessonsMap = CollectUtils.newHashMap()
+    val planLessonsMap = Collections.newMap[Any]
     for (lpr <- lprs) {
       var lessons = planLessonsMap.get(lpr.getPlan)
       if (null == lessons) {
-        lessons = CollectUtils.newArrayList()
+        lessons = Collections.newBuffer[Any]
         planLessonsMap.put(lpr.getPlan, lessons)
       }
       lessons.add(lpr.getLesson)
     }
     val cal = new TermCalculator(semesterService, semester)
-    val groupLessonMap = CollectUtils.newHashMap()
+    val groupLessonMap = Collections.newMap[Any]
     for (plan <- planLessonsMap.keySet) {
       val term = cal.getTerm(plan.getProgram.getEffectiveOn, true)
       for (courseGroup <- plan.getGroups if !courseGroup.isCompulsory) {
         for (planCourse <- courseGroup.getPlanCourses if PlanUtils.openOnThisTerm(planCourse.getTerms, 
           term)) {
-          val lessons = CollectUtils.newArrayList()
+          val lessons = Collections.newBuffer[Any]
           for (lesson <- planLessonsMap.get(plan) if planCourse.getCourse == lesson.getCourse) {
             lessons.add(lesson)
           }
           groupLessonMap.put(courseGroup, lessons)
         }
         var lessons = groupLessonMap.get(courseGroup)
-        if (CollectUtils.isEmpty(lessons)) {
+        if (Collections.isEmpty(lessons)) {
           for (lesson <- planLessonsMap.get(plan) if courseGroup.getCourseType == lesson.getCourseType) {
-            if (null == lessons) lessons = CollectUtils.newArrayList()
+            if (null == lessons) lessons = Collections.newBuffer[Any]
             lessons.add(lesson)
           }
           groupLessonMap.put(courseGroup, lessons)
@@ -144,7 +144,7 @@ class LessonGroupAction extends SemesterSupportAction {
     if (ArrayUtils.isNotEmpty(lessonIds)) {
       lessonGroup.setProject(getProject)
       lessonGroup.setUpdatedAt(new Date())
-      val entities = CollectUtils.newHashSet()
+      val entities = Collections.newSet[Any]
       val lessons = entityDao.get(classOf[Lesson], lessonIds)
       for (lesson <- lessons) {
         if (null != lesson.getGroup) {
@@ -165,7 +165,7 @@ class LessonGroupAction extends SemesterSupportAction {
         }
       }
       entities.add(lessonGroup)
-      lessonGroup.setLessons(CollectUtils.newHashSet(lessons))
+      lessonGroup.setLessons(Collections.newHashSet(lessons))
       try {
         saveOrUpdate(entities)
         return redirect("search", "info.save.success")
@@ -197,7 +197,7 @@ class LessonGroupAction extends SemesterSupportAction {
       val entity = entityDao.get(classOf[LessonGroup], entityId)
       entities = Collections.singletonList(entity)
     }
-    val updateEntities = CollectUtils.newArrayList()
+    val updateEntities = Collections.newBuffer[Any]
     for (lessonGroup <- entities) {
       val lessons = lessonGroup.getLessons
       for (lesson <- lessons) {

@@ -2,7 +2,7 @@ package org.openurp.edu.eams.teach.grade.search.web.action
 
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.bean.comparators.PropertyComparator
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.commons.lang.Strings
 import org.openurp.edu.base.Adminclass
@@ -38,7 +38,7 @@ class MultiStdAction extends RestrictionSupportAction {
     }
     val pageSize = getPageSize
     val adminClasses = entityDao.get(classOf[Adminclass], Strings.splitToInt(adminClassIds))
-    val multiStdGpas = CollectUtils.newArrayList()
+    val multiStdGpas = Collections.newBuffer[Any]
     for (adminClass <- adminClasses) {
       val multiStdGpa = gpaStatService.statGpas(adminClass.getStudents)
       multiStdGpas.add(multiStdGpa)

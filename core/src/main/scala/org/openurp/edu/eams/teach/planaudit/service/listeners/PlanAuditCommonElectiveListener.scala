@@ -53,8 +53,8 @@ class PlanAuditCommonElectiveListener extends PlanAuditListener {
   }
 
   protected def processConvertCredits(target: GroupAuditResult, result: PlanAuditResult, context: PlanAuditContext) {
-    val parents = Collections.newHashSet()
-    val sibling = Collections.newHashSet()
+    val parents = Collections.newSet[Any]
+    val sibling = Collections.newSet[Any]
     var start = target.parent
     while (null != start && !parents.contains(start)) {
       parents.add(start)

@@ -10,7 +10,7 @@ import java.util.GregorianCalendar
 import org.apache.commons.collections.CollectionUtils
 import org.apache.commons.collections.Transformer
 import org.apache.poi.ss.usermodel.DateUtil
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.commons.dao.Operation
 import org.beangle.commons.dao.query.builder.Condition
@@ -96,7 +96,7 @@ class ReplaceRoomAction extends SemesterSupportAction {
     query.limit(getPageLimit)
     query.orderBy(Order.parse(get("orderBy")))
     val courseActivities = entityDao.search(query)
-    val weekTimeMap = CollectUtils.newHashMap()
+    val weekTimeMap = Collections.newMap[Any]
     for (courseActivity <- courseActivities) {
       val ct = courseActivity.getTime
       val weekTimeStr = YearWeekTimeUtil.digest(ct.getWeekState, 2, 1, semester.getWeeks, null)
@@ -149,8 +149,8 @@ class ReplaceRoomAction extends SemesterSupportAction {
 
   def batchReplaceRoomSave(): String = {
     val activities = getModels(classOf[CourseActivity], getLongIds("courseActivity"))
-    val successes = CollectUtils.newHashMap()
-    val failures = CollectUtils.newHashMap()
+    val successes = Collections.newMap[Any]
+    val failures = Collections.newMap[Any]
     val digestor = CourseActivityDigestor.getInstance
     for (courseActivity <- activities) {
       val lesson = courseActivity.getLesson
@@ -167,7 +167,7 @@ class ReplaceRoomAction extends SemesterSupportAction {
       val occupancies = entityDao.search(builder)
       changeInfo += "变更后:"
       courseActivity.getRooms.clear()
-      val toSaveOccupancies = CollectUtils.newHashSet()
+      val toSaveOccupancies = Collections.newSet[Any]
       if (!rooms.isEmpty) {
         courseActivity.getRooms.addAll(rooms)
         val timeUnits = YearWeekTimeUtil.convertToYearWeekTimes(lesson, courseActivity.getTime)
@@ -221,7 +221,7 @@ class ReplaceRoomAction extends SemesterSupportAction {
 
   def batchReplaceRoom(): String = {
     val courseActivities = getModels(classOf[CourseActivity], getLongIds("courseActivity"))
-    val weekTimeMap = CollectUtils.newHashMap()
+    val weekTimeMap = Collections.newMap[Any]
     for (courseActivity <- courseActivities) {
       weekTimeMap.put(courseActivity, YearWeekTimeUtil.digest(courseActivity.getTime.getWeekState, 2, 1, 
         courseActivity.getLesson.getSemester.getWeeks, null))
@@ -242,7 +242,7 @@ class ReplaceRoomAction extends SemesterSupportAction {
     query.orderBy(Order.parse(get("orderBy")))
     put("courseActivities", entityDao.search(query))
     put("ca", courseActivity)
-    val weekTimeMap = CollectUtils.newHashMap()
+    val weekTimeMap = Collections.newMap[Any]
     val ct = courseActivity.getTime
     val weekTimeStr = YearWeekTimeUtil.digest(ct.getWeekState, 2, 1, semester.getWeeks, null)
     weekTimeMap.put(courseActivity.id.toString, weekTimeStr)
@@ -256,7 +256,7 @@ class ReplaceRoomAction extends SemesterSupportAction {
     val courseActivity = entityDao.get(classOf[CourseActivity], courseActivityId)
     val lesson = courseActivity.getLesson
     val lessonId = lesson.id
-    val activityList = CollectUtils.newArrayList()
+    val activityList = Collections.newBuffer[Any]
     val roomIds = Strings.splitToInt(get("roomIds"))
     val roomList = entityDao.get(classOf[Room], roomIds)
     val weekStates = get("weekStates")
@@ -283,7 +283,7 @@ class ReplaceRoomAction extends SemesterSupportAction {
     val activityNew = this.createNewCourseActivity(courseActivity, roomList, weekStates)
     activityNew.getTime.newWeekState(String.valueOf(newWeekStateChar))
     activityList.add(activityNew)
-    var occupancies = CollectUtils.newArrayList()
+    var occupancies = Collections.newBuffer[Any]
     if (!courseActivity.getRooms.isEmpty) {
       val builder = OqlBuilder.from(classOf[Occupancy], "occupancy")
       builder.where("occupancy.room in (:rooms)", courseActivity.getRooms)
@@ -291,7 +291,7 @@ class ReplaceRoomAction extends SemesterSupportAction {
       builder.where("occupancy.userid = :userid", RoomUseridGenerator.gen(courseActivity.getLesson, Usage.COURSE))
       occupancies = entityDao.search(builder)
     }
-    val toRemoveActivities = CollectUtils.newArrayList()
+    val toRemoveActivities = Collections.newBuffer[Any]
     if (!courseActivity.getTime.getWeekState.contains("1")) {
       toRemoveActivities.add(courseActivity)
     } else {
@@ -314,8 +314,8 @@ class ReplaceRoomAction extends SemesterSupportAction {
       val beforeMsg = "Delete activities Before SAVE new activity and lesson No.:" + 
         lesson.getNo
       logHelper.info(beforeMsg)
-      val toSaveOccupancies = CollectUtils.newHashSet()
-      val lessonOccupancyRooms = CollectUtils.newHashSet()
+      val toSaveOccupancies = Collections.newSet[Any]
+      val lessonOccupancyRooms = Collections.newSet[Any]
       for (activity <- lesson.getCourseSchedule.getActivities; classroom <- activity.getRooms) {
         lessonOccupancyRooms.add(classroom)
       }
@@ -341,7 +341,7 @@ class ReplaceRoomAction extends SemesterSupportAction {
             .append("小节-第")
             .append(activity.getTime.getEndUnit)
             .append("小节")
-          return forwardError(Array(getText("lesson.courseSchedule.roomIsOccupied"), errMsg.toString))
+          return forwardError(Array(getText("lesson.schedule.roomIsOccupied"), errMsg.toString))
         }
         val rooms = activity.getRooms
         val courseTime = activity.getTime
@@ -351,7 +351,7 @@ class ReplaceRoomAction extends SemesterSupportAction {
           if (!freeRooms.contains(room) && !lessonOccupancyRooms.contains(room)) {
             val errMsg = new StringBuilder()
             errMsg.append(room.getName + "被排考或者教室借用占用,请选择其他教室!")
-            return forwardError(Array(getText("lesson.courseSchedule.roomIsOccupied"), errMsg.toString))
+            return forwardError(Array(getText("lesson.schedule.roomIsOccupied"), errMsg.toString))
           }
           for (timeUnit <- timeUnits) {
             val occupancy = new OccupancyBean()

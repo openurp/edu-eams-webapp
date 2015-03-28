@@ -3,7 +3,7 @@ package org.openurp.edu.eams.teach.grade.course.dao.hibernate
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.data.jpa.hibernate.HibernateEntityDao
 import org.openurp.edu.base.Student
@@ -30,7 +30,7 @@ class CourseGradeDaoHibernate extends HibernateEntityDao with CourseGradeDao {
     query.where("grade.course.id = :courseId", course.id)
     query.select("grade.passed")
     val rs = search(query).asInstanceOf[Iterable[Boolean]]
-    if (CollectUtils.isEmpty(rs)) {
+    if (Collections.isEmpty(rs)) {
       false
     } else {
       rs.find(true == _).map(_ => false).getOrElse(true)
@@ -42,7 +42,7 @@ class CourseGradeDaoHibernate extends HibernateEntityDao with CourseGradeDao {
     query.where("cg.std.id = :stdId", stdId)
     query.select("cg.course.id,cg.passed")
     val rs = search(query).asInstanceOf[Iterable[Array[Any]]]
-    val courseMap = CollectUtils.newHashMap()
+    val courseMap = Collections.newMap[Any]
     for (obj <- rs) {
       if (null != obj(1)) {
         courseMap.put(obj(0), obj(1).asInstanceOf[java.lang.Boolean])
@@ -76,7 +76,7 @@ class CourseGradeDaoHibernate extends HibernateEntityDao with CourseGradeDao {
         courseGrade.getExamGrades.remove(courseGrade.getExamGrade(gradeType))
         courseGradeCalculator.calc(courseGrade, state)
       }
-      val toBeSave = CollectUtils.newArrayList()
+      val toBeSave = Collections.newBuffer[Any]
       toBeSave.addAll(courseGrades)
       if (isClearState) {
         state.getStates.remove(state.getState(gradeType))
@@ -117,7 +117,7 @@ class CourseGradeDaoHibernate extends HibernateEntityDao with CourseGradeDao {
     hql.append("update CourseGrade set status=")
     hql.append((if (true == isPublished) Grade.Status.PUBLISHED else Grade.Status.CONFIRMED))
     hql.append(" where lesson.id=" + lesson.id)
-    getSession.createQuery(hql.toString).executeUpdate()
+    currentSession.createQuery(hql.toString).executeUpdate()
   }
 
   def publishExamGrade(lesson: Lesson, gradeType: GradeType, isPublished: java.lang.Boolean) {
@@ -127,7 +127,7 @@ class CourseGradeDaoHibernate extends HibernateEntityDao with CourseGradeDao {
     hql.append("where gradeType.id=" + gradeType.id)
     hql.append(" exists(from CourseGrade cg where cg.lesson.id=" + lesson.id)
     hql.append("and cg.id=courseGrade.id)")
-    getSession.createQuery(hql.toString).executeUpdate()
+    currentSession.createQuery(hql.toString).executeUpdate()
   }
 
   def publishExamGrade(lesson: Lesson, gradeTypes: List[GradeType], isPublished: java.lang.Boolean) {
@@ -143,7 +143,7 @@ class CourseGradeDaoHibernate extends HibernateEntityDao with CourseGradeDao {
     hql.append("',','||gradeType.id||',')>0 " + " and courseGrade.lesson.id=" + 
       lesson.id + 
       ")")
-    getSession.createQuery(hql.toString).executeUpdate()
+    currentSession.createQuery(hql.toString).executeUpdate()
   }
 
   def setCourseGradeCalculator(courseGradeCalculator: CourseGradeCalculator) {

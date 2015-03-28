@@ -6,7 +6,7 @@ import java.text.SimpleDateFormatimport java.util.Date
 
 
 import org.apache.commons.io.output.StringBuilderWriter
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
@@ -96,7 +96,7 @@ class RetakeFeeConfigServiceImpl extends BaseCodeServiceImpl with RetakeFeeConfi
     var openAt = config.getOpenAt
     val closeAt = config.getCloseAt
     val builder = OqlBuilder.from(classOf[RetakeFeeConfig], "config")
-    val params = CollectUtils.newHashMap()
+    val params = Collections.newMap[Any]
     builder.where("config.project = :project and config.semester = :semester and config.feeType=:feeType")
     if (!(null == openAt && null == closeAt)) {
       if (null == openAt && null != closeAt) {

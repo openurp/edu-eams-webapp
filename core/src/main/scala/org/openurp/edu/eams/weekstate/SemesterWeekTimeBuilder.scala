@@ -10,7 +10,7 @@ import org.openurp.edu.eams.date.RelativeDateUtil
 import SemesterWeekTimeBuilder._
 import org.openurp.base.SemesterWeekTime
 import org.beangle.commons.lang.time.YearWeekTime
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.lang.time.WeekState
 
 object SemesterWeekTimeBuilder {
@@ -62,14 +62,14 @@ val MAX_LENGTH=53
   }
 
   def merge(states: List[SemesterWeekTime]): SemesterWeekTime = {
-    if (CollectUtils.isEmpty(states)) {
+    if (Collections.isEmpty(states)) {
       return null
     }
     merge(states.toArray)
   }
 
   def merge(states: Iterable[SemesterWeekTime]): SemesterWeekTime = {
-    if (CollectUtils.isEmpty(states)) {
+    if (Collections.isEmpty(states)) {
       return null
     }
     merge(states.toArray)
@@ -77,7 +77,7 @@ val MAX_LENGTH=53
 
   def parse(weekState: String): Array[Integer] = {
      // weekState = new StringBuilder(weekState).reverse().toString
-    val weekIndecies = CollectUtils.newArrayList[Integer]
+    val weekIndecies = Collections.newBuffer[Any][Integer]
     var i = 0
     while (i != -1) {
       i = weekState.indexOf('1', i)
@@ -142,7 +142,7 @@ class SemesterWeekTimeBuilder{
     }
     var year_weekStateString = new StringBuilder(BinaryConverter.toString(yearWeekState.state.value))
     val weekday = yearWeekState.day
-    val sem_weekIndecies = CollectUtils.newArrayList[Integer]
+    val sem_weekIndecies = Collections.newBuffer[Any][Integer]
     var oneIndex = -1
     while (oneIndex < year_weekStateString.length) {
       oneIndex = year_weekStateString.indexOf('1', oneIndex + 1)
@@ -172,14 +172,14 @@ class SemesterWeekTimeBuilder{
     for (i <- 1 until yearWeekStates.length if weekday != yearWeekStates(i).day) {
       throw new RuntimeException("Convert error: weekday should be same")
     }
-    val states = CollectUtils.newArrayList[SemesterWeekTime]
+    val states = Collections.newBuffer[Any][SemesterWeekTime]
     for (i <- 0 until yearWeekStates.length) {
       val state = convertFrom(yearWeekStates(i))
       if (state != null) {
         states += state
       }
     }
-    if (CollectUtils.isEmpty(states)) {
+    if (Collections.isEmpty(states)) {
       return null
     }
     val state = states(0)

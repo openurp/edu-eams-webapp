@@ -6,7 +6,7 @@ import org.apache.commons.collections.CollectionUtils
 import org.apache.commons.collections.ListUtils
 import org.apache.commons.collections.MapUtils
 import org.apache.commons.lang3.ArrayUtils
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.commons.dao.Operation
 import org.beangle.commons.dao.query.builder.Condition
@@ -61,10 +61,10 @@ class StdCourseCountConstraintAction extends SemesterSupportAction {
 
   def save(): String = {
     val stdCourseCountConstraint = populateEntity().asInstanceOf[StdCourseCountConstraint]
-    var stds = CollectUtils.newArrayList()
-    val persistedConstraintStds = CollectUtils.newHashSet()
+    var stds = Collections.newBuffer[Any]
+    val persistedConstraintStds = Collections.newSet[Any]
     var stdIds: Array[Long] = null
-    val stdCourseCountConstraints = CollectUtils.newArrayList()
+    val stdCourseCountConstraints = Collections.newBuffer[Any]
     val semester = stdCourseCountConstraint.getSemester
     if (true == getBoolean("allNoCredit")) {
       stds = entityDao.search(getStdBuilder(semester, null, true))
@@ -82,7 +82,7 @@ class StdCourseCountConstraintAction extends SemesterSupportAction {
           if (end > stdArray.length) {
             end = stdArray.length
           }
-          val parameterMap = CollectUtils.newHashMap()
+          val parameterMap = Collections.newMap[Any]
           parameterMap.put("stds", ArrayUtils.subarray(stdArray, i, end))
           parameterMap.put("semester", semester)
           stdCourseCountConstraints.addAll(entityDao.search(builder.params(parameterMap).build()))
@@ -100,7 +100,7 @@ class StdCourseCountConstraintAction extends SemesterSupportAction {
       stdCourseCountConstraints.add(constraint)
     }
     val createdAt = new Date()
-    val loggers = CollectUtils.newArrayList()
+    val loggers = Collections.newBuffer[Any]
     val maxCourseCount = getCourseTypeMaxCourseCount
     for (constraint <- stdCourseCountConstraints) {
       val logger = ConstraintLogger.genLogger(constraint, if (constraint.isPersisted) "UPDATE" else "CREATE")
@@ -137,7 +137,7 @@ class StdCourseCountConstraintAction extends SemesterSupportAction {
 
   private def calStdsElectedCourseTypeCourseCount(stdCourseTakes: Map[Student, List[CourseTake]], stdPlans: Map[Student, CoursePlan]): Map[Student, Map[CourseType, Integer]] = {
     val stds = stdPlans.keySet
-    val result = CollectUtils.newHashMap()
+    val result = Collections.newMap[Any]
     for (student <- stds) {
       val plan = stdPlans.get(student)
       if (null != plan) {
@@ -151,7 +151,7 @@ class StdCourseCountConstraintAction extends SemesterSupportAction {
 
   private def calStdElectedCourseTypeCourseCount(student: Student, plan: CoursePlan, courseTakes: List[CourseTake]): Map[CourseType, Integer] = {
     val groups = plan.getGroups
-    val result = CollectUtils.newHashMap()
+    val result = Collections.newMap[Any]
     for (courseGroup <- groups) {
       result.put(courseGroup.getCourseType, 0)
     }
@@ -168,7 +168,7 @@ class StdCourseCountConstraintAction extends SemesterSupportAction {
   }
 
   private def getCourseTypeMaxCourseCount(): Map[CourseType, Integer] = {
-    val result = CollectUtils.newHashMap()
+    val result = Collections.newMap[Any]
     var i = -1
     val params = ActionContext.getContext.getParameters
     for (key <- params.keySet if key.startsWith("courseTypeId")) {
@@ -190,7 +190,7 @@ class StdCourseCountConstraintAction extends SemesterSupportAction {
     val entityIds = getLongIds(getShortName)
     val semester = putSemester(null)
     val idsLength = if (ArrayUtils.isEmpty(entityIds)) 0 else entityIds.length
-    var stds = CollectUtils.newArrayList()
+    var stds = Collections.newBuffer[Any]
     if (null == allNoCredit) {
       if (idsLength == 1) {
         val stdCourseCountConstraint = entity.asInstanceOf[StdCourseCountConstraint]
@@ -207,7 +207,7 @@ class StdCourseCountConstraintAction extends SemesterSupportAction {
           departments.isEmpty) {
           put("stds", stds)
         }
-        val stdCourseCountConstraints = CollectUtils.newArrayList()
+        val stdCourseCountConstraints = Collections.newBuffer[Any]
         var i = 0
         while (i < entityIds.length) {
           var end = i + 500
@@ -236,7 +236,7 @@ class StdCourseCountConstraintAction extends SemesterSupportAction {
     } else {
       val stdIds = getLongIds("student")
       put("allNoCredit", allNoCredit)
-      val stdSet = CollectUtils.newHashSet()
+      val stdSet = Collections.newSet[Any]
       if (ArrayUtils.isNotEmpty(stdIds)) {
         var i = 0
         while (i < stdIds.length) {
@@ -251,7 +251,7 @@ class StdCourseCountConstraintAction extends SemesterSupportAction {
       } else {
         stdSet.addAll(entityDao.search(getStdBuilder(semester, null, true)))
       }
-      stds = CollectUtils.newArrayList(stdSet)
+      stds = Collections.newBuffer[Any](stdSet)
     }
     val stdCourseTakes = courseTakeService.getCourseTakes(stds, semester)
     put("electedCount", getStdsElectedCourseCount(stdCourseTakes))
@@ -261,23 +261,23 @@ class StdCourseCountConstraintAction extends SemesterSupportAction {
   }
 
   private def getCourseTypes(stds: Iterable[Student]): List[CourseType] = {
-    if (CollectUtils.isEmpty(stds)) {
+    if (Collections.isEmpty(stds)) {
       return Collections.emptyList()
     }
-    val plans = CollectUtils.newHashSet(coursePlanProvider.getCoursePlans(stds).values)
-    val typePlanMap = CollectUtils.newHashMap()
+    val plans = Collections.newHashSet(coursePlanProvider.getCoursePlans(stds).values)
+    val typePlanMap = Collections.newMap[Any]
     for (coursePlan <- plans) {
       val groups = coursePlan.getGroups
       for (courseGroup <- groups) {
         var typePlans = typePlanMap.get(courseGroup.getCourseType)
         if (null == typePlans) {
-          typePlans = CollectUtils.newHashSet()
+          typePlans = Collections.newSet[Any]
           typePlanMap.put(courseGroup.getCourseType, typePlans)
         }
         typePlans.add(coursePlan)
       }
     }
-    val result = CollectUtils.newArrayList()
+    val result = Collections.newBuffer[Any]
     for ((key, value) <- typePlanMap if null != value && CollectionUtils.isEqualCollection(plans, value)) {
       result.add(key)
     }
@@ -297,7 +297,7 @@ class StdCourseCountConstraintAction extends SemesterSupportAction {
     } else if (ArrayUtils.isNotEmpty(codes)) {
       val stds = entityDao.get(classOf[Student], Array("code", "project", "department", "type", "education"),
         Array(codes, project, departments, stdTypes, educations))
-      val stdMap = CollectUtils.newHashMap()
+      val stdMap = Collections.newMap[Any]
       for (student <- stds) {
         stdMap.put(student.getCode, student)
       }
@@ -316,7 +316,7 @@ class StdCourseCountConstraintAction extends SemesterSupportAction {
   }
 
   private def getStdsElectedCourseCount(stdCourseTakes: Map[Student, List[CourseTake]]): Map[Student, Integer] = {
-    val result = CollectUtils.newHashMap()
+    val result = Collections.newMap[Any]
     if (null == stdCourseTakes || stdCourseTakes.isEmpty) {
       return result
     }
@@ -351,8 +351,8 @@ class StdCourseCountConstraintAction extends SemesterSupportAction {
     val stdTypes = getStdTypes
     val educations = getEducations
     val builder = OqlBuilder.from(classOf[Student], "student")
-    if (CollectUtils.isEmpty(departs) || CollectUtils.isEmpty(stdTypes) ||
-      CollectUtils.isEmpty(educations)) {
+    if (Collections.isEmpty(departs) || Collections.isEmpty(stdTypes) ||
+      Collections.isEmpty(educations)) {
       builder.where("1=2")
     } else {
       builder.where((if (noCreditsConstraint) "not " else "") + "exists (from " +
@@ -380,7 +380,7 @@ class StdCourseCountConstraintAction extends SemesterSupportAction {
     if (ArrayUtils.isNotEmpty(ids) && null != maxCourseCount &&
       maxCourseCount > -1) {
       val constraints = entityDao.get(classOf[StdCourseCountConstraint], ids)
-      val loggers = CollectUtils.newArrayList()
+      val loggers = Collections.newBuffer[Any]
       val createdAt = new Date()
       for (stdCourseCountConstraint <- constraints) {
         val logger = ConstraintLogger.genLogger(stdCourseCountConstraint, if (stdCourseCountConstraint.isPersisted) "UPDATE" else "CREATE")
@@ -428,7 +428,7 @@ class StdCourseCountConstraintAction extends SemesterSupportAction {
       majorPlanCondition.params(condition.getParams)
       stdBuilder.where(majorPlanCondition)
     }
-    val students = CollectUtils.newHashSet(entityDao.search(stdBuilder))
+    val students = Collections.newHashSet(entityDao.search(stdBuilder))
     for (constraint <- constraints) {
       students.remove(constraint.getStd)
     }
@@ -440,7 +440,7 @@ class StdCourseCountConstraintAction extends SemesterSupportAction {
     }
     try {
       val createdAt = new Date()
-      val loggers = CollectUtils.newArrayList()
+      val loggers = Collections.newBuffer[Any]
       for (constraint <- constraints) {
         val logger = ConstraintLogger.genLogger(constraint, "INIT")
         logger.setCreatedAt(createdAt)
@@ -468,7 +468,7 @@ class StdCourseCountConstraintAction extends SemesterSupportAction {
 
   protected def removeAndForward(entities: Iterable[_]): String = {
     try {
-      val loggers = CollectUtils.newArrayList()
+      val loggers = Collections.newBuffer[Any]
       val createdAt = new Date()
       for (`object` <- entities) {
         val constraint = `object`.asInstanceOf[StdCourseCountConstraint]

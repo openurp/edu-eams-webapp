@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.grade.course.web.action
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.openurp.base.Department
@@ -21,7 +21,7 @@ class StatAction extends SemesterSupportAction {
     val builder = OqlBuilder.from(classOf[Lesson], "lesson")
     populateConditions(builder)
     builder.where("lesson.project =:project", getProject)
-    if (CollectUtils.isEmpty(departments)) {
+    if (Collections.isEmpty(departments)) {
       builder.where("lesson is null")
     } else {
       builder.where("lesson.teachDepart in (:departments)", departments)
@@ -49,7 +49,7 @@ class StatAction extends SemesterSupportAction {
 
   def scoreSectionSetting(): String = {
     val sections = entityDao.getAll(classOf[ScoreSection])
-    val newSections = CollectUtils.newArrayList()
+    val newSections = Collections.newBuffer[Any]
     var i = 1
     var j = i
     while (j <= getInt("count").intValue()) {
@@ -61,10 +61,10 @@ class StatAction extends SemesterSupportAction {
       i += 1
       j += 1
     }
-    if (CollectUtils.isNotEmpty(newSections)) {
+    if (Collections.isNotEmpty(newSections)) {
       entityDao.saveOrUpdate(newSections)
     }
-    if (CollectUtils.isNotEmpty(sections)) {
+    if (Collections.isNotEmpty(sections)) {
       entityDao.remove(sections)
     }
     redirect("scoreSectionIndex", "info.action.success")
@@ -75,7 +75,7 @@ class StatAction extends SemesterSupportAction {
     val courseId = getLong("courseIds")
     val query = OqlBuilder.from(classOf[Lesson], "lesson")
     query.where("lesson.course.id =:courseId", courseId)
-    if (null == getProject || CollectUtils.isEmpty(departments)) {
+    if (null == getProject || Collections.isEmpty(departments)) {
       query.where("lesson is null")
     } else {
       query.where("lesson.project =:project", getProject)

@@ -1,69 +1,50 @@
 package org.openurp.edu.eams.teach.lesson.service.limit.impl
 
-
-Filter
-Provider
-import DefaultLessonLimitMetaProvider._
-
-
-
-object DefaultLessonLimitMetaProvider {
-
-  private val enums = LessonLimitMeta.values
-}
+import org.openurp.edu.teach.lesson.LessonLimitMeta
+import org.openurp.edu.eams.teach.lesson.service.limit.LessonLimitMetaFilter
+import org.openurp.edu.teach.lesson.LessonLimitMeta.LimitMeta
+import org.openurp.edu.eams.teach.lesson.service.limit.LessonLimitMetaProvider
+import org.beangle.commons.collection.Collections
+import org.openurp.edu.teach.lesson.LessonLimitMeta
 
 class DefaultLessonLimitMetaProvider extends LessonLimitMetaProvider {
 
-  private var filters: List[LessonLimitMetaFilter] = new ArrayList[LessonLimitMetaFilter]()
+  var filters = Collections.newBuffer[LessonLimitMetaFilter]
 
-  def getLessonLimitMetas(): List[LessonLimitMeta] = {
-    val results = new ArrayList[LessonLimitMeta]()
-    for (courseLimitMetaEnum <- enums) {
-      var append = true
-      for (filter <- filters if !filter.accept(courseLimitMetaEnum)) {
-        append = false
-        //break
-      }
-      if (append) {
-        results.add(courseLimitMetaEnum)
-      }
+  def getLessonLimitMetas(): Seq[LimitMeta] = {
+    val results = Collections.newBuffer[LimitMeta]
+    val iter = LessonLimitMeta.values.iterator
+    while (iter.hasNext) {
+      val meta = iter.next()
+      val append = !filters.exists { f => !f.accept(meta) }
+      if (append) results += meta
     }
     results
   }
 
-  def getLessonLimitMetaIds(): List[Long] = {
-    val results = new ArrayList[Long]()
-    for (courseLimitMetaEnum <- enums) {
-      var append = true
-      for (filter <- filters if !filter.accept(courseLimitMetaEnum)) {
-        append = false
-        //break
-      }
-      if (append) {
-        results.add(courseLimitMetaEnum.id)
-      }
+  def getLessonLimitMetaIds(): Seq[Int] = {
+    val results = Collections.newBuffer[Int]
+    val iter = LessonLimitMeta.values.iterator
+    while (iter.hasNext) {
+      val meta = iter.next()
+      val append = !filters.exists { f => !f.accept(meta) }
+      if (append) results += meta.id
     }
     results
   }
 
-  def getLessonLimitMetaPairs(): Pair[List[Long], List[LessonLimitMeta]] = {
-    val ids = new ArrayList[Long]()
-    val courseLimitMetaEnums = new ArrayList[LessonLimitMeta]()
-    for (courseLimitMetaEnum <- enums) {
-      var append = true
-      for (filter <- filters if !filter.accept(courseLimitMetaEnum)) {
-        append = false
-        //break
-      }
+  def getLessonLimitMetaPairs(): Pair[Seq[Int], Seq[LimitMeta]] = {
+    val ids = Collections.newBuffer[Int]
+    val metas = Collections.newBuffer[LimitMeta]
+    val iter = LessonLimitMeta.values.iterator
+    while (iter.hasNext) {
+      val meta = iter.next()
+      val append = !filters.exists { f => !f.accept(meta) }
       if (append) {
-        courseLimitMetaEnums.add(courseLimitMetaEnum)
-        ids.add(courseLimitMetaEnum.id)
+        ids += meta.id
+        metas += meta
       }
     }
-    new Pair[List[Long], List[LessonLimitMeta]](ids, courseLimitMetaEnums)
-  }
-
-  def setFilters(filters: List[LessonLimitMetaFilter]) {
-    this.filters = filters
+    new Pair[Seq[Int], Seq[LimitMeta]](ids, metas)
   }
 }

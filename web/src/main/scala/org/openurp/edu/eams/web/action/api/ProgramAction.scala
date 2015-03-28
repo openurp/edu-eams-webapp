@@ -3,7 +3,7 @@ package org.openurp.edu.eams.web.action.api
 import java.util.Date
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.openurp.edu.base.Program
@@ -72,10 +72,10 @@ class ProgramAction extends ProjectSupportAction {
       val stdTypes = Strings.splitToInt(stdTypeStr)
       query.where("program.stdType.id in (:stdTypes)", stdTypes)
     }
-    val result = CollectUtils.newArrayList()
+    val result = Collections.newBuffer[Any]
     val programs = entityDao.search(query)
     for (program <- programs) {
-      val entity = CollectUtils.newHashMap()
+      val entity = Collections.newMap[Any]
       entity.put("id", program.id)
       entity.put("name", program.getName)
       result.add(entity)

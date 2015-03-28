@@ -4,7 +4,7 @@ import java.util.Date
 
 import java.util.Locale
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.text.seq.SeqPattern
 import org.openurp.edu.eams.teach.program.Program
@@ -83,7 +83,7 @@ class ProgramDocAction extends ProjectSupportAction {
     } else {
       doc = new ProgramDocBean()
       if (template != null) {
-        val sections = CollectUtils.newArrayList()
+        val sections = Collections.newBuffer[Any]
         for (meta <- template.getMetas) {
           val section = new ProgramDocSectionBean()
           section.setName(meta.getName)
@@ -109,7 +109,7 @@ class ProgramDocAction extends ProjectSupportAction {
       doc.setCreatedAt(new Date())
       doc.setUpdatedAt(new Date())
     }
-    val sections = CollectUtils.newHashMap()
+    val sections = Collections.newMap[Any]
     for (section <- doc.getSections) {
       sections.put(section.getName, section)
     }

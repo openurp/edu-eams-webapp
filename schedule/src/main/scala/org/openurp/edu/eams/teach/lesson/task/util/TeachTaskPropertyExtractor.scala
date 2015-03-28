@@ -9,7 +9,7 @@ import java.text.MessageFormat
 
 import org.apache.commons.collections.CollectionUtils
 import org.apache.commons.collections.Transformer
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.model.dao.EntityDao
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
@@ -25,13 +25,13 @@ import org.openurp.edu.eams.teach.code.industry.ExamType
 import org.openurp.edu.eams.teach.code.school.CourseHourType
 import org.openurp.edu.eams.teach.lesson.ArrangeSuggest
 import org.openurp.edu.teach.schedule.CourseActivity
-import org.openurp.edu.teach.lesson.CourseLimitMeta.Operator
+import org.openurp.edu.teach.lesson.LessonLimitMeta.Operator
 import org.openurp.edu.eams.teach.lesson.CourseMaterial
 import org.openurp.edu.teach.exam.ExamActivity
 import org.openurp.edu.teach.exam.ExamRoom
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.teach.lesson.LessonMaterial
-import org.openurp.edu.eams.teach.lesson.service.CourseLimitService
+import org.openurp.edu.eams.teach.lesson.service.LessonLimitService
 import org.openurp.edu.eams.teach.lesson.task.service.LessonPlanRelationService
 import org.openurp.edu.eams.teach.lesson.util.CourseActivityDigestor
 import org.openurp.edu.eams.teach.lesson.util.ExamActivityDigestor
@@ -50,7 +50,7 @@ class TeachTaskPropertyExtractor(resource: TextResource) extends DefaultProperty
 
   protected var semesterService: SemesterService = _
 
-  protected var courseLimitService: CourseLimitService = _
+  protected var lessonLimitService: LessonLimitService = _
 
   protected var lessonPlanRelationService: LessonPlanRelationService = _
 
@@ -144,10 +144,10 @@ class TeachTaskPropertyExtractor(resource: TextResource) extends DefaultProperty
       val arrangeSuggestQuery = OqlBuilder.from(classOf[ArrangeSuggest], "suggest")
       arrangeSuggestQuery.where("suggest.lesson = :lesson", lesson)
       val suggests = entityDao.search(arrangeSuggestQuery)
-      if (CollectUtils.isNotEmpty(suggests)) {
+      if (Collections.isNotEmpty(suggests)) {
         val suggest = suggests.get(0)
         var str = suggestDigestor.digest(textResource, suggest)
-        if (CollectUtils.isNotEmpty(suggest.getRooms)) {
+        if (Collections.isNotEmpty(suggest.getRooms)) {
           str += "建议教室:" + 
             Strings.join(CollectionUtils.collect(suggest.getRooms, new Transformer() {
 
@@ -156,7 +156,7 @@ class TeachTaskPropertyExtractor(resource: TextResource) extends DefaultProperty
             }
           }), ",")
         }
-        if (CollectUtils.isNotEmpty(suggest.getRooms)) {
+        if (Collections.isNotEmpty(suggest.getRooms)) {
           var iter = suggest.getRooms.iterator()
           while (iter.hasNext) {
             str += iter.next().getName
@@ -314,7 +314,7 @@ class TeachTaskPropertyExtractor(resource: TextResource) extends DefaultProperty
       }
       arrangeInfo
     } else if ("education.name" == property) {
-      val pair = courseLimitService.xtractEducationLimit(lesson.getTeachClass)
+      val pair = lessonLimitService.xtractEducationLimit(lesson.getTeachClass)
       var educationStr = ""
       if (pair._1 == Operator.NOT_IN || pair._1 == Operator.NOT_EQUAL) {
         val educationsForCurrPorject = lesson.getProject.educations
@@ -327,7 +327,7 @@ class TeachTaskPropertyExtractor(resource: TextResource) extends DefaultProperty
         }
         return educationStr
       }
-      if (pair._1 == Operator.IN || pair._1 == Operator.EQUAL) {
+      if (pair._1 == Operator.IN || pair._1 == Operator.Equals) {
         for (education <- pair._2) {
           educationStr += education.getName + ","
         }
@@ -358,7 +358,7 @@ class TeachTaskPropertyExtractor(resource: TextResource) extends DefaultProperty
       if (fullname.startsWith(",")) {
         fullname = fullname.substring(1)
       }
-      contents = CollectUtils.newHashMap()
+      contents = Collections.newMap[Any]
       val groups = fullname.split(";")
       for (group <- groups) {
         val items = group.split(",")
@@ -385,8 +385,8 @@ class TeachTaskPropertyExtractor(resource: TextResource) extends DefaultProperty
     this.semesterService = semesterService
   }
 
-  def setCourseLimitService(courseLimitService: CourseLimitService) {
-    this.courseLimitService = courseLimitService
+  def setLessonLimitService(lessonLimitService: LessonLimitService) {
+    this.lessonLimitService = lessonLimitService
   }
 
   def getLessonPlanRelationService(): LessonPlanRelationService = lessonPlanRelationService

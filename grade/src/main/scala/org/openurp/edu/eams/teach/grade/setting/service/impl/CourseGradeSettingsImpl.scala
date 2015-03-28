@@ -3,7 +3,7 @@ package org.openurp.edu.eams.teach.grade.setting.service.impl
 
 
 import org.beangle.commons.lang.Strings
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.ems.dictionary.service.BaseCodeService
@@ -25,7 +25,7 @@ object CourseGradeSettingsImpl {
 
 class CourseGradeSettingsImpl extends BaseServiceImpl with CourseGradeSettings {
 
-  private var cache: Map[Integer, CourseGradeSetting] = CollectUtils.newHashMap()
+  private var cache: Map[Integer, CourseGradeSetting] = Collections.newMap[Any]
 
   private var baseCodeService: BaseCodeService = _
 

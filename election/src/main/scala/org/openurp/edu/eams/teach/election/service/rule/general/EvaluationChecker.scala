@@ -3,7 +3,7 @@ package org.openurp.edu.eams.teach.election.service.rule.general
 import java.util.Date
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.ems.rule.Context
 import org.openurp.base.Semester
@@ -37,7 +37,7 @@ class EvaluationChecker extends AbstractElectRuleExecutor {
       query.where("exists(from org.openurp.edu.eams.quality.evaluate.course.model.QuestionnaireLesson ql where ql.lesson=courseTake.lesson)")
       query.select("distinct courseTake.lesson.semester")
       semesters = entityDao.search(query)
-      isEvaluted = CollectUtils.isEmpty(semesters)
+      isEvaluted = Collections.isEmpty(semesters)
     }
     if (isEvaluted) {
       electContext.getState.getParams.put("isEvaluted", isEvaluted)

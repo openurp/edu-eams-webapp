@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.web.action
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.edu.base.Project
 import org.openurp.edu.base.Teacher
@@ -21,9 +21,9 @@ abstract class AbstractTeacherLessonAction extends MultiProjectSupportAction {
       .where("teacher=:me", teacher)
     builder.select("distinct lesson.project")
     var projects = entityDao.search(builder)
-    if (CollectUtils.isEmpty(projects)) {
+    if (Collections.isEmpty(projects)) {
       projects = entityDao.search(OqlBuilder.from(classOf[Project], "p").orderBy("p.id"))
-      return CollectUtils.newArrayList(projects.get(0))
+      return Collections.newBuffer[Any](projects.get(0))
     }
     projects
   }

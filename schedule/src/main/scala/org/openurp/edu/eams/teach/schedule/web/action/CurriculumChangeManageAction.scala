@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat
 
 import java.util.Date
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
@@ -50,7 +50,7 @@ class CurriculumChangeManageAction extends SemesterSupportAction {
     val passed = getBool("status")
     val all = getBool("all")
     val changeIds = getLongIds("change")
-    var applications = CollectUtils.newArrayList()
+    var applications = Collections.newBuffer[Any]
     applications = if (all) entityDao.search(buildChangeQuery()) else entityDao.get(classOf[CurriculumChangeApplication], 
       changeIds)
     val sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")

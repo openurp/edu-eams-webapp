@@ -3,7 +3,7 @@ package org.openurp.edu.eams.teach.election.service.rule.election
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.lang.Strings
 import org.beangle.ems.rule.Context
 import org.beangle.ems.rule.model.RuleConfig
@@ -148,8 +148,8 @@ class TimeConflictChecker extends AbstractElectRuleExecutor with ElectRulePrepar
       conflictTimeCount: Int, 
       checkType: Boolean, 
       isContinuous: Boolean): List[Lesson] = {
-    val temp = CollectUtils.newHashSet()
-    val result = CollectUtils.newArrayList()
+    val temp = Collections.newSet[Any]
+    val result = Collections.newBuffer[Any]
     if (null != lessons) {
       for (lesson2 <- lessons) {
         if (temp.contains(lesson2)) {
@@ -169,8 +169,8 @@ class TimeConflictChecker extends AbstractElectRuleExecutor with ElectRulePrepar
       timeConflictCount: Int, 
       checkType: Boolean, 
       isContinuous: Boolean): List[Lesson] = {
-    val temp = CollectUtils.newHashSet()
-    val result = CollectUtils.newArrayList()
+    val temp = Collections.newSet[Any]
+    val result = Collections.newBuffer[Any]
     if (null != courseTakes) {
       for (courseTake <- courseTakes) {
         val lesson2 = courseTake.getLesson
@@ -193,7 +193,7 @@ class TimeConflictChecker extends AbstractElectRuleExecutor with ElectRulePrepar
       var checkType = CHECK_CONFLICT
       var isContinuous = true
       for (config <- context.getState.getProfile(entityDao).getElectConfigs if config.getRule.getServiceName.toUpperCase() == this.getClass.getSimpleName.toUpperCase()) {
-        val s = CollectUtils.newHashSet("真", "是", "YES", "Y", "TRUE", "T")
+        val s = Collections.newHashSet("真", "是", "YES", "Y", "TRUE", "T")
         for (param <- config.getParams) {
           if (param.getParam.getName.trim() == "unitCount") {
             conflictTimeCount = java.lang.Integer.parseInt(Strings.trim(param.getValue))

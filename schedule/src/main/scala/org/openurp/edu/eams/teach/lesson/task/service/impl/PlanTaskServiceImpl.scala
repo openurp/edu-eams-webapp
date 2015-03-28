@@ -7,7 +7,7 @@ package org.openurp.edu.eams.teach.lesson.task.service.impl
 
 
 import org.beangle.commons.bean.transformers.PropertyTransformer
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.base.Semester
@@ -71,7 +71,7 @@ class PlanTaskServiceImpl extends BaseServiceImpl with PlanTaskService {
         if (planCourses.isEmpty) {
           //continue
         }
-        val courses = CollectUtils.collect(planCourses, new PropertyTransformer("course"))
+        val courses = Collections.collect(planCourses, new PropertyTransformer("course"))
         val closedCreditsQry = OqlBuilder.from(classOf[PlanTask], "sq")
         closedCreditsQry.select("select nvl(sum(sq.course.credits),0)")
         closedCreditsQry.where("sq.teachPlan=:plan", plan)

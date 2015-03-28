@@ -2,7 +2,7 @@ package org.openurp.edu.eams.base.web.action
 
 import java.util.Date
 import org.apache.commons.lang.time.DateUtils
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.struts2.convention.route.Action
@@ -71,7 +71,7 @@ class SemesterAction extends RestrictionSupportAction {
     if (calendar.id != null) {
       query.where("calendar.id <> :calendarId", calendar.id)
     }
-    if (CollectUtils.isNotEmpty(entityDao.search(query))) {
+    if (Collections.isNotEmpty(entityDao.search(query))) {
       return redirect("index", "名称重复,保存失败")
     }
     calendar.setSchool(getSchool)

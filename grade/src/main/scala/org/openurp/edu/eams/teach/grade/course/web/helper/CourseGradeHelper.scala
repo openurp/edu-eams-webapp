@@ -4,7 +4,7 @@ import java.util.Date
 
 
 import org.beangle.commons.lang.Strings
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.model.dao.EntityDao
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.lang.Strings
@@ -154,14 +154,14 @@ class CourseGradeHelper {
       state = new CourseGradeStateBean(lesson)
       entityDao.saveOrUpdate(state)
     }
-    val gradeTypeIds = CollectUtils.newHashSet()
+    val gradeTypeIds = Collections.newSet[Any]
     val gradeTypeId = Params.getInt("gradeTypeId")
     if (null != gradeTypeId) {
       gradeTypeIds.add(gradeTypeId)
     } else {
       val gradeTypeIdSeq = Params.get("gradeTypeIds")
       if (Strings.isNotEmpty(gradeTypeIdSeq)) {
-        gradeTypeIds.addAll(CollectUtils.newArrayList(Strings.splitToInt(gradeTypeIdSeq)))
+        gradeTypeIds.addAll(Collections.newBuffer[Any](Strings.splitToInt(gradeTypeIdSeq)))
       }
     }
     val gradeTypes = entityDao.get(classOf[GradeType], gradeTypeIds)

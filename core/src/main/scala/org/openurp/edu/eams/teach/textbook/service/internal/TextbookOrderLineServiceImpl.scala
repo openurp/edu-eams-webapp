@@ -4,7 +4,7 @@ import java.util.Date
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model
@@ -28,21 +28,21 @@ class TextbookOrderLineServiceImpl extends BaseServiceImpl with TextbookOrderLin
   private var textbookOrderLineCodeGenerator: TextbookOrderLineCodeGenerator = _
 
   def getLessonsHasTextbook(lessons: Iterable[Lesson]): Set[Long] = {
-    if (CollectUtils.isEmpty(lessons)) {
+    if (Collections.isEmpty(lessons)) {
       return Collections.emptySet()
     }
     val builder = OqlBuilder.from(classOf[LessonMaterial].name + " lessonMaterial")
     builder.where("lessonMaterial.lesson in(:lessons)", lessons)
       .select("lessonMaterial.lesson.id")
-    CollectUtils.newHashSet(entityDao.search(builder))
+    Collections.newHashSet(entityDao.search(builder))
   }
 
   def getTextBookMapByLessons(lessons: Iterable[Lesson]): Map[Long, List[Textbook]] = {
-    if (CollectUtils.isEmpty(lessons)) {
+    if (Collections.isEmpty(lessons)) {
       return Collections.emptyMap()
     }
     val lessonMaterials = entityDao.get(classOf[LessonMaterial], "lesson", lessons)
-    val result = CollectUtils.newHashMap()
+    val result = Collections.newMap[Any]
     for (lessonMaterial <- lessonMaterials if !lessonMaterial.books.isEmpty) {
       result.put(lessonMaterial.lesson.id, lessonMaterial.books)
     }
@@ -73,14 +73,14 @@ class TextbookOrderLineServiceImpl extends BaseServiceImpl with TextbookOrderLin
   }
 
   def getLessonsHasOrderTextBook(lessons: Iterable[Lesson]): Set[Long] = {
-    if (CollectUtils.isEmpty(lessons)) {
+    if (Collections.isEmpty(lessons)) {
       return Collections.emptySet()
     }
     val builder = OqlBuilder.from(classOf[TextbookOrderLine].name + " orderline," + classOf[LessonMaterial].name + 
       " lessonMaterial")
     builder.join("lessonMaterial.books", "textbook").where("orderline.textbook = textbook")
       .select("lessonMaterial.lesson.id")
-    CollectUtils.newHashSet(entityDao.search(builder))
+    Collections.newHashSet(entityDao.search(builder))
   }
 
   def getTextbookOrderLinesByLesson(lesson: Lesson, std: Student): List[TextbookOrderLine] = {
@@ -111,7 +111,7 @@ class TextbookOrderLineServiceImpl extends BaseServiceImpl with TextbookOrderLin
       std: Student): List[TextbookOrderLine] = {
     val lesson = entityDao.get(classOf[Lesson], lessonId)
     val textbooks = getTextbooksForLesson(lesson)
-    val textbookOrderLines = CollectUtils.newArrayList()
+    val textbookOrderLines = Collections.newBuffer[Any]
     val date = new Date()
     for (textbook <- textbooks) {
       val textbookOrderLine = Model.newInstance(classOf[TextbookOrderLine])
@@ -130,7 +130,7 @@ class TextbookOrderLineServiceImpl extends BaseServiceImpl with TextbookOrderLin
   }
 
   def createTextbookOrderLines(bookMap: Map[Textbook, Integer], semester: Semester, std: Student): List[TextbookOrderLine] = {
-    val textbookOrderLines = CollectUtils.newArrayList()
+    val textbookOrderLines = Collections.newBuffer[Any]
     val date = new Date()
     val courseTakeQuery = OqlBuilder.from(classOf[CourseTake], "ct")
     courseTakeQuery.where("ct.std=:std and ct.lesson.semester=:semester", std, semester)
@@ -152,7 +152,7 @@ class TextbookOrderLineServiceImpl extends BaseServiceImpl with TextbookOrderLin
   }
 
   def getBookLessons(takes: List[CourseTake]): Map[Textbook, Lesson] = {
-    val bookLessons = CollectUtils.newHashMap()
+    val bookLessons = Collections.newMap[Any]
     for (take <- takes) {
       val lesson = take.lesson
       val lessonMaterials = entityDao.get(classOf[LessonMaterial], "lesson", lesson)
@@ -183,8 +183,8 @@ class TextbookOrderLineServiceImpl extends BaseServiceImpl with TextbookOrderLin
   }
 
   def getTextBooks(takes: List[CourseTake]): Map[Lesson, List[Textbook]] = {
-    val textbooksTotal = CollectUtils.newHashSet()
-    val lessonBooks = CollectUtils.newHashMap()
+    val textbooksTotal = Collections.newSet[Any]
+    val lessonBooks = Collections.newMap[Any]
     for (take <- takes) {
       val lesson = take.lesson
       val lessonMaterials = entityDao.get(classOf[LessonMaterial], "lesson", lesson)
@@ -192,7 +192,7 @@ class TextbookOrderLineServiceImpl extends BaseServiceImpl with TextbookOrderLin
         val lessonMaterial = lessonMaterials.get(0)
         if (LessonMaterialStatus.ASSIGNED == lessonMaterial.status) {
           val lessonTextbooks = lessonMaterials.get(0).books
-          val textbooks = CollectUtils.newArrayList()
+          val textbooks = Collections.newBuffer[Any]
           for (textbook <- lessonTextbooks if !textbooksTotal.contains(textbook)) {
             textbooks.add(textbook)
             textbooksTotal.add(textbook)
@@ -208,7 +208,7 @@ class TextbookOrderLineServiceImpl extends BaseServiceImpl with TextbookOrderLin
           val courseMaterial = courseMaterials.get(0)
           if (CourseMaterialStatus.ASSIGNED == courseMaterial.status) {
             val lessonTextbooks = courseMaterials.get(0).books
-            val textbooks = CollectUtils.newArrayList()
+            val textbooks = Collections.newBuffer[Any]
             for (textbook <- lessonTextbooks if !textbooksTotal.contains(textbook)) {
               textbooks.add(textbook)
               textbooksTotal.add(textbook)

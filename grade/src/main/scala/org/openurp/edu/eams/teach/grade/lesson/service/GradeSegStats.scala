@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.grade.lesson.service
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.openurp.edu.eams.teach.Grade
 import org.openurp.edu.teach.code.ExamStatus
 import org.openurp.edu.teach.code.GradeType
@@ -21,7 +21,7 @@ object GradeSegStats {
 
   def defaultStats(): GradeSegStats = {
     val stats = new GradeSegStats()
-    val scoreSegments = CollectUtils.newArrayList(6)
+    val scoreSegments = Collections.newBuffer[Any](6)
     scoreSegments.add(new FloatSegment(90, 100))
     scoreSegments.add(new FloatSegment(80, 89))
     scoreSegments.add(new FloatSegment(70, 79))
@@ -43,7 +43,7 @@ class GradeSegStats {
 
   def this(segs: Int) {
     this()
-    scoreSegments = CollectUtils.newArrayList(segs)
+    scoreSegments = Collections.newBuffer[Any](segs)
     for (i <- 0 until segs) {
       scoreSegments.add(new FloatSegment())
     }
@@ -61,11 +61,11 @@ class GradeSegStats {
   }
 
   def stat(gradeTypes: List[GradeType]) {
-    gradeSegStats = CollectUtils.newArrayList()
+    gradeSegStats = Collections.newBuffer[Any]
     val endGradeType = new GradeType(GradeTypeConstants.END_ID)
     val normalStatus = new ExamStatus(ExamStatus.NORMAL)
     for (gradeType <- gradeTypes) {
-      val grades = CollectUtils.newArrayList()
+      val grades = Collections.newBuffer[Any]
       for (courseGrade <- courseGrades) {
         if (gradeType.id == GradeTypeConstants.FINAL_ID) {
           grades.add(courseGrade)

@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.election.service.rule.election
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.openurp.base.Semester
 import org.openurp.edu.eams.core.service.SemesterService
 import org.openurp.edu.eams.teach.election.service.context.PrepareContext
@@ -13,7 +13,7 @@ import org.openurp.edu.eams.teach.time.util.TermCalculator
 
 class CurrentTermPrepare extends ElectRulePrepare {
 
-  protected var calMap: Map[Semester, TermCalculator] = CollectUtils.newHashMap()
+  protected var calMap: Map[Semester, TermCalculator] = Collections.newMap[Any]
 
   protected var semesterService: SemesterService = _
 

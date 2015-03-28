@@ -4,7 +4,7 @@ import java.util.Date
 
 
 import org.apache.commons.lang3.ArrayUtils
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.security.blueprint.User
 import com.ekingstar.eams.core.CommonAuditState
@@ -44,15 +44,15 @@ class MajorPlanAuditAction extends MajorPlanSearchAction {
   }
 
   override def search(): String = {
-    if (CollectUtils.isEmpty(getProjects) || CollectUtils.isEmpty(getDeparts) || 
-      CollectUtils.isEmpty(getStdTypes)) {
+    if (Collections.isEmpty(getProjects) || Collections.isEmpty(getDeparts) || 
+      Collections.isEmpty(getStdTypes)) {
       return forwardError("对不起，您没有权限！")
     }
     val query = majorPlanSearchHelper.buildPlanQuery()
     query.where("plan.program.major.project in (:projects)", getProjects)
       .where("plan.program.department in (:departs)", getDeparts)
       .where("plan.program.stdType in (:stdTypes)", getStdTypes)
-    if (CollectUtils.isNotEmpty(getEducations)) {
+    if (Collections.isNotEmpty(getEducations)) {
       query.where("plan.program.education in (:educations)", getEducations)
     }
     val plans = entityDao.search(query)
@@ -135,14 +135,14 @@ class MajorPlanAuditAction extends MajorPlanSearchAction {
   }
 
   private def guard(operType: MajorProgramOperateType, plans: List[MajorPlan]) {
-    val context = CollectUtils.newHashMap()
+    val context = Collections.newMap[Any]
     fillDataRealmContext(context)
-    val programs = CollectUtils.collect(plans, ProgramCollector.INSTANCE).asInstanceOf[List[_]]
+    val programs = Collections.collect(plans, ProgramCollector.INSTANCE).asInstanceOf[List[_]]
     majorProgramBasicGuard.guard(operType, programs, context)
   }
 
   private def guard(operType: MajorProgramOperateType, plan: MajorPlan) {
-    val context = CollectUtils.newHashMap()
+    val context = Collections.newMap[Any]
     fillDataRealmContext(context)
     majorProgramBasicGuard.guard(operType, plan.getProgram, context)
   }

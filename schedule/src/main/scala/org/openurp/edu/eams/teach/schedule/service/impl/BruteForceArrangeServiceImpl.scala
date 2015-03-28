@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest
 import org.apache.commons.collections.CollectionUtils
 import org.apache.commons.collections.Predicate
 import org.apache.struts2.ServletActionContext
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.web.util.RequestUtils
@@ -45,7 +45,7 @@ class BruteForceArrangeServiceImpl extends BaseServiceImpl with BruteForceArrang
 
   def bruteForceArrange(context: BruteForceArrangeContext, rooms: Iterable[Room]) {
     val lesson = context.getLesson
-    val filteredRooms = CollectUtils.newArrayList(CollectionUtils.select(rooms, new Predicate() {
+    val filteredRooms = Collections.newBuffer[Any](CollectionUtils.select(rooms, new Predicate() {
 
       def evaluate(`object`: AnyRef): Boolean = {
         var room = `object`.asInstanceOf[Room]
@@ -57,7 +57,7 @@ class BruteForceArrangeServiceImpl extends BaseServiceImpl with BruteForceArrang
 
       def compare(o1: Room, o2: Room): Int = return o1.getCapacity - o2.getCapacity
     })
-    if (CollectUtils.isEmpty(filteredRooms)) {
+    if (Collections.isEmpty(filteredRooms)) {
       context.noSuitableRoom()
       return
     }
@@ -98,7 +98,7 @@ class BruteForceArrangeServiceImpl extends BaseServiceImpl with BruteForceArrang
     val lesson = context.getLesson
     val isUpdateOperation = lesson.getCourseSchedule.getActivities.size > 1
     val alterationBefore = CourseActivityDigestor.getInstance.digest(null, lesson)
-    val occupancies = CollectUtils.newHashSet()
+    val occupancies = Collections.newSet[Any]
     var period = 0
     for (activity <- activities) {
       period += (activity.getTime.getEndUnit - activity.getTime.getStartUnit + 

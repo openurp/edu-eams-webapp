@@ -6,10 +6,10 @@ import org.openurp.edu.eams.teach.election.service.context.ElectMessage
 import org.openurp.edu.eams.teach.election.service.context.ElectionCourseContext
 import org.openurp.edu.eams.teach.election.service.context.PrepareContext
 import org.openurp.edu.eams.teach.election.service.context.PrepareContext.PreparedDataName
-import org.openurp.edu.eams.teach.election.service.helper.CourseLimitGroupHelper
+import org.openurp.edu.eams.teach.election.service.helper.LessonLimitGroupHelper
 import org.openurp.edu.eams.teach.election.service.rule.AbstractElectRuleExecutor
 import org.openurp.edu.eams.teach.election.service.rule.ElectRulePrepare
-import org.openurp.edu.teach.lesson.CourseLimitGroup
+import org.openurp.edu.teach.lesson.LessonLimitGroup
 
 
 
@@ -19,7 +19,7 @@ class LimitCountChecker extends AbstractElectRuleExecutor() with ElectRulePrepar
 
   def execute(context: Context): Boolean = {
     val electContext = context.asInstanceOf[ElectionCourseContext]
-    val limitGroup = CourseLimitGroupHelper.getMatchCountCourseLimitGroup(electContext.getLesson, electContext.getState)
+    val limitGroup = LessonLimitGroupHelper.getMatchCountLessonLimitGroup(electContext.getLesson, electContext.getState)
     if (limitGroup == null) {
     } else {
       val sql = "update t_course_limit_groups set cur_count = cur_count+1 where (cur_count<max_count or max_count=0) and id=?"

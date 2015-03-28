@@ -2,7 +2,7 @@ package org.openurp.edu.eams.teach.program.personal.service.impl
 
 
 import org.apache.commons.beanutils.PropertyUtils
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.beangle.data.jpa.dao.OqlBuilder
 import com.ekingstar.eams.core.Student

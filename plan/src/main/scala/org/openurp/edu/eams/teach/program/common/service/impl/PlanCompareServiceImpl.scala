@@ -6,7 +6,7 @@ package org.openurp.edu.eams.teach.program.common.service.impl
 
 
 import org.apache.commons.collections.CollectionUtils
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import com.ekingstar.eams.teach.code.school.CourseType
 import org.openurp.edu.teach.plan.CourseGroup
@@ -79,18 +79,18 @@ class PlanCompareServiceImpl extends BaseServiceImpl with PlanCompareService {
   }
 
   private def wrapPlanCourses(planCourses: Iterable[_ <: PlanCourse]): Iterable[MajorPlanCourseWrapper] = {
-    CollectUtils.collect(planCourses, MajorPlanCourseWrapper.WRAPPER)
+    Collections.collect(planCourses, MajorPlanCourseWrapper.WRAPPER)
   }
 
   private def unWrapPlanCourses(planCourseWrappers: Iterable[MajorPlanCourseWrapper]): Iterable[PlanCourse] = {
-    CollectUtils.collect(planCourseWrappers, MajorPlanCourseWrapper.UNWRAPPER)
+    Collections.collect(planCourseWrappers, MajorPlanCourseWrapper.UNWRAPPER)
   }
 
   private def wrapCourseTypes(courseTypes: Iterable[CourseType]): Iterable[CourseTypeWrapper] = {
-    CollectUtils.collect(courseTypes, CourseTypeWrapper.WRAPPER)
+    Collections.collect(courseTypes, CourseTypeWrapper.WRAPPER)
   }
 
   private def unWrapCourseTypes(courseTypeWrappers: Iterable[CourseTypeWrapper]): Iterable[CourseType] = {
-    CollectUtils.collect(courseTypeWrappers, CourseTypeWrapper.UNWRAPPER)
+    Collections.collect(courseTypeWrappers, CourseTypeWrapper.UNWRAPPER)
   }
 }

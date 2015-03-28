@@ -8,7 +8,7 @@ import org.openurp.edu.teach.lesson.LessonLimitMeta.Operator
 class LessonLimitGroupPair {
 
   
-  var courseLimitGroup: LessonLimitGroup = _
+  var lessonLimitGroup: LessonLimitGroup = _
 
   
   var gradeLimit: Pair[Operator, List[_]] = _
@@ -32,9 +32,6 @@ class LessonLimitGroupPair {
   var directionLimit: Pair[Operator, List[_]] = _
 
   
-  var normalClassLimit: Pair[Operator, List[_]] = _
-
-  
   var programLimit: Pair[Operator, List[_]] = _
 
   
@@ -43,8 +40,8 @@ class LessonLimitGroupPair {
   
   var stdLabelLimit: Pair[Operator, List[_]] = _
 
-  def this(courseLimitGroup: LessonLimitGroup) {
+  def this(lessonLimitGroup: LessonLimitGroup) {
     this()
-    this.courseLimitGroup = courseLimitGroup
+    this.lessonLimitGroup = lessonLimitGroup
   }
 }

@@ -6,15 +6,15 @@ package org.openurp.edu.eams.teach.lesson.task.splitter
 
 import org.apache.commons.collections.CollectionUtils
 import org.apache.commons.lang3.ArrayUtils
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.openurp.code.person.Gender
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.base.Student
 import org.openurp.edu.teach.lesson.CourseTake
 import org.openurp.edu.teach.exam.ExamTake
 import org.openurp.edu.teach.lesson.TeachClass
-import org.openurp.edu.eams.teach.lesson.model.CourseLimitMetaBean
-import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnum
+import org.openurp.edu.eams.teach.lesson.model.LessonLimitMetaBean
+import org.openurp.edu.eams.teach.lesson.service.limit.LessonLimitMetaEnum
 import org.openurp.edu.eams.teach.lesson.task.service.helper.CourseTakeOfGenderPredicate
 import org.openurp.edu.eams.teach.lesson.util.LessonElectionUtil
 
@@ -28,7 +28,7 @@ class GenderMode extends AbstractTeachClassSplitter() {
     val courseTakes = target.getCourseTakes
     val totalStdCount = courseTakes.size
     val totalLimitCount = target.getLimitCount
-    if (CollectUtils.isNotEmpty(courseTakes)) {
+    if (Collections.isNotEmpty(courseTakes)) {
       val maleStds = CollectionUtils.select(courseTakes, new CourseTakeOfGenderPredicate("男"))
       val maleTakesArr = splitTakes(maleStds, splitStdNums(0))
       val maleClasses = Array.ofDim[TeachClass](maleTakesArr.length)
@@ -36,7 +36,7 @@ class GenderMode extends AbstractTeachClassSplitter() {
         maleClasses(i) = target.clone()
         maleClasses(i).setName(target.getName + "男" + (i + 1))
         maleClasses(i).setCourseTakes(new HashSet[CourseTake]())
-        util.builder(maleClasses(i)).clear(new CourseLimitMetaBean(CourseLimitMetaEnum.GENDER.getMetaId))
+        util.builder(maleClasses(i)).clear(new LessonLimitMetaBean(LessonLimitMeta.Gender.getMetaId))
           .in(new Gender(1, "男"))
         LessonElectionUtil.addCourseTakes(maleClasses(i), maleTakesArr(i))
       }
@@ -48,7 +48,7 @@ class GenderMode extends AbstractTeachClassSplitter() {
         femaleClasses(i).setCourseTakes(new HashSet[CourseTake]())
         femaleClasses(i).setExamTakes(new HashSet[ExamTake]())
         femaleClasses(i).setName(target.getName + "女" + (i + 1))
-        util.builder(femaleClasses(i)).clear(new CourseLimitMetaBean(CourseLimitMetaEnum.GENDER.getMetaId))
+        util.builder(femaleClasses(i)).clear(new LessonLimitMetaBean(LessonLimitMeta.Gender.getMetaId))
           .in(new Gender(2, "女"))
         LessonElectionUtil.addCourseTakes(femaleClasses(i), femaleTakesArr(i))
       }
@@ -74,7 +74,7 @@ class GenderMode extends AbstractTeachClassSplitter() {
       maleClasses(i).setCourseTakes(new HashSet[CourseTake]())
       maleClasses(i).setExamTakes(new HashSet[ExamTake]())
       maleClasses(i).setName(target.getName + "男" + (i + 1))
-      util.builder(maleClasses(i)).clear(new CourseLimitMetaBean(CourseLimitMetaEnum.GENDER.getMetaId))
+      util.builder(maleClasses(i)).clear(new LessonLimitMetaBean(LessonLimitMeta.Gender.getMetaId))
         .in(new Gender(1, "男"))
       maleClasses(i).setLimitCount(maleCount / splitStdNums(0))
     }
@@ -83,7 +83,7 @@ class GenderMode extends AbstractTeachClassSplitter() {
       femaleClasses(i) = target.clone()
       femaleClasses(i).setName(target.getName + "女" + (i + 1))
       femaleClasses(i).setCourseTakes(new HashSet[CourseTake]())
-      util.builder(femaleClasses(i)).clear(new CourseLimitMetaBean(CourseLimitMetaEnum.GENDER.getMetaId))
+      util.builder(femaleClasses(i)).clear(new LessonLimitMetaBean(LessonLimitMeta.Gender.getMetaId))
         .in(new Gender(2, "女"))
       femaleClasses(i).setLimitCount(femailCount / splitStdNums(1))
     }

@@ -6,7 +6,7 @@ import java.util.Date
 import org.apache.commons.collections.CollectionUtils
 import org.beangle.commons.bean.comparators.PropertyComparator
 import org.beangle.commons.bean.transformers.PropertyTransformer
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.lang.Strings
@@ -130,7 +130,7 @@ class AdminAction extends SemesterSupportAction {
 
   protected def getStates(): List[ExamGradeState] = {
     val gradeState = getGradeState
-    val myStats = CollectUtils.newArrayList()
+    val myStats = Collections.newBuffer[Any]
     for (gradeType <- getGradeTypes(gradeState)) {
       var examGradeState = gradeState.getState(gradeType)
       if (null == examGradeState) {
@@ -147,7 +147,7 @@ class AdminAction extends SemesterSupportAction {
   protected def getGradeTypes(gradeState: CourseGradeState): List[GradeType] = {
     var gradeTypes = getAttribute("gradeTypes").asInstanceOf[List[GradeType]]
     if (null == gradeTypes) {
-      gradeTypes = CollectUtils.newArrayList()
+      gradeTypes = Collections.newBuffer[Any]
       var gradeTypeIds = Array()
       val gradeTypeIdSeq = get("gradeTypeIds")
       if (Strings.isNotBlank(gradeTypeIdSeq)) gradeTypeIds = Strings.splitToInt(gradeTypeIdSeq)
@@ -161,10 +161,10 @@ class AdminAction extends SemesterSupportAction {
   }
 
   protected def removeZeroPercentTypes(gradeState: CourseGradeState, gradeTypes: List[GradeType]) {
-    if (CollectUtils.isEmpty(gradeTypes)) {
+    if (Collections.isEmpty(gradeTypes)) {
       return
     }
-    val zeroPercentTypes = CollectUtils.newArrayList()
+    val zeroPercentTypes = Collections.newBuffer[Any]
     for (`type` <- gradeTypes) {
       val egState = gradeState.getState(`type`)
       if (null != egState.getPercent) {
@@ -181,7 +181,7 @@ class AdminAction extends SemesterSupportAction {
   }
 
   protected def getCourseTakes(lesson: Lesson): List[CourseTake] = {
-    val takes = CollectUtils.newArrayList(lesson.getTeachClass.getCourseTakes)
+    val takes = Collections.newBuffer[Any](lesson.getTeachClass.getCourseTakes)
     Collections.sort(takes, new PropertyComparator("std.code"))
     takes
   }
@@ -217,7 +217,7 @@ class AdminAction extends SemesterSupportAction {
     builder.select("courseGradeState.lesson")
     lessons.addAll(entityDao.search(builder).asInstanceOf[List[Lesson]])
     put("lessons", lessons)
-    val gradeStates = CollectUtils.newHashMap()
+    val gradeStates = Collections.newMap[Any]
     for (lesson <- lessons) {
       val state = courseGradeService.getState(lesson)
       if (state != null) gradeStates.put(lesson.id, state)
@@ -240,7 +240,7 @@ class AdminAction extends SemesterSupportAction {
       val query = OqlBuilder.from(classOf[GradeRateConfig], "config")
       query.where("config.scoreMarkStyle = :markStyle", state.getScoreMarkStyle)
       val configs = entityDao.search(query)
-      if (CollectUtils.isNotEmpty(configs)) {
+      if (Collections.isNotEmpty(configs)) {
         put("gradeConverterConfig", configs.get(0))
       }
     }
@@ -312,7 +312,7 @@ class AdminAction extends SemesterSupportAction {
       put("isTeacher", false)
     }
     if (putScomeParams.contains("gradeRateConfigs")) {
-      val gradeRateConfigs = CollectUtils.newHashMap()
+      val gradeRateConfigs = Collections.newMap[Any]
       val gradeTypes = getGradeTypes(state)
       for (gradeType <- gradeTypes) {
         if (GradeTypeConstants.GA_ID == gradeType.id) {
@@ -332,8 +332,8 @@ class AdminAction extends SemesterSupportAction {
 
   protected def buildGradeConfig(lesson: Lesson, gradeTypes: List[GradeType]) {
     val gradeState = getGradeState
-    val markStyles = CollectUtils.newHashMap()
-    val examTypes = CollectUtils.newHashSet()
+    val markStyles = Collections.newMap[Any]
+    val examTypes = Collections.newSet[Any]
     for (gradeType <- gradeTypes) {
       val gradeTypeState = gradeState.getState(gradeType)
       if (null == gradeTypeState) {
@@ -343,7 +343,7 @@ class AdminAction extends SemesterSupportAction {
       if (null == markStyle) markStyle = gradeState.getScoreMarkStyle
       if (null != gradeType.getExamType) examTypes.add(gradeType.getExamType)
     }
-    val converterMap = CollectUtils.newHashMap()
+    val converterMap = Collections.newMap[Any]
     for (gradeTypeState <- gradeState.getStates) {
       markStyles.put(gradeTypeState.gradeType.id.toString, gradeTypeState.getScoreMarkStyle)
     }
@@ -353,15 +353,15 @@ class AdminAction extends SemesterSupportAction {
   }
 
   protected def getStdExamTypeMap(lesson: Lesson, examTypes: Set[ExamType]): Map[String, ExamTake] = {
-    if (CollectUtils.isEmpty(lesson.getTeachClass.getCourseTakes) || 
+    if (Collections.isEmpty(lesson.getTeachClass.getCourseTakes) || 
       examTypes.isEmpty) {
-      return CollectUtils.newHashMap()
+      return Collections.newMap[Any]
     }
     val query = OqlBuilder.from(classOf[ExamTake], "examTake").where("examTake.lesson=:lesson", lesson)
-    if (CollectUtils.isNotEmpty(examTypes)) {
+    if (Collections.isNotEmpty(examTypes)) {
       query.where("examTake.examType in (:examTypes)", examTypes)
     }
-    val stdExamTypeMap = CollectUtils.newHashMap()
+    val stdExamTypeMap = Collections.newMap[Any]
     val examTakes = entityDao.search(query)
     for (examTake <- examTakes) {
       stdExamTypeMap.put(examTake.getStd.id + "_" + examTake.getExamType.id, examTake)
@@ -374,7 +374,7 @@ class AdminAction extends SemesterSupportAction {
     val gradeInputSwitch = getGradeInputSwitch(lesson)
     put("gradeInputSwitch", gradeInputSwitch)
     put("gradeState", getOrCreateState(lesson))
-    val putSomeParams = CollectUtils.newHashSet()
+    val putSomeParams = Collections.newSet[Any]
     putSomeParams.add("MAKEUP")
     putSomeParams.add("GA")
     putSomeParams.add("isTeacher")
@@ -382,7 +382,7 @@ class AdminAction extends SemesterSupportAction {
     buildSomeParams(lesson, putSomeParams)
     put("DELAY_ID", GradeTypeConstants.DELAY_ID)
     val gaGradeTypes = settings.getSetting(getProject).getGaElementTypes
-    val gaGradeTypeParams = CollectUtils.newArrayList()
+    val gaGradeTypeParams = Collections.newBuffer[Any]
     for (gradeType <- gaGradeTypes) {
       gradeType = entityDao.get(classOf[GradeType], gradeType.id)
       if (gradeInputSwitch.getTypes.contains(gradeType)) gaGradeTypeParams.add(gradeType)
@@ -405,7 +405,7 @@ class AdminAction extends SemesterSupportAction {
     if (submit) {
       val gradeState = courseGradeService.getState(lesson)
       val examGradeStates = gradeState.getStates
-      val existGradeTypes = CollectUtils.collect(examGradeStates, new PropertyTransformer("gradeType"))
+      val existGradeTypes = Collections.collect(examGradeStates, new PropertyTransformer("gradeType"))
       if (!existGradeTypes.contains(Model.newInstance(classOf[GradeType], GradeTypeConstants.MAKEUP_ID)) && 
         !existGradeTypes.contains(Model.newInstance(classOf[GradeType], GradeTypeConstants.DELAY_ID))) {
         for (courseGrade <- existGradeMap.values; gradeType <- setting.getGaElementTypes) {
@@ -422,7 +422,7 @@ class AdminAction extends SemesterSupportAction {
       }
     }
     val inputedAt = new Date()
-    val grades = CollectUtils.newArrayList()
+    val grades = Collections.newBuffer[Any]
     val status = if (submit) Grade.Status.CONFIRMED else Grade.Status.NEW
     val takes = getCourseTakes(lesson)
     for (take <- takes) {
@@ -494,7 +494,7 @@ class AdminAction extends SemesterSupportAction {
 
   protected def getExistGradeMap(lesson: Lesson): Map[Student, CourseGrade] = {
     val existGrades = entityDao.get(classOf[CourseGrade], "lesson", lesson)
-    val existGradeMap = CollectUtils.newHashMap()
+    val existGradeMap = Collections.newMap[Any]
     for (grade <- existGrades) {
       existGradeMap.put(grade.getStd, grade)
     }
@@ -545,7 +545,7 @@ class AdminAction extends SemesterSupportAction {
     for (gradeType <- gradeTypes) {
       buildExamGrade(grade, gradeType, take, status, inputedAt, operator)
     }
-    if (CollectUtils.isEmpty(grade.getExamGrades)) {
+    if (Collections.isEmpty(grade.getExamGrades)) {
       return null
     }
     if (grade.isTransient) grade.setCreatedAt(inputedAt)
@@ -592,7 +592,7 @@ class AdminAction extends SemesterSupportAction {
   protected def putGradeMap(lesson: Lesson, courseTakes: List[CourseTake]) {
     put("courseTakes", courseTakes)
     val grades = entityDao.get(classOf[CourseGrade], "lesson", lesson)
-    val gradeMap = CollectUtils.newHashMap()
+    val gradeMap = Collections.newMap[Any]
     for (grade <- grades) {
       gradeMap.put(grade.getStd, grade)
     }
@@ -648,13 +648,13 @@ class AdminAction extends SemesterSupportAction {
     }
     val lessons = entityDao.get(classOf[Lesson], Strings.splitToLong(lessonIdSeq))
     val gradeTypeIdSeq = getIntIds("gradeType")
-    val gradeTypeIds = CollectUtils.newHashSet()
-    if (null != gradeTypeIdSeq) gradeTypeIds.addAll(CollectUtils.newHashSet(gradeTypeIdSeq))
+    val gradeTypeIds = Collections.newSet[Any]
+    if (null != gradeTypeIdSeq) gradeTypeIds.addAll(Collections.newHashSet(gradeTypeIdSeq))
     if (gradeTypeIds.contains(GradeTypeConstants.MAKEUP_ID)) gradeTypeIds.add(GradeTypeConstants.DELAY_ID)
     teachClassGradeHelper.report(lessons, gradeTypeIds.toArray(Array.ofDim[Integer](gradeTypeIds.size)))
     val query = OqlBuilder.from(classOf[GradeRateConfig], "config")
       .where("config.project=:project", getProject)
-    val gradeConfigMap = CollectUtils.newHashMap()
+    val gradeConfigMap = Collections.newMap[Any]
     for (config <- entityDao.search(query)) {
       gradeConfigMap.put(String.valueOf(config.getScoreMarkStyle.id), config)
     }
@@ -677,7 +677,7 @@ class AdminAction extends SemesterSupportAction {
       gradeInputSwitch = Model.newInstance(classOf[GradeInputSwitch])
       gradeInputSwitch.setProject(project)
       gradeInputSwitch.setSemester(semester)
-      gradeInputSwitch.setTypes(CollectUtils.newHashSet(baseCodeService.getCodes(classOf[GradeType])))
+      gradeInputSwitch.setTypes(Collections.newHashSet(baseCodeService.getCodes(classOf[GradeType])))
     }
     gradeInputSwitch
   }

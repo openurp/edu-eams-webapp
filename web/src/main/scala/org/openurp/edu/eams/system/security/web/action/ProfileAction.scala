@@ -6,7 +6,7 @@ import java.util.Comparator
 
 import java.util.TreeSet
 import org.beangle.commons.bean.PropertyUtils
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.dao.Operation.Builder
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Arrays
@@ -37,8 +37,8 @@ class ProfileAction extends org.beangle.ems.security.web.action.ProfileAction {
 
   def edit(): String = {
     val isAdmin = isAdmin
-    val mngFields = CollectUtils.newHashMap()
-    val aoFields = CollectUtils.newHashMap()
+    val mngFields = Collections.newMap[Any]
+    val aoFields = Collections.newMap[Any]
     val profileService = securityHelper.getProfileService
     val _fs = extractFields()
     val projectField = _fs(0)
@@ -48,7 +48,7 @@ class ProfileAction extends org.beangle.ems.security.web.action.ProfileAction {
     val majorField = _fs(4)
     val directionField = _fs(5)
     val mngProfiles = entityDao.get(classOf[User], getUserId).getProfiles
-    var mngProjects = CollectUtils.newArrayList()
+    var mngProjects = Collections.newBuffer[Any]
     if (isAdmin) {
       mngProjects = entityDao.getAll(classOf[Project])
       for (mngProject <- mngProjects) {
@@ -71,22 +71,22 @@ class ProfileAction extends org.beangle.ems.security.web.action.ProfileAction {
           if (!mngProjects.contains(mngProject)) {
             mngProjects.add(mngProject)
           }
-          mngFields.put(mngProject.id + "_educations", CollectUtils.intersection(mngProject.educations, 
+          mngFields.put(mngProject.id + "_educations", Collections.intersection(mngProject.educations, 
             educations))
-          mngFields.put(mngProject.id + "_stdTypes", CollectUtils.intersection(mngProject.getTypes, 
+          mngFields.put(mngProject.id + "_stdTypes", Collections.intersection(mngProject.getTypes, 
             stdTypes))
-          mngFields.put(mngProject.id + "_departs", CollectUtils.intersection(mngProject.departments, 
+          mngFields.put(mngProject.id + "_departs", Collections.intersection(mngProject.departments, 
             departs))
-          mngFields.put(mngProject.id + "_majors", CollectUtils.intersection(entityDao.get(classOf[Major], 
+          mngFields.put(mngProject.id + "_majors", Collections.intersection(entityDao.get(classOf[Major], 
             "project.id", mngProject.id), majors))
-          mngFields.put(mngProject.id + "_directions", CollectUtils.intersection(entityDao.get(classOf[Direction], 
+          mngFields.put(mngProject.id + "_directions", Collections.intersection(entityDao.get(classOf[Direction], 
             "major.project.id", mngProject.id), directions))
         }
       }
     }
     val userId = getLong("user.id")
     val aoProfiles = entityDao.get(classOf[User], userId).getProfiles
-    val projectId2aoProfile = CollectUtils.newHashMap()
+    val projectId2aoProfile = Collections.newMap[Any]
     for (aoProfile <- aoProfiles) {
       val projects = profileService.getProperty(aoProfile, projectField).asInstanceOf[List[_]]
       val aoProject = projects.get(0).asInstanceOf[Project]
@@ -106,13 +106,13 @@ class ProfileAction extends org.beangle.ems.security.web.action.ProfileAction {
     put("aoFields", aoFields)
     var allProfileDeparts = getMyProfileValues(mngProfiles, departField).asInstanceOf[List[_]]
     var allProfileProjects = getMyProfileValues(mngProfiles, projectField).asInstanceOf[List[_]]
-    if (CollectUtils.isEmpty(allProfileDeparts) && isAdmin) {
+    if (Collections.isEmpty(allProfileDeparts) && isAdmin) {
       allProfileDeparts = entityDao.getAll(classOf[Department])
     }
-    if (CollectUtils.isEmpty(allProfileProjects)) {
+    if (Collections.isEmpty(allProfileProjects)) {
       allProfileProjects = entityDao.getAll(classOf[Project])
     }
-    val projId_departId2Majors = CollectUtils.newHashMap()
+    val projId_departId2Majors = Collections.newMap[Any]
     val projId_departId_Majors = entityDao.search(OqlBuilder.from(classOf[MajorJournal].getName + " md")
       .select("md.major.project.id, md.depart.id, md.major")
       .where("md.depart in (:departs)", allProfileDeparts)
@@ -136,7 +136,7 @@ class ProfileAction extends org.beangle.ems.security.web.action.ProfileAction {
       majors.add(major)
     }
     put("projId_departId2Majors", projId_departId2Majors)
-    val projId_departId_majorId2directions = CollectUtils.newHashMap()
+    val projId_departId_majorId2directions = Collections.newMap[Any]
     val projId_departId_majorId_directions = entityDao.search(OqlBuilder.from(classOf[DirectionJournal].getName + " md")
       .select("md.direction.major.project.id, md.depart.id, md.direction.major.id, md.direction")
       .where("md.depart in (:departs)", allProfileDeparts)
@@ -179,8 +179,8 @@ class ProfileAction extends org.beangle.ems.security.web.action.ProfileAction {
     val departField = _fs(3)
     val majorField = _fs(4)
     val directionField = _fs(5)
-    val saveEntities = CollectUtils.newArrayList()
-    val removeEntitties = CollectUtils.newArrayList()
+    val saveEntities = Collections.newBuffer[Any]
+    val removeEntitties = Collections.newBuffer[Any]
     for (projectId <- projectIds) {
       val profile = extractProfileByProject(projectField, profiles, projectId)
       profiles.remove(profile)
@@ -222,7 +222,7 @@ class ProfileAction extends org.beangle.ems.security.web.action.ProfileAction {
   }
 
   private def getMyProfileValues[T](Profiles: List[Profile], field: Field): List[T] = {
-    val values = CollectUtils.newArrayList()
+    val values = Collections.newBuffer[Any]
     val profileService = securityHelper.getProfileService
     for (profile <- Profiles) {
       val property = profile.getProperty(field)
@@ -288,9 +288,9 @@ class ProfileAction extends org.beangle.ems.security.web.action.ProfileAction {
     } else {
       var storedValue: String = null
       if (null != field.getKeyName) {
-        val keys = CollectUtils.newHashSet(values)
+        val keys = Collections.newHashSet(values)
         var allValues = securityHelper.getProfileService.getFieldValues(field)
-        allValues = CollectUtils.select(allValues, new Predicate() {
+        allValues = Collections.select(allValues, new Predicate() {
 
           def apply(arg0: AnyRef): java.lang.Boolean = {
             try {
@@ -312,7 +312,7 @@ class ProfileAction extends org.beangle.ems.security.web.action.ProfileAction {
 
   def info(): String = {
     val aoProfiles = entityDao.get(classOf[User], getLong("user.id")).getProfiles
-    var mngProjects = CollectUtils.newArrayList()
+    var mngProjects = Collections.newBuffer[Any]
     val _fs = extractFields()
     val projectField = _fs(0)
     if (isAdmin) {
@@ -323,11 +323,11 @@ class ProfileAction extends org.beangle.ems.security.web.action.ProfileAction {
         mngProjects.addAll(getMyProfileValues(Collections.singletonList(mngProfile), projectField).asInstanceOf[List[_]])
       }
     }
-    val visibleProfile = CollectUtils.newArrayList()
+    val visibleProfile = Collections.newBuffer[Any]
     for (aoProfile <- aoProfiles) {
       val aoProjects = getMyProfileValues(Collections.singletonList(aoProfile.asInstanceOf[Profile]), 
         projectField).asInstanceOf[List[_]]
-      for (mngProject <- mngProjects if CollectUtils.isNotEmpty(aoProjects) && aoProjects.get(0).id == mngProject.id) {
+      for (mngProject <- mngProjects if Collections.isNotEmpty(aoProjects) && aoProjects.get(0).id == mngProject.id) {
         visibleProfile.add(aoProfile)
         //break
       }

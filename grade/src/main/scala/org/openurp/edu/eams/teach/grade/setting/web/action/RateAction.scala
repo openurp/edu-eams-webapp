@@ -2,7 +2,7 @@ package org.openurp.edu.eams.teach.grade.setting.web.action
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
@@ -46,7 +46,7 @@ class RateAction extends ProjectSupportAction {
     builder.where("gradeRate.project =:project", gradeRateConfig.getProject)
     builder.where("gradeRate.scoreMarkStyle =:scoreMarkStyle", gradeRateConfig.getScoreMarkStyle)
     val gradeRateConfigs = entityDao.search(builder)
-    if (CollectUtils.isNotEmpty(gradeRateConfigs)) {
+    if (Collections.isNotEmpty(gradeRateConfigs)) {
       gradeRateConfig = gradeRateConfigs.get(0)
       gradeRateConfig.setPassScore(gradeRateConfig.getPassScore)
     }
@@ -70,8 +70,8 @@ class RateAction extends ProjectSupportAction {
     val configItemIds = Strings.splitToLong(get("configItemIds"))
     if (null == configItemIds || configItemIds.length == 0) {
       var converters = gradeRateConfig.getItems
-      if (CollectUtils.isEmpty(converters)) {
-        converters = CollectUtils.newArrayList()
+      if (Collections.isEmpty(converters)) {
+        converters = Collections.newBuffer[Any]
       }
       val configItem = populateEntity(classOf[GradeRateItem], "configItem")
       gradeRateConfig.getItems.add(configItem)
@@ -83,7 +83,7 @@ class RateAction extends ProjectSupportAction {
       }
       redirect("setting", "info.action.success", "&gradeRateConfig.id=" + gradeRateConfig.id)
     } else {
-      val itemMap = CollectUtils.newHashMap()
+      val itemMap = Collections.newMap[Any]
       for (configItem <- gradeRateConfig.getItems) {
         itemMap.put(configItem.id, configItem)
       }

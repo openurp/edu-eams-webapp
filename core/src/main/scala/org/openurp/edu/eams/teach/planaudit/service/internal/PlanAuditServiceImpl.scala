@@ -27,8 +27,6 @@ import org.openurp.edu.teach.plan.PlanCourse
 import org.openurp.edu.eams.teach.program.service.CoursePlanProvider
 import org.openurp.edu.eams.teach.program.util.PlanUtils
 
-
-
 class PlanAuditServiceImpl extends BaseServiceImpl with PlanAuditService {
 
   private var logger: Logger = LoggerFactory.getLogger(classOf[PlanAuditServiceImpl])

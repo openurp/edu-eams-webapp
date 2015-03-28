@@ -1,31 +1,21 @@
 package org.openurp.edu.eams.teach.lesson.service.limit.impl
 
-import org.openurp.edu.teach.lesson.LessonLimitMeta
+import org.beangle.commons.collection.Collections
 import org.openurp.edu.eams.teach.lesson.service.limit.LessonLimitItemContentProvider
 import org.openurp.edu.eams.teach.lesson.service.limit.LessonLimitItemContentProviderFactory
-
+import org.openurp.edu.teach.lesson.LessonLimitMeta
+import org.openurp.edu.teach.lesson.LessonLimitMeta._
 
 class DefaultLessonLimitItemContentProviderFactory extends LessonLimitItemContentProviderFactory {
 
-  private var providers: Map[LessonLimitMeta, LessonLimitItemContentProvider] = new HashMap[LessonLimitMeta, LessonLimitItemContentProvider]()
+  var providers = Collections.newMap[LimitMeta, LessonLimitItemContentProvider[_]]
 
-  def getProvider(courseLimitMetaEnum: LessonLimitMeta): LessonLimitItemContentProvider = {
-    val provider = providers.get(courseLimitMetaEnum)
-    provider.metaEnum=courseLimitMetaEnum
-    provider
+  def getProvider(meta: LimitMeta): LessonLimitItemContentProvider[_] = {
+    providers.get(meta).orNull
   }
 
-  def getProvider(courseLimitMeta: LessonLimitMeta): LessonLimitItemContentProvider = getProvider(courseLimitMeta.id)
-
-  def getProvider(courseLimitMetaId: Long): LessonLimitItemContentProvider = {
-    val values = LessonLimitMeta.values
-    for (courseLimitMetaEnum <- values if courseLimitMetaId == courseLimitMetaEnum.id) {
-      return getProvider(courseLimitMetaEnum)
-    }
-    null
+  def getProvider(metaId: Int): LessonLimitItemContentProvider[_] = {
+    getProvider(LessonLimitMeta.apply(metaId))
   }
 
-  def setProviders(providers: Map[LessonLimitMeta, LessonLimitItemContentProvider]) {
-    this.providers = providers
-  }
 }

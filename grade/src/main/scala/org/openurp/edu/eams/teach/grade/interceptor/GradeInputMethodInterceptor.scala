@@ -3,7 +3,7 @@ package org.openurp.edu.eams.teach.grade.interceptor
 
 import org.apache.commons.collections.CollectionUtils
 import org.apache.struts2.ServletActionContext
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.model.dao.EntityDao
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model
@@ -78,7 +78,7 @@ class GradeInputMethodInterceptor extends MethodFilterInterceptor with Container
       gradeInputSwitch = Model.newInstance(classOf[GradeInputSwitch])
       gradeInputSwitch.setProject(lesson.getProject)
       gradeInputSwitch.setSemester(lesson.getSemester)
-      gradeInputSwitch.setTypes(CollectUtils.newHashSet(baseCodeService.getCodes(classOf[GradeType])))
+      gradeInputSwitch.setTypes(Collections.newHashSet(baseCodeService.getCodes(classOf[GradeType])))
     }
     gradeInputSwitch
   }

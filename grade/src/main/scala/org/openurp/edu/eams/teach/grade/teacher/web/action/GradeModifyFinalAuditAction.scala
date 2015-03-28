@@ -3,7 +3,7 @@ package org.openurp.edu.eams.teach.grade.teacher.web.action
 import java.util.Date
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.security.blueprint.User
 import org.openurp.edu.teach.code.ExamStatus
 import org.openurp.edu.eams.teach.grade.course.GradeModifyApply
@@ -34,8 +34,8 @@ class GradeModifyFinalAuditAction extends GradeModifyAuditSearchAction {
     val passed = getBool("passed")
     val date = new Date()
     val user = entityDao.get(classOf[User], getUserId)
-    val courseGrades = CollectUtils.newHashMap()
-    val statuses = CollectUtils.newArrayList()
+    val courseGrades = Collections.newMap[Any]
+    val statuses = Collections.newBuffer[Any]
     statuses.add(GradeModifyStatus.NOT_AUDIT)
     statuses.add(GradeModifyStatus.DEPART_AUDIT_PASSED)
     statuses.add(GradeModifyStatus.DEPART_AUDIT_UNPASSED)
@@ -78,7 +78,7 @@ class GradeModifyFinalAuditAction extends GradeModifyAuditSearchAction {
     } catch {
       case e: Exception => return redirect("search", "info.save.failure", get("params"))
     }
-    publish(new CourseGradeModifyEvent(CollectUtils.newArrayList(courseGrades.values)))
+    publish(new CourseGradeModifyEvent(Collections.newBuffer[Any](courseGrades.values)))
     redirect("search", "info.save.success", get("params"))
   }
 }

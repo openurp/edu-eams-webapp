@@ -13,7 +13,7 @@ import org.apache.commons.collections.CollectionUtils
 import org.apache.commons.collections.Transformer
 import org.apache.commons.lang3.ArrayUtils
 import org.apache.poi.ss.usermodel.DateUtil
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model
@@ -47,8 +47,8 @@ import org.openurp.edu.eams.core.service.TimeSettingService
 import org.openurp.edu.eams.teach.code.industry.TeachLangType
 import org.openurp.edu.eams.teach.lesson.ArrangeSuggest
 import org.openurp.edu.teach.schedule.CourseActivity
-import org.openurp.edu.teach.lesson.CourseLimitItem
-import org.openurp.edu.teach.lesson.CourseLimitMeta.Operator
+import org.openurp.edu.teach.lesson.LessonLimitItem
+import org.openurp.edu.teach.lesson.LessonLimitMeta.Operator
 import org.openurp.edu.eams.teach.lesson.CourseSchedule
 import org.openurp.edu.teach.lesson.CourseTake
 import org.openurp.edu.eams.teach.lesson.CourseTime
@@ -57,10 +57,10 @@ import org.openurp.edu.eams.teach.lesson.helper.LessonSearchHelper
 import org.openurp.edu.eams.teach.lesson.model.CourseActivityBean
 import org.openurp.edu.eams.teach.lesson.model.CourseScheduleBean
 import org.openurp.edu.eams.teach.lesson.model.CourseScheduleBean.CourseStatusEnum
-import org.openurp.edu.eams.teach.lesson.service.CourseLimitService
+import org.openurp.edu.eams.teach.lesson.service.LessonLimitService
 import org.openurp.edu.eams.teach.lesson.service.CourseTableStyle
 import org.openurp.edu.eams.teach.lesson.service.LessonService
-import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnum
+import org.openurp.edu.eams.teach.lesson.service.limit.LessonLimitMetaEnum
 import org.openurp.edu.eams.teach.lesson.util.CourseActivityDigestor
 import org.openurp.edu.eams.teach.lesson.util.YearWeekTimeUtil
 import org.openurp.edu.base.Program
@@ -105,11 +105,11 @@ class ManualArrangeAction extends SemesterSupportAction {
 
   var scheduleLogHelper: ScheduleLogHelper = _
 
-  var checkers: List[LessonScheduleChecker] = CollectUtils.newArrayList()
+  var checkers: List[LessonScheduleChecker] = Collections.newBuffer[Any]
 
   var teacherPeriodLimitService: TeacherPeriodLimitService = _
 
-  var courseLimitService: CourseLimitService = _
+  var lessonLimitService: LessonLimitService = _
 
   protected def getQueryBuilder(): OqlBuilder[Lesson] = {
     val query = lessonSearchHelper.buildQuery()
@@ -121,13 +121,13 @@ class ManualArrangeAction extends SemesterSupportAction {
     put("teacherIsNull", getBool("fake.teacher.null"))
     if (Strings.isNotEmpty(isArrangeCompleted)) {
       if (isArrangeCompleted == CourseStatusEnum.NEED_ARRANGE.toString) {
-        query.where("lesson.courseSchedule.status = :status", CourseStatusEnum.NEED_ARRANGE)
+        query.where("lesson.schedule.status = :status", CourseStatusEnum.NEED_ARRANGE)
         put("courseStatusEnum", CourseStatusEnum.NEED_ARRANGE)
       } else if (isArrangeCompleted == CourseStatusEnum.DONT_ARRANGE.toString) {
-        query.where("lesson.courseSchedule.status = :status", CourseStatusEnum.DONT_ARRANGE)
+        query.where("lesson.schedule.status = :status", CourseStatusEnum.DONT_ARRANGE)
         put("courseStatusEnum", CourseStatusEnum.DONT_ARRANGE)
       } else if (isArrangeCompleted == CourseStatusEnum.ARRANGED.toString) {
-        query.where("lesson.courseSchedule.status = :status", CourseStatusEnum.ARRANGED)
+        query.where("lesson.schedule.status = :status", CourseStatusEnum.ARRANGED)
         put("courseStatusEnum", CourseStatusEnum.ARRANGED)
       }
     }
@@ -140,7 +140,7 @@ class ManualArrangeAction extends SemesterSupportAction {
     put("semester", putSemester(null))
     put("lessons", lessons)
     val digestor = CourseActivityDigestor.getInstance.setDelimeter("<br>")
-    val arrangeInfo = CollectUtils.newHashMap()
+    val arrangeInfo = Collections.newMap[Any]
     for (oneTask <- lessons) {
       arrangeInfo.put(oneTask.id.toString, digestor.digest(getTextResource, oneTask, ":teacher+ :day :units :weeks :room"))
     }
@@ -152,23 +152,23 @@ class ManualArrangeAction extends SemesterSupportAction {
   def adminArrangeStatus(): String = {
     val lessonIds = getLongIds("lesson")
     val semester = putSemester(null)
-    val adminClasses = CollectUtils.newHashSet()
-    val builder = OqlBuilder.from(classOf[CourseLimitItem], "courseLimitItem")
-      .where("courseLimitItem.group.lesson.id in (:lessonIds)", lessonIds)
-      .where("courseLimitItem.meta.id =:meta", CourseLimitMetaEnum.ADMINCLASS.getMetaId)
-      .where("courseLimitItem.operator =:operator1 or courseLimitItem.operator =:operator2", Operator.IN, 
-      Operator.EQUAL)
-    val courseLimitItems = entityDao.search(builder)
+    val adminClasses = Collections.newSet[Any]
+    val builder = OqlBuilder.from(classOf[LessonLimitItem], "lessonLimitItem")
+      .where("lessonLimitItem.group.lesson.id in (:lessonIds)", lessonIds)
+      .where("lessonLimitItem.meta.id =:meta", LessonLimitMeta.Adminclass.getMetaId)
+      .where("lessonLimitItem.operator =:operator1 or lessonLimitItem.operator =:operator2", Operator.IN, 
+      Operator.Equals)
+    val lessonLimitItems = entityDao.search(builder)
     var adminClassIds = ""
-    for (courseLimitItem <- courseLimitItems) {
-      adminClassIds += if (courseLimitItem.getContent.indexOf(",") > -1) courseLimitItem.getContent else courseLimitItem.getContent + ","
+    for (lessonLimitItem <- lessonLimitItems) {
+      adminClassIds += if (lessonLimitItem.getContent.indexOf(",") > -1) lessonLimitItem.getContent else lessonLimitItem.getContent + ","
     }
     val adminclassIdSeq = Strings.splitToInt(adminClassIds.replaceAll(",,", ","))
     if (ArrayUtils.isNotEmpty(adminclassIdSeq)) {
       adminClasses.addAll(entityDao.get(classOf[Adminclass], adminclassIdSeq))
     }
     val time = YearWeekTimeUtil.buildYearWeekTimes(2, 1, semester.getWeeks, CourseTime.CONTINUELY)
-    val adminClassActivities = CollectUtils.newHashMap()
+    val adminClassActivities = Collections.newMap[Any]
     val courseSchedule = new CourseScheduleBean()
     courseSchedule.setWeekState(WeekStates.build("1-" + semester.getWeeks))
     val digestor = CourseActivityDigestor.getInstance
@@ -187,9 +187,9 @@ class ManualArrangeAction extends SemesterSupportAction {
   def index(): String = {
     setSemesterDataRealm(hasStdType)
     val project = getProject
-    put("courseTypes", lessonService.courseTypesOfSemester(CollectUtils.newArrayList(project), getDeparts, 
+    put("courseTypes", lessonService.courseTypesOfSemester(Collections.newBuffer[Any](project), getDeparts, 
       getAttribute("semester").asInstanceOf[Semester]))
-    put("teachDepartList", lessonService.teachDepartsOfSemester(CollectUtils.newArrayList(project), getDeparts, 
+    put("teachDepartList", lessonService.teachDepartsOfSemester(Collections.newBuffer[Any](project), getDeparts, 
       getAttribute("semester").asInstanceOf[Semester]))
     put("departmentList", getCollegeOfDeparts)
     put("stdTypeList", getStdTypes)
@@ -209,7 +209,7 @@ class ManualArrangeAction extends SemesterSupportAction {
   }
 
   protected def checkSchedule(lesson: Lesson, activities: List[CourseActivity]): List[Message] = {
-    val messages = CollectUtils.newArrayList()
+    val messages = Collections.newBuffer[Any]
     for (checker <- checkers) {
       val message = checker.check(lesson, activities)
       if (null != message) {
@@ -252,7 +252,7 @@ class ManualArrangeAction extends SemesterSupportAction {
         lesson.getTeachClass.setLimitCount(maxStdCount)
       }
       var alterationBefore = ""
-      val activityList = CollectUtils.newArrayList(count.intValue())
+      val activityList = Collections.newBuffer[Any](count.intValue())
       for (i <- 0 until count.intValue()) {
         val activity = populate(classOf[CourseActivity], "activity" + i)
         val teacherIds = Strings.splitToLong(get("teacherIds" + i))
@@ -276,7 +276,7 @@ class ManualArrangeAction extends SemesterSupportAction {
       }
       if (true == detectCollision) {
         val collisionTakes = courseActivityService.collisionTakes(lesson, mergedActivityList)
-        if (CollectUtils.isNotEmpty(collisionTakes)) {
+        if (Collections.isNotEmpty(collisionTakes)) {
           put("courseTakes", collisionTakes)
           put("activities", mergedActivityList)
           put("lesson", lesson)
@@ -302,8 +302,8 @@ class ManualArrangeAction extends SemesterSupportAction {
           lesson.getNo
         logHelper.info(beforeMsg)
         alterationBefore = CourseActivityDigestor.getInstance.digest(null, lesson)
-        val occupancies = CollectUtils.newHashSet()
-        val lessonOccupancyRooms = CollectUtils.newHashSet()
+        val occupancies = Collections.newSet[Any]
+        val lessonOccupancyRooms = Collections.newSet[Any]
         for (activity <- lesson.getCourseSchedule.getActivities; classroom <- activity.getRooms) {
           lessonOccupancyRooms.add(classroom)
         }
@@ -332,7 +332,7 @@ class ManualArrangeAction extends SemesterSupportAction {
                 .append("小节-第")
                 .append(activity.getTime.getEndUnit)
                 .append("小节")
-              return forwardError(Array(getText("lesson.courseSchedule.roomIsOccupied"), errMsg.toString))
+              return forwardError(Array(getText("lesson.schedule.roomIsOccupied"), errMsg.toString))
             }
             if (courseActivityService.isCourseActivityTeacherOccupied(activity)) {
               val errMsg = new StringBuilder()
@@ -357,7 +357,7 @@ class ManualArrangeAction extends SemesterSupportAction {
               if (!freeRooms.contains(room) && !lessonOccupancyRooms.contains(room)) {
                 val errMsg = new StringBuilder()
                 errMsg.append(room.getName + "被排考或者教室借用占用,请选择其他教室!")
-                return forwardError(Array(getText("lesson.courseSchedule.roomIsOccupied"), errMsg.toString))
+                return forwardError(Array(getText("lesson.schedule.roomIsOccupied"), errMsg.toString))
               }
             }
             for (timeUnit <- timeUnits) {
@@ -417,10 +417,10 @@ class ManualArrangeAction extends SemesterSupportAction {
     val semester = entityDao.get(classOf[Semester], semesterId)
     val lessonIds = getLongIds("lesson")
     val timeSetting = timeSettingService.getClosestTimeSetting(getProject, semester, null)
-    val lessons = CollectUtils.newArrayList()
-    val classCollisMap = CollectUtils.newHashMap()
-    val roomCollisMap = CollectUtils.newHashMap()
-    val teacherCollisMap = CollectUtils.newHashMap()
+    val lessons = Collections.newBuffer[Any]
+    val classCollisMap = Collections.newMap[Any]
+    val roomCollisMap = Collections.newMap[Any]
+    val teacherCollisMap = Collections.newMap[Any]
     for (i <- 0 until lessonIds.length) {
       val lessonId = lessonIds(i)
       val classCollisions = courseActivityService.detectCollision(semester, ResourceType.ADMINCLASS, 
@@ -542,14 +542,14 @@ class ManualArrangeAction extends SemesterSupportAction {
     val taskActivities = lesson.getCourseSchedule.getActivities
     val time = YearWeekTimeUtil.buildYearWeekTimes(2, lesson.getCourseSchedule.getStartWeek, lesson.getCourseSchedule.getEndWeek, 
       CourseTime.CONTINUELY)
-    val adminClasses = courseLimitService.extractAdminclasses(lesson.getTeachClass)
-    val adminClassActivities = CollectUtils.newArrayList()
+    val adminClasses = lessonLimitService.extractAdminclasses(lesson.getTeachClass)
+    val adminClassActivities = Collections.newBuffer[Any]
     for (adminClass <- adminClasses if Strings.isNotEmpty(time.state) && adminClass.isPersisted) {
       adminClassActivities.addAll(teachResourceService.getAdminclassActivities(adminClass, time, lesson.getSemester))
     }
     adminClassActivities.removeAll(taskActivities)
-    val programs = courseLimitService.extractPrograms(lesson.getTeachClass)
-    val programActivities = CollectUtils.newArrayList()
+    val programs = lessonLimitService.extractPrograms(lesson.getTeachClass)
+    val programActivities = Collections.newBuffer[Any]
     for (program <- programs if Strings.isNotEmpty(time.state) && program.isPersisted) {
       programActivities.addAll(teachResourceService.getProgramActivities(program, time, lesson.getSemester))
     }
@@ -559,7 +559,7 @@ class ManualArrangeAction extends SemesterSupportAction {
     val availableTime = new AvailableTime()
     availableTime.setAvailable(Strings.repeat("1", WeekDays.MAX * timeSetting.getDefaultUnits.size))
     val teachers = lesson.getTeachers
-    val teacherPeriod = CollectUtils.newHashMap()
+    val teacherPeriod = Collections.newMap[Any]
     for (teacher <- teachers) {
       if (teacherPeriodLimitService != null) {
         val period = teacherPeriodLimitService.getMaxPeriod(teacher)
@@ -716,7 +716,7 @@ class ManualArrangeAction extends SemesterSupportAction {
     val lesson = entityDao.get(classOf[Lesson], lessonId)
     put("departs", getDeparts)
     put("lesson", lesson)
-    val activityWeek = CollectUtils.newHashMap()
+    val activityWeek = Collections.newMap[Any]
     for (ca <- lesson.getCourseSchedule.getActivities) {
       activityWeek.put(ca.id, YearWeekTimeUtil.digest(ca.getTime.getWeekState, 2, 1, 52, getTextResource))
     }
@@ -731,13 +731,13 @@ class ManualArrangeAction extends SemesterSupportAction {
       return forwardError("没有教学任务")
     }
     val lesson = entityDao.get(classOf[Lesson], lessonId)
-    val activityIds = CollectUtils.newHashSet(getAll("activity.id", classOf[Long]))
-    val times = CollectUtils.newHashSet()
+    val activityIds = Collections.newHashSet(getAll("activity.id", classOf[Long]))
+    val times = Collections.newSet[Any]
     for (activity <- lesson.getCourseSchedule.getActivities if activityIds.contains(activity.id)) times.add(activity.getTime)
     val teacher = populateEntity(classOf[Teacher], "searchTeacher")
     val units = Array.ofDim[CourseTime](times.size)
     times.toArray(units)
-    var departments = CollectUtils.newArrayList()
+    var departments = Collections.newBuffer[Any]
     val allTeacher = getBoolean("allTeacher")
     if (true != allTeacher) {
       departments = getDeparts
@@ -753,13 +753,13 @@ class ManualArrangeAction extends SemesterSupportAction {
       return forwardError("没有教学任务")
     }
     val lesson = entityDao.get(classOf[Lesson], lessonId)
-    val activityIds = CollectUtils.newHashSet(getAll("activity.id", classOf[Long]))
+    val activityIds = Collections.newHashSet(getAll("activity.id", classOf[Long]))
     val toTeacherIdSeq = get("toTeacherId")
     if (Strings.isEmpty(toTeacherIdSeq)) {
       return forwardError("没有选择更换教师")
     }
     val newTeachers = entityDao.get(classOf[Teacher], Strings.splitToLong(toTeacherIdSeq))
-    val activityList = CollectUtils.newArrayList(lesson.getCourseSchedule.getActivities)
+    val activityList = Collections.newBuffer[Any](lesson.getCourseSchedule.getActivities)
     val fromweek = if ((null == getInt("fromweek"))) 0 else getInt("fromweek").intValue()
     val endweek = if ((null == getInt("endweek"))) 0 else getInt("endweek").intValue()
     val changeWeek = (fromweek <= endweek && fromweek >= 1 && endweek < 53)
@@ -799,7 +799,7 @@ class ManualArrangeAction extends SemesterSupportAction {
     }
     lesson.getCourseSchedule.getActivities.clear()
     lesson.getCourseSchedule.getActivities.addAll(mergedActivities)
-    val allTeachers = CollectUtils.newHashSet()
+    val allTeachers = Collections.newSet[Any]
     for (ca <- mergedActivities) allTeachers.addAll(ca.getTeachers)
     lesson.getTeachers.retainAll(allTeachers)
     allTeachers.removeAll(lesson.getTeachers)
@@ -871,7 +871,7 @@ class ManualArrangeAction extends SemesterSupportAction {
     query.where("lesson.id = :taskId", taskId)
     query.where("lesson.teachClass.limitCount = 0")
     val lessons = entityDao.search(query)
-    if (CollectUtils.isNotEmpty(lessons)) {
+    if (Collections.isNotEmpty(lessons)) {
     }
     for (lesson <- lessons) {
       try {
@@ -905,7 +905,7 @@ class ManualArrangeAction extends SemesterSupportAction {
       .orderBy("activity.lesson.no")
     val activitys = entityDao.search(builder)
     put("courseActivities", activitys)
-    val utilizations = CollectUtils.newHashMap()
+    val utilizations = Collections.newMap[Any]
     for (courseActivity <- activitys) {
       val rooms = courseActivity.getRooms
       var capacity = 0
@@ -938,7 +938,7 @@ class ManualArrangeAction extends SemesterSupportAction {
       query.where("lesson.id in (:lessonIds)", lessonIds)
     }
     val lessons = entityDao.search(query)
-    val badTaskInfos = CollectUtils.newHashMap()
+    val badTaskInfos = Collections.newMap[Any]
     for (lesson <- lessons) {
       val shouldOverallUnits = lesson.getCourse.getPeriod
       var actualOverallUnits = 0
@@ -966,12 +966,12 @@ class ManualArrangeAction extends SemesterSupportAction {
     val query = OqlBuilder.from(classOf[Lesson], "lesson")
     query.where("lesson.project.id=:projectid1", getSession.get("projectId").asInstanceOf[java.lang.Integer])
     query.where("lesson.semester.id = :semesterId", getInt("lesson.semester.id"))
-    query.where("lesson.courseSchedule.status=:status", CourseStatusEnum.ARRANGED)
+    query.where("lesson.schedule.status=:status", CourseStatusEnum.ARRANGED)
     query.where("exists (from lesson.teachers teacher)")
     val hql = new StringBuilder()
-    hql.append("(select count(activity.id) from lesson.courseSchedule.activities activity where exists (from activity.teachers teacher where exists (from lesson.teachers lessonTeacher where lessonTeacher = teacher)))")
+    hql.append("(select count(activity.id) from lesson.schedule.activities activity where exists (from activity.teachers teacher where exists (from lesson.teachers lessonTeacher where lessonTeacher = teacher)))")
     hql.append(" != ")
-    hql.append("(select count(activity.id) from lesson.courseSchedule.activities activity)")
+    hql.append("(select count(activity.id) from lesson.schedule.activities activity)")
     query.where(hql.toString)
     query.orderBy(Order.parse("lesson.no"))
     query.limit(null)
@@ -979,7 +979,7 @@ class ManualArrangeAction extends SemesterSupportAction {
     query.where("lesson.teachDepart in (:departments)", getDeparts)
     query.where("lesson.project.id = :projectId", projectId)
     val lessons = entityDao.search(query)
-    val badTaskInfos = CollectUtils.newArrayList()
+    val badTaskInfos = Collections.newBuffer[Any]
     for (i <- 0 until lessons.size) {
       val lesson = lessons.get(i)
       val teachers = new HashSet[Teacher]()

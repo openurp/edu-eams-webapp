@@ -7,7 +7,7 @@ package org.openurp.edu.eams.teach.schedule.web.action
 import org.apache.commons.collections.CollectionUtils
 import org.apache.commons.collections.Predicate
 import org.apache.commons.lang3.ArrayUtils
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model
 import org.openurp.base.Room
@@ -50,7 +50,7 @@ class ArrangeSuggestAction extends SemesterSupportAction {
   protected override def indexSetting() {
     val project = getProject
     val semester = putSemester(null)
-    val teachDeparts = CollectUtils.newArrayList()
+    val teachDeparts = Collections.newBuffer[Any]
     val departs = getTeachDeparts
     for (department <- getDeparts if departs.contains(department)) {
       teachDeparts.add(department)
@@ -72,9 +72,9 @@ class ArrangeSuggestAction extends SemesterSupportAction {
   override def search(): String = {
     val query = getQueryBuilder
     val lessons = entityDao.search(query)
-    val arrangeInfo = CollectUtils.newHashMap()
+    val arrangeInfo = Collections.newMap[Any]
     val digestor = SuggestActivityDigestor.getInstance
-    if (CollectUtils.isNotEmpty(lessons)) {
+    if (Collections.isNotEmpty(lessons)) {
       val suggestQuery = OqlBuilder.from(classOf[ArrangeSuggest], "suggest")
       suggestQuery.where("suggest.lesson in (:lessons)", lessons)
       val suggests = entityDao.search(suggestQuery)
@@ -109,8 +109,8 @@ class ArrangeSuggestAction extends SemesterSupportAction {
     val timeSetting = timeSettingService.getClosestTimeSetting(lesson.getProject, lesson.getSemester, 
       lesson.getCampus)
     putCommonInfoThings(lesson, suggest, gson, timeSetting)
-    var flattenedOtherActivities = CollectUtils.newHashSet()
-    if (CollectUtils.isNotEmpty(lesson.getTeachers)) {
+    var flattenedOtherActivities = Collections.newSet[Any]
+    if (Collections.isNotEmpty(lesson.getTeachers)) {
       val otherActivitiesQuery = OqlBuilder.from(classOf[SuggestActivity], "otherActivity")
       otherActivitiesQuery.where("otherActivity.arrangeSuggest.lesson.id != :meLessonId", lessonId)
         .where("otherActivity.arrangeSuggest.lesson.project = :project", project)
@@ -129,7 +129,7 @@ class ArrangeSuggestAction extends SemesterSupportAction {
     put("otherActivitiesJSON", gson.toJson(flattenedOtherActivities))
     val departments = getDeparts
     var optionalRooms = Collections.emptyList()
-    if (CollectUtils.isNotEmpty(departments)) {
+    if (Collections.isNotEmpty(departments)) {
       optionalRooms = entityDao.search(OqlBuilder.from(classOf[Room], "room").where("exists(from room.departments department where department in (:departments))", 
         departments)
         .where("room.effectiveAt <= current_time() and (room.invalidAt is null or room.invalidAt >= current_time())")
@@ -149,7 +149,7 @@ class ArrangeSuggestAction extends SemesterSupportAction {
       timeSetting: TimeSetting) {
     put("activitiesJSON", gson.toJson(SuggestActivityBean.flatten(suggest.getActivities, timeSetting)))
     put("weekDayList", WeekDays.All)
-    if (CollectUtils.isEmpty(lesson.getTeachers)) {
+    if (Collections.isEmpty(lesson.getTeachers)) {
       val emptyTeacher = new TeacherBean()
       emptyTeacher.setCode("")
       emptyTeacher.setName("无教师")
@@ -170,7 +170,7 @@ class ArrangeSuggestAction extends SemesterSupportAction {
 
   private def getSuggest(lesson: Lesson): ArrangeSuggest = {
     val suggests = entityDao.get(classOf[ArrangeSuggest], "lesson", lesson)
-    val suggest = if (CollectUtils.isNotEmpty(suggests)) suggests.get(0) else Model.newInstance(classOf[ArrangeSuggest])
+    val suggest = if (Collections.isNotEmpty(suggests)) suggests.get(0) else Model.newInstance(classOf[ArrangeSuggest])
     if (suggest.getLesson == null) {
       suggest.setLesson(lesson)
     }
@@ -203,7 +203,7 @@ class ArrangeSuggestAction extends SemesterSupportAction {
     val activitiesJSON = get("activitiesJSON")
     val activities = gson.fromJson(activitiesJSON, new TypeToken[Set[SuggestActivityBean]]() {
     }.getType)
-    val mergedActivities = SuggestActivityBean.mergeActivities(CollectUtils.newArrayList(activities))
+    val mergedActivities = SuggestActivityBean.mergeActivities(Collections.newBuffer[Any](activities))
     for (activity <- mergedActivities) {
       activity.setId(null)
     }

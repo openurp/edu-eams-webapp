@@ -2,7 +2,7 @@ package org.openurp.edu.eams.teach.election.web.action.courseTake
 
 
 import org.apache.commons.lang3.ArrayUtils
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.dao.query.builder.Condition
 import org.beangle.struts2.helper.Params
 import org.openurp.edu.eams.base.CourseUnit
@@ -51,7 +51,7 @@ class CourseTakeForTeacherAction extends SemesterSupportAction {
         courseTakes = courseTakeService.getCourseTakesByAdminclassId(semester, populateWeekCondition(), 
           getProject, adminclassIds)
       }
-      val units = CollectUtils.newArrayList(timeSettingService.getClosestTimeSetting(getProject, semester, 
+      val units = Collections.newBuffer[Any](timeSettingService.getClosestTimeSetting(getProject, semester, 
         null)
         .getDefaultUnits
         .values)
@@ -71,7 +71,7 @@ class CourseTakeForTeacherAction extends SemesterSupportAction {
     val adminclassIdSeq = Params.getParams.get("courseTake.std.adminclass.id").asInstanceOf[Array[String]]
     var adminclassIds: Array[Integer] = null
     if (ArrayUtils.isNotEmpty(adminclassIdSeq)) {
-      val ids = CollectUtils.newArrayList()
+      val ids = Collections.newBuffer[Any]
       for (idStr <- adminclassIdSeq if idStr != "") {
         ids.add(java.lang.Long.parseLong(idStr))
       }
@@ -84,16 +84,16 @@ class CourseTakeForTeacherAction extends SemesterSupportAction {
     val weekSeq = Params.getParams.get("courseTake.std.adminclass.id").asInstanceOf[Array[String]]
     var condition: Condition = null
     if (ArrayUtils.isNotEmpty(weekSeq)) {
-      val weekList = CollectUtils.newArrayList()
+      val weekList = Collections.newBuffer[Any]
       for (week <- weekSeq if week != "") {
         weekList.add(java.lang.Integer.parseInt(week))
       }
       if (weekList.isEmpty) return null
       val builder = new StringBuilder()
       for (i <- 0 until weekList.size) {
-        builder.append("courseTake.lesson.courseSchedule.startWeek <=:week" + 
+        builder.append("courseTake.lesson.schedule.startWeek <=:week" + 
           i + 
-          " and courseTake.lesson.courseSchedule.endWeek >=:week" + 
+          " and courseTake.lesson.schedule.endWeek >=:week" + 
           i)
       }
       condition = new Condition(builder.toString)

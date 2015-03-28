@@ -10,7 +10,7 @@ import java.util.Calendarimport java.util.Date
 import javax.servlet.http.HttpServletResponse
 import org.apache.commons.lang3.ArrayUtils
 import org.apache.commons.lang3.time.DateUtils
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.data.model.Entity
@@ -50,7 +50,7 @@ import org.openurp.edu.teach.lesson.LessonTag
 import org.openurp.edu.eams.teach.lesson.dao.LessonDao
 import org.openurp.edu.eams.teach.lesson.dao.LessonPlanRelationDao
 import org.openurp.edu.eams.teach.lesson.helper.LessonSearchHelper
-import org.openurp.edu.eams.teach.lesson.service.CourseLimitService
+import org.openurp.edu.eams.teach.lesson.service.LessonLimitService
 import org.openurp.edu.eams.teach.lesson.service.LessonLogBuilder
 import org.openurp.edu.eams.teach.lesson.service.LessonLogHelper
 import org.openurp.edu.eams.teach.lesson.service.LessonService
@@ -75,7 +75,7 @@ class CourseTakeForTaskAction extends SemesterSupportAction {
 
   var userService: UserService = _
 
-  var courseLimitService: CourseLimitService = _
+  var lessonLimitService: LessonLimitService = _
 
   var electionProfileService: ElectionProfileService = _
 
@@ -92,7 +92,7 @@ class CourseTakeForTaskAction extends SemesterSupportAction {
   def index(): String = {
     val semester = putSemester(null)
     val departments = getDeparts
-    if (CollectUtils.isEmpty(departments)) {
+    if (Collections.isEmpty(departments)) {
       return forwardError("您没有操作权限")
     }
     val teachDepartBuilder = OqlBuilder.from(classOf[Lesson].getName, "lesson")
@@ -116,7 +116,7 @@ class CourseTakeForTaskAction extends SemesterSupportAction {
 
   def taskList(): String = {
     val departments = getDeparts
-    if (CollectUtils.isEmpty(departments)) {
+    if (Collections.isEmpty(departments)) {
       return forwardError("您没有操作权限")
     }
     val builder = lessonSearchHelper.buildQuery()
@@ -144,7 +144,7 @@ class CourseTakeForTaskAction extends SemesterSupportAction {
   def adminClassStdCount(): String = {
     val lessonIds = getLongIds("lesson")
     val lessons = entityDao.get(classOf[Lesson], lessonIds)
-    val adminClassStdMap = CollectUtils.newHashMap()
+    val adminClassStdMap = Collections.newMap[Any]
     for (lesson <- lessons) {
       adminClassStdMap.put(lesson, new HashMap[Adminclass, Long]())
       val count = adminClassStdMap.get(lesson)
@@ -172,16 +172,16 @@ class CourseTakeForTaskAction extends SemesterSupportAction {
   }
 
   def filterCourseTakes(): String = {
-    if (CollectUtils.isEmpty(getDeparts)) {
+    if (Collections.isEmpty(getDeparts)) {
       return forwardError("您没有操作权限")
     }
-    val successCount = CollectUtils.newHashMap()
+    val successCount = Collections.newMap[Any]
     val allThisTurnSelfTakes = getMaybeFilteredCourseTakes
-    val lesson2takes = CollectUtils.newHashMap()
+    val lesson2takes = Collections.newMap[Any]
     for (courseTake <- allThisTurnSelfTakes) {
       var courseTakes = lesson2takes.get(courseTake.getLesson)
       if (null == courseTakes) {
-        courseTakes = CollectUtils.newArrayList()
+        courseTakes = Collections.newBuffer[Any]
         lesson2takes.put(courseTake.getLesson, courseTakes)
       }
       courseTakes.add(courseTake)
@@ -269,7 +269,7 @@ class CourseTakeForTaskAction extends SemesterSupportAction {
   }
 
   def assignStds(): String = {
-    if (CollectUtils.isEmpty(getDeparts)) {
+    if (Collections.isEmpty(getDeparts)) {
       return forwardError("您没有操作权限")
     }
     val lessonIds = getLongIds("lesson")
@@ -280,7 +280,7 @@ class CourseTakeForTaskAction extends SemesterSupportAction {
     builder.where("lesson.id in(:lessonIds)", lessonIds)
     builder.where("lesson.teachDepart in(:departs)", getDeparts)
     val lessons = entityDao.get(classOf[Lesson], lessonIds)
-    if (CollectUtils.isEmpty(lessons)) {
+    if (Collections.isEmpty(lessons)) {
       return forwardError("error.model.id.needed")
     }
     val response = getResponse
@@ -353,7 +353,7 @@ class CourseTakeForTaskAction extends SemesterSupportAction {
       val messages = courseTakeService.election(students, entityDao.search(builder), lesson, unCheckTimeConflict)
       put("messages", messages)
     } else {
-      put("messages", CollectUtils.newArrayList(new Message("0", Array(Collections.emptyList())), new Message("0", 
+      put("messages", Collections.newBuffer[Any](new Message("0", Array(Collections.emptyList())), new Message("0", 
         Array(Collections.emptyMap()))))
     }
     "addResult"
@@ -405,7 +405,7 @@ class CourseTakeForTaskAction extends SemesterSupportAction {
   def batchUpdateStdCountSetting() {
     val response = getResponse
     val write = response.getWriter
-    val lessons = CollectUtils.newArrayList()
+    val lessons = Collections.newBuffer[Any]
     for (i <- 0 until 1000) {
       val lesson = populateEntity(classOf[Lesson], "lesson" + i)
       if (lesson.isPersisted) {
@@ -469,15 +469,15 @@ class CourseTakeForTaskAction extends SemesterSupportAction {
     val semester = putSemester(null)
     val project = getProject
     val genders = baseCodeService.getCodes(classOf[Gender])
-    val genderCountMap = CollectUtils.newHashMap()
-    val courseTakeStats = courseTakeService.stateGender(project, genders, CollectUtils.newArrayList(semester))
+    val genderCountMap = Collections.newMap[Any]
+    val courseTakeStats = courseTakeService.stateGender(project, genders, Collections.newBuffer[Any](semester))
     val lessons = entityDao.get(classOf[Lesson], Array("project", "semester"), Array(project, semester))
-    val lessonMap = CollectUtils.newHashMap()
-    val removeLessonIds = CollectUtils.newHashSet()
+    val lessonMap = Collections.newMap[Any]
+    val removeLessonIds = Collections.newSet[Any]
     for (lesson <- lessons) {
       lessonMap.put(lesson.id, lesson)
     }
-    val stats = CollectUtils.newHashMap()
+    val stats = Collections.newMap[Any]
     for (courseTakeStat <- courseTakeStats) {
       val lessonId = courseTakeStat.id
       val lesson = lessonMap.get(lessonId)
@@ -485,7 +485,7 @@ class CourseTakeForTaskAction extends SemesterSupportAction {
       courseTakeStat.setLesson(lesson)
       var lessonStats = stats.get(lesson)
       if (null == lessonStats) {
-        lessonStats = CollectUtils.newHashMap()
+        lessonStats = Collections.newMap[Any]
         stats.put(lesson, lessonStats)
       }
       lessonStats.put(courseTakeStat.getStatBy, courseTakeStat)
@@ -500,7 +500,7 @@ class CourseTakeForTaskAction extends SemesterSupportAction {
       courseTakeStat.setLesson(lesson)
       var lessonStats = stats.get(lesson)
       if (null == lessonStats) {
-        lessonStats = CollectUtils.newHashMap()
+        lessonStats = Collections.newMap[Any]
         stats.put(lesson, lessonStats)
       }
       lessonStats.put(courseTakeStat.getStatBy, courseTakeStat)

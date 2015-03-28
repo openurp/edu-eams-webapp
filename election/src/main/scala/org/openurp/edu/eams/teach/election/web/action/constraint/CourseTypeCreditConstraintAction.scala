@@ -2,7 +2,7 @@ package org.openurp.edu.eams.teach.election.web.action.constraint
 
 import java.util.Date
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.dao.Operation
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.data.model.Entity
@@ -43,13 +43,13 @@ class CourseTypeCreditConstraintAction extends SemesterSupportAction {
 
   def save(): String = {
     val courseTypeCreditConstraint = populateEntity().asInstanceOf[CourseTypeCreditConstraint]
-    val courseTypeCreditConstraints = CollectUtils.newArrayList()
+    val courseTypeCreditConstraints = Collections.newBuffer[Any]
     courseTypeCreditConstraints.addAll(entityDao.get(classOf[CourseTypeCreditConstraint], Array("semester", "education", "courseType", "grades"), 
       Array(putSemester(null), courseTypeCreditConstraint.education, courseTypeCreditConstraint.getCourseType, courseTypeCreditConstraint.grades)))
     if (courseTypeCreditConstraints.isEmpty) {
       courseTypeCreditConstraints.add(courseTypeCreditConstraint)
     }
-    val loggers = CollectUtils.newArrayList()
+    val loggers = Collections.newBuffer[Any]
     val createdAt = new Date()
     for (courseTypeCreditConstraint2 <- courseTypeCreditConstraints) {
       courseTypeCreditConstraint2.setLimitCredit(courseTypeCreditConstraint.getLimitCredit)
@@ -91,7 +91,7 @@ class CourseTypeCreditConstraintAction extends SemesterSupportAction {
 
   protected def removeAndForward(entities: Iterable[_]): String = {
     try {
-      val loggers = CollectUtils.newArrayList()
+      val loggers = Collections.newBuffer[Any]
       val createdAt = new Date()
       for (`object` <- entities) {
         val constraint = `object`.asInstanceOf[CourseTypeCreditConstraint]

@@ -12,7 +12,7 @@ import org.openurp.edu.base.Project
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.teach.lesson.LessonTag
 import org.openurp.edu.eams.teach.lesson.model.CourseScheduleBean.CourseStatusEnum
-import org.openurp.edu.eams.teach.lesson.service.CourseLimitUtils
+import org.openurp.edu.eams.teach.lesson.service.LessonLimitUtils
 import org.openurp.edu.eams.teach.schedule.util.PropertyCollectionComparator.ArrangeOrder
 
 
@@ -41,20 +41,20 @@ class MultiManualArrangeForDepartAction extends MultiManualArrangeAction {
     val startWeekToEndWeek = get("startWeekToEndWeek")
     if (Strings.isNotEmpty(startWeekToEndWeek)) {
       val weeks = startWeekToEndWeek.split("-")
-      builder.where("lesson.courseSchedule.startWeek = :startWeek", java.lang.Integer.valueOf(weeks(0)))
-        .where("lesson.courseSchedule.endWeek = :endWeek", java.lang.Integer.valueOf(weeks(1)))
+      builder.where("lesson.schedule.startWeek = :startWeek", java.lang.Integer.valueOf(weeks(0)))
+        .where("lesson.schedule.endWeek = :endWeek", java.lang.Integer.valueOf(weeks(1)))
     }
     val occupancied = getBoolean("occupancied")
     if (null != occupancied) {
       if (true == occupancied) {
-        builder.where("exists(from lesson.courseSchedule.activities activity where size(activity.rooms)>0)")
+        builder.where("exists(from lesson.schedule.activities activity where size(activity.rooms)>0)")
       } else {
-        builder.where("exists(from lesson.courseSchedule.activities activity where size(activity.rooms)=0)")
+        builder.where("exists(from lesson.schedule.activities activity where size(activity.rooms)=0)")
       }
     }
     val adminclassId = getInt("adminclassId")
     if (null != adminclassId) {
-      val con = CourseLimitUtils.build(entityDao.get(classOf[Adminclass], adminclassId), "lgi")
+      val con = LessonLimitUtils.build(entityDao.get(classOf[Adminclass], adminclassId), "lgi")
       val params = con.getParams
       builder.where("exists(from lesson.teachClass.limitGroups lg join lg.items as lgi where" + 
         con.getContent + 
@@ -64,12 +64,12 @@ class MultiManualArrangeForDepartAction extends MultiManualArrangeAction {
     val isArrangeCompleted = get("status")
     if (Strings.isNotEmpty(isArrangeCompleted)) {
       if (isArrangeCompleted == CourseStatusEnum.NEED_ARRANGE.toString) {
-        builder.where("lesson.courseSchedule.status = :status", CourseStatusEnum.NEED_ARRANGE)
+        builder.where("lesson.schedule.status = :status", CourseStatusEnum.NEED_ARRANGE)
       } else if (isArrangeCompleted == CourseStatusEnum.ARRANGED.toString) {
-        builder.where("lesson.courseSchedule.status = :status", CourseStatusEnum.ARRANGED)
+        builder.where("lesson.schedule.status = :status", CourseStatusEnum.ARRANGED)
       }
     } else {
-      builder.where("lesson.courseSchedule.status <> :status", CourseStatusEnum.DONT_ARRANGE)
+      builder.where("lesson.schedule.status <> :status", CourseStatusEnum.DONT_ARRANGE)
     }
     val guapai = getBoolean("guapai")
     if (null != guapai) {
@@ -87,10 +87,10 @@ class MultiManualArrangeForDepartAction extends MultiManualArrangeAction {
   protected override def getStartWeekToEndWeeks(project: Project, semester: Semester): List[_] = {
     val builder = OqlBuilder.from(classOf[Lesson], "lesson").where("lesson.project =:project", project)
       .where("lesson.semester = :semester", semester)
-      .select("distinct lesson.courseSchedule.startWeek,lesson.courseSchedule.endWeek")
+      .select("distinct lesson.schedule.startWeek,lesson.schedule.endWeek")
       .where("exists (from org.openurp.edu.eams.teach.schedule.model.LessonForDepart lfd join lfd.lessonIds lessonId where lesson.id = lessonId and lfd.department in (:departments))", 
       getDeparts)
-      .orderBy("lesson.courseSchedule.startWeek,lesson.courseSchedule.endWeek")
+      .orderBy("lesson.schedule.startWeek,lesson.schedule.endWeek")
     entityDao.search(builder)
   }
 }

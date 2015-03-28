@@ -5,7 +5,7 @@ import java.util.Date
 
 
 import org.beangle.commons.bean.transformers.PropertyTransformer
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.commons.dao.query.builder.Condition
 import org.beangle.data.jpa.dao.OqlBuilder
@@ -33,14 +33,13 @@ import org.openurp.edu.eams.teach.grade.service.CourseGradeSettings
 import org.openurp.edu.eams.teach.grade.service.GradeRateService
 import org.openurp.edu.teach.grade.CourseGrade
 import org.openurp.edu.teach.grade.model.CourseGradeState
-import org.openurp.edu.teach.lesson.CourseLimitMeta.Operator
+import org.openurp.edu.teach.lesson.LessonLimitMeta.Operator
 import org.openurp.edu.teach.lesson.CourseTake
 import org.openurp.edu.teach.grade.model.ExamGradeState
 import org.openurp.edu.eams.teach.lesson.GradeTypeConstants
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.teach.lesson.model.CourseGradeStateBean
 import org.openurp.edu.eams.teach.lesson.service.LessonService
-import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnum
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
 
 
@@ -66,7 +65,7 @@ class InputAction extends SemesterSupportAction {
   var settings: CourseGradeSettings = _
 
   def batchEditExtraInputer(): String = {
-    val courseGradeStates = CollectUtils.newArrayList()
+    val courseGradeStates = Collections.newBuffer[Any]
     val lessons = getModels(classOf[Lesson], getLongIds("lesson"))
     for (lesson <- lessons) {
       var courseGradeState = courseGradeService.getState(lesson)
@@ -104,7 +103,7 @@ class InputAction extends SemesterSupportAction {
     val departments = getDeparts
     val query = OqlBuilder.from(classOf[CourseTake], "take")
     populateConditions(query)
-    if (null == getProject || CollectUtils.isEmpty(departments)) {
+    if (null == getProject || Collections.isEmpty(departments)) {
       query.where("take is null")
     } else {
       val semeterId = getInt("lesson.semester.id")
@@ -115,7 +114,7 @@ class InputAction extends SemesterSupportAction {
       query.where("not exists(from " + classOf[CourseGrade].getName + 
         " cg where cg.std = take.std and cg.lesson = take.lesson)")
       val conditions = QueryHelper.extractConditions(classOf[Lesson], "lesson", null)
-      if (CollectUtils.isNotEmpty(conditions)) {
+      if (Collections.isNotEmpty(conditions)) {
         query.join("take.lesson", "lesson")
         query.where(conditions)
       }
@@ -131,7 +130,7 @@ class InputAction extends SemesterSupportAction {
     val departments = getDeparts
     val query = OqlBuilder.from(classOf[CourseGrade], "grade")
     populateConditions(query)
-    if (null == project || CollectUtils.isEmpty(departments)) {
+    if (null == project || Collections.isEmpty(departments)) {
       query.where("grade is null")
     } else {
       val semesterId = getInt("lesson.semester.id")
@@ -142,7 +141,7 @@ class InputAction extends SemesterSupportAction {
       query.where("grade.score is not null")
       query.where("grade.passed = false")
       val conditions = QueryHelper.extractConditions(classOf[Lesson], "lesson", null)
-      if (CollectUtils.isNotEmpty(conditions)) {
+      if (Collections.isNotEmpty(conditions)) {
         query.join("grade.lesson", "lesson")
         query.where(conditions)
       }
@@ -177,7 +176,7 @@ class InputAction extends SemesterSupportAction {
     put("gradeState", gradeState)
     put("lesson", lesson)
     val setting = settings.getSetting(lesson.getProject)
-    val hasPercentIds = CollectUtils.collect(setting.getGaElementTypes, new PropertyTransformer("id"))
+    val hasPercentIds = Collections.collect(setting.getGaElementTypes, new PropertyTransformer("id"))
     put("hasPercentIds", hasPercentIds)
     forward()
   }
@@ -203,7 +202,7 @@ class InputAction extends SemesterSupportAction {
   protected override def indexSetting() {
     val semester = getAttribute("semester").asInstanceOf[Semester]
     val project = getProject
-    val projects = CollectUtils.newArrayList(project)
+    val projects = Collections.newBuffer[Any](project)
     val departs = getDeparts
     if (semester != null) {
       put("courseTypes", lessonService.courseTypesOfSemester(projects, departs, semester))
@@ -265,7 +264,7 @@ class InputAction extends SemesterSupportAction {
   def saveGradeState(): String = {
     val gradeState = populateEntity(classOf[CourseGradeState], "gradeState")
     val setting = settings.getSetting(gradeState.getLesson.getProject)
-    val removed = CollectUtils.newArrayList()
+    val removed = Collections.newBuffer[Any]
     var finalStatus = 0
     var finalStyle: ScoreMarkStyle = null
     var finalPrecision = 0
@@ -319,7 +318,7 @@ class InputAction extends SemesterSupportAction {
       query.where("exists(from lesson.teachClass.limitGroups gradeLgp join gradeLgp.items gradeLit " + 
         "where gradeLit.meta.id=:grade_metaId " + 
         "and gradeLit.operator in(:grade_in_operators) " + 
-        "and gradeLit.content like :grade_content)", CourseLimitMetaEnum.GRADE.getMetaId, Array(Operator.IN, Operator.EQUAL), 
+        "and gradeLit.content like :grade_content)", LessonLimitMeta.Grade.getMetaId, Array(Operator.IN, Operator.Equals), 
         "%" + grade + "%")
     }
     query.where("lesson.teachDepart in (:departs)", getDeparts)
@@ -348,7 +347,7 @@ class InputAction extends SemesterSupportAction {
       }
     }
     val teacherQueryConditions = QueryHelper.extractConditions(classOf[Teacher], "teacher", null)
-    if (CollectUtils.isNotEmpty(teacherQueryConditions)) {
+    if (Collections.isNotEmpty(teacherQueryConditions)) {
       query.join("lesson.teachers", "teacher").where(teacherQueryConditions)
     }
     val personPercentFlag = getBoolean("personPercentFlag")
@@ -366,7 +365,7 @@ class InputAction extends SemesterSupportAction {
     query.orderBy(Order.parse(if (Strings.isEmpty(orderBy)) "lesson.no" else orderBy))
     val lessons = entityDao.search(query)
     put("lessons", lessons)
-    val courseGradeStateMap = CollectUtils.newHashMap()
+    val courseGradeStateMap = Collections.newMap[Any]
     for (lesson <- lessons) {
       val gradeState = courseGradeService.getState(lesson)
       if (null != gradeState) courseGradeStateMap.put(lesson, gradeState)

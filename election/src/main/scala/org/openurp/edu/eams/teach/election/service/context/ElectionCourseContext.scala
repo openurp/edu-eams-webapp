@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.election.service.context
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.model.Entity
 import org.beangle.ems.rule.model.SimpleContext
 import org.openurp.edu.base.Student
@@ -54,10 +54,10 @@ class ElectionCourseContext extends SimpleContext() {
   var courseTake: CourseTake = _
 
   
-  var toBeSaved: Set[Entity[_]] = CollectUtils.newHashSet()
+  var toBeSaved: Set[Entity[_]] = Collections.newSet[Any]
 
   
-  var toBeRemoved: Set[Entity[_]] = CollectUtils.newHashSet()
+  var toBeRemoved: Set[Entity[_]] = Collections.newSet[Any]
 
   def this(student: Student, state: ElectState) {
     this()

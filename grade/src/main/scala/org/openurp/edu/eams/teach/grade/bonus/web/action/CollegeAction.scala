@@ -5,7 +5,7 @@ import java.util.Date
 
 import org.beangle.commons.lang.Strings
 import org.apache.commons.lang3.ArrayUtils
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.data.model.Entity
@@ -48,7 +48,7 @@ class CollegeAction extends SemesterSupportAction {
   override def getEntityName(): String = classOf[ExamGrade].getName
 
   protected override def editSetting(entity: Entity[_]) {
-    put("courseTakes", CollectUtils.newArrayList())
+    put("courseTakes", Collections.newBuffer[Any])
   }
 
   def search(): String = {
@@ -71,7 +71,7 @@ class CollegeAction extends SemesterSupportAction {
     builder.orderBy(getShortName + ".courseGrade.lesson.no," + getShortName + 
       ".courseGrade.std.code")
     val examGrades = entityDao.search(builder)
-    val examGradeMap = CollectUtils.newHashMap()
+    val examGradeMap = Collections.newMap[Any]
     for (examGrade <- examGrades) {
       val department = examGrade.getCourseGrade.getLesson.getTeachDepart
       if (examGradeMap.containsKey(department)) {
@@ -79,7 +79,7 @@ class CollegeAction extends SemesterSupportAction {
           examGradeMap.get(department).add(examGrade)
         }
       } else {
-        examGradeMap.put(department, CollectUtils.newArrayList(examGrade))
+        examGradeMap.put(department, Collections.newBuffer[Any](examGrade))
       }
     }
     put("examGradeMap", examGradeMap)
@@ -96,13 +96,13 @@ class CollegeAction extends SemesterSupportAction {
     query.where("switch.opened = true")
     val rs = entityDao.search(query)
     var gradeInputSwitch: GradeInputSwitch = null
-    if (CollectUtils.isNotEmpty(rs)) {
+    if (Collections.isNotEmpty(rs)) {
       gradeInputSwitch = rs.get(0)
     } else {
       gradeInputSwitch = Model.newInstance(classOf[GradeInputSwitch])
       gradeInputSwitch.setProject(project)
       gradeInputSwitch.setSemester(semester)
-      gradeInputSwitch.setTypes(CollectUtils.newHashSet(baseCodeService.getCodes(classOf[GradeType])))
+      gradeInputSwitch.setTypes(Collections.newHashSet(baseCodeService.getCodes(classOf[GradeType])))
     }
     gradeInputSwitch
   }
@@ -116,12 +116,12 @@ class CollegeAction extends SemesterSupportAction {
   def searchCourseTakes(): String = {
     val stdCode = get("stdCode")
     if (Strings.isBlank(stdCode)) {
-      put("courseTakes", CollectUtils.newArrayList())
+      put("courseTakes", Collections.newBuffer[Any])
       return forward()
     }
     val students = entityDao.get(classOf[Student], "code", stdCode)
     if (students.isEmpty) {
-      put("courseTakes", CollectUtils.newArrayList())
+      put("courseTakes", Collections.newBuffer[Any])
       return forward()
     }
     val student = students.get(0)
@@ -130,7 +130,7 @@ class CollegeAction extends SemesterSupportAction {
     put("student", student)
     put("courseTakes", courseTakes)
     put("bonus", Model.newInstance(classOf[GradeType], GradeTypeConstants.BONUS_ID))
-    val lessonGrades = CollectUtils.newHashMap()
+    val lessonGrades = Collections.newMap[Any]
     for (courseTake <- courseTakes) {
       val grades = entityDao.get(classOf[CourseGrade], Array("std", "lesson"), courseTake.getStd, courseTake.getLesson)
       if (grades.isEmpty) {
@@ -153,8 +153,8 @@ class CollegeAction extends SemesterSupportAction {
     val lessons = getModels(classOf[Lesson], getLongIds("lesson"))
     val percentStyle = Model.newInstance(classOf[ScoreMarkStyle], ScoreMarkStyle.PERCENT)
     val normalStatus = Model.newInstance(classOf[ExamStatus], ExamStatus.NORMAL)
-    val toSaves = CollectUtils.newArrayList()
-    val modifyGrades = CollectUtils.newArrayList()
+    val toSaves = Collections.newBuffer[Any]
+    val modifyGrades = Collections.newBuffer[Any]
     val date = new Date()
     val user = entityDao.get(classOf[User], getUserId)
     for (lesson <- lessons) {

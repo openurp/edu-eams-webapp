@@ -3,7 +3,7 @@ package org.openurp.edu.eams.teach.program.common.dao.impl
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.beangle.data.jpa.hibernate.HibernateEntityDao
@@ -25,7 +25,7 @@ import PlanCourseGroupCommonDaoHibernate._
 object PlanCourseGroupCommonDaoHibernate {
 
   protected def getPreOrderTraversalChildren(group: CourseGroup): List[CourseGroup] = {
-    val result = CollectUtils.newArrayList()
+    val result = Collections.newBuffer[Any]
     result.add(group)
     for (child <- group.getChildren) {
       result.addAll(getPreOrderTraversalChildren(child))
@@ -131,7 +131,7 @@ class PlanCourseGroupCommonDaoHibernate extends HibernateEntityDao with PlanCour
     val terms = group.getPlan.asInstanceOf[CoursePlan].getTermsCount
     var termCredits = Strings.repeat(",0", terms) + ","
     if (group.isCompulsory && 
-      (CollectUtils.isNotEmpty(group.getChildren) || CollectUtils.isNotEmpty(group.getPlanCourses))) {
+      (Collections.isNotEmpty(group.getChildren) || Collections.isNotEmpty(group.getPlanCourses))) {
       for (child <- group.getChildren) {
         courseNum += child.getCourseNum
         credits += child.getCredits
@@ -276,7 +276,7 @@ class PlanCourseGroupCommonDaoHibernate extends HibernateEntityDao with PlanCour
   }
 
   def extractPlanCourseInCourseGroup(group: MajorCourseGroup, terms: Set[String]): List[MajorPlanCourse] = {
-    val result = CollectUtils.newHashSet()
+    val result = Collections.newSet[Any]
     for (term <- terms) {
       result.addAll(PlanUtils.getPlanCourses(group, java.lang.Integer.valueOf(term.asInstanceOf[String])).asInstanceOf[List[_]])
     }

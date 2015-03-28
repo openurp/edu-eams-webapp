@@ -4,7 +4,7 @@ package org.openurp.edu.eams.teach.lesson.task.web.action.parent
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.openurp.base.Semester
@@ -42,7 +42,7 @@ class LessonPlanCheckAction extends SemesterSupportAction {
       .where("plan.program.major.project in (:projects)", getProjects)
       .where("plan.program.department in (:departments)", getDeparts)
       .where("plan.program.stdType in (:stdTypes)", getStdTypes)
-    if (CollectUtils.isNotEmpty(getEducations)) {
+    if (Collections.isNotEmpty(getEducations)) {
       query.where("plan.program.education in (:educations)", getEducations)
     }
     majorPlanSearchHelper.addSemesterActiveCondition(query, semester)
@@ -64,7 +64,7 @@ class LessonPlanCheckAction extends SemesterSupportAction {
       .where("relation.plan.program.major.project in (:projects)", getProjects)
       .where("relation.plan.program.department in (:departs)", getDeparts)
       .where("relation.plan.program.stdType in (:stdTypes)", getStdTypes)
-    if (CollectUtils.isNotEmpty(getEducations)) {
+    if (Collections.isNotEmpty(getEducations)) {
       query.where("relation.plan.program.education in (:educations)", getEducations)
     }
     query

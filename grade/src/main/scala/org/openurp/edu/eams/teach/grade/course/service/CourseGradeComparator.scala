@@ -6,7 +6,7 @@ import java.util.Comparator
 
 
 import org.apache.commons.beanutils.PropertyUtils
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.eams.teach.grade.course.web.helper.TeachClassGradeHelper
 import org.openurp.edu.eams.teach.grade.service.stat.StdGrade
@@ -18,7 +18,7 @@ import org.openurp.edu.teach.grade.ExamGrade
 class CourseGradeComparator(var cmpWhat: String, var isAsc: Boolean, gradeTypes: List[GradeType])
     extends Comparator[Any] {
 
-  var gradeTypeMap: Map[String, GradeType] = CollectUtils.newHashMap()
+  var gradeTypeMap: Map[String, GradeType] = Collections.newMap[Any]
 
   var iter = gradeTypes.iterator()
   while (iter.hasNext) {

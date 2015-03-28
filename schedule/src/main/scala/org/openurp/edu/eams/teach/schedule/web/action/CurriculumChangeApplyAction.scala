@@ -5,7 +5,7 @@ import java.util.Date
 
 import org.apache.commons.collections.CollectionUtils
 import org.apache.commons.lang3.ArrayUtils
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
@@ -50,7 +50,7 @@ class CurriculumChangeApplyAction extends SemesterSupportAction {
       .where("lesson.semester = :semester", semester)
     builder.where("lesson.project=:project1", getProject)
     val lessons = entityDao.search(builder)
-    val lessonMap = CollectUtils.newHashMap()
+    val lessonMap = Collections.newMap[Any]
     for (lesson <- lessons) {
       lessonMap.put(lesson.id, lesson.getCourse.getName + "[" + lesson.getNo + "]")
     }
@@ -162,7 +162,7 @@ class CurriculumChangeApplyAction extends SemesterSupportAction {
       return forwardError("调课记录没有找到")
     }
     val changeApply = entityDao.get(classOf[CurriculumChangeApplication], changeIds)
-    val toRemoveList = CollectUtils.newArrayList()
+    val toRemoveList = Collections.newBuffer[Any]
     for (curriculumChangeApplication <- changeApply if curriculumChangeApplication.getPassed == null || false == curriculumChangeApplication.getPassed) {
       toRemoveList.add(curriculumChangeApplication)
     }
@@ -175,7 +175,7 @@ class CurriculumChangeApplyAction extends SemesterSupportAction {
   }
 
   protected override def indexSetting() {
-    put("teachDepartList", lessonService.teachDepartsOfSemester(CollectUtils.newArrayList(getProject), 
+    put("teachDepartList", lessonService.teachDepartsOfSemester(Collections.newBuffer[Any](getProject), 
       getDeparts, getAttribute("semester").asInstanceOf[Semester]))
   }
 }

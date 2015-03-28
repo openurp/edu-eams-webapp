@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.lesson.task.service.impl
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.base.Semester
@@ -19,7 +19,7 @@ class LessonCollegeSwitchServiceImpl extends BaseServiceImpl with LessonCollegeS
       .where("switch.semester.id=:semesterId", semesterId)
     val switches = entityDao.search(query)
     var clswitch: LessonCollegeSwitch = null
-    if (CollectUtils.isEmpty(switches)) {
+    if (Collections.isEmpty(switches)) {
       clswitch = new LessonCollegeSwitch()
       clswitch.setProject(entityDao.get(classOf[Project], projectId))
       clswitch.setSemester(entityDao.get(classOf[Semester], semesterId))
@@ -43,7 +43,7 @@ class LessonCollegeSwitchServiceImpl extends BaseServiceImpl with LessonCollegeS
     query.where("switch.project.id=:projectId", projectId)
       .where("switch.semester.id=:semesterId", semesterId)
     val switches = entityDao.search(query)
-    if (CollectUtils.isEmpty(switches)) {
+    if (Collections.isEmpty(switches)) {
       return true
     }
     switches.get(0).isOpen

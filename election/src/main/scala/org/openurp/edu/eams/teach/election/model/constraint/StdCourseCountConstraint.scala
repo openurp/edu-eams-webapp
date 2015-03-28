@@ -11,7 +11,7 @@ import javax.persistence.ManyToOne
 import javax.persistence.MapKeyJoinColumn
 import javax.persistence.Table
 import javax.validation.constraints.NotNull
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.entity.pojo.LongIdObject
 import org.hibernate.annotations.NaturalId
 import org.openurp.base.Semester
@@ -46,5 +46,5 @@ class StdCourseCountConstraint extends LongIdObject with Serializable {
   @Column(name = "COURSE_COUNT")
   @CollectionTable(name = "T_CONS_COURS_TYPE_MAX_COUNT")
   
-  var courseTypeMaxCourseCount: Map[CourseType, Integer] = CollectUtils.newHashMap()
+  var courseTypeMaxCourseCount: Map[CourseType, Integer] = Collections.newMap[Any]
 }

@@ -4,7 +4,7 @@ package org.openurp.edu.eams.web.action.util
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.openurp.edu.eams.util.DataAuthorityPredicate
 
 
@@ -75,7 +75,7 @@ object DataAuthorityUtil {
       stdTypeIdSeq: String, 
       departIdSeq: String) {
     if (null == entities || entities.isEmpty) return
-    CollectUtils.filter(entities, getPredicate(category, entities.iterator().next(), stdTypeIdSeq, departIdSeq))
+    Collections.filter(entities, getPredicate(category, entities.iterator().next(), stdTypeIdSeq, departIdSeq))
   }
 
   def filter(predicateName: String, 
@@ -83,21 +83,21 @@ object DataAuthorityUtil {
       stdTypeIdSeq: String, 
       departIdSeq: String) {
     if (null == entities || entities.isEmpty) return
-    CollectUtils.filter(entities, getPredicate(predicateName, stdTypeIdSeq, departIdSeq))
+    Collections.filter(entities, getPredicate(predicateName, stdTypeIdSeq, departIdSeq))
   }
 
   def select(predicateName: String, 
       entities: List[_], 
       stdTypeIdSeq: String, 
       departIdSeq: String): List[_] = {
-    CollectUtils.select(entities, getPredicate(predicateName, stdTypeIdSeq, departIdSeq))
+    Collections.select(entities, getPredicate(predicateName, stdTypeIdSeq, departIdSeq))
   }
 
   def select(entities: List[_], 
       category: String, 
       stdTypeIdSeq: String, 
       departIdSeq: String): List[_] = {
-    CollectUtils.select(entities, getPredicate(category, entities.iterator().next(), stdTypeIdSeq, departIdSeq))
+    Collections.select(entities, getPredicate(category, entities.iterator().next(), stdTypeIdSeq, departIdSeq))
   }
 
   def register(entityClass: Class[_], predicate: DataAuthorityPredicate) {

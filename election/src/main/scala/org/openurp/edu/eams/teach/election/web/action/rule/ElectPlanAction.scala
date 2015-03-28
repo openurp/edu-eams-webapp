@@ -2,7 +2,7 @@ package org.openurp.edu.eams.teach.election.web.action.rule
 import java.util.Date
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.data.model.Entity
 import org.beangle.commons.entity.metadata.Model
@@ -31,7 +31,7 @@ class ElectPlanAction extends BaseAction {
     builder.where("config.enabled = true")
     builder.where("config.rule.business in (:businesses)", ElectRuleType.strValues())
     val configs = entityDao.search(builder)
-    val paramsMap = CollectUtils.newHashMap()
+    val paramsMap = Collections.newMap[Any]
     for (ruleConfig <- configs; configParam <- ruleConfig.getParams) {
       paramsMap.put(configParam.getParam, configParam)
     }

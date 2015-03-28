@@ -3,7 +3,7 @@ package org.openurp.edu.eams.teach.program.major.service.impl
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import com.ekingstar.eams.core.Adminclass
 import com.ekingstar.eams.teach.Course
@@ -88,11 +88,11 @@ class MajorPlanServiceImpl extends BaseServiceImpl with MajorPlanService {
 
   def getMajorPlanByAdminClass(clazz: Adminclass): MajorPlan = {
     val res = entityDao.search(MajorPlanQueryBuilder.build(clazz))
-    if (CollectUtils.isEmpty(res)) null else res.get(0)
+    if (Collections.isEmpty(res)) null else res.get(0)
   }
 
   def getPlanCourses(plan: MajorPlan): List[MajorPlanCourse] = {
-    if (CollectUtils.isEmpty(plan.getGroups)) {
+    if (Collections.isEmpty(plan.getGroups)) {
       return Collections.EMPTY_LIST
     }
     val planCourses = new ArrayList[MajorPlanCourse]()

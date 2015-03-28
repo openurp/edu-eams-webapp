@@ -3,7 +3,7 @@ package org.openurp.edu.eams.teach.schedule.web.action
 
 
 import org.apache.commons.lang3.ArrayUtils
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
@@ -41,11 +41,11 @@ class CourseArrangeSettingAction extends SemesterSupportAction {
       ContextHelper.put("semester", entityDao.get(classOf[Semester], semesterId))
     }
     val project = getProject
-    put("courseTypes", lessonService.courseTypesOfSemester(CollectUtils.newArrayList(project), getDeparts, 
+    put("courseTypes", lessonService.courseTypesOfSemester(Collections.newBuffer[Any](project), getDeparts, 
       getAttribute("semester").asInstanceOf[Semester]))
-    put("teachDepartList", lessonService.teachDepartsOfSemester(CollectUtils.newArrayList(project), getDeparts, 
+    put("teachDepartList", lessonService.teachDepartsOfSemester(Collections.newBuffer[Any](project), getDeparts, 
       getAttribute("semester").asInstanceOf[Semester]))
-    put("departmentList", lessonService.attendDepartsOfSemester(CollectUtils.newArrayList(project), getAttribute("semester").asInstanceOf[Semester]))
+    put("departmentList", lessonService.attendDepartsOfSemester(Collections.newBuffer[Any](project), getAttribute("semester").asInstanceOf[Semester]))
     put("stdTypeList", getStdTypes)
     addBaseCode("languages", classOf[TeachLangType])
     put("units", timeSettingService.getClosestTimeSetting(project, getAttribute("semester").asInstanceOf[Semester], 
@@ -87,13 +87,13 @@ class CourseArrangeSettingAction extends SemesterSupportAction {
     val isArrangeCompleted = get("status")
     if (Strings.isNotEmpty(isArrangeCompleted)) {
       if (isArrangeCompleted == CourseStatusEnum.NEED_ARRANGE.toString) {
-        query.where("lesson.courseSchedule.status = :status", CourseStatusEnum.NEED_ARRANGE)
+        query.where("lesson.schedule.status = :status", CourseStatusEnum.NEED_ARRANGE)
         put("courseStatusEnum", CourseStatusEnum.NEED_ARRANGE)
       } else if (isArrangeCompleted == CourseStatusEnum.DONT_ARRANGE.toString) {
-        query.where("lesson.courseSchedule.status = :status", CourseStatusEnum.DONT_ARRANGE)
+        query.where("lesson.schedule.status = :status", CourseStatusEnum.DONT_ARRANGE)
         put("courseStatusEnum", CourseStatusEnum.DONT_ARRANGE)
       } else if (isArrangeCompleted == CourseStatusEnum.ARRANGED.toString) {
-        query.where("lesson.courseSchedule.status = :status", CourseStatusEnum.ARRANGED)
+        query.where("lesson.schedule.status = :status", CourseStatusEnum.ARRANGED)
         put("courseStatusEnum", CourseStatusEnum.ARRANGED)
       }
     }

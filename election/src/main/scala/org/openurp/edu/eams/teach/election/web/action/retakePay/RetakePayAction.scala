@@ -3,7 +3,7 @@ package org.openurp.edu.eams.teach.election.web.action.retakePay
 import java.util.Date
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model
@@ -76,7 +76,7 @@ class RetakePayAction extends SemesterSupportAction {
 
   def changePayState(): String = {
     val courseTakes = getModels(classOf[CourseTake], getLongIds("courseTake"))
-    val toChanges = CollectUtils.newArrayList()
+    val toChanges = Collections.newBuffer[Any]
     val paid = getBool("paid")
     for (courseTake <- courseTakes if null == courseTake.getBill) {
       courseTake.setPaid(paid)
@@ -98,7 +98,7 @@ class RetakePayAction extends SemesterSupportAction {
 
   def syncBillState(): String = {
     val bills = entityDao.get(classOf[Bill], Array("semester", "feeType.id"), Array(putSemester(null), getLong("bill.feeType.id")))
-    val billMap = CollectUtils.newHashMap()
+    val billMap = Collections.newMap[Any]
     for (bill <- bills) {
       val paid = paymentService.checkBillOnPurpose(bill)
       if (paid && bill.getState.id != PayState.PAID) {
@@ -188,17 +188,17 @@ class RetakePayAction extends SemesterSupportAction {
       return redirect("orderList", "请至少选择一条操作")
     }
     val paid = getBool("paid")
-    val cancelBills = CollectUtils.newArrayList()
-    val paidBills = CollectUtils.newArrayList()
-    val notSaveBills = CollectUtils.newArrayList()
-    val cancelCourseTakes = CollectUtils.newArrayList()
-    val paidCourseTakes = CollectUtils.newArrayList()
+    val cancelBills = Collections.newBuffer[Any]
+    val paidBills = Collections.newBuffer[Any]
+    val notSaveBills = Collections.newBuffer[Any]
+    val cancelCourseTakes = Collections.newBuffer[Any]
+    val paidCourseTakes = Collections.newBuffer[Any]
     val date = new Date()
     val user = entityDao.get(classOf[User], getUserId)
     val paidState = Model.newInstance(classOf[PayState], PayState.PAID)
     val cancelState = Model.newInstance(classOf[PayState], PayState.CANCEL)
     val courseTakes = entityDao.get(classOf[CourseTake], "bill", bills)
-    val billCourseTakes = CollectUtils.newHashMap()
+    val billCourseTakes = Collections.newMap[Any]
     for (courseTake <- courseTakes) {
       var takes = billCourseTakes.get(courseTake.getBill.id)
       if (null == takes) {
@@ -262,8 +262,8 @@ class RetakePayAction extends SemesterSupportAction {
     val user = entityDao.get(classOf[User], getUserId)
     val bills = getModels(classOf[Bill], getLongIds("bill"))
     val date = new Date()
-    val toSaveBills = CollectUtils.newArrayList()
-    val notSaveList = CollectUtils.newArrayList()
+    val toSaveBills = Collections.newBuffer[Any]
+    val notSaveList = Collections.newBuffer[Any]
     for (bill <- bills) {
       if (PayState.UNPAID == bill.getState.id && user.getName == bill.getUsername) {
         bill.setState(Model.newInstance(classOf[PayState], PayState.CANCEL))
@@ -343,7 +343,7 @@ class RetakePayAction extends SemesterSupportAction {
     bill.setFullname(user.getFullname)
     bill.setSemester(config.getSemester)
     bill.setState(Model.newInstance(classOf[PayState], PayState.UNPAID))
-    bill.setPays(CollectUtils.newHashSet(pay))
+    bill.setPays(Collections.newHashSet(pay))
     try {
       entityDao.saveOrUpdate(bill)
       redirect("showBillTest", "info.save.success")
@@ -438,7 +438,7 @@ class RetakePayAction extends SemesterSupportAction {
         builder.where("pay.payType.id = :payTypeId", PayType.EBANK)
         builder.select("select distinct courseTake")
         var courseTakes = entityDao.search(builder)
-        var showList = CollectUtils.newArrayList()
+        var showList = Collections.newBuffer[Any]
         for (courseTake <- courseTakes if !paymentService.checkBillOnPurpose(courseTake.getBill)) {
           showList.add(courseTake)
         }

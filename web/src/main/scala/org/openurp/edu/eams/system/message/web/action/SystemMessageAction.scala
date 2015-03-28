@@ -4,7 +4,7 @@ import java.util.Date
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.commons.collection.page.PageLimit
 import org.beangle.commons.dao.query.builder.Condition
@@ -229,7 +229,7 @@ class SystemMessageAction extends ProjectSupportAction {
     if (!systemMessageConfigService.isOpened(getUserId, getProject.id)) {
       return forwardError("当前不开放")
     }
-    var recipientors = CollectUtils.newArrayList()
+    var recipientors = Collections.newBuffer[Any]
     val usernames = getUsernames(get("usernames"))
     if (null != usernames && usernames.length > 0) {
       recipientors = entityDao.get(classOf[User], "name", usernames)
@@ -240,7 +240,7 @@ class SystemMessageAction extends ProjectSupportAction {
 
   private def getUsernames(usernameSeq: String): Array[Any] = {
     val usernames = Strings.split(usernameSeq, ",")
-    val set = CollectUtils.newHashSet()
+    val set = Collections.newSet[Any]
     if (null != usernames && usernames.length > 0) {
       for (username <- usernames if Strings.isNotBlank(username)) {
         set.add(username)

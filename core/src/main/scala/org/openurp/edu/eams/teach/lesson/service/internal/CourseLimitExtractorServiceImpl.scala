@@ -1,8 +1,6 @@
 package org.openurp.edu.eams.teach.lesson.service.internal
 
-
-
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.beangle.commons.lang.Strings
 
@@ -13,135 +11,132 @@ import org.openurp.edu.base.Direction
 import org.openurp.edu.base.Major
 import org.openurp.code.edu.Education
 import org.openurp.edu.base.code.StdType
-import org.openurp.edu.teach.lesson.CourseLimitGroup
-import org.openurp.edu.teach.lesson.CourseLimitItem
-import org.openurp.edu.teach.lesson.CourseLimitMeta
-import org.openurp.edu.teach.lesson.CourseLimitMeta.Operator
-import org.openurp.edu.eams.teach.lesson.service.CourseLimitExtractorService
-import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnum
+import org.openurp.edu.teach.lesson.LessonLimitGroup
+import org.openurp.edu.teach.lesson.LessonLimitItem
+import org.openurp.edu.teach.lesson.LessonLimitMeta
+import org.openurp.edu.teach.lesson.LessonLimitMeta.Operators
+import org.openurp.edu.teach.lesson.LessonLimitMeta.Operators._
+import org.openurp.edu.eams.teach.lesson.service.LessonLimitExtractorService
 import org.openurp.edu.base.Program
 
+class LessonLimitExtractorServiceImpl extends BaseServiceImpl with LessonLimitExtractorService {
 
-
-class CourseLimitExtractorServiceImpl extends BaseServiceImpl with CourseLimitExtractorService {
-
-  def extractEducations(courseLimitGroup: CourseLimitGroup): List[Education] = {
-    val res = xtractEducationLimit(courseLimitGroup)
-    if (Operator.IN == res.left || Operator.EQUAL == res.left) {
-      return res.right
+  def extractEducations(lessonLimitGroup: LessonLimitGroup): Seq[Education] = {
+    val res = xtractEducationLimit(lessonLimitGroup)
+    if (Operators.IN == res._1 || Operators.Equals == res._2) {
+      return res._2
     }
-    CollectUtils.newArrayList()
+    Collections.newBuffer[Education]
   }
 
-  def extractPrograms(courseLimitGroup: CourseLimitGroup): List[Program] = {
-    val res = xtractProgramLimit(courseLimitGroup)
-    if (Operator.IN == res.left || Operator.EQUAL == res.left) {
-      return res.right
+  def extractPrograms(lessonLimitGroup: LessonLimitGroup): Seq[Program] = {
+    val res = xtractProgramLimit(lessonLimitGroup)
+    if (Operators.IN == res._1 || Operators.Equals == res._2) {
+      return res._2
     }
-    CollectUtils.newArrayList()
+    Collections.newBuffer[Program]
   }
 
-  def extractAdminclasses(courseLimitGroup: CourseLimitGroup): List[Adminclass] = {
-    courseLimitGroup.items.find(item => CourseLimitMetaEnum.ADMINCLASS.metaId == item.meta.id && 
-      (Operator.IN == item.operator || Operator.EQUAL == item.operator))
-      .map(entityDao.get(classOf[Adminclass], Strings.splitToInt(_.content)))
-      .orElse(CollectUtils.newArrayList())
+  def extractAdminclasses(lessonLimitGroup: LessonLimitGroup): Seq[Adminclass] = {
+    lessonLimitGroup.items.find(item => LessonLimitMeta.Adminclass.id == item.meta.id &&
+      (Operators.IN == item.operator || Operators.Equals == item.operator))
+      .map(x => entityDao.find(classOf[Adminclass], Strings.splitToLong(x.content)))
+      .getOrElse(Collections.newBuffer[Adminclass])
   }
 
-  def extractGrade(courseLimitGroup: CourseLimitGroup): String = {
-    courseLimitGroup.items.find(item => CourseLimitMetaEnum.GRADE.metaId == item.meta.id && 
-      (Operator.IN == item.operator || Operator.EQUAL == item.operator))
+  def extractGrade(lessonLimitGroup: LessonLimitGroup): String = {
+    lessonLimitGroup.items.find(item => LessonLimitMeta.Grade.id == item.meta.id &&
+      (Operators.IN == item.operator || Operators.Equals == item.operator))
       .map(_.content)
-      .orElse(null)
+      .getOrElse(null)
   }
 
-  def extractStdTypes(courseLimitGroup: CourseLimitGroup): List[StdType] = {
-    courseLimitGroup.items.find(item => CourseLimitMetaEnum.STDTYPE.metaId == item.meta.id && 
-      (Operator.IN == item.operator || Operator.EQUAL == item.operator))
-      .map(entityDao.get(classOf[StdType], Strings.splitToInt(_.content)))
-      .orElse(CollectUtils.newArrayList())
+  def extractStdTypes(lessonLimitGroup: LessonLimitGroup): Seq[StdType] = {
+    lessonLimitGroup.items.find(item => LessonLimitMeta.StdType.id == item.meta.id &&
+      (Operators.IN == item.operator || Operators.Equals == item.operator))
+      .map(x => entityDao.find(classOf[StdType], Strings.splitToInteger(x.content)))
+      .getOrElse(Collections.newBuffer[StdType])
   }
 
-  def extractMajors(courseLimitGroup: CourseLimitGroup): List[Major] = {
-    courseLimitGroup.items.find(item => CourseLimitMetaEnum.MAJOR.metaId == item.meta.id && 
-      (Operator.IN == item.operator || Operator.EQUAL == item.operator))
-      .map(entityDao.get(classOf[Major], Strings.splitToInt(_.content)))
-      .orElse(CollectUtils.newArrayList())
+  def extractMajors(lessonLimitGroup: LessonLimitGroup): Seq[Major] = {
+    lessonLimitGroup.items.find(item => LessonLimitMeta.Major.id == item.meta.id &&
+      (Operators.IN == item.operator || Operators.Equals == item.operator))
+      .map(x => entityDao.find(classOf[Major], Strings.splitToInteger(x.content)))
+      .getOrElse(Collections.newBuffer[Major])
   }
 
-  def extractDirections(courseLimitGroup: CourseLimitGroup): List[Direction] = {
-    courseLimitGroup.items.find(item => CourseLimitMetaEnum.DIRECTION.metaId == item.meta.id && 
-      (Operator.IN == item.operator || Operator.EQUAL == item.operator))
-      .map(entityDao.get(classOf[Direction], Strings.splitToInt(_.content)))
-      .orElse(CollectUtils.newArrayList())
+  def extractDirections(lessonLimitGroup: LessonLimitGroup): Seq[Direction] = {
+    lessonLimitGroup.items.find(item => LessonLimitMeta.Direction.id == item.meta.id &&
+      (Operators.IN == item.operator || Operators.Equals == item.operator))
+      .map(x => entityDao.find(classOf[Direction], Strings.splitToInteger(x.content)))
+      .getOrElse(Collections.newBuffer[Direction])
   }
 
-  def extractAttendDeparts(courseLimitGroup: CourseLimitGroup): List[Department] = {
-    courseLimitGroup.items.find(item => CourseLimitMetaEnum.DEPARTMENT.metaId == item.meta.id && 
-      (Operator.IN == item.operator || Operator.EQUAL == item.operator))
-      .map(entityDao.get(classOf[Department], Strings.splitToInt(_.content)))
-      .orElse(CollectUtils.newArrayList())
+  def extractAttendDeparts(lessonLimitGroup: LessonLimitGroup): Seq[Department] = {
+    lessonLimitGroup.items.find(item => LessonLimitMeta.Department.id == item.meta.id &&
+      (Operators.IN == item.operator || Operators.Equals == item.operator))
+      .map(x => entityDao.find(classOf[Department], Strings.splitToInteger(x.content)))
+      .getOrElse(Collections.newBuffer[Department])
   }
 
-  def extractGender(courseLimitGroup: CourseLimitGroup): Gender = {
-    courseLimitGroup.items.find(item => CourseLimitMetaEnum.GENDER.metaId == item.meta.id && 
-      (Operator.IN == item.operator || Operator.EQUAL == item.operator))
-      .map(entityDao.get(classOf[Gender], Strings.splitToInt(_.content))
-      .get(0))
-      .orElse(null)
+  def extractGender(lessonLimitGroup: LessonLimitGroup): Gender = {
+    lessonLimitGroup.items.find(item => LessonLimitMeta.Gender.id == item.meta.id &&
+      (Operators.IN == item.operator || Operators.Equals == item.operator))
+      .map(x => entityDao.find(classOf[Gender], Strings.splitToInteger(x.content))(0))
+      .getOrElse(null)
   }
 
-  def xtractEducationLimit(courseLimitGroup: CourseLimitGroup): Pair[CourseLimitMeta.Operator, List[Education]] = {
-    courseLimitGroup.items.find(CourseLimitMetaEnum.EDUCATION.metaId == _.meta.id)
-      .map(item => new Pair[Operator, List[Education]](item.operator, entityDao.get(classOf[Education], 
-      Strings.splitToInt(item.content))))
-      .orElse(new Pair[Operator, List[Education]](null, new ArrayList[Education]()))
+  def xtractEducationLimit(lessonLimitGroup: LessonLimitGroup): Pair[Operator, Seq[Education]] = {
+    lessonLimitGroup.items.find(LessonLimitMeta.Education.id == _.meta.id)
+      .map(item => new Pair[Operator, Seq[Education]](item.operator, entityDao.find(classOf[Education],
+        Strings.splitToInteger(item.content))))
+      .getOrElse(new Pair[Operator, Seq[Education]](null, Collections.newBuffer[Education]))
   }
 
-  def xtractAdminclassLimit(courseLimitGroup: CourseLimitGroup): Pair[Operator, List[Adminclass]] = {
-    courseLimitGroup.items.find(CourseLimitMetaEnum.ADMINCLASS.metaId == _.meta.id)
-      .map(item => new Pair[Operator, List[Adminclass]](item.operator, entityDao.get(classOf[Adminclass], 
-      Strings.splitToInt(item.content))))
-      .orElse(new Pair[Operator, List[Adminclass]](null, new ArrayList[Adminclass]()))
+  def xtractAdminclassLimit(lessonLimitGroup: LessonLimitGroup): Pair[Operator, Seq[Adminclass]] = {
+    lessonLimitGroup.items.find(LessonLimitMeta.Adminclass.id == _.meta.id)
+      .map(item => new Pair[Operator, Seq[Adminclass]](item.operator, entityDao.find(classOf[Adminclass],
+        Strings.splitToLong(item.content))))
+      .getOrElse(new Pair[Operator, Seq[Adminclass]](null, Collections.newBuffer[Adminclass]))
   }
 
-  def xtractAttendDepartLimit(courseLimitGroup: CourseLimitGroup): Pair[Operator, List[Department]] = {
-    courseLimitGroup.items.find(CourseLimitMetaEnum.DEPARTMENT.metaId == _.meta.id)
-      .map(item => new Pair[Operator, List[Department]](item.operator, entityDao.get(classOf[Department], 
-      Strings.splitToInt(item.content))))
-      .orElse(new Pair[Operator, List[Department]](null, new ArrayList[Department]()))
+  def xtractAttendDepartLimit(lessonLimitGroup: LessonLimitGroup): Pair[Operator, Seq[Department]] = {
+    lessonLimitGroup.items.find(LessonLimitMeta.Department.id == _.meta.id)
+      .map(item => new Pair[Operator, Seq[Department]](item.operator, entityDao.find(classOf[Department],
+        Strings.splitToInteger(item.content))))
+      .getOrElse(new Pair[Operator, Seq[Department]](null, Collections.newBuffer[Department]))
   }
 
-  def xtractDirectionLimit(courseLimitGroup: CourseLimitGroup): Pair[Operator, List[Direction]] = {
-    courseLimitGroup.items.find(CourseLimitMetaEnum.DIRECTION.metaId == _.meta.id)
-      .map(item => new Pair[Operator, List[Direction]](item.operator, entityDao.get(classOf[Direction], 
-      Strings.splitToInt(item.content))))
-      .orElse(new Pair[Operator, List[Direction]](null, new ArrayList[Direction]()))
+  def xtractDirectionLimit(lessonLimitGroup: LessonLimitGroup): Pair[Operator, Seq[Direction]] = {
+    lessonLimitGroup.items.find(LessonLimitMeta.Direction.id == _.meta.id)
+      .map(item => new Pair[Operator, Seq[Direction]](item.operator, entityDao.find(classOf[Direction],
+        Strings.splitToInteger(item.content))))
+      .getOrElse(new Pair[Operator, Seq[Direction]](null, Collections.newBuffer[Direction]))
   }
 
-  def xtractProgramLimit(courseLimitGroup: CourseLimitGroup): Pair[Operator, List[Program]] = {
-    courseLimitGroup.items.find(CourseLimitMetaEnum.PROGRAM.metaId == _.meta.id)
-      .map(item => new Pair[Operator, List[Program]](item.operator, entityDao.get(classOf[Program], 
-      Strings.splitToLong(item.content))))
-      .orElse(new Pair[Operator, List[Program]](null, new ArrayList[Program]()))
+  def xtractProgramLimit(lessonLimitGroup: LessonLimitGroup): Pair[Operator, Seq[Program]] = {
+    lessonLimitGroup.items.find(LessonLimitMeta.Program.id == _.meta.id)
+      .map(item => new Pair[Operator, Seq[Program]](item.operator, entityDao.find(classOf[Program],
+        Strings.splitToLong(item.content))))
+      .getOrElse(new Pair[Operator, Seq[Program]](null, Collections.newBuffer[Program]))
   }
 
-  def xtractGradeLimit(courseLimitGroup: CourseLimitGroup): Pair[Operator, List[String]] = {
-    courseLimitGroup.items.find(CourseLimitMetaEnum.GRADE.metaId == _.meta.id)
-      .map(item => new Pair[Operator, List[String]](item.operator, CollectUtils.newArrayList(item.content)))
-      .orElse(new Pair[Operator, List[String]](null, new ArrayList[String]()))
+  def xtractGradeLimit(lessonLimitGroup: LessonLimitGroup): Pair[Operator, Seq[String]] = {
+    lessonLimitGroup.items.find(LessonLimitMeta.Grade.id == _.meta.id)
+      .map(item => new Pair[Operator, Seq[String]](item.operator, Collections.newBuffer[String](item.content)))
+      .getOrElse(new Pair[Operator, Seq[String]](null, Collections.newBuffer[String]))
   }
 
-  def xtractMajorLimit(courseLimitGroup: CourseLimitGroup): Pair[Operator, List[Major]] = {
-    courseLimitGroup.items.find(CourseLimitMetaEnum.MAJOR.metaId == _.meta.id)
-      .map(item => new Pair[Operator, List[Major]](item.operator, entityDao.get(classOf[Major], Strings.splitToInt(item.content))))
-      .orElse(new Pair[Operator, List[Major]](null, new ArrayList[Major]()))
+  def xtractMajorLimit(lessonLimitGroup: LessonLimitGroup): Pair[Operator, Seq[Major]] = {
+    lessonLimitGroup.items.find(LessonLimitMeta.Major.id == _.meta.id)
+      .map(item => new Pair[Operator, Seq[Major]](item.operator, entityDao.find(classOf[Major], Strings.splitToInteger(item.content))))
+      .getOrElse(new Pair[Operator, Seq[Major]](null, Collections.newBuffer[Major]))
   }
 
-  def xtractStdTypeLimit(courseLimitGroup: CourseLimitGroup): Pair[Operator, List[StdType]] = {
-    courseLimitGroup.items.find(CourseLimitMetaEnum.STDTYPE.metaId == _.meta.id)
-      .map(item => new Pair[Operator, List[StdType]](item.operator, entityDao.get(classOf[StdType], 
-      Strings.splitToInt(item.content))))
-      .orElse(new Pair[Operator, List[StdType]](null, new ArrayList[StdType]()))
+  def xtractStdTypeLimit(lessonLimitGroup: LessonLimitGroup): Pair[Operator, Seq[StdType]] = {
+    lessonLimitGroup.items.find(LessonLimitMeta.StdType.id == _.meta.id)
+      .map(item => new Pair[Operator, Seq[StdType]](item.operator, entityDao.find(classOf[StdType],
+        Strings.splitToInteger(item.content))))
+      .getOrElse(new Pair[Operator, Seq[StdType]](null, Collections.newBuffer[StdType]))
   }
 }

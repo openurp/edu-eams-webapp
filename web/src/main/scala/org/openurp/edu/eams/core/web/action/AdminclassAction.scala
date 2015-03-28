@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse
 import org.apache.commons.lang3.time.DateUtils
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import org.apache.struts2.ServletActionContext
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.data.model.Entity
 import org.beangle.commons.entity.metadata.Model
@@ -57,7 +57,7 @@ import com.opensymphony.xwork2.ActionContext
 
 class AdminclassAction extends AdminclassSearchAction {
 
-  var importerListeners: List[_ <: TransferListener] = CollectUtils.newArrayList()
+  var importerListeners: List[_ <: TransferListener] = Collections.newBuffer[Any]
 
   def edit(): String = {
     put("departments", getDeparts)
@@ -194,7 +194,7 @@ class AdminclassAction extends AdminclassSearchAction {
         val classQuery = OqlBuilder.from(classOf[Adminclass], "adminclass")
         populateConditions(classQuery)
         val classes = entityDao.search(classQuery)
-        if (CollectUtils.isEmpty(classes)) {
+        if (Collections.isEmpty(classes)) {
           return Collections.emptyList()
         } else {
           builder.where("student.adminclass in (:adminclasses)", classes)
@@ -226,7 +226,7 @@ class AdminclassAction extends AdminclassSearchAction {
         val classQuery = getQueryBuilder.limit(null).asInstanceOf[OqlBuilder[Adminclass]]
         populateConditions(classQuery)
         val classes = entityDao.search(classQuery)
-        if (CollectUtils.isEmpty(classes)) {
+        if (Collections.isEmpty(classes)) {
           query.where("1=2")
         } else {
           query.where("studentJournal.std.adminclass in (:adminclasses)", classes)
@@ -475,7 +475,7 @@ class AdminclassAction extends AdminclassSearchAction {
       for (code <- codeArr) {
         val t = entityDao.get(classOf[Student], "code", code)
         var b = false
-        if (CollectUtils.isNotEmpty(t)) {
+        if (Collections.isNotEmpty(t)) {
           val std = t.get(0)
           if (std.getProject.id == projectId && !studentList.contains(std)) {
             studentList.add(std)
@@ -585,7 +585,7 @@ class AdminclassAction extends AdminclassSearchAction {
     c.add(Calendar.MONTH, mnum)
     val end = c.getTime
     val sdf = new SimpleDateFormat("yyyy-MM-dd")
-    val result = CollectUtils.newHashMap()
+    val result = Collections.newMap[Any]
     result.put("invalidOn", sdf.format(end))
     result.put("duration", duration)
     response.setContentType("text/plain;charset=UTF-8")

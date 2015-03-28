@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.program.common.copydao.plan
 
 import java.util.Date
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import com.ekingstar.eams.core.CommonAuditState
 import org.openurp.edu.eams.teach.program.Program
 import org.openurp.edu.eams.teach.program.major.MajorPlan
@@ -66,7 +66,7 @@ class MajorPlanCopyDaoHibernate extends AbstractPlanCopyDao {
 
   protected override def newPlan(plan: MajorPlan): MajorPlan = {
     val mp = plan.asInstanceOf[MajorPlanBean].clone().asInstanceOf[MajorPlan]
-    mp.setComments(CollectUtils.newArrayList[MajorPlanComment]())
+    mp.setComments(Collections.newBuffer[Any][MajorPlanComment]())
     mp
   }
 }

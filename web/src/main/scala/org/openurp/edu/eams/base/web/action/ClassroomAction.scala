@@ -3,7 +3,7 @@ package org.openurp.edu.eams.base.web.action
 import java.util.Date
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.transfer.TransferListener
 import org.beangle.commons.transfer.importer.listener.ImporterForeignerListener
@@ -31,7 +31,7 @@ class RoomAction extends RoomSearchAction {
     put("classroom", classroom)
     val departments = baseInfoService.getBaseInfos(classOf[Department])
     val classroomDepartments = classroom.departments
-    val showDepartments = CollectUtils.newArrayList()
+    val showDepartments = Collections.newBuffer[Any]
     for (department <- departments if !classroomDepartments.contains(department)) {
       showDepartments.add(department)
     }
@@ -46,7 +46,7 @@ class RoomAction extends RoomSearchAction {
     if (null != room.id) {
       query.where("room != :room", room)
     }
-    if (CollectUtils.isNotEmpty(entityDao.search(query))) {
+    if (Collections.isNotEmpty(entityDao.search(query))) {
       prepare()
       put("classroom", room)
       addError(getText("error.code.existed"))
@@ -88,12 +88,12 @@ class RoomAction extends RoomSearchAction {
   }
 
   def checkDuplicated(): String = {
-    put("duplicated", CollectUtils.isNotEmpty(entityDao.get(classOf[Room], "code", get("code"))))
+    put("duplicated", Collections.isNotEmpty(entityDao.get(classOf[Room], "code", get("code"))))
     forward()
   }
 
   protected def getImporterListeners(): List[TransferListener] = {
-    val listeners = CollectUtils.newArrayList()
+    val listeners = Collections.newBuffer[Any]
     listeners.add(new ImporterForeignerListener(entityDao))
     listeners.add(new RoomImportListener(entityDao, "code", getProject.getSchool))
     listeners

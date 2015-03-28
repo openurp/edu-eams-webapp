@@ -1,8 +1,5 @@
 package org.openurp.edu.eams.teach.lesson.service
 
-
-
-
 object CourseTableStyle extends Enumeration {
 
   val WEEK_TABLE = new CourseTableStyle()
@@ -16,18 +13,7 @@ object CourseTableStyle extends Enumeration {
   val STYLE_KEY = "schedule.courseTable.style"
 
   def getStyle(name: String): CourseTableStyle = {
-    var tableStyle: CourseTableStyle = null
-    if (null != name) {
-      try {
-        tableStyle = CourseTableStyle.valueOf(name)
-      } catch {
-        case e: IllegalArgumentException => 
-      }
-    }
-    if (null == tableStyle) {
-      tableStyle = CourseTableStyle.WEEK_TABLE
-    }
-    tableStyle
+    this.withName(name)
   }
 
   implicit def convertValue(v: Value): CourseTableStyle = v.asInstanceOf[CourseTableStyle]

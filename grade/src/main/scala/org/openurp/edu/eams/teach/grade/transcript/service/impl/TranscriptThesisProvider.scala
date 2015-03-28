@@ -2,7 +2,7 @@ package org.openurp.edu.eams.teach.grade.transcript.service.impl
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.model.dao.EntityDao
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.edu.base.Student
@@ -16,7 +16,7 @@ class TranscriptThesisProvider extends TranscriptDataProvider {
   private var entityDao: EntityDao = _
 
   def getDatas[T](stds: List[Student], options: Map[String, String]): Map[Student, T] = {
-    val datas = CollectUtils.newHashMap()
+    val datas = Collections.newMap[Any]
     val query = OqlBuilder.from(classOf[Thesis], "thesis")
     query.where("thesis.std  in :stds", stds)
     val thesises = entityDao.search(query)

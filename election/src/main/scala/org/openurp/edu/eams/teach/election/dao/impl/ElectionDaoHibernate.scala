@@ -9,7 +9,7 @@ import java.sql.Types
 
 import java.util.Date
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.model.dao.EntityDao
 import org.beangle.commons.dao.Operation
 import org.beangle.data.model.Entity
@@ -26,11 +26,11 @@ import org.openurp.edu.eams.teach.election.ElectLogger
 import org.openurp.edu.eams.teach.election.dao.ElectionDao
 import org.openurp.edu.eams.teach.election.model.Enum.ElectRuleType
 import org.openurp.edu.eams.teach.election.model.constraint.StdCreditConstraint
-import org.openurp.edu.eams.teach.election.model.exception.ElectCourseLimitCountException
+import org.openurp.edu.eams.teach.election.model.exception.ElectLessonLimitCountException
 import org.openurp.edu.eams.teach.election.service.context.ElectState
-import org.openurp.edu.eams.teach.election.service.helper.CourseLimitGroupHelper
+import org.openurp.edu.eams.teach.election.service.helper.LessonLimitGroupHelper
 import org.openurp.edu.eams.teach.election.service.helper.ElectLoggerHelper
-import org.openurp.edu.teach.lesson.CourseLimitGroup
+import org.openurp.edu.teach.lesson.LessonLimitGroup
 import org.openurp.edu.teach.lesson.CourseTake
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.teach.lesson.TeachClass
@@ -42,7 +42,7 @@ class ElectionDaoHibernate extends HibernateEntityDao with ElectionDao {
   def updatePitchOn(task: Lesson, stdIds: Iterable[Long], isPitchOn: java.lang.Boolean) {
     if (stdIds.isEmpty) return
     val hql = "update ElectCourseLog set isPitchOn=:isPitchOn where task=:task and std.id in (:stdIds)"
-    val query = getSession.createQuery(hql)
+    val query = currentSession.createQuery(hql)
     query.setParameter("task", task)
     query.setParameterList("stdIds", stdIds)
     query.setParameter("isPitchOn", isPitchOn)
@@ -52,7 +52,7 @@ class ElectionDaoHibernate extends HibernateEntityDao with ElectionDao {
   def updateStdCount(sql: String, lessonId: java.lang.Long): Int = updateStdCount(sql, lessonId, null)
 
   def updateStdCount(sql: String, lessonId: java.lang.Long, minLimit: java.lang.Integer): Int = {
-    val con = getSession.asInstanceOf[SessionImplementor].connection()
+    val con = currentSession.asInstanceOf[SessionImplementor].connection()
     var count = 0
     try {
       val cstmt = con.prepareStatement(sql)
@@ -94,7 +94,7 @@ class ElectionDaoHibernate extends HibernateEntityDao with ElectionDao {
       turn: java.lang.Integer, 
       updateStdCount: Boolean): Int = {
     try {
-      val saveEntities = CollectUtils.newArrayList()
+      val saveEntities = Collections.newBuffer[Any]
       val courseTakes = get(classOf[CourseTake], Array("lesson.id", "std.id"), lesson.id, stdId)
       val taked = courseTakes.size
       if (taked > 0) {
@@ -130,7 +130,7 @@ class ElectionDaoHibernate extends HibernateEntityDao with ElectionDao {
       if (update == 0) {
         val no = lesson.getNo
         val name = lesson.getCourse.getName
-        throw new ElectCourseLimitCountException(name + "[" + no + "] 当前不允许退课,请稍后重试")
+        throw new ElectLessonLimitCountException(name + "[" + no + "] 当前不允许退课,请稍后重试")
       }
     }
     saveEntities.add(lesson)
@@ -165,7 +165,7 @@ class ElectionDaoHibernate extends HibernateEntityDao with ElectionDao {
       checkMaxLimit: Boolean): Int = {
     val teachClass = task.getTeachClass
     if (!checkMaxLimit || teachClass.getStdCount < teachClass.getLimitCount) {
-      val saveEntities = CollectUtils.newArrayList()
+      val saveEntities = Collections.newBuffer[Any]
       buildSaveEntities(saveEntities, task, std, courseTakeType, if (null == state) null else state.getProfile(this).getTurn, 
         !checkMaxLimit)
       saveOrUpdate(saveEntities)
@@ -195,7 +195,7 @@ class ElectionDaoHibernate extends HibernateEntityDao with ElectionDao {
     courseTake.setStd(std)
     courseTake.setCourseTakeType(courseTakeType)
     courseTake.setElectionMode(Model.newInstance(classOf[ElectionMode], ElectionMode.SELF))
-    val limitGroup = CourseLimitGroupHelper.getMatchCourseLimitGroup(task, std)
+    val limitGroup = LessonLimitGroupHelper.getMatchLessonLimitGroup(task, std)
     courseTake.setLimitGroup(limitGroup)
     if (updateStdCount && limitGroup != null) {
       limitGroup.setCurCount(limitGroup.getCurCount + 1)
@@ -215,7 +215,7 @@ class ElectionDaoHibernate extends HibernateEntityDao with ElectionDao {
   }
 
   def removeAllElection(task: Lesson, semesterId: java.lang.Integer, stdId: java.lang.Long): Int = {
-    val con = getSession.asInstanceOf[SessionImplementor].connection()
+    val con = currentSession.asInstanceOf[SessionImplementor].connection()
     var rs = 0
     val strProcedure = "{? = call remove_electresult(?,?,?,?,?,?,?,?,?,?)}"
     var cstmt: CallableStatement = null

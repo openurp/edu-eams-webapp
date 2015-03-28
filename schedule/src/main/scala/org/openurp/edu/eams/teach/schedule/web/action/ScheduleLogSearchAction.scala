@@ -7,7 +7,7 @@ import java.util.Date
 
 import java.util.regex.Matcher
 import java.util.regex.Pattern
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.beangle.ems.log.BusinessLog
@@ -43,7 +43,7 @@ class ScheduleLogSearchAction extends RestrictionSupportAction {
         .where("log.id < :meId", log.id)
         .where("log.resource = '排课日志'")
         .orderBy("log.operateAt desc"))
-      if (CollectUtils.isNotEmpty(prevLogs)) {
+      if (Collections.isNotEmpty(prevLogs)) {
         put("log_prev", prevLogs.get(0))
       }
     }

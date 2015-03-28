@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.grade.course.service.propertyExtractor
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.text.i18n.TextResource
 import org.beangle.commons.transfer.exporter.DefaultPropertyExtractor
 import org.openurp.edu.base.Teacher
@@ -15,7 +15,7 @@ class GradeStatExtractor(textResource: TextResource) extends DefaultPropertyExtr
   def getPropertyValue(target: AnyRef, property: String): AnyRef = {
     if ("teachers" == property) {
       var teacherName = ""
-      var teachers = CollectUtils.newArrayList()
+      var teachers = Collections.newBuffer[Any]
       if (target.isInstanceOf[Lesson]) {
         val lesson = target.asInstanceOf[Lesson]
         teachers = lesson.getTeachers

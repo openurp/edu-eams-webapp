@@ -3,7 +3,7 @@ package org.openurp.edu.eams.teach.grade.course.service
 
 
 import org.beangle.commons.lang.Numbers
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.model.dao.EntityDao
 import org.openurp.edu.eams.teach.code.industry.ScoreMarkStyle
 import org.openurp.edu.eams.teach.grade.model.GradeRateConfig
@@ -13,9 +13,9 @@ import org.openurp.edu.eams.teach.grade.model.GradeRateItem
 
 class MarkStyleHelper private () {
 
-  private var gradeStyles: Map[String, ScoreMarkStyle] = CollectUtils.newHashMap()
+  private var gradeStyles: Map[String, ScoreMarkStyle] = Collections.newMap[Any]
 
-  private var styles: Map[String, ScoreMarkStyle] = CollectUtils.newHashMap()
+  private var styles: Map[String, ScoreMarkStyle] = Collections.newMap[Any]
 
   private var defaultNumberStyle: ScoreMarkStyle = _
 

@@ -2,7 +2,7 @@ package org.openurp.edu.eams.teach.grade.course.service.impl
 
 import java.util.Date
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.data.model.dao.EntityDao
 import org.beangle.data.jpa.dao.OqlBuilder
@@ -33,14 +33,14 @@ class StdGradeServiceImpl extends StdGradeService {
       entityDao: EntityDao): Student = {
     val query = OqlBuilder.from(classOf[Student], "std")
     query.where("std.code=:code", stdCode)
-    if (project == null || CollectUtils.isEmpty(departments)) {
+    if (project == null || Collections.isEmpty(departments)) {
       query.where("std is null")
     } else {
       query.where("std.project = :project", project)
       query.where("std.department in (:departments)", departments)
     }
     val stds = entityDao.search(query)
-    if (CollectUtils.isEmpty(stds)) {
+    if (Collections.isEmpty(stds)) {
       return null
     }
     if (stds.size == 1) {
@@ -88,7 +88,7 @@ class StdGradeServiceImpl extends StdGradeService {
     query.where("take.lesson.semester.id = :semesterId", new java.lang.Long(semesterId))
     query.select("take.lesson.id,take.lesson.course.code,take.lesson.course.name,take.lesson.gradeState.markStyle.id,take.lesson.gradeState.markStyle.name")
     val takes = entityDao.search(query)
-    if (CollectUtils.isEmpty(takes)) {
+    if (Collections.isEmpty(takes)) {
       return null
     }
     if (takes.size == 1) {

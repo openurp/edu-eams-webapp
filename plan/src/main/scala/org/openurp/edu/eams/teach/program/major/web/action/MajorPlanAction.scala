@@ -13,7 +13,7 @@ import java.util.Date
 import javax.persistence.EntityNotFoundException
 import javax.servlet.http.HttpServletResponse
 import org.apache.commons.lang3.ArrayUtils
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.beangle.security.blueprint.User
@@ -74,7 +74,7 @@ class MajorPlanAction extends MajorPlanSearchAction {
 
   var coursePlanProvider: CoursePlanProvider = _
 
-  var guards: List[MajorProgramOperateGuard] = CollectUtils.newArrayList()
+  var guards: List[MajorProgramOperateGuard] = Collections.newBuffer[Any]
 
   var textTitleProvider: MajorProgramTextTitleProvider = _
 
@@ -127,8 +127,8 @@ class MajorPlanAction extends MajorPlanSearchAction {
     val planIds = getLongIds("plan")
     val plans = entityDao.get(classOf[MajorPlan], planIds)
     guard(MajorProgramOperateType.DELETE, plans)
-    val removeEntities = CollectUtils.newArrayList()
-    val programs = CollectUtils.newArrayList()
+    val removeEntities = Collections.newBuffer[Any]
+    val programs = Collections.newBuffer[Any]
     for (plan <- plans) {
       removeEntities.add(plan)
       programs.add(plan.getProgram)
@@ -219,10 +219,10 @@ class MajorPlanAction extends MajorPlanSearchAction {
     val program = populate(classOf[Program], "plan.program")
     val response = getResponse
     val duplicatePrograms = planCommonDao.getDuplicatePrograms(program)
-    val result = CollectUtils.newHashMap()
+    val result = Collections.newMap[Any]
     result.put("duplicated", false)
     result.put("duplicatePrograms", Array())
-    if (CollectUtils.isNotEmpty(duplicatePrograms)) {
+    if (Collections.isNotEmpty(duplicatePrograms)) {
       val names = Array.ofDim[String](duplicatePrograms.size)
       for (i <- 0 until duplicatePrograms.size) {
         names(i) = duplicatePrograms.get(i).getName
@@ -252,10 +252,10 @@ class MajorPlanAction extends MajorPlanSearchAction {
       query.where("program.id <> :meId", program.id)
     }
     val programs = entityDao.search(query)
-    val result = CollectUtils.newHashMap()
+    val result = Collections.newMap[Any]
     result.put("name", name)
     result.put("duplicated", false)
-    if (CollectUtils.isNotEmpty(programs)) {
+    if (Collections.isNotEmpty(programs)) {
       result.put("duplicated", true)
     }
     val response = getResponse
@@ -447,21 +447,21 @@ class MajorPlanAction extends MajorPlanSearchAction {
     }
     val plans = entityDao.get(classOf[MajorPlan], planIds)
     guard(MajorProgramOperateType.AUDIT, plans)
-    val programs = CollectUtils.collect(plans, ProgramCollector.INSTANCE).asInstanceOf[List[_]]
+    val programs = Collections.collect(plans, ProgramCollector.INSTANCE).asInstanceOf[List[_]]
     majorPlanAuditService.revokeSubmitted(programs)
     redirect("search", "操作成功")
   }
 
   override def search(): String = {
-    if (CollectUtils.isEmpty(getProjects) || CollectUtils.isEmpty(getDeparts) || 
-      CollectUtils.isEmpty(getStdTypes)) {
+    if (Collections.isEmpty(getProjects) || Collections.isEmpty(getDeparts) || 
+      Collections.isEmpty(getStdTypes)) {
       return forwardError("对不起，您没有权限！")
     }
     val query = majorPlanSearchHelper.buildPlanQuery()
     query.where("plan.program.major.project in (:projects)", getProjects)
       .where("plan.program.department in (:departs)", getDeparts)
       .where("plan.program.stdType in (:stdTypes)", getStdTypes)
-    if (CollectUtils.isNotEmpty(getEducations)) {
+    if (Collections.isNotEmpty(getEducations)) {
       query.where("plan.program.education in (:educations)", getEducations)
     }
     val plans = entityDao.search(query)
@@ -518,7 +518,7 @@ class MajorPlanAction extends MajorPlanSearchAction {
     c.add(Calendar.MONTH, mnum)
     val end = c.getTime
     val sdf = new SimpleDateFormat("yyyy-MM-dd")
-    val result = CollectUtils.newHashMap()
+    val result = Collections.newMap[Any]
     result.put("invalidOn", sdf.format(end))
     result.put("duration", duration)
     response.setContentType("text/plain;charset=UTF-8")
@@ -528,16 +528,16 @@ class MajorPlanAction extends MajorPlanSearchAction {
   }
 
   private def guard(operType: MajorProgramOperateType, plans: List[MajorPlan]) {
-    val context = CollectUtils.newHashMap()
+    val context = Collections.newMap[Any]
     fillDataRealmContext(context)
-    val programs = CollectUtils.collect(plans, ProgramCollector.INSTANCE).asInstanceOf[List[_]]
+    val programs = Collections.collect(plans, ProgramCollector.INSTANCE).asInstanceOf[List[_]]
     for (preDo <- guards) {
       preDo.guard(operType, programs, context)
     }
   }
 
   private def guard(operType: MajorProgramOperateType, plan: MajorPlan) {
-    val context = CollectUtils.newHashMap()
+    val context = Collections.newMap[Any]
     fillDataRealmContext(context)
     for (preDo <- guards) {
       preDo.guard(operType, plan.getProgram, context)

@@ -137,8 +137,8 @@ class AdminclassServiceImpl extends BaseServiceImpl with AdminclassService {
   def updateStudentAdminclass(std: Student, adminclasses: Iterable[_], project: Project) {
     val orig = EntityUtils.extractIds(adminclasses)
     val dest = EntityUtils.extractIds(Collections.singleton(std.adminclass))
-    val addClassList = CollectUtils.subtract(orig, dest)
-    val subClassList = CollectUtils.subtract(dest, orig)
+    val addClassList = Collections.subtract(orig, dest)
+    val subClassList = Collections.subtract(dest, orig)
     batchRemoveStudentClass(Collections.singletonList(std), entityDao.get(classOf[Adminclass], "id", 
       subClassList.toArray()))
     batchAddStudentClass(Collections.singletonList(std), entityDao.get(classOf[Adminclass], "id", addClassList.toArray()))

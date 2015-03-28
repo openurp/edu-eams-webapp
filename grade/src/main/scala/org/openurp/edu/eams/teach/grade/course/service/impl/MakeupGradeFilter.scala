@@ -3,7 +3,7 @@ package org.openurp.edu.eams.teach.grade.course.service.impl
 import org.openurp.edu.eams.teach.lesson.GradeTypeConstants.GA_ID
 import org.openurp.edu.eams.teach.lesson.GradeTypeConstants.MAKEUP_ID
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.entity.metadata.Model
 import org.openurp.edu.eams.teach.grade.service.GradeRateService
 import org.openurp.edu.eams.teach.grade.service.impl.GradeFilter
@@ -17,7 +17,7 @@ class MakeupGradeFilter extends GradeFilter {
   private var gradeRateService: GradeRateService = _
 
   def filter(grades: List[CourseGrade]): List[CourseGrade] = {
-    val gradeList = CollectUtils.newArrayList()
+    val gradeList = Collections.newBuffer[Any]
     for (courseGrade <- grades) {
       var finded = false
       for (examGrade <- courseGrade.getExamGrades) {

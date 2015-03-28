@@ -10,7 +10,7 @@ import javax.persistence.Entity
 import javax.persistence.FetchType
 import javax.persistence.ManyToOne
 import javax.validation.constraints.NotNull
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.entity.pojo.LongIdObject
 import org.hibernate.annotations.NaturalId
 import org.openurp.base.Department
@@ -29,7 +29,7 @@ class LessonForDepart extends LongIdObject() {
   @CollectionTable(name = "T_LESSON_FOR_D_L_IDS")
   @NotNull
   
-  var lessonIds: Set[Long] = CollectUtils.newHashSet()
+  var lessonIds: Set[Long] = Collections.newSet[Any]
 
   @NaturalId
   @ManyToOne(fetch = FetchType.LAZY)

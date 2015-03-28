@@ -10,7 +10,7 @@ import java.util.LinkedList
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.data.model.Entity
@@ -30,8 +30,8 @@ import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.teach.schedule.CourseActivity
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.teach.lesson.LessonTag
-import org.openurp.edu.eams.teach.lesson.service.CourseLimitService
-import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnum
+import org.openurp.edu.eams.teach.lesson.service.LessonLimitService
+import org.openurp.edu.eams.teach.lesson.service.limit.LessonLimitMetaEnum
 import org.openurp.edu.eams.teach.lesson.task.dao.LessonStatDao
 import org.openurp.edu.eams.teach.lesson.task.service.LessonStatService
 import org.openurp.edu.eams.teach.lesson.task.util.TaskOfCourseType
@@ -51,13 +51,13 @@ class LessonStatServiceImpl extends BaseServiceImpl with LessonStatService {
 
   var lessonStatDao: LessonStatDao = _
 
-  var courseLimitService: CourseLimitService = _
+  var lessonLimitService: LessonLimitService = _
 
   def countByAdminclass(project: Project, semester: Semester, dataRealm: DataRealm): List[_] = {
     var query = OqlBuilder.from(classOf[Lesson], "lesson").select("distinct lesson")
       .join("lesson.teachClass.limitGroups", "lgroup")
       .join("lgroup.items", "litem")
-      .where("litem.meta.id = :metaId", CourseLimitMetaEnum.ADMINCLASS.getMetaId)
+      .where("litem.meta.id = :metaId", LessonLimitMeta.Adminclass.getMetaId)
       .where("litem.content like '_%'")
       .where("not exists (select tag.id from lesson.tags tag where tag.id=:guaPai)", LessonTag.PredefinedTags.GUAPAI.id)
       .where("lesson.semester = :semester", semester)
@@ -66,7 +66,7 @@ class LessonStatServiceImpl extends BaseServiceImpl with LessonStatService {
     var commonLessons = entityDao.search(query)
     var tmpMap = new HashMap[Integer, StatItem]()
     for (lesson <- commonLessons) {
-      val adminclasses = courseLimitService.extractAdminclasses(lesson.getTeachClass)
+      val adminclasses = lessonLimitService.extractAdminclasses(lesson.getTeachClass)
       for (adminclass <- adminclasses) {
         var item = tmpMap.get(adminclass.id)
         if (item == null) {
@@ -84,7 +84,7 @@ class LessonStatServiceImpl extends BaseServiceImpl with LessonStatService {
     query = OqlBuilder.from(classOf[Lesson], "lesson").select("distinct lesson")
       .join("lesson.teachClass.limitGroups", "lgroup")
       .join("lgroup.items", "litem")
-      .where("litem.meta.id = :metaId", CourseLimitMetaEnum.ADMINCLASS.getMetaId)
+      .where("litem.meta.id = :metaId", LessonLimitMeta.Adminclass.getMetaId)
       .where("litem.content like '_%'")
       .where("exists (select tag.id from lesson.tags tag where tag.id=:guaPai)", LessonTag.PredefinedTags.GUAPAI.id)
       .where("lesson.semester = :semester", semester)
@@ -93,7 +93,7 @@ class LessonStatServiceImpl extends BaseServiceImpl with LessonStatService {
     commonLessons = entityDao.search(query)
     tmpMap = new HashMap[Integer, StatItem]()
     for (lesson <- commonLessons) {
-      val adminclasses = courseLimitService.extractAdminclasses(lesson.getTeachClass)
+      val adminclasses = lessonLimitService.extractAdminclasses(lesson.getTeachClass)
       for (adminclass <- adminclasses) {
         var item = tmpMap.get(adminclass.id)
         if (item == null) {
@@ -147,7 +147,7 @@ class LessonStatServiceImpl extends BaseServiceImpl with LessonStatService {
       "teacher.id," + 
       "count(*)," + 
       "sum(lesson.course.weekHour)," + 
-      "sum(lesson.course.weekHour * (lesson.courseSchedule.endWeek - lesson.courseSchedule.startWeek + 1))," + 
+      "sum(lesson.course.weekHour * (lesson.schedule.endWeek - lesson.schedule.startWeek + 1))," + 
       "sum(lesson.course.credits)" + 
       ")")
       .where("lesson.semester = :semester", semester)
@@ -165,7 +165,7 @@ class LessonStatServiceImpl extends BaseServiceImpl with LessonStatService {
       "lesson.courseType.id," + 
       "count(*)," + 
       "sum(lesson.course.weekHour)," + 
-      "sum(lesson.course.weekHour * (lesson.courseSchedule.endWeek - lesson.courseSchedule.startWeek + 1))," + 
+      "sum(lesson.course.weekHour * (lesson.schedule.endWeek - lesson.schedule.startWeek + 1))," + 
       "sum(lesson.course.credits)" + 
       ")")
       .where("lesson.semester=:semester", semester)
@@ -182,7 +182,7 @@ class LessonStatServiceImpl extends BaseServiceImpl with LessonStatService {
       "lesson.teachClass.stdType.id," + 
       "count(*)," + 
       "sum(lesson.course.weekHour)," + 
-      "sum(lesson.course.weekHour * (lesson.courseSchedule.endWeek - lesson.courseSchedule.startWeek + 1))," + 
+      "sum(lesson.course.weekHour * (lesson.schedule.endWeek - lesson.schedule.startWeek + 1))," + 
       "sum(lesson.course.credits)" + 
       ")")
       .where("lesson.semester = :semester", semester)
@@ -198,7 +198,7 @@ class LessonStatServiceImpl extends BaseServiceImpl with LessonStatService {
       "lesson.teachDepart.id," + 
       "count(*)," + 
       "sum(lesson.course.weekHour)," + 
-      "sum(lesson.course.weekHour * (lesson.courseSchedule.endWeek - lesson.courseSchedule.startWeek + 1))," + 
+      "sum(lesson.course.weekHour * (lesson.schedule.endWeek - lesson.schedule.startWeek + 1))," + 
       "sum(lesson.course.credits)" + 
       ")")
       .where("lesson.semester = :semester", semester)
@@ -348,7 +348,7 @@ class LessonStatServiceImpl extends BaseServiceImpl with LessonStatService {
       dataRealm: DataRealm, 
       courseTypes: Iterable[_]): List[TaskOfCourseType] = {
     val courseTypeSet = new HashSet(courseTypes)
-    var plans = CollectUtils.newArrayList()
+    var plans = Collections.newBuffer[Any]
     if (!Strings.isEmpty(dataRealm.getStudentTypeIdSeq) && !Strings.isEmpty(dataRealm.departmentIdSeq)) {
       val now = new java.util.Date()
       val planQuery = OqlBuilder.from(classOf[MajorPlan], "plan")
@@ -372,7 +372,7 @@ class LessonStatServiceImpl extends BaseServiceImpl with LessonStatService {
         if (!courseTypeSet.contains(group.getCourseType)) {
           //continue
         }
-        if (CollectUtils.isNotEmpty(group.getPlanCourses)) {
+        if (Collections.isNotEmpty(group.getPlanCourses)) {
           //continue
         }
         val credits = PlanUtils.getGroupCredits(group, term)
@@ -395,7 +395,7 @@ class LessonStatServiceImpl extends BaseServiceImpl with LessonStatService {
     this.semesterService = semesterService
   }
 
-  def setCourseLimitService(courseLimitService: CourseLimitService) {
-    this.courseLimitService = courseLimitService
+  def setLessonLimitService(lessonLimitService: LessonLimitService) {
+    this.lessonLimitService = lessonLimitService
   }
 }

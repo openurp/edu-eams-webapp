@@ -4,7 +4,7 @@ package org.openurp.edu.eams.teach.planaudit.service.listeners
 import java.util.Date
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.model.dao.EntityDao
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
@@ -51,7 +51,7 @@ class PlanAuditCourseTakeListener extends PlanAuditListener {
       "and cg.std=ct.std and cg.status=:status)", Grade.Status.PUBLISHED)
     builder.where("ct.lesson.semester.endOn >= :now", new Date())
     builder.select("ct.lesson.course,ct.lesson.courseType")
-    val course2Types = CollectUtils.newHashMap()
+    val course2Types = Collections.newMap[Any]
     for (c <- entityDao.search(builder)) {
       course2Types.put(c.asInstanceOf[Array[Any]](0).asInstanceOf[Course], c.asInstanceOf[Array[Any]](1).asInstanceOf[CourseType])
     }
@@ -76,7 +76,7 @@ class PlanAuditCourseTakeListener extends PlanAuditListener {
   def endPlanAudit(context: PlanAuditContext) {
     val course2Types = context.params.remove(TakeCourse2Types).asInstanceOf[Map[Course, CourseType]]
     val results = context.params.remove(Group2CoursesKey).asInstanceOf[ArrayList[Pair[GroupAuditResult, Course]]]
-    val used = CollectUtils.newHashSet()
+    val used = Collections.newSet[Any]
     for (tuple <- results) {
       add2Group(tuple.right, tuple.left)
       course2Types.remove(tuple.right)

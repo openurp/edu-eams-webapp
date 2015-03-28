@@ -5,7 +5,7 @@ import java.util.Date
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model
 import org.openurp.base.Semester
@@ -93,12 +93,12 @@ class PersonAction extends AbstractStudentProjectSupportAction {
 
   def scorePrint(): String = {
     val MAX_COUNT = 15
-    val SEMESTER_LIST = CollectUtils.newArrayList("1", "2")
+    val SEMESTER_LIST = Collections.newBuffer[Any]("1", "2")
     val std = getLoginStudent
-    val stdMap = CollectUtils.newHashMap()
-    val stdSemesetrMap = CollectUtils.newHashMap()
-    val stdSemesterNameMap = CollectUtils.newHashMap()
-    val lineCountMap = CollectUtils.newHashMap()
+    val stdMap = Collections.newMap[Any]
+    val stdSemesetrMap = Collections.newMap[Any]
+    val stdSemesterNameMap = Collections.newMap[Any]
+    val lineCountMap = Collections.newMap[Any]
     var maxLineCount = 1
     val builder = OqlBuilder.from(classOf[CourseGrade], "courseGradeSemester")
     builder.where("courseGradeSemester.std = :std", std)
@@ -106,8 +106,8 @@ class PersonAction extends AbstractStudentProjectSupportAction {
     builder.groupBy("courseGradeSemester.semester.id")
     builder.orderBy("courseGradeSemester.semester.id")
     val semesters = entityDao.search(builder)
-    val semesterSchoolYear = CollectUtils.newArrayList()
-    val semesterMap = CollectUtils.newHashMap()
+    val semesterSchoolYear = Collections.newBuffer[Any]
+    val semesterMap = Collections.newMap[Any]
     var itor = semesters.iterator()
     while (itor.hasNext) {
       val semesterId = itor.next().asInstanceOf[java.lang.Integer]
@@ -119,7 +119,7 @@ class PersonAction extends AbstractStudentProjectSupportAction {
       val courseGrades = entityDao.search(query)
       var courseMap = semesterMap.get(semester.getSchoolYear)
       if (courseMap == null) {
-        courseMap = CollectUtils.newHashMap()
+        courseMap = Collections.newMap[Any]
         courseMap.put(semester.getName, courseGrades)
         semesterMap.put(semester.getSchoolYear, courseMap)
       }
@@ -138,7 +138,7 @@ class PersonAction extends AbstractStudentProjectSupportAction {
       maxLineCount = MAX_COUNT
     }
     lineCountMap.put(std.getCode, java.lang.Integer.valueOf(maxLineCount))
-    val stdGpaMap = CollectUtils.newHashMap()
+    val stdGpaMap = Collections.newMap[Any]
     val stdGpaBuilder = OqlBuilder.from(classOf[StdGpa], "stdGpa")
     stdGpaBuilder.where("stdGpa.std =:student", std)
     val stdGpas = entityDao.search(stdGpaBuilder)

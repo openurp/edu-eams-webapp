@@ -7,7 +7,7 @@ package org.openurp.edu.eams.teach.lesson.task.splitter
 
 import org.apache.commons.collections.CollectionUtils
 import org.openurp.edu.base.Adminclass
-import org.openurp.edu.teach.lesson.CourseLimitMeta.Operator
+import org.openurp.edu.teach.lesson.LessonLimitMeta.Operator
 import org.openurp.edu.teach.lesson.CourseTake
 import org.openurp.edu.teach.exam.ExamTake
 import org.openurp.edu.teach.lesson.TeachClass

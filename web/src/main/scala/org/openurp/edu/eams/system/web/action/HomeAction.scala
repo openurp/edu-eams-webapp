@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 import org.apache.commons.lang3.exception.ExceptionUtils
 import org.apache.struts2.ServletActionContext
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.commons.collection.page.PageLimit
 import org.beangle.data.jpa.dao.OqlBuilder
@@ -73,7 +73,7 @@ class HomeAction extends BaseAction {
       return forward("noProject")
     }
     val dd = menuService.getMenus(menuProfile, user, getProfiles)
-    val topMenus = CollectUtils.newArrayList()
+    val topMenus = Collections.newBuffer[Any]
     var maxdepath = 0
     for (m <- dd) {
       if (m.getDepth > maxdepath) maxdepath = m.getDepth
@@ -88,7 +88,7 @@ class HomeAction extends BaseAction {
     val request = ServletActionContext.getRequest
     val response = ServletActionContext.getResponse
     CookieUtils.deleteCookieByName(request, response, "semester.id")
-    var projectsOwnedByUser = CollectUtils.newArrayList()
+    var projectsOwnedByUser = Collections.newBuffer[Any]
     var contextProjectId = getInt("contextProjectId")
     if (contextProjectId == null) {
       contextProjectId = getRequest.getSession.getAttribute("projectId").asInstanceOf[java.lang.Integer]
@@ -111,7 +111,7 @@ class HomeAction extends BaseAction {
     }
     if (!contextProjectIdValid) {
       contextProjectId = null
-      if (CollectUtils.isNotEmpty(projectsOwnedByUser)) {
+      if (Collections.isNotEmpty(projectsOwnedByUser)) {
         contextProjectId = projectsOwnedByUser.get(0).id
       }
     }
@@ -128,7 +128,7 @@ class HomeAction extends BaseAction {
             projectProfile = profile
             //break
           } else {
-            if (CollectUtils.newHashSet(Strings.split(p.getValue, ","))
+            if (Collections.newHashSet(Strings.split(p.getValue, ","))
               .contains(String.valueOf(contextProjectId))) {
               projectProfile = profile
               //break

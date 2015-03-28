@@ -5,7 +5,7 @@ import java.util.LinkedHashSet
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.dao.Operation
 import org.beangle.commons.dao.Operation.Builder
 import org.beangle.commons.dao.impl.BaseServiceImpl
@@ -36,14 +36,14 @@ import org.openurp.edu.eams.teach.election.service.context.ElectionCourseContext
 import org.openurp.edu.eams.teach.election.service.context.ElectionCourseContext.Params
 import org.openurp.edu.eams.teach.election.service.context.PrepareContext
 import org.openurp.edu.eams.teach.election.service.event.ElectCourseEvent
-import org.openurp.edu.eams.teach.election.service.helper.CourseLimitGroupHelper
+import org.openurp.edu.eams.teach.election.service.helper.LessonLimitGroupHelper
 import org.openurp.edu.eams.teach.election.service.rule.AbstractElectRuleExecutor
 import org.openurp.edu.eams.teach.election.service.rule.ElectBuildInPrepare
 import org.openurp.edu.eams.teach.election.service.rule.ElectRulePrepare
 import org.openurp.edu.eams.teach.election.service.rule.PreSaveProcessor
 import org.openurp.edu.eams.teach.election.service.rule.election.filter.AbstractElectableLessonFilter
 import org.openurp.edu.eams.teach.election.service.rule.election.filter.ElectableLessonNoRetakeFilter
-import org.openurp.edu.teach.lesson.CourseLimitGroup
+import org.openurp.edu.teach.lesson.LessonLimitGroup
 import org.openurp.edu.teach.lesson.CourseTake
 import org.openurp.edu.teach.lesson.Lesson
 import StdElectionServiceImpl._
@@ -69,31 +69,31 @@ class StdElectionServiceImpl extends BaseServiceImpl with StdElectionService {
 
   protected var ruleExecutorBuilder: RuleExecutorBuilder = _
 
-  protected val profiles = CollectUtils.newHashMap()
+  protected val profiles = Collections.newMap[Any]
 
-  protected val prepares = CollectUtils.newHashMap()
+  protected val prepares = Collections.newMap[Any]
 
-  protected val filters = CollectUtils.newHashMap()
+  protected val filters = Collections.newMap[Any]
 
-  protected val generalChecks = CollectUtils.newHashMap()
+  protected val generalChecks = Collections.newMap[Any]
 
-  protected val electionChecks = CollectUtils.newHashMap()
+  protected val electionChecks = Collections.newMap[Any]
 
-  protected val withdrawChecks = CollectUtils.newHashMap()
+  protected val withdrawChecks = Collections.newMap[Any]
 
-  protected val preSaves = CollectUtils.newHashMap()
+  protected val preSaves = Collections.newMap[Any]
 
-  protected var buildInFilters: List[ElectableLessonFilter] = CollectUtils.newArrayList()
+  protected var buildInFilters: List[ElectableLessonFilter] = Collections.newBuffer[Any]
 
-  protected var buildInGeneralChecks: List[AbstractElectRuleExecutor] = CollectUtils.newArrayList()
+  protected var buildInGeneralChecks: List[AbstractElectRuleExecutor] = Collections.newBuffer[Any]
 
-  protected var buildInElectionChecks: List[AbstractElectRuleExecutor] = CollectUtils.newArrayList()
+  protected var buildInElectionChecks: List[AbstractElectRuleExecutor] = Collections.newBuffer[Any]
 
-  protected var buildInWithdrawChecks: List[AbstractElectRuleExecutor] = CollectUtils.newArrayList()
+  protected var buildInWithdrawChecks: List[AbstractElectRuleExecutor] = Collections.newBuffer[Any]
 
-  protected var buildInPreSaves: List[PreSaveProcessor] = CollectUtils.newArrayList()
+  protected var buildInPreSaves: List[PreSaveProcessor] = Collections.newBuffer[Any]
 
-  protected var buildInPrepares: List[ElectBuildInPrepare] = CollectUtils.newArrayList()
+  protected var buildInPrepares: List[ElectBuildInPrepare] = Collections.newBuffer[Any]
 
   protected var electLoggerService: ElectLoggerService = _
 
@@ -108,7 +108,7 @@ class StdElectionServiceImpl extends BaseServiceImpl with StdElectionService {
     builder.orderBy("electionProfile.beginAt")
     builder.cacheable(true)
     val profiles = entityDao.search(builder)
-    val suitable = CollectUtils.newArrayList()
+    val suitable = Collections.newBuffer[Any]
     for (profile <- profiles if isSuitable(profile, std)) {
       suitable.add(profile)
     }
@@ -161,12 +161,12 @@ class StdElectionServiceImpl extends BaseServiceImpl with StdElectionService {
         return
       }
       profiles.put(profileKey(profile), profile)
-      val generalExecutorSet = CollectUtils.newHashSet()
-      val electionExecutorSet = CollectUtils.newHashSet()
-      val withdrawExecutorSet = CollectUtils.newHashSet()
+      val generalExecutorSet = Collections.newSet[Any]
+      val electionExecutorSet = Collections.newSet[Any]
+      val withdrawExecutorSet = Collections.newSet[Any]
       val prepareSet = new LinkedHashSet[ElectRulePrepare]()
-      val filterSet = CollectUtils.newHashSet()
-      val preSaveSet = CollectUtils.newHashSet()
+      val filterSet = Collections.newSet[Any]
+      val preSaveSet = Collections.newSet[Any]
       val configs = profile.getGeneralConfigs
       for (config <- configs if config.isEnabled) {
         val ruleExecutor = ruleExecutorBuilder.build(config)
@@ -218,11 +218,11 @@ class StdElectionServiceImpl extends BaseServiceImpl with StdElectionService {
       withdrawExecutorSet.addAll(buildInWithdrawChecks)
       filterSet.addAll(buildInFilters)
       preSaveSet.addAll(buildInPreSaves)
-      val generalExecutors = CollectUtils.newArrayList(generalExecutorSet)
-      val electionExecutors = CollectUtils.newArrayList(electionExecutorSet)
-      val withdrawExecutors = CollectUtils.newArrayList(withdrawExecutorSet)
-      val filterList = CollectUtils.newArrayList(filterSet)
-      val preSaveList = CollectUtils.newArrayList(preSaveSet)
+      val generalExecutors = Collections.newBuffer[Any](generalExecutorSet)
+      val electionExecutors = Collections.newBuffer[Any](electionExecutorSet)
+      val withdrawExecutors = Collections.newBuffer[Any](withdrawExecutorSet)
+      val filterList = Collections.newBuffer[Any](filterSet)
+      val preSaveList = Collections.newBuffer[Any](preSaveSet)
       Collections.sort(generalExecutors)
       Collections.sort(withdrawExecutors)
       Collections.sort(electionExecutors)
@@ -231,7 +231,7 @@ class StdElectionServiceImpl extends BaseServiceImpl with StdElectionService {
       generalChecks.put(profileKey(profile), generalExecutors)
       withdrawChecks.put(profileKey(profile), withdrawExecutors)
       electionChecks.put(profileKey(profile), electionExecutors)
-      prepares.put(profileKey(profile), CollectUtils.newArrayList(prepareSet))
+      prepares.put(profileKey(profile), Collections.newBuffer[Any](prepareSet))
       filters.put(profileKey(profile), filterList)
       preSaves.put(profileKey(profile), preSaveList)
     }
@@ -296,14 +296,14 @@ class StdElectionServiceImpl extends BaseServiceImpl with StdElectionService {
   }
 
   def batchOperator(contextMap: Map[ElectRuleType, List[ElectionCourseContext]]): Iterable[List[Message]] = {
-    val all_toBeSavedObjectByOperation = CollectUtils.newArrayList()
-    val all_toBeRemovedObjectByOperation = CollectUtils.newArrayList()
-    val withdrawLessonIds = CollectUtils.newHashSet()
-    val result = CollectUtils.newHashMap()
-    val withdrawSuccess = CollectUtils.newHashSet()
-    val electSuccess = CollectUtils.newHashSet()
-    val withdrawTakes = CollectUtils.newHashSet()
-    val electTakes = CollectUtils.newHashSet()
+    val all_toBeSavedObjectByOperation = Collections.newBuffer[Any]
+    val all_toBeRemovedObjectByOperation = Collections.newBuffer[Any]
+    val withdrawLessonIds = Collections.newSet[Any]
+    val result = Collections.newMap[Any]
+    val withdrawSuccess = Collections.newSet[Any]
+    val electSuccess = Collections.newSet[Any]
+    val withdrawTakes = Collections.newSet[Any]
+    val electTakes = Collections.newSet[Any]
     var retakeEventSource: CourseTake = null
     var state: ElectState = null
     for (context <- contextMap.get(ElectRuleType.WITHDRAW)) {
@@ -344,7 +344,7 @@ class StdElectionServiceImpl extends BaseServiceImpl with StdElectionService {
               builder.where("lesson.id in(:electedLessonIds)", electedLessonIds)
               conflictCourseTakes = entityDao.search(builder)
             } else {
-              conflictCourseTakes = CollectUtils.newArrayList()
+              conflictCourseTakes = Collections.newBuffer[Any]
             }
           }
         }
@@ -378,7 +378,7 @@ class StdElectionServiceImpl extends BaseServiceImpl with StdElectionService {
       }
       result.put(context.getLesson, context.getMessages)
     }
-    val resultMessages = CollectUtils.newArrayList()
+    val resultMessages = Collections.newBuffer[Any]
     var builder: Builder = null
     builder = if (!all_toBeRemovedObjectByOperation.isEmpty) Operation.remove(all_toBeRemovedObjectByOperation).saveOrUpdate(all_toBeSavedObjectByOperation) else Operation.saveOrUpdate(all_toBeSavedObjectByOperation)
     try {
@@ -386,7 +386,7 @@ class StdElectionServiceImpl extends BaseServiceImpl with StdElectionService {
     } catch {
       case e: Exception => {
         logger.error(Throwables.getStackTrace(e))
-        val messages = CollectUtils.newArrayList()
+        val messages = Collections.newBuffer[Any]
         messages.add(new ElectMessage("操作失败,请联系管理员", ElectRuleType.GENERAL, false, null))
         resultMessages.add(messages)
         var sql = "update t_lessons set std_count=std_count+1 where id=?"
@@ -440,7 +440,7 @@ class StdElectionServiceImpl extends BaseServiceImpl with StdElectionService {
     if (!hasBeenUpdatedInLimitCountRule) {
       var limitGroup = take.getLimitGroup
       if (limitGroup == null) {
-        limitGroup = CourseLimitGroupHelper.getMatchCourseLimitGroup(lesson, state)
+        limitGroup = LessonLimitGroupHelper.getMatchLessonLimitGroup(lesson, state)
       }
       if (state.isCheckTeachClass && limitGroup == null) {
         return new ElectMessage("找不到匹配的授课对象组", ElectRuleType.ELECTION, false, lesson)

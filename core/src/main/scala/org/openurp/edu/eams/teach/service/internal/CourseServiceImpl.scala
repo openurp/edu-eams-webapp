@@ -3,7 +3,7 @@ package org.openurp.edu.eams.teach.service.internal
 import java.sql.Date
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
@@ -19,7 +19,7 @@ class CourseServiceImpl extends BaseServiceImpl with CourseService {
     val query = OqlBuilder.from(classOf[Course], "course").cacheable()
       .where("course.code = :code", code)
     val courses = entityDao.search(query)
-    if (CollectUtils.isNotEmpty(courses)) {
+    if (Collections.isNotEmpty(courses)) {
       return courses.get(0)
     }
     null
@@ -29,7 +29,7 @@ class CourseServiceImpl extends BaseServiceImpl with CourseService {
     var extInfo: CourseExtInfo = null
     if (courseId != null) {
       val exts = entityDao.get(classOf[CourseExtInfo], "course.id", courseId)
-      if (CollectUtils.isNotEmpty(exts)) {
+      if (Collections.isNotEmpty(exts)) {
         extInfo = exts.get(0)
       }
     }
@@ -85,7 +85,7 @@ class CourseServiceImpl extends BaseServiceImpl with CourseService {
   def getCourseByIdDwr(id: java.lang.Long): Course = {
     val list = entityDao.search(OqlBuilder.from(classOf[Course], "course").where("course.id=:id", id)
       .cacheable())
-    if (CollectUtils.isEmpty(list)) {
+    if (Collections.isEmpty(list)) {
       return null
     }
     list.get(0)

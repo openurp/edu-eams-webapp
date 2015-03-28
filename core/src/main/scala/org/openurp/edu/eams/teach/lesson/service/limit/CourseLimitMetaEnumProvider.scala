@@ -1,11 +1,13 @@
 package org.openurp.edu.eams.teach.lesson.service.limit
 
+import org.openurp.edu.teach.lesson.LessonLimitMeta.LimitMeta
+
 
 trait LessonLimitMetaProvider {
 
-  def getLessonLimitMetas(): List[LessonLimitMeta]
+  def getLessonLimitMetas(): List[LimitMeta]
 
-  def getLessonLimitMetaIds(): List[Long]
+  def getLessonLimitMetaIds(): List[Int]
 
-  def getLessonLimitMetaPairs(): Pair[List[Long], List[LessonLimitMeta]]
+  def getLessonLimitMetaPairs(): Pair[List[Int], List[LimitMeta]]
 }

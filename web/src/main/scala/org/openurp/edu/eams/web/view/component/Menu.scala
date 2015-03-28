@@ -4,7 +4,7 @@ package org.openurp.edu.eams.web.view.component
 
 
 import org.apache.struts2.util.MakeIterator
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.entity.HierarchyEntity
 import org.beangle.struts2.view.component.ClosingUIBean
 import com.opensymphony.xwork2.util.ValueStack
@@ -127,7 +127,7 @@ class Menu(stack: ValueStack) extends ClosingUIBean(stack) {
   var value: String = _
 
   
-  var filters: Map[String, String] = CollectUtils.newHashMap()
+  var filters: Map[String, String] = Collections.newMap[Any]
 
   protected override def evaluateParams() {
     if (null == this.id) generateIdIfEmpty()

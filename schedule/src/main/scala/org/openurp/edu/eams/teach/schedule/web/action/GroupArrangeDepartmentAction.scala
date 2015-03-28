@@ -10,7 +10,7 @@ import java.util.Comparator
 
 import org.apache.commons.collections.CollectionUtils
 import org.apache.commons.lang3.ArrayUtils
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.commons.dao.Operation
 import org.beangle.data.jpa.dao.OqlBuilder
@@ -76,9 +76,9 @@ class GroupArrangeDepartmentAction extends SemesterSupportAction {
   override def indexSetting() {
     val semester = putSemester(null)
     val project = getProject
-    put("courseTypes", lessonService.courseTypesOfSemester(CollectUtils.newArrayList(project), getDeparts, 
+    put("courseTypes", lessonService.courseTypesOfSemester(Collections.newBuffer[Any](project), getDeparts, 
       semester))
-    put("teachDepartList", lessonService.teachDepartsOfSemester(CollectUtils.newArrayList(project), getDeparts, 
+    put("teachDepartList", lessonService.teachDepartsOfSemester(Collections.newBuffer[Any](project), getDeparts, 
       semester))
     put("departmentList", getCollegeOfDeparts)
     put("stdTypeList", getStdTypes)
@@ -105,14 +105,14 @@ class GroupArrangeDepartmentAction extends SemesterSupportAction {
     put("teacherIsNull", getBool("fake.teacher.null"))
     if (Strings.isNotEmpty(isArrangeCompleted)) {
       if (isArrangeCompleted == CourseStatusEnum.NEED_ARRANGE.toString) {
-        query.where("size(lesson.courseSchedule.activities) = 0")
-        query.where("lesson.courseSchedule.status = :status", CourseStatusEnum.NEED_ARRANGE)
+        query.where("size(lesson.schedule.activities) = 0")
+        query.where("lesson.schedule.status = :status", CourseStatusEnum.NEED_ARRANGE)
         put("courseStatusEnum", CourseStatusEnum.NEED_ARRANGE)
       } else if (isArrangeCompleted == CourseStatusEnum.DONT_ARRANGE.toString) {
-        query.where("lesson.courseSchedule.status = :status", CourseStatusEnum.DONT_ARRANGE)
+        query.where("lesson.schedule.status = :status", CourseStatusEnum.DONT_ARRANGE)
         put("courseStatusEnum", CourseStatusEnum.DONT_ARRANGE)
       } else if (isArrangeCompleted == CourseStatusEnum.ARRANGED.toString) {
-        query.where("lesson.courseSchedule.status = :status", CourseStatusEnum.ARRANGED)
+        query.where("lesson.schedule.status = :status", CourseStatusEnum.ARRANGED)
         put("courseStatusEnum", CourseStatusEnum.ARRANGED)
       }
     }
@@ -121,7 +121,7 @@ class GroupArrangeDepartmentAction extends SemesterSupportAction {
     val lessons = entityDao.search(query)
     put("lessons", lessons)
     val digestor = CourseActivityDigestor.getInstance.setDelimeter("<br>")
-    val arrangeInfo = CollectUtils.newHashMap()
+    val arrangeInfo = Collections.newMap[Any]
     for (oneTask <- lessons) {
       arrangeInfo.put(oneTask.id.toString, digestor.digest(getTextResource, oneTask))
     }
@@ -275,8 +275,8 @@ class GroupArrangeDepartmentAction extends SemesterSupportAction {
     if (null == count || count == 0) {
       return forwardError("没有安排小节")
     }
-    val failureArrangeMap = CollectUtils.newHashMap()
-    val successArrangeMap = CollectUtils.newHashMap()
+    val failureArrangeMap = Collections.newMap[Any]
+    val successArrangeMap = Collections.newMap[Any]
     for (lesson <- lessons) {
       if (CourseStatusEnum.NEED_ARRANGE != lesson.getCourseSchedule.getStatus || 
         !lesson.getCourseSchedule.getActivities.isEmpty) {
@@ -287,11 +287,11 @@ class GroupArrangeDepartmentAction extends SemesterSupportAction {
         failureArrangeMap.put(lesson, "该任务有多个教师。请为其单独排课")
         //continue
       }
-      val activityList = CollectUtils.newArrayList(count.intValue())
+      val activityList = Collections.newBuffer[Any](count.intValue())
       for (i <- 0 until count.intValue()) {
         val activity = populate(classOf[CourseActivity], "activity" + i)
         val cycle = getInt("activity" + i + ".cycle")
-        activity.setTeachers(CollectUtils.newHashSet(lesson.getTeachers))
+        activity.setTeachers(Collections.newHashSet(lesson.getTeachers))
         val time = YearWeekTimeUtil.buildYearWeekTimes(2, lesson.getCourseSchedule.getStartWeek, lesson.getCourseSchedule.getEndWeek, 
           cycle)
         activity.getTime.newWeekState(time.state)
@@ -300,13 +300,13 @@ class GroupArrangeDepartmentAction extends SemesterSupportAction {
       val mergedActivityList = CourseActivityBean.mergeActivites(activityList)
       if (getBool("stdConfict")) {
         val collisionTakes = courseActivityService.collisionTakes(lesson, mergedActivityList)
-        if (CollectUtils.isNotEmpty(collisionTakes)) {
+        if (Collections.isNotEmpty(collisionTakes)) {
           failureArrangeMap.put(lesson, "该任务已有学生选课,并且排课造成学生冲突")
           //continue
         }
       }
       var period = 0
-      val timeList = CollectUtils.newArrayList()
+      val timeList = Collections.newBuffer[Any]
       for (activity <- mergedActivityList) {
         val timeSetting = timeSettingService.getClosestTimeSetting(lesson.getProject, lesson.getSemester, 
           lesson.getCampus)
@@ -320,7 +320,7 @@ class GroupArrangeDepartmentAction extends SemesterSupportAction {
         period += coursePeriod
         timeList.add(time)
       }
-      var classrooms = CollectUtils.newArrayList()
+      var classrooms = Collections.newBuffer[Any]
       val suggestRoom = getBool("suggestRoom")
       if (suggestRoom) {
         val roomForSearch = Model.newInstance(classOf[Room])
@@ -346,7 +346,7 @@ class GroupArrangeDepartmentAction extends SemesterSupportAction {
         //continue
       }
       var collision = false
-      val occupancies = CollectUtils.newHashSet()
+      val occupancies = Collections.newSet[Any]
       for (activity <- mergedActivityList) {
         if (suggestRoom) {
           activity.getRooms.add(classrooms.get(0))

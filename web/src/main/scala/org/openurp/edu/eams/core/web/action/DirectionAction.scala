@@ -4,7 +4,7 @@ import java.util.Date
 
 
 import javax.persistence.EntityExistsException
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.struts2.helper.Params
@@ -19,7 +19,7 @@ class DirectionAction extends DirectionSearchAction {
 
   def edit(): String = {
     val direction = getEntity(classOf[Direction], "direction")
-    val dds = CollectUtils.newHashSet()
+    val dds = Collections.newSet[Any]
     for (dd <- direction.getDeparts) {
       dds.add(dd.getDepart)
     }
@@ -92,7 +92,7 @@ class DirectionAction extends DirectionSearchAction {
     }
     direction.getDeparts.clear()
     entityDao.save(direction)
-    val mdCahe = CollectUtils.newHashSet()
+    val mdCahe = Collections.newSet[Any]
     var i = 0
     while (i <= count) {
       val md = populate(classOf[DirectionJournal], "md" + i)

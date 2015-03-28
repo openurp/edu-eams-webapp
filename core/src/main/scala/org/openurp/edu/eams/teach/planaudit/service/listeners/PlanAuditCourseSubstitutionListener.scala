@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.planaudit.service.listeners
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.openurp.edu.base.Course
 import org.openurp.edu.teach.grade.domain.impl.GradeComparator
 import org.openurp.edu.teach.grade.CourseGrade
@@ -49,12 +49,12 @@ class PlanAuditCourseSubstitutionListener extends PlanAuditListener {
   def startGroupAudit(context: PlanAuditContext, courseGroup: CourseGroup, groupResult: GroupAuditResult): Boolean = {
     var substituted = context.params.get(getGroupKey(courseGroup)).asInstanceOf[Set[Course]]
     if (null == substituted) {
-      substituted = CollectUtils.newHashSet()
+      substituted = Collections.newSet[Any]
       context.params.put(getGroupKey(courseGroup), substituted)
     }
     val substitutions = context.params.get(substitutions_str).asInstanceOf[List[CourseSubstitution]]
     val stdGrade = context.stdGrade
-    val courseMap = CollectUtils.newHashMap()
+    val courseMap = Collections.newMap[Any]
     for (planCourse <- courseGroup.planCourses) {
       courseMap.put(planCourse.course, planCourse)
     }
@@ -62,7 +62,7 @@ class PlanAuditCourseSubstitutionListener extends PlanAuditListener {
     val needCheckTerm = (null != auditTerms && auditTerms.length >= 0)
     for (sc <- substitutions if courseMap.keySet.containsAll(sc.origins) && isSubstitutes(stdGrade, 
       sc)) {
-      val substituteGrades = CollectUtils.newArrayList()
+      val substituteGrades = Collections.newBuffer[Any]
       for (c <- sc.substitutes) {
         substituteGrades.addAll(stdGrade.grades(c))
         stdGrade.addNoGradeCourse(c)
@@ -100,12 +100,12 @@ class PlanAuditCourseSubstitutionListener extends PlanAuditListener {
   }
 
   protected def isSubstitutes(stdGrade: StdGrade, substitution: CourseSubstitution): Boolean = {
-    val allCourses = CollectUtils.newHashSet(substitution.origins)
+    val allCourses = Collections.newHashSet(substitution.origins)
     allCourses.addAll(substitution.substitutes)
-    val subGrades = CollectUtils.newHashMap()
+    val subGrades = Collections.newMap[Any]
     for (course <- allCourses) {
       val grades = stdGrade.grades(course)
-      if (CollectUtils.isNotEmpty(grades)) subGrades.put(course, grades.get(0))
+      if (Collections.isNotEmpty(grades)) subGrades.put(course, grades.get(0))
     }
     if (GradeComparator.isSubstitute(substitution, subGrades)) {
       for (course <- allCourses) stdGrade.useGrades(course)

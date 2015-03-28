@@ -2,7 +2,7 @@ package org.openurp.edu.eams.teach.grade.adminclass.web.action
 import java.util.Date
 
 import org.beangle.commons.bean.comparators.PropertyComparator
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.edu.base.Adminclass
@@ -44,7 +44,7 @@ class AllAction extends ProjectSupportAction {
     val adminclass = entityDao.get(classOf[Adminclass], getInt("adminclass.id"))
     put("adminclass", adminclass)
     var stdId = getLong("std.id")
-    val stds = CollectUtils.newArrayList(adminclass.getStudents)
+    val stds = Collections.newBuffer[Any](adminclass.getStudents)
     Collections.sort(stds, new PropertyComparator("code"))
     if (null == stdId && !stds.isEmpty) {
       stdId = stds.get(0).id

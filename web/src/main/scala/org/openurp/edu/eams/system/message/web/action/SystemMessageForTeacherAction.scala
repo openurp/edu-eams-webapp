@@ -3,7 +3,7 @@ import java.util.Date
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.commons.collection.page.PageLimit
 import org.beangle.commons.dao.query.builder.Condition
@@ -73,9 +73,9 @@ class SystemMessageForTeacherAction extends BaseAction {
       return forwardError("权限不足")
     }
     var stdCodes = getAll("student.code", classOf[String])
-    val usernames = CollectUtils.newArrayList()
+    val usernames = Collections.newBuffer[Any]
     if (stdCodes.length > 0) {
-      val stdIdsSet = CollectUtils.newHashSet(stdCodes)
+      val stdIdsSet = Collections.newHashSet(stdCodes)
       stdCodes = stdIdsSet.toArray(Array.ofDim[String](0))
       val stds = getStudents("code", false, stdCodes)
       if (stds.isEmpty) {
@@ -99,7 +99,7 @@ class SystemMessageForTeacherAction extends BaseAction {
       }
       var users = Collections.emptySet()
       if (!usernames.isEmpty) {
-        users = CollectUtils.newHashSet(entityDao.get(classOf[User], "name", usernames))
+        users = Collections.newHashSet(entityDao.get(classOf[User], "name", usernames))
       }
       var it = content.getMessages.iterator()
       while (it.hasNext) {
@@ -131,13 +131,13 @@ class SystemMessageForTeacherAction extends BaseAction {
     if (Arrays.isEmpty(stdCodes)) {
       return forwardError("error.parameters.needed")
     }
-    val stdIdsSet = CollectUtils.newHashSet(stdCodes)
+    val stdIdsSet = Collections.newHashSet(stdCodes)
     stdCodes = stdIdsSet.toArray(Array.ofDim[String](0))
     val stds = getStudents("code", false, stdCodes)
     if (stds.isEmpty) {
       return forwardError("权限不足")
     }
-    val usernames = CollectUtils.newArrayList()
+    val usernames = Collections.newBuffer[Any]
     for (student <- stds) {
       usernames.add(student.getCode)
     }
@@ -153,7 +153,7 @@ class SystemMessageForTeacherAction extends BaseAction {
           content.setCreatedAt(new Date())
         }
       }
-      val users = CollectUtils.newHashSet(entityDao.get(classOf[User], "name", usernames))
+      val users = Collections.newHashSet(entityDao.get(classOf[User], "name", usernames))
       var it = content.getMessages.iterator()
       while (it.hasNext) {
         val message = it.next()
@@ -235,7 +235,7 @@ class SystemMessageForTeacherAction extends BaseAction {
     if (null == teacher) {
       return forwardError("权限不足")
     }
-    var students = CollectUtils.newHashSet()
+    var students = Collections.newSet[Any]
     val addAll = getBool("addAll")
     val codes = getCodes(get("studentCodes"))
     students = getStudents("code", addAll, codes)
@@ -245,7 +245,7 @@ class SystemMessageForTeacherAction extends BaseAction {
 
   private def getCodes(codeSeq: String): Array[Any] = {
     val codes = Strings.split(codeSeq, ",")
-    val set = CollectUtils.newHashSet()
+    val set = Collections.newSet[Any]
     if (null != codes && codes.length > 0) {
       for (code <- codes if Strings.isNotBlank(code)) {
         set.add(code)
@@ -255,7 +255,7 @@ class SystemMessageForTeacherAction extends BaseAction {
   }
 
   private def getStudents(attrName: String, allStd: Boolean, values: AnyRef*): Set[Student] = {
-    val stds = CollectUtils.newHashSet()
+    val stds = Collections.newSet[Any]
     val teacher = getLoginTeacher
     if (null != values && values.length > 0) {
       if (values.length < 500 || allStd) {

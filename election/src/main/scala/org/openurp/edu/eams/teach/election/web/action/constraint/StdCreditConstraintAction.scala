@@ -5,7 +5,7 @@ import java.util.Date
 
 
 import org.apache.commons.lang3.ArrayUtils
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.commons.dao.Operation
 import org.beangle.commons.dao.query.builder.Condition
@@ -107,7 +107,7 @@ class StdCreditConstraintAction extends SemesterSupportAction {
     val allNoCredit = getBoolean("allNoCredit")
     val entityIds = getLongIds(getShortName)
     val idsLength = if (ArrayUtils.isEmpty(entityIds)) 0 else entityIds.length
-    var stds = CollectUtils.newArrayList()
+    var stds = Collections.newBuffer[Any]
     if (null == allNoCredit) {
       if (idsLength == 1) {
         val stdCreditConstraint = entity.asInstanceOf[StdCreditConstraint]
@@ -127,7 +127,7 @@ class StdCreditConstraintAction extends SemesterSupportAction {
           put("stdGpaMap", Collections.emptyList())
           put("electedCredits", Collections.emptyMap())
         }
-        val stdCreditConstraints = CollectUtils.newArrayList()
+        val stdCreditConstraints = Collections.newBuffer[Any]
         var i = 0
         while (i < entityIds.length) {
           var end = i + 500
@@ -157,7 +157,7 @@ class StdCreditConstraintAction extends SemesterSupportAction {
       stds = entityDao.search(getStdBuilder(semester, getLongIds("student"), true))
       put("stds", stds)
     }
-    val stdGpaMap = CollectUtils.newHashMap()
+    val stdGpaMap = Collections.newMap[Any]
     if (!stds.isEmpty) {
       val multiStdGpa = gpaStatService.statGpas(stds, semester)
       for (stdGpa <- multiStdGpa.getStdGpas) {
@@ -169,11 +169,11 @@ class StdCreditConstraintAction extends SemesterSupportAction {
   }
 
   private def getStdsElectedCredits(stds: Iterable[Student]): Map[Student, Float] = {
-    val electedCredits = CollectUtils.newHashMap()
+    val electedCredits = Collections.newMap[Any]
     if (!stds.isEmpty) {
       val semester = putSemester(null)
       val values = stds.toArray(Array.ofDim[Student](stds.size))
-      var courseTakes = CollectUtils.newArrayList()
+      var courseTakes = Collections.newBuffer[Any]
       if (values.length < 500) {
         val query = OqlBuilder.from(classOf[CourseTake], "courseTake")
         query.where("courseTake.lesson.semester=:semester", semester)
@@ -221,8 +221,8 @@ class StdCreditConstraintAction extends SemesterSupportAction {
     val stdTypes = getStdTypes
     val educations = getEducations
     val builder = OqlBuilder.from(classOf[Student], "student")
-    if (CollectUtils.isEmpty(departs) || CollectUtils.isEmpty(stdTypes) || 
-      CollectUtils.isEmpty(educations)) {
+    if (Collections.isEmpty(departs) || Collections.isEmpty(stdTypes) || 
+      Collections.isEmpty(educations)) {
       builder.where("1=2")
     } else {
       builder.where((if (noCreditsConstraint) "not " else "") + "exists (from " + 
@@ -254,7 +254,7 @@ class StdCreditConstraintAction extends SemesterSupportAction {
     } else if (ArrayUtils.isNotEmpty(codes)) {
       val stds = entityDao.get(classOf[Student], Array("code", "project", "department", "type", "education"), 
         Array(codes, project, departments, stdTypes, educations))
-      val stdMap = CollectUtils.newHashMap()
+      val stdMap = Collections.newMap[Any]
       for (student <- stds) {
         stdMap.put(student.getCode, student)
       }
@@ -262,7 +262,7 @@ class StdCreditConstraintAction extends SemesterSupportAction {
         stdMap.put(code.toString, null)
       }
       val multiStdGpa = gpaStatService.statGpas(stds, putSemester(null))
-      val stdGpaMap = CollectUtils.newHashMap()
+      val stdGpaMap = Collections.newMap[Any]
       for (stdGpa <- multiStdGpa.getStdGpas) {
         stdGpaMap.put(stdGpa.getStd, stdGpa.getGpa)
       }
@@ -277,11 +277,11 @@ class StdCreditConstraintAction extends SemesterSupportAction {
 
   def save(): String = {
     val stdCreditConstraint = populateEntity().asInstanceOf[StdCreditConstraint]
-    var stds = CollectUtils.newArrayList()
+    var stds = Collections.newBuffer[Any]
 
-    val persistedConstraintStds = CollectUtils.newHashSet()
+    val persistedConstraintStds = Collections.newSet[Any]
     var stdIds: Array[Long] = null
-    val stdCreditConstraints = CollectUtils.newArrayList()
+    val stdCreditConstraints = Collections.newBuffer[Any]
     val semester = putSemester(null)
     if (true == getBoolean("allNoCredit")) {
       stds = entityDao.search(getStdBuilder(stdCreditConstraint.getSemester, null, true))
@@ -299,7 +299,7 @@ class StdCreditConstraintAction extends SemesterSupportAction {
           if (end > stdArray.length) {
             end = stdArray.length
           }
-          val parameterMap = CollectUtils.newHashMap()
+          val parameterMap = Collections.newMap[Any]
           parameterMap.put("stds", ArrayUtils.subarray(stdArray, i, end))
           parameterMap.put("semester", semester)
           stdCreditConstraints.addAll(entityDao.search(builder.params(parameterMap).build()))
@@ -311,7 +311,7 @@ class StdCreditConstraintAction extends SemesterSupportAction {
       }
     }
     val multiStdGpa = gpaStatService.statGpas(stds, semester)
-    val stdGpaMap = CollectUtils.newHashMap()
+    val stdGpaMap = Collections.newMap[Any]
     for (stdGpa <- multiStdGpa.getStdGpas) {
       stdGpaMap.put(stdGpa.getStd, stdGpa)
     }
@@ -322,7 +322,7 @@ class StdCreditConstraintAction extends SemesterSupportAction {
       stdCreditConstraints.add(constraint)
     }
     val createdAt = new Date()
-    val loggers = CollectUtils.newArrayList()
+    val loggers = Collections.newBuffer[Any]
     for (constraint <- stdCreditConstraints) {
       constraint.setGPA(stdGpaMap.get(constraint.getStd).getGpa(semester))
       constraint.setMaxCredit(stdCreditConstraint.getMaxCredit)
@@ -349,7 +349,7 @@ class StdCreditConstraintAction extends SemesterSupportAction {
     if (ArrayUtils.isNotEmpty(ids)) {
       val constraints = entityDao.get(classOf[StdCreditConstraint], ids)
       val createdAt = new Date()
-      val loggers = CollectUtils.newArrayList()
+      val loggers = Collections.newBuffer[Any]
       for (stdCreditConstraint <- constraints) {
         stdCreditConstraint.setMaxCredit(maxCredit)
         val logger = ConstraintLogger.genLogger(stdCreditConstraint, if (stdCreditConstraint.isPersisted) "UPDATE" else "CREATE")
@@ -374,7 +374,7 @@ class StdCreditConstraintAction extends SemesterSupportAction {
     if (ArrayUtils.isEmpty(entityIds)) {
       stdCreditConstraints = entityDao.get(classOf[StdCreditConstraint], "semester", semester)
     } else {
-      stdCreditConstraints = CollectUtils.newArrayList()
+      stdCreditConstraints = Collections.newBuffer[Any]
       val builder = OqlBuilder.from(classOf[StdCreditConstraint], "stdCreditConstraint")
       builder.where("stdCreditConstraint.id in (:ids)").where("stdCreditConstraint.semester=:semester")
       var i = 0
@@ -383,27 +383,27 @@ class StdCreditConstraintAction extends SemesterSupportAction {
         if (end > entityIds.length) {
           end = entityIds.length
         }
-        val parameterMap = CollectUtils.newHashMap()
+        val parameterMap = Collections.newMap[Any]
         parameterMap.put("ids", ArrayUtils.subarray(entityIds, i, end))
         parameterMap.put("semester", semester)
         stdCreditConstraints.addAll(entityDao.search(builder.params(parameterMap).build()))
         i += 500
       }
     }
-    val stds = CollectUtils.newHashSet()
-    val constraintMap = CollectUtils.newHashMap()
+    val stds = Collections.newSet[Any]
+    val constraintMap = Collections.newMap[Any]
     for (stdCreditConstraint <- stdCreditConstraints) {
       stds.add(stdCreditConstraint.getStd)
       constraintMap.put(stdCreditConstraint.getStd, stdCreditConstraint)
     }
     if (!stds.isEmpty) {
       val multiStdGpa = gpaStatService.statGpas(stds, putSemester(null))
-      val stdGpaMap = CollectUtils.newHashMap()
+      val stdGpaMap = Collections.newMap[Any]
       for (stdGpa <- multiStdGpa.getStdGpas) {
         stdGpaMap.put(stdGpa.getStd, stdGpa.getGpa)
       }
       val createdAt = new Date()
-      val loggers = CollectUtils.newArrayList()
+      val loggers = Collections.newBuffer[Any]
       for (stdCreditConstraint <- stdCreditConstraints) {
         val std = stdCreditConstraint.getStd
         stdCreditConstraint.setGPA(stdGpaMap.get(std))
@@ -424,7 +424,7 @@ class StdCreditConstraintAction extends SemesterSupportAction {
 
   protected def removeAndForward(entities: Iterable[_]): String = {
     try {
-      val loggers = CollectUtils.newArrayList()
+      val loggers = Collections.newBuffer[Any]
       val createdAt = new Date()
       for (`object` <- entities) {
         val constraint = `object`.asInstanceOf[StdCreditConstraint]

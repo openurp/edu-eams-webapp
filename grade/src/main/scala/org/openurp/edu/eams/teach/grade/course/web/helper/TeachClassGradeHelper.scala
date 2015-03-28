@@ -6,7 +6,7 @@ import org.beangle.commons.lang.Objects
 import org.beangle.commons.lang.Strings
 import org.apache.commons.lang3.ArrayUtils
 import org.beangle.commons.bean.comparators.PropertyComparator
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
@@ -54,7 +54,7 @@ class TeachClassGradeHelper extends BaseAction {
   def stat(lesson: Lesson) {
     val gradeTypeIds = Array(GradeTypeConstants.USUAL_ID, GradeTypeConstants.MIDDLE_ID, GradeTypeConstants.END_ID, GradeTypeConstants.GA_ID)
     if (Objects.!=(get("kind"), GradeSegStats.COURSE)) {
-      statLesson(CollectUtils.newArrayList(lesson), gradeTypeIds)
+      statLesson(Collections.newBuffer[Any](lesson), gradeTypeIds)
       put("kind", GradeSegStats.LESSON)
     } else {
       val lessonIdSeq = get("lesson.id")
@@ -90,7 +90,7 @@ class TeachClassGradeHelper extends BaseAction {
     }
     segStat.buildScoreSegments()
     ContextHelper.put("segStat", segStat)
-    val stats = CollectUtils.newArrayList()
+    val stats = Collections.newBuffer[Any]
     val gradeTypes = entityDao.get(classOf[GradeType], gradeTypeIds)
     for (lesson <- lessons) {
       val grades = getCourseGrades(lesson)
@@ -115,7 +115,7 @@ class TeachClassGradeHelper extends BaseAction {
     }
     segStat.buildScoreSegments()
     ContextHelper.put("segStat", segStat)
-    val stats = CollectUtils.newArrayList()
+    val stats = Collections.newBuffer[Any]
     val gradeTypes = entityDao.get(classOf[GradeType], gradeTypeIds)
     for (course <- courses) {
       val grades = getCourseGrades(course, semester)
@@ -128,14 +128,14 @@ class TeachClassGradeHelper extends BaseAction {
   }
 
   def report(lessons: List[Lesson], gradeTypeIds: Array[Integer]) {
-    var gradeTypes = CollectUtils.newArrayList()
+    var gradeTypes = Collections.newBuffer[Any]
     if (ArrayUtils.isNotEmpty(gradeTypeIds)) {
       gradeTypes = entityDao.get(classOf[GradeType], gradeTypeIds)
     }
     val makeupType = baseCodeService.getCode(classOf[GradeType], GradeTypeConstants.MAKEUP_ID).asInstanceOf[GradeType]
-    val reports = CollectUtils.newArrayList()
+    val reports = Collections.newBuffer[Any]
     for (lesson <- lessons) {
-      if (CollectUtils.isEmpty(gradeTypes) || 
+      if (Collections.isEmpty(gradeTypes) || 
         gradeTypes.size == 1 && 
         gradeTypes.contains(new GradeType(GradeTypeConstants.GA_ID))) {
         val setting = settings.getSetting(lesson.getProject)
@@ -179,15 +179,15 @@ class TeachClassGradeHelper extends BaseAction {
   def info(lesson: Lesson) {
     val grades = entityDao.search(OqlBuilder.from(classOf[CourseGrade], "cg").where("cg.lesson=:lesson", 
       lesson))
-    var gradeTypeSet = CollectUtils.newHashSet()
+    var gradeTypeSet = Collections.newSet[Any]
     val gradeTypeIds = getIntIds("gradeType")
     if (null != gradeTypeIds && gradeTypeIds.length > 0) {
-      gradeTypeSet = CollectUtils.newHashSet(baseCodeService.getCodes(classOf[GradeType], gradeTypeIds))
+      gradeTypeSet = Collections.newHashSet(baseCodeService.getCodes(classOf[GradeType], gradeTypeIds))
     }
-    val existed = CollectUtils.newHashSet()
+    val existed = Collections.newSet[Any]
     for (grade <- grades; eg <- grade.getExamGrades) existed.add(eg.gradeType)
     if (gradeTypeSet.isEmpty) gradeTypeSet.addAll(existed) else gradeTypeSet.retainAll(existed)
-    val gradeTypes = CollectUtils.newArrayList(gradeTypeSet)
+    val gradeTypes = Collections.newBuffer[Any](gradeTypeSet)
     var orderBy = get("orderBy")
     if (Strings.isEmpty(orderBy)) {
       orderBy = "std.code"
@@ -198,7 +198,7 @@ class TeachClassGradeHelper extends BaseAction {
       }
     }
     val orders = Order.parse(orderBy)
-    if (CollectUtils.isNotEmpty(orders)) {
+    if (Collections.isNotEmpty(orders)) {
       val order = orders.get(0)
       Collections.sort(grades, new CourseGradeComparator(order.getProperty, order.isAscending, gradeTypes))
     }
@@ -209,7 +209,7 @@ class TeachClassGradeHelper extends BaseAction {
     ContextHelper.put("lesson", lesson)
     val courseGradeStates = entityDao.get(classOf[CourseGradeState], "lesson", lesson)
     var gradeState: CourseGradeState = null
-    if (CollectUtils.isNotEmpty(courseGradeStates)) {
+    if (Collections.isNotEmpty(courseGradeStates)) {
       gradeState = courseGradeStates.get(0)
     }
     ContextHelper.put("gradeState", gradeState)

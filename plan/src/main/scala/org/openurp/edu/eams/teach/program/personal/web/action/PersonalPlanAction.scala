@@ -5,7 +5,7 @@ package org.openurp.edu.eams.teach.program.personal.web.action
 
 
 import org.apache.commons.lang3.ArrayUtils
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.beangle.struts2.convention.route.Action
@@ -99,8 +99,8 @@ class PersonalPlanAction extends PersonalPlanSearchAction {
     }
     val multiComparisonResult = new HashMap[String, Map[String, Any]]()
     val stds = entityDao.get(classOf[Student], stdIds)
-    val stdToAmbiguousMajorPrograms = CollectUtils.newHashMap()
-    val noMmajorProgramStds = CollectUtils.newArrayList()
+    val stdToAmbiguousMajorPrograms = Collections.newMap[Any]
+    val noMmajorProgramStds = Collections.newBuffer[Any]
     for (std <- stds) {
       val personalPlan = coursePlanProvider.getPersonalPlan(std)
       val oneComparisonResult = new HashMap[String, Any]()
@@ -118,8 +118,8 @@ class PersonalPlanAction extends PersonalPlanSearchAction {
         case e: AmbiguousMajorProgramException => stdToAmbiguousMajorPrograms.put(std, e.getAmbiguousPrograms)
       }
     }
-    if (CollectUtils.isNotEmpty(stdToAmbiguousMajorPrograms.keySet) || 
-      CollectUtils.isNotEmpty(noMmajorProgramStds)) {
+    if (Collections.isNotEmpty(stdToAmbiguousMajorPrograms.keySet) || 
+      Collections.isNotEmpty(noMmajorProgramStds)) {
       put("stdToAmbiguousMajorPrograms", stdToAmbiguousMajorPrograms)
       put("noMajorProgramStds", noMmajorProgramStds)
       return forward("compareProblem")
@@ -129,17 +129,17 @@ class PersonalPlanAction extends PersonalPlanSearchAction {
   }
 
   def compairWithSpecifiedMajorPlan(): String = {
-    val stdIds = CollectUtils.newArrayList(getLongIds("std"))
-    if (CollectUtils.isEmpty(stdIds)) {
+    val stdIds = Collections.newBuffer[Any](getLongIds("std"))
+    if (Collections.isEmpty(stdIds)) {
       return forwardError("error.parameters.needed")
     }
-    var ambiguousProgramStdIds = CollectUtils.newArrayList()
+    var ambiguousProgramStdIds = Collections.newBuffer[Any]
     if (getLongIds("ambiguousProgramStd") != null) {
-      ambiguousProgramStdIds = CollectUtils.newArrayList(getLongIds("ambiguousProgramStd"))
+      ambiguousProgramStdIds = Collections.newBuffer[Any](getLongIds("ambiguousProgramStd"))
     }
-    var noProgramStdIds = CollectUtils.newArrayList()
+    var noProgramStdIds = Collections.newBuffer[Any]
     if (getLongIds("noProgramStd") != null) {
-      noProgramStdIds = CollectUtils.newArrayList(getLongIds("noProgramStd"))
+      noProgramStdIds = Collections.newBuffer[Any](getLongIds("noProgramStd"))
     }
     stdIds.removeAll(ambiguousProgramStdIds)
     stdIds.removeAll(noProgramStdIds)
@@ -183,7 +183,7 @@ class PersonalPlanAction extends PersonalPlanSearchAction {
     if (stdId != null) {
       std = entityDao.get(classOf[Student], stdId)
       if (getProject.id != std.getProject.id || 
-        (CollectUtils.isEmpty(getEducations) || !getEducations.contains(std.getEducation)) || 
+        (Collections.isEmpty(getEducations) || !getEducations.contains(std.getEducation)) || 
         !getStdTypes.contains(std.getType) || 
         !getDeparts.contains(std.getDepartment)) {
         return redirect("search", "error.dataRealm.insufficient")
@@ -192,7 +192,7 @@ class PersonalPlanAction extends PersonalPlanSearchAction {
     } else if (planId != null) {
       plan = entityDao.get(classOf[PersonalPlan], planId)
       if (getProject.id != plan.getStd.getMajor.getProject.id || 
-        (CollectUtils.isEmpty(getEducations) || !getEducations.contains(plan.getStd.getEducation)) || 
+        (Collections.isEmpty(getEducations) || !getEducations.contains(plan.getStd.getEducation)) || 
         !getStdTypes.contains(plan.getStd.getType) || 
         !getDeparts.contains(plan.getStd.getDepartment)) {
         return redirect("search", "error.dataRealm.insufficient")
@@ -216,12 +216,12 @@ class PersonalPlanAction extends PersonalPlanSearchAction {
     val query = OqlBuilder.from(classOf[Student], "std")
     query.where("std.code = :code", get("stdCode"))
     val stds = entityDao.search(query)
-    if (CollectUtils.isEmpty(stds)) {
+    if (Collections.isEmpty(stds)) {
       return forwardError("该生不存在")
     }
     val std = stds.get(0)
     if (getProject.id != std.getProject.id || 
-      (CollectUtils.isEmpty(getEducations) || !getEducations.contains(std.getEducation)) || 
+      (Collections.isEmpty(getEducations) || !getEducations.contains(std.getEducation)) || 
       !getStdTypes.contains(std.getType) || 
       !getDeparts.contains(std.getDepartment)) {
       return redirect("search", "error.dataRealm.insufficient")

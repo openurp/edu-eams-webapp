@@ -3,7 +3,7 @@ package org.openurp.edu.eams.teach.election.service.rule.election
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.model.dao.EntityDao
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.edu.base.code.CourseType
@@ -42,7 +42,7 @@ class PlanCreditLimitPrepare extends ElectRulePrepare {
     val state = context.getState
     val electCoursePlan = state.getCoursePlan
     val plan = context.getPlan
-    val groupResults = CollectUtils.newHashMap()
+    val groupResults = Collections.newMap[Any]
     if (null != plan) {
       val planAuditContext = new PlanAuditContext(plan, null, null)
       planAuditContext.setStandard(new PlanAuditStandard())
@@ -141,7 +141,7 @@ class PlanCreditLimitPrepare extends ElectRulePrepare {
     builder.where("courseTypeCreditStat.education.id=:education", state.getStd.educationId)
     builder.cacheable()
     val courseTypeCreditConstraints = entityDao.search(builder)
-    val credits = CollectUtils.newHashMap()
+    val credits = Collections.newMap[Any]
     for (courseTypeCreditStat <- courseTypeCreditConstraints) {
       credits.put(courseTypeCreditStat.getCourseType, courseTypeCreditStat.getLimitCredit)
     }

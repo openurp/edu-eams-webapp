@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.grade.course.web.helper
 
 import org.beangle.commons.bean.comparators.PropertyComparator
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.openurp.edu.teach.code.GradeType
 import org.openurp.edu.teach.grade.CourseGrade
 import org.openurp.edu.teach.grade.model.CourseGradeState
@@ -19,7 +19,7 @@ object TeachClassGrade {
       courseGrades: List[CourseGrade], 
       courseGradeState: CourseGradeState, 
       stdPerClass: java.lang.Integer): List[TeachClassGrade] = {
-    val classGrades = CollectUtils.newArrayList()
+    val classGrades = Collections.newBuffer[Any]
     val teachClassGrade = new TeachClassGrade(gradeTypes, lesson, courseGrades, courseGradeState)
     var begin = 0
     while (teachClassGrade.getCourseGrades.size - begin > stdPerClass.intValue()) {
@@ -30,7 +30,7 @@ object TeachClassGrade {
       if (teachClassGrade.getCourseGrades.size < begin + stdPerClass.intValue()) {
         end = teachClassGrade.getCourseGrades.size
       }
-      other.setCourseGrades(CollectUtils.newArrayList(teachClassGrade.getCourseGrades.subList(begin, 
+      other.setCourseGrades(Collections.newBuffer[Any](teachClassGrade.getCourseGrades.subList(begin, 
         end)))
       other.setBeginIndex(begin)
       classGrades.add(other)
@@ -80,8 +80,8 @@ class TeachClassGrade {
       courseGradeState: CourseGradeState) {
     this()
     this.courseGradeState = courseGradeState
-    this.gradeTypes = CollectUtils.newArrayList()
-    val noPercentGradeTypes = CollectUtils.newArrayList()
+    this.gradeTypes = Collections.newBuffer[Any]
+    val noPercentGradeTypes = Collections.newBuffer[Any]
     noPercentGradeTypes.add(GradeTypeConstants.FINAL_ID)
     noPercentGradeTypes.add(GradeTypeConstants.GA_ID)
     noPercentGradeTypes.add(GradeTypeConstants.MAKEUP_ID)
@@ -95,7 +95,7 @@ class TeachClassGrade {
     }
     this.lesson = lesson
     this.courseGrades = courseGrades
-    if (CollectUtils.isNotEmpty(this.courseGrades)) {
+    if (Collections.isNotEmpty(this.courseGrades)) {
       Collections.sort(this.courseGrades, new PropertyComparator("std.code"))
     }
   }

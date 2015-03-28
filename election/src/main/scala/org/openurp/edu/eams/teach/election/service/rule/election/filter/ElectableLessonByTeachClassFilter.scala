@@ -1,11 +1,11 @@
 package org.openurp.edu.eams.teach.election.service.rule.election.filter
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.openurp.edu.eams.teach.election.model.Enum.ElectRuleType
 import org.openurp.edu.eams.teach.election.service.context.ElectMessage
 import org.openurp.edu.eams.teach.election.service.context.ElectState
 import org.openurp.edu.eams.teach.election.service.context.ElectionCourseContext
-import org.openurp.edu.eams.teach.election.service.helper.CourseLimitGroupHelper
+import org.openurp.edu.eams.teach.election.service.helper.LessonLimitGroupHelper
 import org.openurp.edu.eams.teach.election.service.rule.AbstractElectRuleExecutor
 import org.openurp.edu.teach.lesson.Lesson
 
@@ -20,10 +20,10 @@ class ElectableLessonByTeachClassFilter extends AbstractElectableLessonFilter() 
       !retakeService.isCheckTeachClass(state.getProfile(entityDao).getElectConfigs)) {
       return true
     }
-    if (CollectUtils.isEmpty(lesson.getTeachClass.getLimitGroups)) {
+    if (Collections.isEmpty(lesson.getTeachClass.getLimitGroups)) {
       return true
     }
-    CourseLimitGroupHelper.isElectable(lesson, state)
+    LessonLimitGroupHelper.isElectable(lesson, state)
   }
 
   protected override def onExecuteRuleReturn(result: Boolean, context: ElectionCourseContext): Boolean = {

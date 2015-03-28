@@ -3,7 +3,7 @@ package org.openurp.edu.eams.teach.program.bind.web.action
 import java.util.Date
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Objects
 import org.beangle.commons.lang.Strings
@@ -45,8 +45,8 @@ class ProgramBindManageAction extends ProjectSupportAction {
   def search(): String = {
     val students = entityDao.search(buidOql())
     put("students", students)
-    val stdPrograms = CollectUtils.newHashMap()
-    if (CollectUtils.isNotEmpty(students)) {
+    val stdPrograms = Collections.newMap[Any]
+    if (Collections.isNotEmpty(students)) {
       val programs = entityDao.get(classOf[StudentProgram], "std", students)
       for (studentProgram <- programs) {
         stdPrograms.put(studentProgram.getStd.id, studentProgram)
@@ -67,8 +67,8 @@ class ProgramBindManageAction extends ProjectSupportAction {
       stdIds(i) = java.lang.Long.parseLong(strStdIds(i))
     }
     val stds = entityDao.get(classOf[Student], stdIds)
-    val multiChoiceStds = CollectUtils.newHashMap()
-    val noChoiceStds = CollectUtils.newArrayList()
+    val multiChoiceStds = Collections.newMap[Any]
+    val noChoiceStds = Collections.newBuffer[Any]
     val conditions = get("condition")
     val withStdType = conditions.indexOf("stdType") != -1
     val withDirection = conditions.indexOf("direction") != -1
@@ -80,7 +80,7 @@ class ProgramBindManageAction extends ProjectSupportAction {
         case e: NoMajorProgramException => noChoiceStds.add(std)
       }
     }
-    if (CollectUtils.isNotEmpty(multiChoiceStds.keySet) || CollectUtils.isNotEmpty(noChoiceStds)) {
+    if (Collections.isNotEmpty(multiChoiceStds.keySet) || Collections.isNotEmpty(noChoiceStds)) {
       put("multiChoiceStds", multiChoiceStds)
       put("noChoiceStds", noChoiceStds)
       return forward("problemBind")
@@ -161,15 +161,15 @@ class ProgramBindManageAction extends ProjectSupportAction {
   }
 
   def manualbind_search(): String = {
-    if (CollectUtils.isEmpty(getProjects) || CollectUtils.isEmpty(getDeparts) || 
-      CollectUtils.isEmpty(getStdTypes)) {
+    if (Collections.isEmpty(getProjects) || Collections.isEmpty(getDeparts) || 
+      Collections.isEmpty(getStdTypes)) {
       return forwardError("对不起，您没有权限！")
     }
     val query = majorPlanSearchHelper.buildPlanQuery()
     query.where("plan.program.major.project in (:projects)", getProjects)
       .where("plan.program.department in (:departs)", getDeparts)
       .where("plan.program.stdType in (:stdTypes)", getStdTypes)
-    if (CollectUtils.isNotEmpty(getEducations)) {
+    if (Collections.isNotEmpty(getEducations)) {
       query.where("plan.program.education in (:educations)", getEducations)
     }
     val plans = entityDao.search(query)
@@ -222,10 +222,10 @@ class ProgramBindManageAction extends ProjectSupportAction {
     }
     query.where("std.project = :project", getProject)
     query.where("std.department in (:departments)", getDeparts)
-    if (CollectUtils.isNotEmpty(getStdTypes)) {
+    if (Collections.isNotEmpty(getStdTypes)) {
       query.where("std.type in (:stdTypes)", getStdTypes)
     }
-    if (CollectUtils.isNotEmpty(getEducations)) {
+    if (Collections.isNotEmpty(getEducations)) {
       query.where("std.education in (:educations)", getEducations)
     }
     if (Strings.isNotBlank(get("orderBy"))) {

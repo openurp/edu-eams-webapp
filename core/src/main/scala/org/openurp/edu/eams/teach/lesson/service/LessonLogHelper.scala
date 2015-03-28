@@ -8,7 +8,7 @@ import org.beangle.commons.event.BusinessEvent
 class LessonLogHelper extends BaseServiceImpl {
 
   def log(detail: String) {
-    val logEvent = new BusinessEvent(1)
+    val logEvent = new BusinessEvent(Integer.valueOf(1))
     logEvent.detail=detail
     logEvent.resource="教学任务"
     publish(logEvent)

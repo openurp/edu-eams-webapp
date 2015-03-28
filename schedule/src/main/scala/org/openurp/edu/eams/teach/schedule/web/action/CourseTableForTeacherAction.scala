@@ -4,7 +4,7 @@ import java.util.Arrays
 
 
 import org.apache.commons.collections.CollectionUtils
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.data.model.Entity
 import org.beangle.commons.lang.Strings
@@ -114,7 +114,7 @@ class CourseTableForTeacherAction extends AbstractTeacherLessonAction {
     query.where("arrangeSwitch.project =:project", getProject)
     query.where("arrangeSwitch.semester =:semester", semester)
     query.where("arrangeSwitch.published = true")
-    if (CollectUtils.isEmpty(entityDao.search(query))) {
+    if (Collections.isEmpty(entityDao.search(query))) {
       return forwardError("当前学期课程安排还未发布")
     }
     val setting = populate(classOf[CourseTableSetting], "setting")
@@ -129,7 +129,7 @@ class CourseTableForTeacherAction extends AbstractTeacherLessonAction {
     }
     setting.setWeekdays(Arrays.asList(WeekDays.All:_*))
     setting.setDisplaySemesterTime(true)
-    put("courseTableList", CollectUtils.newArrayList(buildCourseTable(setting, teacher)))
+    put("courseTableList", Collections.newBuffer[Any](buildCourseTable(setting, teacher)))
     put("setting", setting)
     put("timeSetting", timeSettingService.getClosestTimeSetting(getProject, setting.getSemester, null))
     put("tableStyle", CourseTableStyle.getStyle(getConfig.get(CourseTableStyle.STYLE_KEY).asInstanceOf[String]))
@@ -139,14 +139,14 @@ class CourseTableForTeacherAction extends AbstractTeacherLessonAction {
 
   private def buildCourseTable(setting: CourseTableSetting, resource: Entity[_]): CourseTable = {
     val table = new CourseTable(resource, setting.getKind)
-    var taskList = CollectUtils.newArrayList()
+    var taskList = Collections.newBuffer[Any]
     val project = getProject
     if (CourseTable.TEACHER == setting.getKind) {
       val teacher = resource.asInstanceOf[Teacher]
       put("teacher", resource)
       for (j <- 0 until setting.getTimes.length) {
         val result = teachResourceService.getTeacherActivities(teacher, setting.getTimes()(j), if (setting.getForSemester) setting.getSemester else null)
-        CollectUtils.filter(result, new Predicate[CourseActivity]() {
+        Collections.filter(result, new Predicate[CourseActivity]() {
 
           def apply(input: CourseActivity): java.lang.Boolean = {
             return input.getLesson.getProject == project
@@ -160,7 +160,7 @@ class CourseTableForTeacherAction extends AbstractTeacherLessonAction {
       if (setting.getForSemester) {
         taskList = lessonService.getLessonByCategory(resource.id, lessonFilterStrategyFactory.getLessonFilterCategory(LessonFilterStrategy.TEACHER), 
           setting.getSemester)
-        CollectUtils.filter(taskList, new Predicate[Lesson]() {
+        Collections.filter(taskList, new Predicate[Lesson]() {
 
           def apply(input: Lesson): java.lang.Boolean = return input.getProject == project
         })
@@ -204,7 +204,7 @@ class CourseTableForTeacherAction extends AbstractTeacherLessonAction {
     query.where("arrangeSwitch.project =:project", getProject)
     query.where("arrangeSwitch.semester =:semester", semester)
     query.where("arrangeSwitch.published = true")
-    if (CollectUtils.isEmpty(entityDao.search(query))) {
+    if (Collections.isEmpty(entityDao.search(query))) {
       return forwardError("当前学期课程安排还未发布")
     }
     val setting = populate(classOf[CourseTableSetting], "setting")
@@ -219,7 +219,7 @@ class CourseTableForTeacherAction extends AbstractTeacherLessonAction {
     }
     setting.setWeekdays(Arrays.asList(WeekDays.All:_*))
     setting.setDisplaySemesterTime(true)
-    put("courseTableList", CollectUtils.newArrayList(buildCourseTable(setting, teacher)))
+    put("courseTableList", Collections.newBuffer[Any](buildCourseTable(setting, teacher)))
     put("setting", setting)
     put("timeSetting", timeSettingService.getClosestTimeSetting(getProject, setting.getSemester, null))
     put("tableStyle", CourseTableStyle.getStyle(getConfig.get(CourseTableStyle.STYLE_KEY).asInstanceOf[String]))
@@ -239,9 +239,9 @@ class CourseTableForTeacherAction extends AbstractTeacherLessonAction {
     if (lesson == null || !lesson.getTeachers.contains(teacher)) {
       return forwardError("security.error.notEnoughAuthority")
     }
-    val taskStdCollision = CollectUtils.newHashSet()
+    val taskStdCollision = Collections.newSet[Any]
     val builder = OqlBuilder.from(classOf[CourseTake], "take")
-    builder.join("take.lesson.courseSchedule.activities", "activity2")
+    builder.join("take.lesson.schedule.activities", "activity2")
     builder.where("take.std.id in (select std.id from " + classOf[CourseTake].getName + 
       " stdTake where stdTake.lesson = :lesson)", lesson)
     builder.where("take.lesson <> :lesson", lesson)

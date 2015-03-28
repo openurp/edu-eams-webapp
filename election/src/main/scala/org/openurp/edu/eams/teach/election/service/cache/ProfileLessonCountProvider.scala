@@ -3,7 +3,7 @@ package org.openurp.edu.eams.teach.election.service.cache
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Throwables
 import org.openurp.edu.eams.teach.election.ElectionProfile
@@ -16,11 +16,11 @@ object ProfileLessonCountProvider {
 
   private val refreshInterval = 1000 * 5
 
-  private val profileId2CountJson = CollectUtils.newHashMap()
+  private val profileId2CountJson = Collections.newMap[Any]
 
-  private val profileId2LastUpdateTime = CollectUtils.newHashMap()
+  private val profileId2LastUpdateTime = Collections.newMap[Any]
 
-  private val profileId2Turn = CollectUtils.newHashMap()
+  private val profileId2Turn = Collections.newMap[Any]
 
   private val urgentQuery = OqlBuilder.from(classOf[ElectionProfile].getName, "p")
     .select("p.id, p.turn")
@@ -32,7 +32,7 @@ class ProfileLessonCountProvider extends AbstractProfileLessonProvider {
   def run() {
     try {
       while (true) {
-        val urgentIds = CollectUtils.newHashSet()
+        val urgentIds = Collections.newSet[Any]
         val ss = entityDao.search(urgentQuery)
         for (result <- ss) {
           val profileId = result(0).asInstanceOf[java.lang.Long]

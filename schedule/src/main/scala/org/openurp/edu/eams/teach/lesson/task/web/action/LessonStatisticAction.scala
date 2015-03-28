@@ -13,8 +13,8 @@ import org.openurp.edu.base.Project
 import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.teach.lesson.LessonTag
-import org.openurp.edu.eams.teach.lesson.service.CourseLimitService
-import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnum
+import org.openurp.edu.eams.teach.lesson.service.LessonLimitService
+import org.openurp.edu.eams.teach.lesson.service.limit.LessonLimitMetaEnum
 import org.openurp.edu.eams.teach.lesson.task.service.LessonStatService
 import org.openurp.edu.eams.teach.lesson.task.util.TaskOfCourseType
 import org.openurp.edu.eams.web.action.common.SemesterSupportAction
@@ -25,7 +25,7 @@ class LessonStatisticAction extends SemesterSupportAction {
 
   var lessonStatService: LessonStatService = _
 
-  var courseLimitService: CourseLimitService = _
+  var lessonLimitService: LessonLimitService = _
 
   def index(): String = {
     setSemesterDataRealm(hasStdTypeCollege)
@@ -62,7 +62,7 @@ class LessonStatisticAction extends SemesterSupportAction {
     val query = OqlBuilder.from(classOf[Lesson], "lesson").select("distinct lesson")
       .join("lesson.teachClass.limitGroups", "lgroup")
       .join("lgroup.items", "litem")
-      .where("litem.meta.id = :metaId", CourseLimitMetaEnum.ADMINCLASS.getMetaId)
+      .where("litem.meta.id = :metaId", LessonLimitMeta.Adminclass.getMetaId)
       .where("litem.content like ',%,'")
       .where("lesson.project = :project", project)
       .where("lesson.semester = :semester", semester)
@@ -70,7 +70,7 @@ class LessonStatisticAction extends SemesterSupportAction {
     val lessons = entityDao.search(query)
     val classMap = new HashMap[Long, List[Adminclass]]()
     for (lesson <- lessons) {
-      classMap.put(lesson.id, courseLimitService.extractAdminclasses(lesson.getTeachClass))
+      classMap.put(lesson.id, lessonLimitService.extractAdminclasses(lesson.getTeachClass))
     }
     put("classMap", classMap)
     put("lessons", lessons)

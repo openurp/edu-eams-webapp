@@ -11,7 +11,7 @@ import java.util.Date
 import java.util.GregorianCalendar
 
 import java.util.Vector
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.text.i18n.TextResource
 import org.openurp.base.Semester
@@ -182,7 +182,7 @@ object YearWeekTimeUtil {
     if (gregorianCalendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
       endAtSat = true
     }
-    val unitList = CollectUtils.newArrayList()
+    val unitList = Collections.newBuffer[Any]
     for (courseTime <- courseTimes) {
       val weekState = courseTime.weekState
       val sb = new StringBuffer(Strings.repeat("0", semester.startWeek - 1))
@@ -251,7 +251,7 @@ object YearWeekTimeUtil {
   }
 
   def buildFirstLessonDay(lesson: Lesson): Date = {
-    val activities = CollectUtils.newArrayList(lesson.courseSchedule.activities)
+    val activities = Collections.newBuffer[Any](lesson.schedule.activities)
     if (activities.size > 1) {
       Collections.sort(activities, new Comparator[CourseActivity]() {
 

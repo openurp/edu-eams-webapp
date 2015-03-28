@@ -5,7 +5,7 @@ import java.io.UnsupportedEncodingException
 import java.util.Comparator
 
 import org.beangle.commons.bean.comparators.MultiPropertyComparator
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.page.PageLimit
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
@@ -92,7 +92,7 @@ class MajorCourseGroupAction extends RestrictionSupportAction {
     for (code <- codeArr) {
       val t = entityDao.get(classOf[Course], "code", code)
       var b = false
-      if (CollectUtils.isNotEmpty(t)) {
+      if (Collections.isNotEmpty(t)) {
         val course = t.get(0)
         if (course.isEnabled && course.getProject.id == projectId && 
           !courseList.contains(course)) {
@@ -238,7 +238,7 @@ class MajorCourseGroupAction extends RestrictionSupportAction {
       .where("majorPlan1.program.major.project.id = :projectId", getSession.get("projectId"))
       .where("majorPlan1.program.department in (:departs)", getDeparts)
       .where("majorPlan1.id <> :meId", planId)
-    if (CollectUtils.isNotEmpty(getEducations)) {
+    if (Collections.isNotEmpty(getEducations)) {
       query.where("majorPlan1.program.education in (:educations)", getEducations)
     }
     if (Strings.isEmpty(get("orderBy"))) {
@@ -267,8 +267,8 @@ class MajorCourseGroupAction extends RestrictionSupportAction {
     val MajorCourseGroup = entityDao.get(classOf[MajorCourseGroup], MajorCourseGroupId)
     val majorPlans = entityDao.search(OqlBuilder.from(classOf[MajorPlan], "majorPlan").where("majorPlan.id in (:majorPlanIds)", 
       majorPlanIds))
-    val newList = CollectUtils.newArrayList()
-    val failure = CollectUtils.newArrayList()
+    val newList = Collections.newBuffer[Any]
+    val failure = Collections.newBuffer[Any]
     for (majorPlan <- majorPlans) {
       if (MajorCourseGroupService.hasSameGroupInOneLevel(MajorCourseGroup, majorPlan, null)) {
         failure.add(majorPlan)
@@ -280,7 +280,7 @@ class MajorCourseGroupAction extends RestrictionSupportAction {
       majorPlan.setCredits(planCommonDao.statPlanCredits(majorPlan))
       newList.add(majorPlan)
     }
-    if (CollectUtils.isNotEmpty(newList)) {
+    if (Collections.isNotEmpty(newList)) {
       entityDao.saveOrUpdate(newList)
     }
     redirect(new Action("majorPlan", "edit", extra), if (failure.isEmpty) "info.action.success" else failure.size + "个培养方案复制失败,其顶层组已有相同类别课程组")

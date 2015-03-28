@@ -5,7 +5,7 @@ import java.util.Date
 
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.bean.comparators.PropertyComparator
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.commons.collection.page.PagedList
 import org.beangle.data.jpa.dao.OqlBuilder
@@ -75,7 +75,7 @@ class RetakeAction extends SemesterSupportAction {
       builder.where("cg.courseType.name not like :typeName", "%类")
     }
     val statList = entityDao.search(builder).asInstanceOf[List[RetakeCourseStat]]
-    val stats = CollectUtils.newHashMap()
+    val stats = Collections.newMap[Any]
     for (stat <- statList) {
       stats.put(stat.getCourse.id, stat)
     }
@@ -110,7 +110,7 @@ class RetakeAction extends SemesterSupportAction {
         stat.setFreespace(free.intValue())
       }
     }
-    CollectUtils.newArrayList(stats.values)
+    Collections.newBuffer[Any](stats.values)
   }
 
   def unpassed(): String = {
@@ -155,7 +155,7 @@ class RetakeAction extends SemesterSupportAction {
     val semesterId = getIntId("semester")
     val semester = entityDao.get(classOf[Semester], semesterId)
     val stats = stats(courseIds)
-    val lessons = CollectUtils.newArrayList()
+    val lessons = Collections.newBuffer[Any]
     val project = getProject
     for (stat <- stats) {
       val course = stat.getCourse

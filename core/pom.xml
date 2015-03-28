@@ -15,6 +15,7 @@
 		<openurp.edu.version>0.0.1-SNAPSHOT</openurp.edu.version>
 		<openurp.base.version>0.0.1-SNAPSHOT</openurp.base.version>
 		<openurp.peopleapi.version>0.0.1-SNAPSHOT</openurp.peopleapi.version>
+		<openurp.lgapi.version>0.0.1-SNAPSHOT</openurp.lgapi.version>
 	</properties>
 
 	<dependencies>
@@ -22,6 +23,11 @@
 			<groupId>org.openurp.edu.teach</groupId>
 			<artifactId>openurp-edu-teach-model</artifactId>
 			<version>${openurp.edu.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openurp.lg.room</groupId>
+			<artifactId>openurp-lg-room-model</artifactId>
+			<version>${openurp.lgapi.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.openurp.edu.teach</groupId>

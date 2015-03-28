@@ -6,7 +6,7 @@ package org.openurp.edu.eams.teach.lesson.task.web.action
 
 
 import org.apache.commons.lang3.ArrayUtils
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.transfer.exporter.PropertyExtractor
@@ -18,15 +18,15 @@ import org.openurp.edu.eams.base.util.WeekStates
 import org.openurp.edu.base.Project
 import org.openurp.edu.base.Student
 import org.openurp.edu.eams.teach.code.industry.TeachLangType
-import org.openurp.edu.teach.lesson.CourseLimitGroup
-import org.openurp.edu.teach.lesson.CourseLimitItem
+import org.openurp.edu.teach.lesson.LessonLimitGroup
+import org.openurp.edu.teach.lesson.LessonLimitItem
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.teach.lesson.LessonMaterial
 import org.openurp.edu.teach.lesson.LessonTag
 import org.openurp.edu.eams.teach.lesson.helper.LessonSearchHelper
-import org.openurp.edu.eams.teach.lesson.service.CourseLimitService
+import org.openurp.edu.eams.teach.lesson.service.LessonLimitService
 import org.openurp.edu.eams.teach.lesson.service.LessonService
-import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnum
+import org.openurp.edu.eams.teach.lesson.service.limit.LessonLimitMetaEnum
 import org.openurp.edu.eams.teach.lesson.task.service.LessonPlanRelationService
 import org.openurp.edu.eams.teach.lesson.task.util.ProjectUtils
 import org.openurp.edu.eams.teach.lesson.task.util.TeachTaskPropertyExtractor
@@ -43,7 +43,7 @@ class TeachTaskSearchAction extends SemesterSupportAction {
 
   var lessonPlanRelationService: LessonPlanRelationService = _
 
-  var courseLimitService: CourseLimitService = _
+  var lessonLimitService: LessonLimitService = _
 
   def index(): String = {
     setSemesterDataRealm(hasStdTypeCollege)
@@ -103,19 +103,19 @@ class TeachTaskSearchAction extends SemesterSupportAction {
     val lessonId = getLongId("lesson")
     val lesson = entityDao.get(classOf[Lesson], lessonId)
     put("guapaiTagId", LessonTag.PredefinedTags.GUAPAI.id)
-    put("fakeGender", courseLimitService.extractGender(lesson.getTeachClass))
-    put("educationLimit", courseLimitService.xtractEducationLimit(lesson.getTeachClass))
-    put("adminclassLimit", courseLimitService.xtractAdminclassLimit(lesson.getTeachClass))
-    put("attendDepartLimit", courseLimitService.xtractAttendDepartLimit(lesson.getTeachClass))
-    put("stdTypeLimit", courseLimitService.xtractStdTypeLimit(lesson.getTeachClass))
-    put("majorLimit", courseLimitService.xtractMajorLimit(lesson.getTeachClass))
-    put("directionLimit", courseLimitService.xtractDirectionLimit(lesson.getTeachClass))
-    put("programLimit", courseLimitService.xtractProgramLimit(lesson.getTeachClass))
+    put("fakeGender", lessonLimitService.extractGender(lesson.getTeachClass))
+    put("educationLimit", lessonLimitService.xtractEducationLimit(lesson.getTeachClass))
+    put("adminclassLimit", lessonLimitService.xtractAdminclassLimit(lesson.getTeachClass))
+    put("attendDepartLimit", lessonLimitService.xtractAttendDepartLimit(lesson.getTeachClass))
+    put("stdTypeLimit", lessonLimitService.xtractStdTypeLimit(lesson.getTeachClass))
+    put("majorLimit", lessonLimitService.xtractMajorLimit(lesson.getTeachClass))
+    put("directionLimit", lessonLimitService.xtractDirectionLimit(lesson.getTeachClass))
+    put("programLimit", lessonLimitService.xtractProgramLimit(lesson.getTeachClass))
     put("lesson", lesson)
     val query = OqlBuilder.from(classOf[LessonMaterial], "book")
     query.where("book.lesson = :lesson", lesson)
     val lessonMaterials = entityDao.search(query)
-    if (CollectUtils.isNotEmpty(lessonMaterials)) {
+    if (Collections.isNotEmpty(lessonMaterials)) {
       put("lessonMaterial", lessonMaterials.get(0))
     }
     put("weekStates", new WeekStates())
@@ -136,7 +136,7 @@ class TeachTaskSearchAction extends SemesterSupportAction {
   protected def getPropertyExtractor(): PropertyExtractor = {
     val pe = new TeachTaskPropertyExtractor(getTextResource)
     pe.setSemesterService(semesterService)
-    pe.setCourseLimitService(courseLimitService)
+    pe.setLessonLimitService(lessonLimitService)
     pe.setLessonPlanRelationService(lessonPlanRelationService)
     pe.setEntityDao(entityDao)
     pe
@@ -145,19 +145,19 @@ class TeachTaskSearchAction extends SemesterSupportAction {
   def getElectStd(): String = {
     val lessonIds = getLongIds("lesson")
     val lessons = entityDao.get(classOf[Lesson], lessonIds)
-    val map = CollectUtils.newHashMap()
+    val map = Collections.newMap[Any]
     for (lesson <- lessons) {
-      val hql = CollectUtils.newArrayList()
-      val query = OqlBuilder.from(classOf[CourseLimitGroup], "coursegroup")
+      val hql = Collections.newBuffer[Any]
+      val query = OqlBuilder.from(classOf[LessonLimitGroup], "coursegroup")
       query.where("coursegroup.lesson.id =:lessonId", lesson.id)
       val group = entityDao.search(query)
-      for (courseLimitGroup2 <- group; item <- courseLimitGroup2.getItems) {
+      for (lessonLimitGroup2 <- group; item <- lessonLimitGroup2.getItems) {
         val hqlString = getConditionByItem(item)
         hql.add(hqlString)
         map.put(lesson, hql)
       }
     }
-    val stdCount = CollectUtils.newHashMap()
+    val stdCount = Collections.newMap[Any]
     for ((key, value) <- map) {
       val key = key.asInstanceOf[Lesson]
       val value = value.asInstanceOf[List[String]]
@@ -176,7 +176,7 @@ class TeachTaskSearchAction extends SemesterSupportAction {
         //continue
       }
     }
-    val stds = CollectUtils.newHashSet()
+    val stds = Collections.newSet[Any]
     var it = stdCount.keySet.iterator()
     while (it.hasNext) {
       val key = it.next()
@@ -196,13 +196,13 @@ class TeachTaskSearchAction extends SemesterSupportAction {
     forward()
   }
 
-  def getConditionByItem(item: CourseLimitItem): String = {
+  def getConditionByItem(item: LessonLimitItem): String = {
     var hql = ""
     var metaName = ""
     if (null == item || null == item.getMeta) {
       return null
     }
-    metaName = if (item.getMeta.id == CourseLimitMetaEnum.GRADE.getMetaId) item.getMeta.getName else if (item.getMeta.id == CourseLimitMetaEnum.STDTYPE.getMetaId) "type.id" else item.getMeta.getName + ".id"
+    metaName = if (item.getMeta.id == LessonLimitMeta.Grade.getMetaId) item.getMeta.getName else if (item.getMeta.id == LessonLimitMeta.StdType.getMetaId) "type.id" else item.getMeta.getName + ".id"
     if (null != item.getOperator) item.getOperator match {
       case EQUAL => hql = hql + "std." + metaName.toLowerCase() + "=" + item.getContentForHql
       case NOT_EQUAL => hql = hql + "std." + metaName.toLowerCase() + "<>" + item.getContentForHql
@@ -230,19 +230,19 @@ class TeachTaskSearchAction extends SemesterSupportAction {
   def getScaleStd(): String = {
     val lessonIds = getLongIds("lesson")
     val lessons = entityDao.get(classOf[Lesson], lessonIds)
-    val map = CollectUtils.newHashMap()
+    val map = Collections.newMap[Any]
     for (lesson <- lessons) {
-      val hql = CollectUtils.newArrayList()
-      val query = OqlBuilder.from(classOf[CourseLimitGroup], "coursegroup")
+      val hql = Collections.newBuffer[Any]
+      val query = OqlBuilder.from(classOf[LessonLimitGroup], "coursegroup")
       query.where("coursegroup.lesson.id =:lessonId", lesson.id)
       val group = entityDao.search(query)
-      for (courseLimitGroup2 <- group; item <- courseLimitGroup2.getItems) {
+      for (lessonLimitGroup2 <- group; item <- lessonLimitGroup2.getItems) {
         val hqlString = getConditionByItem(item)
         hql.add(hqlString)
         map.put(lesson, hql)
       }
     }
-    val stdCount = CollectUtils.newHashMap()
+    val stdCount = Collections.newMap[Any]
     for ((key, value) <- map) {
       val key = key.asInstanceOf[Lesson]
       val value = value.asInstanceOf[List[String]]
@@ -261,9 +261,9 @@ class TeachTaskSearchAction extends SemesterSupportAction {
         //continue
       }
     }
-    val equalCount = CollectUtils.newHashMap()
-    val gtCount = CollectUtils.newHashMap()
-    val ltCount = CollectUtils.newHashMap()
+    val equalCount = Collections.newMap[Any]
+    val gtCount = Collections.newMap[Any]
+    val ltCount = Collections.newMap[Any]
     for ((key, value) <- stdCount) {
       val key = key.asInstanceOf[Lesson]
       val std = value.asInstanceOf[List[Student]]

@@ -2,7 +2,7 @@ package org.openurp.edu.eams.teach.election.service.rule.election
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.model.dao.EntityDao
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.edu.eams.teach.Grade
@@ -19,7 +19,7 @@ class CourseGradePrepare extends ElectRulePrepare {
 
   def prepare(context: PrepareContext) {
     if (context.isPreparedData(PreparedDataName.RETAKE_COURSES)) return
-    val courseGradePassedMap = CollectUtils.newHashMap()
+    val courseGradePassedMap = Collections.newMap[Any]
     val query = OqlBuilder.from(classOf[CourseGrade], "grade")
     query.select("distinct grade.course.id, grade.passed")
       .where("grade.std = :std", context.getStudent)

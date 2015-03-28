@@ -4,7 +4,7 @@ import java.io.Serializable
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.openurp.edu.base.Course
 import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.teach.lesson.Lesson
@@ -15,12 +15,12 @@ import org.openurp.edu.teach.lesson.Lesson
 @SerialVersionUID(8922874191136161897L)
 class ElectCoursePlan extends Serializable {
 
-  val courseIds = CollectUtils.newHashMap()
+  val courseIds = Collections.newMap[Any]
 
-  val groups = CollectUtils.newHashMap()
+  val groups = Collections.newMap[Any]
 
   
-  val tops = CollectUtils.newArrayList()
+  val tops = Collections.newBuffer[Any]
 
   def getCourseIds(): Map[Long, Integer] = courseIds
 
@@ -66,7 +66,7 @@ class ElectCoursePlan extends Serializable {
   }
 
   def getEmptyGroupCourseTypeIds(): Set[Integer] = {
-    val courseTypeIds = CollectUtils.newHashSet()
+    val courseTypeIds = Collections.newSet[Any]
     for ((key, value) <- groups if value.getCourses.isEmpty) courseTypeIds.add(key)
     courseTypeIds
   }

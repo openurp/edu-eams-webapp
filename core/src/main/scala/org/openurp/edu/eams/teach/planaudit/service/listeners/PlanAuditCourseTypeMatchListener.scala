@@ -3,11 +3,10 @@ package org.openurp.edu.eams.teach.planaudit.service.listeners
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.openurp.edu.eams.core.service.SemesterService
 import org.openurp.edu.base.Course
 import org.openurp.edu.base.code.CourseType
-import org.openurp.edu.eams.teach.exchange.ExchangeCourse
 import org.openurp.edu.teach.grade.CourseGrade
 import org.openurp.edu.teach.planaudit.CourseAuditResult
 import org.openurp.edu.teach.planaudit.GroupAuditResult
@@ -36,7 +35,7 @@ class PlanAuditCourseTypeMatchListener extends PlanAuditListener {
 
   def endPlanAudit(context: PlanAuditContext) {
     val auditTerms = context.auditTerms
-    val results = CollectUtils.newHashMap()
+    val results = Collections.newMap[Any]
     val stdGrade = context.stdGrade
     val restCourses = stdGrade.restCourses
     if (!restCourses.isEmpty) {
@@ -77,7 +76,7 @@ class PlanAuditCourseTypeMatchListener extends PlanAuditListener {
       }
       val courseGroup = context.coursePlan.group(courseType)
       var outOfPlan = false
-      if (!CollectUtils.isEmpty(courseGroup.planCourses)) {
+      if (!Collections.isEmpty(courseGroup.planCourses)) {
         outOfPlan = true
       }
       var existResult: CourseAuditResult = null

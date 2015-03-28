@@ -24,8 +24,8 @@ import org.openurp.edu.eams.teach.lesson.dao.hibernate.internal.LessonPlanRelati
 import org.openurp.edu.eams.teach.lesson.dao.hibernate.internal.LessonSeqNoGeneratorImpl
 import org.openurp.edu.eams.teach.lesson.service.LessonFilterStrategy
 import org.openurp.edu.eams.teach.lesson.service.LessonLogHelper
-import org.openurp.edu.eams.teach.lesson.service.internal.CourseLimitExtractorServiceImpl
-import org.openurp.edu.eams.teach.lesson.service.internal.CourseLimitServiceImpl
+import org.openurp.edu.eams.teach.lesson.service.internal.LessonLimitExtractorServiceImpl
+import org.openurp.edu.eams.teach.lesson.service.internal.LessonLimitServiceImpl
 import org.openurp.edu.eams.teach.lesson.service.internal.DefaultTeachClassNameStrategy
 import org.openurp.edu.eams.teach.lesson.service.internal.LessonServiceImpl
 import org.openurp.edu.eams.teach.lesson.service.internal.filterStrategy.DefaultLessonFilterStrategyFactory
@@ -78,8 +78,8 @@ class TeachServiceModule extends AbstractBindModule {
     bind("textbookOrderLineCodeGenerator", classOf[DefaultTextbookOrderLineCodeGenerator])
     bind("coursePlanProvider", classOf[CoursePlanProviderImpl])
     bind("bestGradeCourseGradeProvider", classOf[BestGradeCourseGradeProviderImpl])
-    bind("courseLimitService", classOf[CourseLimitServiceImpl])
-    bind("courseLimitExtractorService", classOf[CourseLimitExtractorServiceImpl])
+    bind("lessonLimitService", classOf[LessonLimitServiceImpl])
+    bind("lessonLimitExtractorService", classOf[LessonLimitExtractorServiceImpl])
     bind("teachClassNameStrategy", classOf[DefaultTeachClassNameStrategy])
     bind("lessonLogHelper", classOf[LessonLogHelper])
     bind("planAuditSkipListener", classOf[PlanAuditSkipListener])

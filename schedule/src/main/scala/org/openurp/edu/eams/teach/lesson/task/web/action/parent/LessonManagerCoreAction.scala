@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 import org.apache.commons.lang3.ArrayUtils
 import org.apache.struts2.ServletActionContext
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.commons.collection.page.PageLimit
 import org.beangle.data.jpa.dao.OqlBuilder
@@ -57,10 +57,10 @@ import org.openurp.edu.eams.teach.code.school.CourseHourType
 import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.eams.teach.exam.ExamTurn
 import org.openurp.edu.eams.teach.exam.service.ExamYearWeekTimeUtil
-import org.openurp.edu.teach.lesson.CourseLimitGroup
-import org.openurp.edu.teach.lesson.CourseLimitItem
-import org.openurp.edu.teach.lesson.CourseLimitMeta
-import org.openurp.edu.teach.lesson.CourseLimitMeta.Operator
+import org.openurp.edu.teach.lesson.LessonLimitGroup
+import org.openurp.edu.teach.lesson.LessonLimitItem
+import org.openurp.edu.teach.lesson.LessonLimitMeta
+import org.openurp.edu.teach.lesson.LessonLimitMeta.Operator
 import org.openurp.edu.teach.lesson.CourseTake
 import org.openurp.edu.teach.exam.ExamActivity
 import org.openurp.edu.teach.lesson.Lesson
@@ -68,22 +68,22 @@ import org.openurp.edu.teach.lesson.LessonTag
 import org.openurp.edu.teach.lesson.TeachClass
 import org.openurp.edu.eams.teach.lesson.dao.LessonDao
 import org.openurp.edu.eams.teach.lesson.dao.LessonSeqNoGenerator
-import org.openurp.edu.eams.teach.lesson.model.CourseLimitMetaBean
+import org.openurp.edu.eams.teach.lesson.model.LessonLimitMetaBean
 import org.openurp.edu.eams.teach.lesson.model.CourseScheduleBean
 import org.openurp.edu.eams.teach.lesson.model.CourseScheduleBean.CourseStatusEnum
 import org.openurp.edu.eams.teach.lesson.model.LessonTagBean
 import org.openurp.edu.eams.teach.lesson.model.NormalClassBean
 import org.openurp.edu.teach.lesson.model.TeachClassBean
-import org.openurp.edu.eams.teach.lesson.service.CourseLimitGroupBuilder
+import org.openurp.edu.eams.teach.lesson.service.LessonLimitGroupBuilder
 import org.openurp.edu.eams.teach.lesson.service.LessonLogBuilder
 import org.openurp.edu.eams.teach.lesson.service.LessonLogHelper
 import org.openurp.edu.eams.teach.lesson.service.LessonOperateViolation
 import org.openurp.edu.eams.teach.lesson.service.TaskCopyParams
 import org.openurp.edu.eams.teach.lesson.service.TeachClassNameStrategy
-import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitItemContentProvider
-import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitItemContentProviderFactory
-import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnum
-import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnumProvider
+import org.openurp.edu.eams.teach.lesson.service.limit.LessonLimitItemContentProvider
+import org.openurp.edu.eams.teach.lesson.service.limit.LessonLimitItemContentProviderFactory
+import org.openurp.edu.eams.teach.lesson.service.limit.LessonLimitMetaEnum
+import org.openurp.edu.eams.teach.lesson.service.limit.LessonLimitMetaEnumProvider
 import org.openurp.edu.eams.teach.lesson.task.service.LessonCollegeSwitchService
 import org.openurp.edu.eams.teach.lesson.task.service.LessonMergeSplitService
 import org.openurp.edu.eams.teach.lesson.task.service.helper.LessonExamArrangeHelper
@@ -101,8 +101,8 @@ import LessonManagerCoreAction._
 
 object LessonManagerCoreAction {
 
-  val cascadeList = CollectUtils.newArrayList(CourseLimitMetaEnum.ADMINCLASS.getMetaId, CourseLimitMetaEnum.DIRECTION.getMetaId, 
-    CourseLimitMetaEnum.MAJOR.getMetaId, CourseLimitMetaEnum.PROGRAM.getMetaId)
+  val cascadeList = Collections.newBuffer[Any](LessonLimitMeta.Adminclass.getMetaId, LessonLimitMeta.Direction.getMetaId, 
+    LessonLimitMeta.Major.getMetaId, LessonLimitMeta.Program.getMetaId)
 }
 
 abstract class LessonManagerCoreAction extends TeachTaskSearchAction {
@@ -123,9 +123,9 @@ abstract class LessonManagerCoreAction extends TeachTaskSearchAction {
 
   var lessonExamArrangeHelper: LessonExamArrangeHelper = _
 
-  var courseLimitMetaEnumProvider: CourseLimitMetaEnumProvider = _
+  var lessonLimitMetaEnumProvider: LessonLimitMetaEnumProvider = _
 
-  var courseLimitItemContentProviderFactory: CourseLimitItemContentProviderFactory = _
+  var lessonLimitItemContentProviderFactory: LessonLimitItemContentProviderFactory = _
 
   var teachClassNameStrategy: TeachClassNameStrategy = _
 
@@ -139,8 +139,8 @@ abstract class LessonManagerCoreAction extends TeachTaskSearchAction {
     setSemesterDataRealm(hasStdTypeCollege)
     val semester = getAttribute("semester").asInstanceOf[Semester]
     val project = getProject
-    val teachDeparts = CollectUtils.newArrayList()
-    val departs = CollectUtils.newHashSet(ProjectUtils.getTeachDeparts(project))
+    val teachDeparts = Collections.newBuffer[Any]
+    val departs = Collections.newHashSet(ProjectUtils.getTeachDeparts(project))
     for (department <- getDeparts if departs.contains(department)) {
       teachDeparts.add(department)
     }
@@ -208,7 +208,7 @@ abstract class LessonManagerCoreAction extends TeachTaskSearchAction {
     put("lessons", lessons)
     val genderMap = new HashMap[String, Gender]()
     for (lesson <- lessons) {
-      genderMap.put(lesson.id.toString, courseLimitService.extractGender(lesson.getTeachClass))
+      genderMap.put(lesson.id.toString, lessonLimitService.extractGender(lesson.getTeachClass))
     }
     put("genderMap", genderMap)
     put("lessonIds", get("lessonIds"))
@@ -231,17 +231,17 @@ abstract class LessonManagerCoreAction extends TeachTaskSearchAction {
       val grade = get("fake" + lesson.id + ".teachClass.grade")
       lesson.getTeachClass.setGrade(grade)
       val genderId = getInt("fake" + lesson.id + ".gender.id")
-      val courseLimitBuilder = courseLimitService.builder(lesson.getTeachClass)
-      courseLimitBuilder.clear(new CourseLimitMetaBean(CourseLimitMetaEnum.GENDER.getMetaId))
-      courseLimitBuilder.clear(new CourseLimitMetaBean(CourseLimitMetaEnum.GRADE.getMetaId))
+      val lessonLimitBuilder = lessonLimitService.builder(lesson.getTeachClass)
+      lessonLimitBuilder.clear(new LessonLimitMetaBean(LessonLimitMeta.Gender.getMetaId))
+      lessonLimitBuilder.clear(new LessonLimitMetaBean(LessonLimitMeta.Grade.getMetaId))
       if (null != genderId) {
-        courseLimitBuilder.in(entityDao.get(classOf[Gender], genderId))
+        lessonLimitBuilder.in(entityDao.get(classOf[Gender], genderId))
       }
       if (Strings.isNotEmpty(grade)) {
-        courseLimitBuilder.inGrades(Strings.split(grade))
+        lessonLimitBuilder.inGrades(Strings.split(grade))
       }
-      val emptyGroups = new ArrayList[CourseLimitGroup]()
-      for (group <- lesson.getTeachClass.getLimitGroups if CollectUtils.isEmpty(group.getItems)) {
+      val emptyGroups = new ArrayList[LessonLimitGroup]()
+      for (group <- lesson.getTeachClass.getLimitGroups if Collections.isEmpty(group.getItems)) {
         emptyGroups.add(group)
       }
       lesson.getTeachClass.getLimitGroups.removeAll(emptyGroups)
@@ -396,7 +396,7 @@ abstract class LessonManagerCoreAction extends TeachTaskSearchAction {
 
   def checkScheduledPeriod(): String = {
     val query = lessonSearchHelper.buildQuery().orderBy("lesson.no")
-      .where("lesson.courseSchedule.endWeek - lesson.courseSchedule.startWeek + 1 <> lesson.course.weeks")
+      .where("lesson.schedule.endWeek - lesson.schedule.startWeek + 1 <> lesson.course.weeks")
     val lessons = entityDao.search(query)
     put("lessons", lessons)
     forward()
@@ -524,9 +524,9 @@ abstract class LessonManagerCoreAction extends TeachTaskSearchAction {
       return forwardError("error.model.id.needed")
     }
     var lesson: Lesson = null
-    val courseLimitMetaEnumPairs = courseLimitMetaEnumProvider.getCourseLimitMetaPairs
-    val courseMetaIds = courseLimitMetaEnumPairs.getLeft
-    val courseLimitMetaEnums = courseLimitMetaEnumPairs.getRight
+    val lessonLimitMetaEnumPairs = lessonLimitMetaEnumProvider.getLessonLimitMetaPairs
+    val courseMetaIds = lessonLimitMetaEnumPairs.getLeft
+    val lessonLimitMetaEnums = lessonLimitMetaEnumPairs.getRight
     var limitItems = Collections.emptyList()
     if (null == lessonId) {
       val course = entityDao.get(classOf[Course], courseId)
@@ -558,39 +558,39 @@ abstract class LessonManagerCoreAction extends TeachTaskSearchAction {
         case PERMIT_VIOLATION => return forwardError("lesson.college.violation.edit")
         case _ => //break
       }
-      val itemQuery = OqlBuilder.from(classOf[CourseLimitItem], "limitItem")
+      val itemQuery = OqlBuilder.from(classOf[LessonLimitItem], "limitItem")
       itemQuery.where("limitItem.group.lesson.id=:lessonId", lessonId)
       itemQuery.where("limitItem.meta.id in(:metaIds)", courseMetaIds)
       itemQuery.orderBy("limitItem.group.id asc,limitItem.meta.id asc")
       limitItems = entityDao.search(itemQuery)
     }
-    put("courseLimitMetaEnums", courseLimitMetaEnums)
-    val metaIdEnums = new HashMap[Long, CourseLimitMetaEnum]()
-    for (courseLimitMetaEnum <- courseLimitMetaEnums) {
-      metaIdEnums.put(courseLimitMetaEnum.getMetaId, courseLimitMetaEnum)
+    put("lessonLimitMetaEnums", lessonLimitMetaEnums)
+    val metaIdEnums = new HashMap[Long, LessonLimitMetaEnum]()
+    for (lessonLimitMetaEnum <- lessonLimitMetaEnums) {
+      metaIdEnums.put(lessonLimitMetaEnum.getMetaId, lessonLimitMetaEnum)
     }
-    val groupItems = new LinkedHashMap[CourseLimitGroup, List[CourseLimitItem]]()
+    val groupItems = new LinkedHashMap[LessonLimitGroup, List[LessonLimitItem]]()
     val limitItemContents = new HashMap[Long, Map[String, String]]()
     for (limitItem <- limitItems) {
-      val courseLimitMetaEnum = metaIdEnums.get(limitItem.getMeta.id)
-      if (null != courseLimitMetaEnum) {
+      val lessonLimitMetaEnum = metaIdEnums.get(limitItem.getMeta.id)
+      if (null != lessonLimitMetaEnum) {
         val group = limitItem.getGroup
         var items = groupItems.get(group)
         if (null == items) {
-          items = new ArrayList[CourseLimitItem]()
+          items = new ArrayList[LessonLimitItem]()
           groupItems.put(group, items)
         }
-        val provider = courseLimitItemContentProviderFactory.getProvider(courseLimitMetaEnum)
+        val provider = lessonLimitItemContentProviderFactory.getProvider(lessonLimitMetaEnum)
         limitItemContents.put(limitItem.id, provider.getContentIdTitleMap(limitItem.getContent))
         items.add(limitItem)
       }
     }
     put("groupItems", groupItems)
     put("limitItemContents", limitItemContents)
-    put("limitMetas", entityDao.get(classOf[CourseLimitMeta], metaIdEnums.keySet))
+    put("limitMetas", entityDao.get(classOf[LessonLimitMeta], metaIdEnums.keySet))
     put("electedGroupIds", getElectedLimitGroupIds(lesson))
     put("tags", entityDao.getAll(classOf[LessonTag]))
-    put("isAutoName", courseLimitService.isAutoName(lesson))
+    put("isAutoName", lessonLimitService.isAutoName(lesson))
     if (isLessonExamArrange) {
       put("isLessonExamArrange", true)
       put("weeks", WeekDays.All)
@@ -622,7 +622,7 @@ abstract class LessonManagerCoreAction extends TeachTaskSearchAction {
   }
 
   private def getElectedLimitGroupIds(lesson: Lesson): Set[Long] = {
-    val groupIds = CollectUtils.newHashSet()
+    val groupIds = Collections.newSet[Any]
     val takes = lesson.getTeachClass.getCourseTakes
     for (courseTake <- takes if courseTake.getLimitGroup != null) {
       groupIds.add(courseTake.getLimitGroup.id)
@@ -631,7 +631,7 @@ abstract class LessonManagerCoreAction extends TeachTaskSearchAction {
   }
 
   private def buildCascadeContentMap(cascadeContents: String): Map[Long, String] = {
-    val cascadeContentMap = CollectUtils.newHashMap()
+    val cascadeContentMap = Collections.newMap[Any]
     val cascadeArray = Strings.split(cascadeContents, ";")
     for (i <- 0 until cascadeArray.length) {
       val cascade = Strings.split(cascadeArray(i), ":")
@@ -647,7 +647,7 @@ abstract class LessonManagerCoreAction extends TeachTaskSearchAction {
     var result = "entity"
     if ("meta" == `type`) {
       val ids = getAll("content", classOf[Long])
-      val queryBuilder = OqlBuilder.from(classOf[CourseLimitMeta], "limitMeta")
+      val queryBuilder = OqlBuilder.from(classOf[LessonLimitMeta], "limitMeta")
       queryBuilder.where("limitMeta.name like :term", "%" + term + "%")
       if (!Arrays.isEmpty(ids)) {
         queryBuilder.where("limitMeta.id not in (:ids)", ids)
@@ -657,7 +657,7 @@ abstract class LessonManagerCoreAction extends TeachTaskSearchAction {
     } else {
       val metaId = getLong("metaId")
       val content = get("content")
-      val provider = courseLimitItemContentProviderFactory.getProvider(metaId)
+      val provider = lessonLimitItemContentProviderFactory.getProvider(metaId)
       if ("byContent" == queryType) {
         put("entities", provider.getContents(content).values)
       } else {
@@ -752,11 +752,11 @@ abstract class LessonManagerCoreAction extends TeachTaskSearchAction {
       if (arrangeInfos.get(lesson.id) == null) {
         arrangeInfos.put(lesson.id, digestor.digest(getTextResource, lesson, format))
       }
-      val myCourseTakes = CollectUtils.newArrayList()
+      val myCourseTakes = Collections.newBuffer[Any]
       myCourseTakes.addAll(lesson.getTeachClass.getCourseTakes)
-      val educations = courseLimitService.extractEducations(lesson.getTeachClass)
+      val educations = lessonLimitService.extractEducations(lesson.getTeachClass)
       educationMap.put(lesson.id.toString, educations)
-      val stdTypes = courseLimitService.extractStdTypes(lesson.getTeachClass)
+      val stdTypes = lessonLimitService.extractStdTypes(lesson.getTeachClass)
       stdTypeMap.put(lesson.id.toString, stdTypes)
       firstTimes.put(lesson.id, YearWeekTimeUtil.buildFirstLessonDay(lesson))
     }
@@ -793,7 +793,7 @@ abstract class LessonManagerCoreAction extends TeachTaskSearchAction {
       update = true
     }
     fillTag(lesson)
-    fillCourseLimit(lesson)
+    fillLessonLimit(lesson)
     val weekState = get("weekState")
     if (Strings.isNotBlank(weekState)) lesson.getCourseSchedule.setWeekState(WeekStates.build(weekState))
     lessonService.fillTeachers(Strings.splitToLong(get("fake.teachers")), lesson)
@@ -842,25 +842,25 @@ abstract class LessonManagerCoreAction extends TeachTaskSearchAction {
     }
   }
 
-  protected def fillCourseLimit(lesson: Lesson) {
+  protected def fillLessonLimit(lesson: Lesson) {
     val teachClass = lesson.getTeachClass
     val electedLimitGroupIds = getElectedLimitGroupIds(lesson)
     val limitGroups = teachClass.getLimitGroups
-    val toRemove = CollectUtils.newArrayList()
-    for (courseLimitGroup <- limitGroups if !electedLimitGroupIds.contains(courseLimitGroup.id)) {
-      toRemove.add(courseLimitGroup)
+    val toRemove = Collections.newBuffer[Any]
+    for (lessonLimitGroup <- limitGroups if !electedLimitGroupIds.contains(lessonLimitGroup.id)) {
+      toRemove.add(lessonLimitGroup)
     }
     teachClass.getLimitGroups.removeAll(toRemove)
     val groupShortnames = getAll("groupKey", classOf[String])
-    val groups = new HashMap[String, CourseLimitGroup]()
+    val groups = new HashMap[String, LessonLimitGroup]()
     if (!Arrays.isEmpty(groupShortnames)) {
       for (shortname <- groupShortnames) {
         val groupId = getLong(shortname + ".groupId")
-        var group: CourseLimitGroup = null
+        var group: LessonLimitGroup = null
         if (electedLimitGroupIds.contains(groupId)) {
-          group = entityDao.get(classOf[CourseLimitGroup], groupId)
+          group = entityDao.get(classOf[LessonLimitGroup], groupId)
         } else {
-          group = Model.newInstance(classOf[CourseLimitGroup])
+          group = Model.newInstance(classOf[LessonLimitGroup])
           group.setLesson(lesson)
           teachClass.getLimitGroups.add(group)
           groups.put(shortname, group)
@@ -875,7 +875,7 @@ abstract class LessonManagerCoreAction extends TeachTaskSearchAction {
         if (null == group) {
           //continue
         }
-        val item = populateEntity(classOf[CourseLimitItem], shortname)
+        val item = populateEntity(classOf[LessonLimitItem], shortname)
         item.setGroup(group)
         group.getItems.add(item)
       }
@@ -959,9 +959,9 @@ abstract class LessonManagerCoreAction extends TeachTaskSearchAction {
     val splitNum = getInt("break.splitNum")
     var tag = ""
     val tc = lesson.getTeachClass
-    val adminclasses = courseLimitService.extractAdminclasses(tc)
-    tag = if (CollectUtils.isEmpty(adminclasses) && CollectUtils.isEmpty(tc.getCourseTakes)) "00" else if (CollectUtils.isEmpty(courseLimitService.extractLonelyTakes(tc))) if (adminclasses.size == splitNum) "10" else "20" else if (CollectUtils.isEmpty(adminclasses)) "01" else if (splitNum == adminclasses.size) "11" else if (splitNum > adminclasses.size) "12" else "13"
-    put("adminclasses", courseLimitService.extractAdminclasses(lesson.getTeachClass))
+    val adminclasses = lessonLimitService.extractAdminclasses(tc)
+    tag = if (Collections.isEmpty(adminclasses) && Collections.isEmpty(tc.getCourseTakes)) "00" else if (Collections.isEmpty(lessonLimitService.extractLonelyTakes(tc))) if (adminclasses.size == splitNum) "10" else "20" else if (Collections.isEmpty(adminclasses)) "01" else if (splitNum == adminclasses.size) "11" else if (splitNum > adminclasses.size) "12" else "13"
+    put("adminclasses", lessonLimitService.extractAdminclasses(lesson.getTeachClass))
     put("splitTag", tag)
     put("lesson", lesson)
     forward("/com/ekingstar/eams/teach/lesson/task/web/action/lessonManagerCore/breakSetting")
@@ -988,7 +988,7 @@ abstract class LessonManagerCoreAction extends TeachTaskSearchAction {
       case PERMIT_VIOLATION => return forwardError("lesson.college.violation.split")
       case _ => //break
     }
-    val s_mode = AbstractTeachClassSplitter.getMode(get("break.splitMode"), courseLimitService, teachClassNameStrategy)
+    val s_mode = AbstractTeachClassSplitter.getMode(get("break.splitMode"), lessonLimitService, teachClassNameStrategy)
     if (classOf[AdminclassGroupMode] == s_mode.getClass) {
       var i = 0
       while (i <= splitNum) {
@@ -1010,22 +1010,22 @@ abstract class LessonManagerCoreAction extends TeachTaskSearchAction {
       return forwardError("error.model.id.needed")
     }
     val lessons = entityDao.get(classOf[Lesson], teachTaskIds)
-    val taskStdCollisionMap = CollectUtils.newHashMap()
-    val arrangeInfos = CollectUtils.newHashMap()
-    val courseTakes = CollectUtils.newHashMap()
+    val taskStdCollisionMap = Collections.newMap[Any]
+    val arrangeInfos = Collections.newMap[Any]
+    val courseTakes = Collections.newMap[Any]
     var iter = lessons.iterator()
     while (iter.hasNext) {
       val task = iter.next().asInstanceOf[Lesson]
-      taskStdCollisionMap.put(task.id.toString, CollectUtils.newArrayList())
+      taskStdCollisionMap.put(task.id.toString, Collections.newBuffer[Any])
       arrangeInfos.put(task.id.toString, CourseActivityDigestor.getInstance.digest(getTextResource, 
         task))
-      courseTakes.put(task.id.toString, CollectUtils.newArrayList(task.getTeachClass.getCourseTakes))
+      courseTakes.put(task.id.toString, Collections.newBuffer[Any](task.getTeachClass.getCourseTakes))
       val params = new HashMap[String, Any]()
       params.put("taskId", task.id)
       params.put("semester", task.getSemester)
       val collisionQuery = new StringBuilder()
       collisionQuery.append("select stdTake.std.id from")
-        .append("\n org.openurp.edu.teach.lesson.CourseTake stdTake join stdTake.lesson.courseSchedule.activities activity2")
+        .append("\n org.openurp.edu.teach.lesson.CourseTake stdTake join stdTake.lesson.schedule.activities activity2")
         .append("\n where stdTake.std.id in ( select std.id from org.openurp.edu.teach.lesson.CourseTake take where take.lesson.id = :taskId )")
         .append("\n and stdTake.lesson.id <> :taskId")
         .append("\n and stdTake.lesson.semester = :semester")
@@ -1055,10 +1055,10 @@ abstract class LessonManagerCoreAction extends TeachTaskSearchAction {
     query.join("lesson.teachers", "teacher")
     query.where("lesson.semester.id = :semesterId", semesterId)
     if (null != startWeek) {
-      query.where("lesson.courseSchedule.startWeek =:startWeek", startWeek)
+      query.where("lesson.schedule.startWeek =:startWeek", startWeek)
     }
     if (null != endWeek) {
-      query.where("lesson.courseSchedule.endWeek =:endWeek", endWeek)
+      query.where("lesson.schedule.endWeek =:endWeek", endWeek)
     }
     query.groupBy("teacher.code")
     query.groupBy("teacher.name")
@@ -1091,28 +1091,28 @@ abstract class LessonManagerCoreAction extends TeachTaskSearchAction {
       .where("lesson.semester.id = :semesterId", semesterId)
     val lessons = entityDao.search(query)
     for (lesson <- lessons) {
-      val courseLimitBuilder = courseLimitService.builder(lesson.getTeachClass)
-      val res = courseLimitService.xtractAdminclassLimit(lesson.getTeachClass)
-      if (CollectUtils.isEmpty(res.getRight)) {
+      val lessonLimitBuilder = lessonLimitService.builder(lesson.getTeachClass)
+      val res = lessonLimitService.xtractAdminclassLimit(lesson.getTeachClass)
+      if (Collections.isEmpty(res.getRight)) {
         //continue
       }
-      courseLimitBuilder.clear(new CourseLimitMetaBean(CourseLimitMetaEnum.GRADE.getMetaId))
-      courseLimitBuilder.clear(new CourseLimitMetaBean(CourseLimitMetaEnum.STDTYPE.getMetaId))
-      courseLimitBuilder.clear(new CourseLimitMetaBean(CourseLimitMetaEnum.GENDER.getMetaId))
-      courseLimitBuilder.clear(new CourseLimitMetaBean(CourseLimitMetaEnum.DEPARTMENT.getMetaId))
-      courseLimitBuilder.clear(new CourseLimitMetaBean(CourseLimitMetaEnum.MAJOR.getMetaId))
-      courseLimitBuilder.clear(new CourseLimitMetaBean(CourseLimitMetaEnum.DIRECTION.getMetaId))
-      courseLimitBuilder.clear(new CourseLimitMetaBean(CourseLimitMetaEnum.ADMINCLASS.getMetaId))
-      courseLimitBuilder.clear(new CourseLimitMetaBean(CourseLimitMetaEnum.NORMALCLASS.getMetaId))
-      courseLimitBuilder.clear(new CourseLimitMetaBean(CourseLimitMetaEnum.EDUCATION.getMetaId))
+      lessonLimitBuilder.clear(new LessonLimitMetaBean(LessonLimitMeta.Grade.getMetaId))
+      lessonLimitBuilder.clear(new LessonLimitMetaBean(LessonLimitMeta.StdType.getMetaId))
+      lessonLimitBuilder.clear(new LessonLimitMetaBean(LessonLimitMeta.Gender.getMetaId))
+      lessonLimitBuilder.clear(new LessonLimitMetaBean(LessonLimitMeta.Department.getMetaId))
+      lessonLimitBuilder.clear(new LessonLimitMetaBean(LessonLimitMeta.Major.getMetaId))
+      lessonLimitBuilder.clear(new LessonLimitMetaBean(LessonLimitMeta.Direction.getMetaId))
+      lessonLimitBuilder.clear(new LessonLimitMetaBean(LessonLimitMeta.Adminclass.getMetaId))
+      lessonLimitBuilder.clear(new LessonLimitMetaBean(LessonLimitMetaEnum.NORMALCLASS.getMetaId))
+      lessonLimitBuilder.clear(new LessonLimitMetaBean(LessonLimitMeta.Education.getMetaId))
       if (res.getLeft == Operator.IN) {
-        courseLimitBuilder.in(res.getRight.toArray(Array()))
+        lessonLimitBuilder.in(res.getRight.toArray(Array()))
       } else if (res.getLeft == Operator.NOT_IN) {
-        courseLimitBuilder.notIn(res.getRight.toArray(Array()))
+        lessonLimitBuilder.notIn(res.getRight.toArray(Array()))
       } else {
       }
-      val emptyGroups = new ArrayList[CourseLimitGroup]()
-      for (group <- lesson.getTeachClass.getLimitGroups if CollectUtils.isEmpty(group.getItems)) {
+      val emptyGroups = new ArrayList[LessonLimitGroup]()
+      for (group <- lesson.getTeachClass.getLimitGroups if Collections.isEmpty(group.getItems)) {
         emptyGroups.add(group)
       }
       lesson.getTeachClass.getLimitGroups.removeAll(emptyGroups)

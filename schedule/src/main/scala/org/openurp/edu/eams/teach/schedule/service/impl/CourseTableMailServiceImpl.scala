@@ -5,7 +5,7 @@ import java.util.Date
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
@@ -145,7 +145,7 @@ class CourseTableMailServiceImpl extends BaseServiceImpl with CourseTableMailSer
 
   def getUseMailByUserNames(userNames: String): Map[String, String] = {
     val userList = getUserList(userNames)
-    val mailMap = CollectUtils.newHashMap()
+    val mailMap = Collections.newMap[Any]
     for (user <- userList if Strings.isNotEmpty(user.getMail)) {
       mailMap.put(user.getFullname, user.getMail)
     }

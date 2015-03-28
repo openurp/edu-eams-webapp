@@ -3,7 +3,7 @@ package org.openurp.edu.eams.teach.grade.course.model
 
 import javax.persistence.Entity
 import javax.persistence.ManyToMany
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.entity.pojo.LongIdObject
 import org.openurp.edu.base.Project
@@ -38,7 +38,7 @@ class GradeViewScope extends LongIdObject {
 
   def addProjects(project: Project) {
     if (null == this.projects) {
-      this.projects = CollectUtils.newHashSet()
+      this.projects = Collections.newSet[Any]
     }
     this.projects.add(project)
   }
@@ -51,14 +51,14 @@ class GradeViewScope extends LongIdObject {
 
   def clearProjects() {
     if (null == this.projects) {
-      this.projects = CollectUtils.newHashSet()
+      this.projects = Collections.newSet[Any]
     }
     this.projects.clear()
   }
 
   def addEducations(education: Education) {
     if (null == this.educations) {
-      this.educations = CollectUtils.newHashSet()
+      this.educations = Collections.newSet[Any]
     }
     this.educations.add(education)
   }
@@ -71,14 +71,14 @@ class GradeViewScope extends LongIdObject {
 
   def clearEducations() {
     if (null == this.educations) {
-      this.educations = CollectUtils.newHashSet()
+      this.educations = Collections.newSet[Any]
     }
     this.educations.clear()
   }
 
   def addStdTypes(stdType: StdType) {
     if (null == this.stdTypes) {
-      this.stdTypes = CollectUtils.newHashSet()
+      this.stdTypes = Collections.newSet[Any]
     }
     this.stdTypes.add(stdType)
   }
@@ -91,7 +91,7 @@ class GradeViewScope extends LongIdObject {
 
   def clearStdTypes() {
     if (null == this.stdTypes) {
-      this.stdTypes = CollectUtils.newHashSet()
+      this.stdTypes = Collections.newSet[Any]
     }
     this.stdTypes.clear()
   }

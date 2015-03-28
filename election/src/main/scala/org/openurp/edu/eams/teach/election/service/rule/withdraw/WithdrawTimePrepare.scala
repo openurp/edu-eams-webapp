@@ -2,7 +2,7 @@ package org.openurp.edu.eams.teach.election.service.rule.withdraw
 
 import java.util.Date
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.ems.rule.Context
 import org.openurp.edu.eams.teach.election.ElectionProfile
 import org.openurp.edu.eams.teach.election.model.Enum.ElectRuleType
@@ -39,7 +39,7 @@ class WithdrawTimePrepare extends AbstractElectRuleExecutor with ElectRulePrepar
   def prepare(context: PrepareContext) {
     if (!context.isPreparedData(PreparedDataName.ERROR_WITHDRAW_TIME)) {
       val profile = context.getState.getProfile(entityDao)
-      val unsuitableLessonIds = CollectUtils.newHashSet()
+      val unsuitableLessonIds = Collections.newSet[Any]
       for (take <- context.getTakes) {
         val date = take.getCreatedAt
         var electedInProfileOpenTime = true

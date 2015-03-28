@@ -8,7 +8,7 @@ import java.util.GregorianCalendar
 
 
 import javax.persistence.EntityNotFoundException
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
@@ -49,7 +49,7 @@ class SemesterServiceImpl extends BaseServiceImpl with SemesterService {
   }
 
   def getSemester(calendar: Calendar, date: Date): Semester = {
-    val params = CollectUtils.newHashMap()
+    val params = Collections.newMap[Any]
     params.put("calendar", calendar)
     params.put("date", date)
     val builder = OqlBuilder.from(classOf[Semester], "semester").where("semester.beginOn<=:date and semester.endOn>=:date and semester.calendar=:calendar")
@@ -63,7 +63,7 @@ class SemesterServiceImpl extends BaseServiceImpl with SemesterService {
   }
 
   def getSemester(calendar: Calendar, begOn: Date, endOn: Date): Semester = {
-    val params = CollectUtils.newHashMap()
+    val params = Collections.newMap[Any]
     params.put("calendar", calendar)
     params.put("begOn", begOn)
     params.put("endOn", endOn)
@@ -233,7 +233,7 @@ class SemesterServiceImpl extends BaseServiceImpl with SemesterService {
       .orderBy("semester.endOn desc")
       .cacheable()
     val semesters = entityDao.search(query)
-    if (CollectUtils.isNotEmpty(semesters)) {
+    if (Collections.isNotEmpty(semesters)) {
       return semesters.get(0)
     }
     null

@@ -3,20 +3,20 @@ package org.openurp.edu.eams.teach.lesson.task.web.action
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.model.Entity
 import org.beangle.commons.lang.Strings
 import org.openurp.base.Semester
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.eams.core.CommonAuditState
-import org.openurp.edu.teach.lesson.CourseLimitGroup
-import org.openurp.edu.teach.lesson.CourseLimitItem
-import org.openurp.edu.teach.lesson.CourseLimitMeta
-import org.openurp.edu.teach.lesson.CourseLimitMeta.Operator
+import org.openurp.edu.teach.lesson.LessonLimitGroup
+import org.openurp.edu.teach.lesson.LessonLimitItem
+import org.openurp.edu.teach.lesson.LessonLimitMeta
+import org.openurp.edu.teach.lesson.LessonLimitMeta.Operator
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.teach.lesson.service.LessonOperateViolation
-import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitItemContentProvider
-import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnum
+import org.openurp.edu.eams.teach.lesson.service.limit.LessonLimitItemContentProvider
+import org.openurp.edu.eams.teach.lesson.service.limit.LessonLimitMetaEnum
 import org.openurp.edu.eams.teach.lesson.task.web.action.parent.LessonManagerCoreAction
 
 
@@ -25,42 +25,42 @@ class TeachTaskAction extends LessonManagerCoreAction {
 
   def batchCalPeopleLimit(): String = {
     val lessonIds = Strings.splitToLong(get("lessonIds"))
-    val provider = courseLimitItemContentProviderFactory.getProvider(CourseLimitMetaEnum.ADMINCLASS)
+    val provider = lessonLimitItemContentProviderFactory.getProvider(LessonLimitMeta.Adminclass)
     val lessons = entityDao.get(classOf[Lesson], lessonIds)
     if (!lessons.isEmpty) {
-      val lessonLimitGroups = CollectUtils.newHashMap()
-      val groups = entityDao.get(classOf[CourseLimitGroup], "lesson", lessons)
-      for (courseLimitGroup <- groups) {
-        var oneLessonLimitGroups = lessonLimitGroups.get(courseLimitGroup.getLesson)
+      val lessonLimitGroups = Collections.newMap[Any]
+      val groups = entityDao.get(classOf[LessonLimitGroup], "lesson", lessons)
+      for (lessonLimitGroup <- groups) {
+        var oneLessonLimitGroups = lessonLimitGroups.get(lessonLimitGroup.getLesson)
         if (null == oneLessonLimitGroups) {
-          oneLessonLimitGroups = CollectUtils.newArrayList()
-          lessonLimitGroups.put(courseLimitGroup.getLesson, oneLessonLimitGroups)
+          oneLessonLimitGroups = Collections.newBuffer[Any]
+          lessonLimitGroups.put(lessonLimitGroup.getLesson, oneLessonLimitGroups)
         }
-        oneLessonLimitGroups.add(courseLimitGroup)
+        oneLessonLimitGroups.add(lessonLimitGroup)
       }
-      val groupItems = CollectUtils.newHashMap()
-      val items = entityDao.get(classOf[CourseLimitItem], "group", groups)
-      for (courseLimitItem <- items) {
-        var oneGroupItems = groupItems.get(courseLimitItem.getGroup)
+      val groupItems = Collections.newMap[Any]
+      val items = entityDao.get(classOf[LessonLimitItem], "group", groups)
+      for (lessonLimitItem <- items) {
+        var oneGroupItems = groupItems.get(lessonLimitItem.getGroup)
         if (null == oneGroupItems) {
-          oneGroupItems = CollectUtils.newArrayList()
-          groupItems.put(courseLimitItem.getGroup, oneGroupItems)
+          oneGroupItems = Collections.newBuffer[Any]
+          groupItems.put(lessonLimitItem.getGroup, oneGroupItems)
         }
-        oneGroupItems.add(courseLimitItem)
+        oneGroupItems.add(lessonLimitItem)
       }
-      val saveEntities = CollectUtils.newHashMap()
+      val saveEntities = Collections.newMap[Any]
       for (lesson <- lessons) {
-        val courseLimitGroups = lessonLimitGroups.get(lesson)
-        if (null != courseLimitGroups) {
-          for (courseLimitGroup <- courseLimitGroups) {
-            val maxCount = courseLimitGroup.getMaxCount
+        val lessonLimitGroups = lessonLimitGroups.get(lesson)
+        if (null != lessonLimitGroups) {
+          for (lessonLimitGroup <- lessonLimitGroups) {
+            val maxCount = lessonLimitGroup.getMaxCount
             var adminclassCounts = 0
-            val courseLimitItems = groupItems.get(courseLimitGroup)
-            for (courseLimitItem <- courseLimitItems) {
-              val meta = courseLimitItem.getMeta
-              if (CourseLimitMetaEnum.ADMINCLASS.getMetaId == meta.id) {
-                if (courseLimitItem.getOperator == Operator.IN) {
-                  val adminclasses = provider.getContents(courseLimitItem.getContent).values.asInstanceOf[Iterable[Adminclass]]
+            val lessonLimitItems = groupItems.get(lessonLimitGroup)
+            for (lessonLimitItem <- lessonLimitItems) {
+              val meta = lessonLimitItem.getMeta
+              if (LessonLimitMeta.Adminclass.getMetaId == meta.id) {
+                if (lessonLimitItem.getOperator == Operator.IN) {
+                  val adminclasses = provider.getContents(lessonLimitItem.getContent).values.asInstanceOf[Iterable[Adminclass]]
                   for (adminclass <- adminclasses) {
                     var count = adminclass.getStdCount
                     if (count == 0) {
@@ -72,18 +72,18 @@ class TeachTaskAction extends LessonManagerCoreAction {
               }
             }
             if (adminclassCounts > 0 && adminclassCounts != maxCount) {
-              courseLimitGroup.setMaxCount(adminclassCounts)
+              lessonLimitGroup.setMaxCount(adminclassCounts)
               var saveGroups = saveEntities.get(lesson)
               if (null == saveGroups) {
-                saveGroups = CollectUtils.newHashSet()
+                saveGroups = Collections.newSet[Any]
                 saveEntities.put(lesson, saveGroups)
               }
-              saveGroups.add(courseLimitGroup)
+              saveGroups.add(lessonLimitGroup)
             }
           }
         }
       }
-      val entities = CollectUtils.newArrayList()
+      val entities = Collections.newBuffer[Any]
       for ((key, value) <- saveEntities) {
         val lesson = key
         val saveGroups = value

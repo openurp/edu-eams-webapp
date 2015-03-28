@@ -3,7 +3,7 @@ package org.openurp.edu.eams.teach.grade.adminclass.web.action
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.base.Semester
 import org.openurp.edu.base.Adminclass
@@ -23,7 +23,7 @@ class AlertAction extends ProjectSupportAction {
     val adminclassId = getInt("adminclass.id")
     val stdId = getLong("std.id")
     val semester = entityDao.get(classOf[Semester], getInt("semester.id"))
-    val gradeMap = CollectUtils.newHashMap()
+    val gradeMap = Collections.newMap[Any]
     val builder = OqlBuilder.from(classOf[CourseGrade], "cg")
     builder.select("cg.std.id,cg.course.id,cg.course.credits")
       .groupBy("cg.std.id,cg.course.id,cg.course.credits")
@@ -41,7 +41,7 @@ class AlertAction extends ProjectSupportAction {
       builder.where("cg.std =:std", entityDao.get(classOf[Student], stdId))
     }
     val statList = entityDao.search(builder)
-    val stdCredits = CollectUtils.newHashMap()
+    val stdCredits = Collections.newMap[Any]
     for (data <- statList) {
       val tuple = data.asInstanceOf[Array[Any]]
       var unpassed = stdCredits.get(tuple(0))
@@ -74,8 +74,8 @@ class AlertAction extends ProjectSupportAction {
       " cg2 where cg2.std=cg.std and cg2.course=cg.course and cg2.id!=cg.id " + 
       " and cg2.passed=true and cg2.semester.beginOn<=:beginOn)", semester.beginOn)
       .where("cg.std =:std and cg.semester.beginOn<=:beginOn", std, semester.beginOn)
-    val courses = CollectUtils.newHashSet()
-    val grades = CollectUtils.newArrayList()
+    val courses = Collections.newSet[Any]
+    val grades = Collections.newBuffer[Any]
     for (grade <- entityDao.search(builder) if !courses.contains(grade.getCourse)) {
       courses.add(grade.getCourse)
       grades.add(grade)

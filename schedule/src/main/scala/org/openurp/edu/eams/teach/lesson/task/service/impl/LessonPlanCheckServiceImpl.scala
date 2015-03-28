@@ -3,7 +3,7 @@ package org.openurp.edu.eams.teach.lesson.task.service.impl
 import java.sql.Date
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.openurp.base.Semester
 import org.openurp.edu.base.Adminclass
@@ -11,7 +11,7 @@ import org.openurp.edu.eams.core.service.SemesterService
 import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.teach.lesson.LessonPlanRelation
-import org.openurp.edu.eams.teach.lesson.service.CourseLimitService
+import org.openurp.edu.eams.teach.lesson.service.LessonLimitService
 import org.openurp.edu.eams.teach.lesson.task.biz.AdminclassPackage
 import org.openurp.edu.eams.teach.lesson.task.biz.CourseGroupPackage
 import org.openurp.edu.eams.teach.lesson.task.biz.CourseTypePackage
@@ -30,7 +30,7 @@ class LessonPlanCheckServiceImpl extends BaseServiceImpl with LessonPlanCheckSer
 
   protected var semesterService: SemesterService = _
 
-  protected var courseLimitService: CourseLimitService = _
+  protected var lessonLimitService: LessonLimitService = _
 
   protected var lessonPlanRelationService: LessonPlanRelationService = _
 
@@ -53,7 +53,7 @@ class LessonPlanCheckServiceImpl extends BaseServiceImpl with LessonPlanCheckSer
           lessonBelongToAdminclass = true
           addLesson(classPackage, lesson)
         } else {
-          val classesInLesson = courseLimitService.extractAdminclasses(lesson.getTeachClass)
+          val classesInLesson = lessonLimitService.extractAdminclasses(lesson.getTeachClass)
           if (classesInLesson.contains(classPackage.getAdminclass)) {
             lessonBelongToAdminclass = true
             addLesson(classPackage, lesson)
@@ -103,7 +103,7 @@ class LessonPlanCheckServiceImpl extends BaseServiceImpl with LessonPlanCheckSer
     val adminclasses = entityDao.search(AdminclassQueryBuilder.build(plan).cacheable())
     val planPackage = new PlanPackage()
     planPackage.setPlan(plan)
-    if (CollectUtils.isEmpty(adminclasses)) {
+    if (Collections.isEmpty(adminclasses)) {
       planPackage.getClassPackages.add(new AdminclassPackage())
     } else {
       for (adminclass <- adminclasses) {
@@ -118,7 +118,7 @@ class LessonPlanCheckServiceImpl extends BaseServiceImpl with LessonPlanCheckSer
     planPackage.setTerm(term)
     for (group <- plan.getGroups) {
       val cgPackage = makeCourseGroupPackage(group, term)
-      if (CollectUtils.isEmpty(cgPackage.getPlanCourses) && PlanUtils.getGroupCredits(group, term) == 0f) {
+      if (Collections.isEmpty(cgPackage.getPlanCourses) && PlanUtils.getGroupCredits(group, term) == 0f) {
         //continue
       }
       planPackage.getGroupPackages.add(cgPackage)
@@ -138,7 +138,7 @@ class LessonPlanCheckServiceImpl extends BaseServiceImpl with LessonPlanCheckSer
     this.semesterService = semesterService
   }
 
-  def setCourseLimitService(courseLimitService: CourseLimitService) {
-    this.courseLimitService = courseLimitService
+  def setLessonLimitService(lessonLimitService: LessonLimitService) {
+    this.lessonLimitService = lessonLimitService
   }
 }

@@ -4,7 +4,7 @@ package org.openurp.edu.eams.teach.grade.course.web.action
 
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.bean.comparators.PropertyComparator
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.commons.dao.query.builder.Condition
 import org.beangle.data.jpa.dao.OqlBuilder
@@ -28,7 +28,7 @@ class AdminMakeupAction extends AdminAction {
   protected def getGradeTypes(gradeState: CourseGradeState): List[GradeType] = {
     var gradeTypes = getAttribute("gradeTypes").asInstanceOf[List[GradeType]]
     if (null == gradeTypes) {
-      gradeTypes = CollectUtils.newArrayList()
+      gradeTypes = Collections.newBuffer[Any]
       val gradeTypeIds = Array(GradeTypeConstants.MAKEUP_ID, GradeTypeConstants.DELAY_ID)
       val gis = getAttribute("gradeInputSwitch").asInstanceOf[GradeInputSwitch]
       for (typeId <- gradeTypeIds) {
@@ -52,7 +52,7 @@ class AdminMakeupAction extends AdminAction {
     getState(new GradeType(GradeTypeConstants.MAKEUP_ID))
       .setScoreMarkStyle(gradeState.getScoreMarkStyle)
     entityDao.save(getGradeState)
-    val putSomeParams = CollectUtils.newHashSet()
+    val putSomeParams = Collections.newSet[Any]
     putSomeParams.add("isTeacher")
     putSomeParams.add("RESTUDY")
     putSomeParams.add("GA")
@@ -84,7 +84,7 @@ class AdminMakeupAction extends AdminAction {
   def info(): String = {
     val lesson = entityDao.get(classOf[Lesson], getLong("lessonId"))
     val takes = getCourseTakes(lesson)
-    val stds = CollectUtils.newArrayList()
+    val stds = Collections.newBuffer[Any]
     for (take <- takes) {
       stds.add(take.getStd)
     }
@@ -92,7 +92,7 @@ class AdminMakeupAction extends AdminAction {
       lesson))
     if (stds.size > 0) query.where(new Condition("grade.std in(:stds)", stds)) else query.where(new Condition("grade.std is null"))
     val grades = entityDao.search(query)
-    val existedGradeTypes = CollectUtils.newHashSet()
+    val existedGradeTypes = Collections.newSet[Any]
     for (grade <- grades; eg <- grade.getExamGrades) existedGradeTypes.add(eg.gradeType)
     var orderBy = get("orderBy")
     if (Strings.isEmpty(orderBy)) {
@@ -103,7 +103,7 @@ class AdminMakeupAction extends AdminAction {
     val orders = Order.parse(orderBy)
     val makeupTypes = baseCodeService.getCodes(classOf[GradeType], GradeTypeConstants.MAKEUP_ID, GradeTypeConstants.DELAY_ID)
     existedGradeTypes.addAll(makeupTypes)
-    val gradeTypes = CollectUtils.newArrayList(existedGradeTypes)
+    val gradeTypes = Collections.newBuffer[Any](existedGradeTypes)
     Collections.sort(gradeTypes, new PropertyComparator("code"))
     val order = orders.get(0).asInstanceOf[Order]
     Collections.sort(grades, new CourseGradeComparator(order.getProperty, order.isAscending, gradeTypes))

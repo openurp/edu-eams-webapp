@@ -2,7 +2,7 @@ package org.openurp.edu.eams.teach.schedule.web.action
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.BitStrings
@@ -39,9 +39,9 @@ class ScheduleSearchAction extends SemesterSupportAction {
     val semesterId = getInt("semester.id")
     if (semesterId != null) ContextHelper.put("semester", entityDao.get(classOf[Semester], semesterId))
     val project = getProject
-    put("courseTypes", lessonService.courseTypesOfSemester(CollectUtils.newArrayList(project), getDeparts, 
+    put("courseTypes", lessonService.courseTypesOfSemester(Collections.newBuffer[Any](project), getDeparts, 
       getAttribute("semester").asInstanceOf[Semester]))
-    put("teachDepartList", lessonService.teachDepartsOfSemester(CollectUtils.newArrayList(project), getDeparts, 
+    put("teachDepartList", lessonService.teachDepartsOfSemester(Collections.newBuffer[Any](project), getDeparts, 
       getAttribute("semester").asInstanceOf[Semester]))
     put("stdTypeList", getStdTypes)
     addBaseCode("languages", classOf[TeachLangType])
@@ -66,7 +66,7 @@ class ScheduleSearchAction extends SemesterSupportAction {
     put("teacherIsNull", getBool("fake.teacher.null"))
     put("lessons", lessons)
     val digestor = CourseActivityDigestor.getInstance.setDelimeter("<br>")
-    val arrangeInfo = CollectUtils.newHashMap()
+    val arrangeInfo = Collections.newMap[Any]
     for (oneTask <- lessons) {
       arrangeInfo.put(oneTask.id.toString, digestor.digest(getTextResource, oneTask, ":day :units :weeks :room"))
     }

@@ -25,7 +25,7 @@ object ExamYearWeekTimeUtil {
   def getYearWeekTimeFromActivity(activity: ExamActivity): YearWeekTime = {
     val f = new SimpleDateFormat("HH:mm")
     val unit = new YearWeekTime()
-    unit.start=activity.beginAt
+    unit.begin=activity.beginAt
     unit.end=activity.endAt
     val date = activity.examOn
     val state = YearWeekTimeBuilder.build(date)
@@ -37,9 +37,9 @@ object ExamYearWeekTimeUtil {
   def getYearWeekTimeFromActivity(examRoom: ExamRoom): YearWeekTime = {
     val f = new SimpleDateFormat("HH:mm")
     val unit = new YearWeekTime()
-    unit.start=examRoom.beginAt
+    unit.begin=examRoom.beginAt
     unit.end=examRoom.endAt
-    val date = examRoom.
+    val date = examRoom.examOn
     val state = YearWeekTimeBuilder.build(date)
     unit.year= state.year
     unit.day= state.day

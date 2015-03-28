@@ -27,7 +27,7 @@ class CourseTakePropertyExtractor(textResource: TextResource) extends DefaultPro
         }
       }
       builder.toString
-    } else if ("lesson.courseSchedule" == property) {
+    } else if ("lesson.schedule" == property) {
       val courseSchedule = target.asInstanceOf[CourseTake].getLesson.getCourseSchedule
       val builder = new StringBuilder()
       if (null != courseSchedule) {

@@ -2,7 +2,7 @@ package org.openurp.edu.eams.teach.grade.teacher.web.action
 
 import java.util.Date
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.security.blueprint.User
 import org.openurp.edu.eams.teach.grade.course.GradeModifyApply
 import org.openurp.edu.eams.teach.grade.course.model.GradeModifyApplyBean.GradeModifyStatus
@@ -22,7 +22,7 @@ class GradeModifyAdminAuditAction extends GradeModifyAuditSearchAction {
     val applies = getModels(classOf[GradeModifyApply], getLongIds("gradeModifyApply"))
     val passed = getBool("passed")
     val date = new Date()
-    val statuses = CollectUtils.newArrayList()
+    val statuses = Collections.newBuffer[Any]
     statuses.add(GradeModifyStatus.FINAL_AUDIT_PASSED)
     statuses.add(GradeModifyStatus.FINAL_AUDIT_UNPASSED)
     statuses.add(GradeModifyStatus.GRADE_DELETED)

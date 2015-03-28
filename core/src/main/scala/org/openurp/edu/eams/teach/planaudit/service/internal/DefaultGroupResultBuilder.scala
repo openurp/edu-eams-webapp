@@ -23,7 +23,7 @@ class DefaultGroupResultBuilder extends GroupResultBuilder {
       creditsRequired = 0
       var groupCourseCredits = 0f
       var creditsNeedCompare = false
-      val auditedCourses = Collections.newHashSet()
+      val auditedCourses = Collections.newSet[Any]
       for (i <- 0 until context.auditTerms.length) {
         val term = java.lang.Integer.valueOf(context.auditTerms()(i))
         creditsRequired += PlanUtils.groupCredits(group, term)

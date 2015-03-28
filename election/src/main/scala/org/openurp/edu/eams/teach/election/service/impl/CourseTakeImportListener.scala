@@ -5,7 +5,7 @@ import java.text.MessageFormat
 
 import javax.validation.ConstraintViolation
 import javax.validation.ConstraintViolationException
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.model.dao.EntityDao
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model
@@ -19,8 +19,8 @@ import org.openurp.edu.base.Student
 import org.openurp.edu.teach.code.CourseTakeType
 import org.openurp.edu.teach.code.ElectionMode
 import org.openurp.edu.eams.teach.election.dao.ElectionDao
-import org.openurp.edu.eams.teach.election.service.helper.CourseLimitGroupHelper
-import org.openurp.edu.teach.lesson.CourseLimitGroup
+import org.openurp.edu.eams.teach.election.service.helper.LessonLimitGroupHelper
+import org.openurp.edu.teach.lesson.LessonLimitGroup
 import org.openurp.edu.teach.lesson.CourseTake
 import org.openurp.edu.teach.lesson.Lesson
 
@@ -38,7 +38,7 @@ class CourseTakeImportListener(private var electionDao: ElectionDao, private var
   }
 
   override def onItemFinish(tr: TransferResult) {
-    val errors = CollectUtils.newArrayList()
+    val errors = Collections.newBuffer[Any]
     val params = importer.getCurData
     val stdCode = params.get("std.code").asInstanceOf[String]
     val lessonNo = params.get("lesson.no").asInstanceOf[String]
@@ -60,7 +60,7 @@ class CourseTakeImportListener(private var electionDao: ElectionDao, private var
     val stdQuery = OqlBuilder.from(classOf[Student], "std").cacheable()
     stdQuery.where("std.code = :code", stdCode).where("std.project = :project", project)
     val students = entityDao.search(stdQuery)
-    if (CollectUtils.isEmpty(students)) {
+    if (Collections.isEmpty(students)) {
       val msgfmt = "无法找到 {0}下 学号为{1}的学生"
       addFailure(errors, tr, MessageFormat.format(msgfmt, project.getName, stdCode), stdCode)
     } else {
@@ -75,7 +75,7 @@ class CourseTakeImportListener(private var electionDao: ElectionDao, private var
       .where("lesson.project = :project", project)
       .where("lesson.semester = :semester", semester)
     val lessons = entityDao.search(lessonQuery)
-    if (CollectUtils.isEmpty(lessons)) {
+    if (Collections.isEmpty(lessons)) {
       val msgfmt = "无法找到 {0} {1}-{2}学期下 序号为{3}的任务"
       addFailure(errors, tr, MessageFormat.format(msgfmt, project.getName, semester.getSchoolYear, semester.getName, 
         lessonNo), lessonNo)
@@ -87,7 +87,7 @@ class CourseTakeImportListener(private var electionDao: ElectionDao, private var
     }
     var courseTakeType: CourseTakeType = null
     val courseTakeTypes = entityDao.get(classOf[CourseTakeType], "code", courseTakeTypeCode)
-    if (CollectUtils.isEmpty(courseTakeTypes)) {
+    if (Collections.isEmpty(courseTakeTypes)) {
       val msgfmt = "无法找到 代码为{0}的修读类别"
       addFailure(errors, tr, MessageFormat.format(msgfmt, courseTakeTypeCode), courseTakeTypeCode)
     } else {

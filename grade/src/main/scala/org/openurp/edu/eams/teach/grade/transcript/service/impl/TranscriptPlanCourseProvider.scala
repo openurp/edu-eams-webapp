@@ -3,7 +3,7 @@ package org.openurp.edu.eams.teach.grade.transcript.service.impl
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.openurp.edu.base.Student
 import org.openurp.edu.eams.teach.grade.transcript.service.TranscriptDataProvider
@@ -23,14 +23,14 @@ class TranscriptPlanCourseProvider extends BaseServiceImpl with TranscriptDataPr
 
   def getData[T](std: Student, options: Map[String, String]): T = {
     val planCourses = getPlanCourses(std)
-    if (CollectUtils.isNotEmpty(planCourses)) {
+    if (Collections.isNotEmpty(planCourses)) {
       return planCourses.get(0).asInstanceOf[T]
     }
     null.asInstanceOf[T]
   }
 
   def getDatas[T](stds: List[Student], options: Map[String, String]): Map[Student, T] = {
-    val datas = CollectUtils.newHashMap()
+    val datas = Collections.newMap[Any]
     for (std <- stds) {
       val planCourses = getPlanCourses(std)
       datas.put(std, planCourses.asInstanceOf[T])

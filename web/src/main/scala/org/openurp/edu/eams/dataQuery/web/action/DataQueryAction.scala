@@ -7,7 +7,7 @@ import java.io.Writer
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 import org.apache.commons.lang3.StringUtils
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.data.model.Entity
 import org.beangle.commons.lang.Strings
@@ -126,7 +126,7 @@ class DataQueryAction extends RestrictionSupportAction {
     val request = getRequest
     put("entityId", getLong("entityId"))
     if (`type` == DataType.PROJECT) {
-      var projects = CollectUtils.newArrayList(0)
+      var projects = Collections.newBuffer[Any](0)
       try {
         projects = getProjects
       } catch {
@@ -232,11 +232,11 @@ class DataQueryAction extends RestrictionSupportAction {
         try {
           return entityDao.getAll(Class.forName(it.next().getClassName).asInstanceOf[Class[Entity[_]]])
         } catch {
-          case e: ClassNotFoundException => return CollectUtils.newArrayList()
+          case e: ClassNotFoundException => return Collections.newBuffer[Any]
         }
       }
     }
-    CollectUtils.newArrayList()
+    Collections.newBuffer[Any]
   }
 
   protected def getDatas(): AnyRef = {
@@ -248,17 +248,17 @@ class DataQueryAction extends RestrictionSupportAction {
         try {
           entityDao.getAll(Class.forName(it.next().getClassName).asInstanceOf[Class[Entity[_]]])
         } catch {
-          case e: ClassNotFoundException => return CollectUtils.newArrayList()
+          case e: ClassNotFoundException => return Collections.newBuffer[Any]
         }
       }
     }
-    CollectUtils.newArrayList()
+    Collections.newBuffer[Any]
   }
 
   private def getMajors(): List[Major] = {
     val departs = getDeparts
-    if (CollectUtils.isEmpty(departs)) {
-      return CollectUtils.newArrayList()
+    if (Collections.isEmpty(departs)) {
+      return Collections.newBuffer[Any]
     }
     val builder = OqlBuilder.from(classOf[Major]).where("exists(from major.journals md where md.depart in (:departs))", 
       departs)
@@ -278,7 +278,7 @@ class DataQueryAction extends RestrictionSupportAction {
       builder.where("exists(from major.journals md where md.depart.id =:departId)", departId)
       entityDao.search(builder)
     } else {
-      CollectUtils.newArrayList()
+      Collections.newBuffer[Any]
     }
   }
 
@@ -287,7 +287,7 @@ class DataQueryAction extends RestrictionSupportAction {
       new java.util.Date())
     val campusId = getInt("campusId")
     if (campusId == null) {
-      CollectUtils.newArrayList()
+      Collections.newBuffer[Any]
     } else {
       builder.where("building.campus.id =:campusId", campusId)
       entityDao.search(builder)
@@ -299,7 +299,7 @@ class DataQueryAction extends RestrictionSupportAction {
       new java.util.Date())
     val majorId = getInt("majorId")
     if (majorId == null) {
-      CollectUtils.newArrayList()
+      Collections.newBuffer[Any]
     } else {
       builder.where("direction.major.id =:majorId", majorId)
       entityDao.search(builder)

@@ -4,15 +4,15 @@ package org.openurp.edu.eams.teach.lesson.task.service.impl
 
 
 import org.apache.commons.collections.CollectionUtils
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.openurp.edu.teach.code.CourseTakeType
-import org.openurp.edu.teach.lesson.CourseLimitGroup
+import org.openurp.edu.teach.lesson.LessonLimitGroup
 import org.openurp.edu.teach.lesson.CourseTake
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.teach.lesson.TeachClass
 import org.openurp.edu.eams.teach.lesson.dao.LessonDao
-import org.openurp.edu.eams.teach.lesson.service.CourseLimitService
+import org.openurp.edu.eams.teach.lesson.service.LessonLimitService
 import org.openurp.edu.eams.teach.lesson.service.LessonLogBuilder
 import org.openurp.edu.eams.teach.lesson.service.LessonLogHelper
 import org.openurp.edu.eams.teach.lesson.service.TeachClassNameStrategy
@@ -26,7 +26,7 @@ class LessonMergeSplitServiceImpl extends BaseServiceImpl with LessonMergeSplitS
 
   private var lessonDao: LessonDao = _
 
-  private var courseLimitService: CourseLimitService = _
+  private var lessonLimitService: LessonLimitService = _
 
   private var lessonLogHelper: LessonLogHelper = _
 
@@ -103,7 +103,7 @@ class LessonMergeSplitServiceImpl extends BaseServiceImpl with LessonMergeSplitS
         take.setCourseTakeType(new CourseTakeType(CourseTakeType.NORMAL))
       }
       LessonElectionUtil.normalizeTeachClass(lessons(j))
-      if (CollectUtils.isNotEmpty(lessons(j).getTeachClass.getCourseTakes) && 
+      if (Collections.isNotEmpty(lessons(j).getTeachClass.getCourseTakes) && 
         lessons(j).getTeachClass.getCourseTakes.iterator().next()
         .isPersisted) {
         val persistedTakes = new HashSet[CourseTake](lessons(j).getTeachClass.getCourseTakes)
@@ -139,7 +139,7 @@ class LessonMergeSplitServiceImpl extends BaseServiceImpl with LessonMergeSplitS
   private def dirtywork(target: Lesson, source: Lesson): Lesson = {
     entityDao.executeUpdate("update " + classOf[CourseTake].getName + " take set take.lesson=?1 where take.lesson=?2", 
       target, source)
-    entityDao.executeUpdate("update " + classOf[CourseLimitGroup].getName + " clg set clg.lesson=?1 where clg.lesson=?2", 
+    entityDao.executeUpdate("update " + classOf[LessonLimitGroup].getName + " clg set clg.lesson=?1 where clg.lesson=?2", 
       target, source)
     teachClassNameStrategy.autoName(target.getTeachClass)
     var limitCount = 0
@@ -157,8 +157,8 @@ class LessonMergeSplitServiceImpl extends BaseServiceImpl with LessonMergeSplitS
     this.lessonDao = lessonDao
   }
 
-  def setCourseLimitService(courseLimitService: CourseLimitService) {
-    this.courseLimitService = courseLimitService
+  def setLessonLimitService(lessonLimitService: LessonLimitService) {
+    this.lessonLimitService = lessonLimitService
   }
 
   def setLessonLogHelper(lessonLogHelper: LessonLogHelper) {

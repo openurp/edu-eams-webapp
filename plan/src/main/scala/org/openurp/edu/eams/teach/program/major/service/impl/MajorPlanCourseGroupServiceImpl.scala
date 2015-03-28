@@ -2,7 +2,7 @@ package org.openurp.edu.eams.teach.program.major.service.impl
 
 
 import org.apache.commons.lang3.StringUtils
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Numbers
@@ -67,7 +67,7 @@ class MajorCourseGroupServiceImpl extends BaseServiceImpl with MajorCourseGroupS
   private def shiftCode(node: CourseGroup, newParent: CourseGroup, index: Int) {
     var sibling: List[CourseGroup] = null
     if (null != newParent) sibling = newParent.getChildren else {
-      sibling = CollectUtils.newArrayList()
+      sibling = Collections.newBuffer[Any]
       for (m <- node.getPlan.getTopCourseGroups if null == m.getParent) sibling.add(m)
     }
     Collections.sort(sibling)
@@ -78,7 +78,7 @@ class MajorCourseGroupServiceImpl extends BaseServiceImpl with MajorCourseGroupS
     }
     sibling.add(index, node)
     val nolength = String.valueOf(sibling.size).length
-    val nodes = CollectUtils.newHashSet()
+    val nodes = Collections.newSet[Any]
     var seqno = 1
     while (seqno <= sibling.size) {
       val one = sibling.get(seqno - 1)

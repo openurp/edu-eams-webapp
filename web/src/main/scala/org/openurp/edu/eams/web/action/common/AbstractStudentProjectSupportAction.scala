@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.web.action.common
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.openurp.edu.base.Project
@@ -12,7 +12,7 @@ import org.openurp.edu.base.Student
 abstract class AbstractStudentProjectSupportAction extends MultiProjectSupportAction {
 
   protected override def getProjects(): List[Project] = {
-    var projects = CollectUtils.newArrayList()
+    var projects = Collections.newBuffer[Any]
     val student = getLoginStudent
     if (student.getPerson != null) {
       val builder = OqlBuilder.from(classOf[Project], "project").select("select distinct project")

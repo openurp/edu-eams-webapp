@@ -8,7 +8,7 @@ import org.openurp.edu.teach.lesson.TeachClass
 
 trait TeachClassNameStrategy {
 
-  def genName(groups: List[LessonLimitGroup]): String
+  def genName(groups: Seq[LessonLimitGroup]): String
 
   def genName(teachClass: TeachClass): String
 
@@ -16,7 +16,7 @@ trait TeachClassNameStrategy {
 
   def abbreviateName(teachClass: TeachClass): Unit
 
-  def genFullname(groups: List[LessonLimitGroup]): String
+  def genFullname(groups: Seq[LessonLimitGroup]): String
 
   def genFullname(teachClass: TeachClass): String
 

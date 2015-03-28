@@ -4,7 +4,7 @@ package org.openurp.edu.eams.teach.election.service.cache
 
 
 import org.apache.commons.lang3.ArrayUtils
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.openurp.base.Campus
@@ -22,13 +22,13 @@ import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.eams.teach.election.ElectionProfile
 import org.openurp.edu.eams.teach.election.model.ElectionProfileBean
 import org.openurp.edu.teach.schedule.CourseActivity
-import org.openurp.edu.teach.lesson.CourseLimitGroup
-import org.openurp.edu.teach.lesson.CourseLimitItem
-import org.openurp.edu.teach.lesson.CourseLimitMeta
+import org.openurp.edu.teach.lesson.LessonLimitGroup
+import org.openurp.edu.teach.lesson.LessonLimitItem
+import org.openurp.edu.teach.lesson.LessonLimitMeta
 import org.openurp.edu.teach.lesson.Lesson
-import org.openurp.edu.eams.teach.lesson.model.CourseLimitGroupBean
-import org.openurp.edu.eams.teach.lesson.model.CourseLimitItemBean
-import org.openurp.edu.eams.teach.lesson.model.CourseLimitMetaBean
+import org.openurp.edu.eams.teach.lesson.model.LessonLimitGroupBean
+import org.openurp.edu.eams.teach.lesson.model.LessonLimitItemBean
+import org.openurp.edu.eams.teach.lesson.model.LessonLimitMetaBean
 import org.openurp.edu.eams.teach.lesson.model.LessonBean
 import org.openurp.edu.teach.lesson.model.TeachClassBean
 import org.openurp.edu.teach.model.CourseBean
@@ -41,11 +41,11 @@ object ProfileLessonDataProvider {
 
   private val refreshInterval = 1000 * 60 * 10
 
-  private val profileId2LessonJson = CollectUtils.newHashMap()
+  private val profileId2LessonJson = Collections.newMap[Any]
 
-  private val profileId2LastUpdateTime = CollectUtils.newHashMap()
+  private val profileId2LastUpdateTime = Collections.newMap[Any]
 
-  private val profileId2Lessons = CollectUtils.newHashMap()
+  private val profileId2Lessons = Collections.newMap[Any]
 
   private val urgentQuery = OqlBuilder.from(classOf[ElectionProfile].getName, "p")
     .select("p.id")
@@ -102,7 +102,7 @@ class ProfileLessonDataProvider extends AbstractProfileLessonProvider {
     val activityInfoMap = resultDatas.get("activityInfoMap").asInstanceOf[Map[Long, Map[Long, Array[Any]]]]
     val activityRooms = resultDatas.get("activityRooms").asInstanceOf[Map[Long, String]]
     val lessonTeachers = resultDatas.get("lessonTeachers").asInstanceOf[Map[Long, String]]
-    val res = CollectUtils.newHashMap()
+    val res = Collections.newMap[Any]
     val tmp_sb = new StringBuilder(550)
     val lessonsSize = lessons.size
     for (i <- 0 until lessonsSize) {
@@ -192,7 +192,7 @@ class ProfileLessonDataProvider extends AbstractProfileLessonProvider {
   }
 
   private def genNewData(profileId: java.lang.Long): Map[String, Any] = {
-    val data = CollectUtils.newHashMap()
+    val data = Collections.newMap[Any]
     val profile = entityDao.get(classOf[ElectionProfileBean], profileId)
     val builder = OqlBuilder.from(classOf[Lesson], "lesson")
     builder.where("lesson.semester=:semester", profile.getSemester)
@@ -208,7 +208,7 @@ class ProfileLessonDataProvider extends AbstractProfileLessonProvider {
   }
 
   def buildDataInfos(data: Map[String, Any], lessons: List[Lesson]) {
-    val teacherNames = CollectUtils.newArrayList()
+    val teacherNames = Collections.newBuffer[Any]
     val teacherBuilder = OqlBuilder.from(classOf[Lesson].getName + " lesson")
     teacherBuilder.where("lesson in (:lessons)")
     teacherBuilder.join("lesson.teachers", "teacher")
@@ -223,7 +223,7 @@ class ProfileLessonDataProvider extends AbstractProfileLessonProvider {
       teacherNames.addAll(entityDao.search(teacherBuilder).asInstanceOf[List[Array[Any]]])
       i += 500
     }
-    val lessonTeachers = CollectUtils.newHashMap()
+    val lessonTeachers = Collections.newMap[Any]
     for (objects <- teacherNames) {
       val lessonId = objects(0).asInstanceOf[java.lang.Long]
       val teacherName = objects(1)
@@ -237,7 +237,7 @@ class ProfileLessonDataProvider extends AbstractProfileLessonProvider {
         }
       }
     }
-    val roomNames = CollectUtils.newArrayList()
+    val roomNames = Collections.newBuffer[Any]
     val roomBuilder = OqlBuilder.from(classOf[CourseActivity].getName + " activity")
     roomBuilder.where("activity.lesson in (:lessons)")
     roomBuilder.join("activity.rooms", "room")
@@ -252,7 +252,7 @@ class ProfileLessonDataProvider extends AbstractProfileLessonProvider {
       roomNames.addAll(entityDao.search(roomBuilder).asInstanceOf[List[Array[Any]]])
       j += 500
     }
-    val activityRooms = CollectUtils.newHashMap()
+    val activityRooms = Collections.newMap[Any]
     for (objects <- roomNames) {
       val lessonId = objects(0).asInstanceOf[java.lang.Long]
       val roomName = objects(1)
@@ -266,7 +266,7 @@ class ProfileLessonDataProvider extends AbstractProfileLessonProvider {
         }
       }
     }
-    val activityInfos = CollectUtils.newArrayList()
+    val activityInfos = Collections.newBuffer[Any]
     val activityInfoBuilder = OqlBuilder.from(classOf[CourseActivity].getName + " activity")
     activityInfoBuilder.where("activity.lesson in (:lessons)")
     activityInfoBuilder.select("activity.lesson.id,activity.id,activity.time.day,activity.time.state,activity.time.startUnit,activity.time.endUnit")
@@ -280,7 +280,7 @@ class ProfileLessonDataProvider extends AbstractProfileLessonProvider {
       activityInfos.addAll(entityDao.search(activityInfoBuilder).asInstanceOf[List[Array[Any]]])
       k += 500
     }
-    val activityInfoMap = CollectUtils.newHashMap()
+    val activityInfoMap = Collections.newMap[Any]
     for (objects <- activityInfos) {
       val infos = Array.ofDim[Any](4)
       for (l <- 2 until objects.length) {
@@ -289,7 +289,7 @@ class ProfileLessonDataProvider extends AbstractProfileLessonProvider {
       if (activityInfoMap.containsKey(objects(0).asInstanceOf[java.lang.Long])) {
         activityInfoMap.get(objects(0)).put(objects(1).asInstanceOf[java.lang.Long], infos)
       } else {
-        val subInfos = CollectUtils.newHashMap()
+        val subInfos = Collections.newMap[Any]
         subInfos.put(objects(1).asInstanceOf[java.lang.Long], infos)
         activityInfoMap.put(objects(0).asInstanceOf[java.lang.Long], subInfos)
       }
@@ -301,16 +301,16 @@ class ProfileLessonDataProvider extends AbstractProfileLessonProvider {
 
   private def cloneLessons(lessons: List[Lesson]): List[Lesson] = {
     val start = System.currentTimeMillis()
-    val courses = CollectUtils.newHashMap()
-    val courseTypes = CollectUtils.newHashMap()
-    val educations = CollectUtils.newHashMap()
-    val campuses = CollectUtils.newHashMap()
-    val departs = CollectUtils.newHashMap()
-    val projects = CollectUtils.newHashMap()
-    val metas = CollectUtils.newHashMap()
-    val abilityRates = CollectUtils.newHashMap()
-    val majors = CollectUtils.newHashMap()
-    val courseRateInfos = CollectUtils.newArrayList()
+    val courses = Collections.newMap[Any]
+    val courseTypes = Collections.newMap[Any]
+    val educations = Collections.newMap[Any]
+    val campuses = Collections.newMap[Any]
+    val departs = Collections.newMap[Any]
+    val projects = Collections.newMap[Any]
+    val metas = Collections.newMap[Any]
+    val abilityRates = Collections.newMap[Any]
+    val majors = Collections.newMap[Any]
+    val courseRateInfos = Collections.newBuffer[Any]
     val rateBuilder = OqlBuilder.from(classOf[Lesson], "lesson")
     rateBuilder.where("lesson in (:lessons)")
     rateBuilder.join("lesson.course.abilityRates", "abilityRate")
@@ -325,17 +325,17 @@ class ProfileLessonDataProvider extends AbstractProfileLessonProvider {
       courseRateInfos.addAll(entityDao.search(rateBuilder).asInstanceOf[List[Array[Any]]])
       k += 500
     }
-    val courseRates = CollectUtils.newHashMap()
+    val courseRates = Collections.newMap[Any]
     for (objects <- courseRateInfos) {
       val courseId = objects(0).asInstanceOf[java.lang.Long]
       val rateId = objects(1).asInstanceOf[java.lang.Integer]
       if (courseRates.containsKey(courseId)) {
         courseRates.get(courseId).add(rateId)
       } else {
-        courseRates.put(courseId, CollectUtils.newHashSet(rateId))
+        courseRates.put(courseId, Collections.newHashSet(rateId))
       }
     }
-    val courseXmajorInfos = CollectUtils.newArrayList()
+    val courseXmajorInfos = Collections.newBuffer[Any]
     val xmajorBuilder = OqlBuilder.from(classOf[Lesson], "lesson")
     xmajorBuilder.where("lesson in (:lessons)")
     xmajorBuilder.join("lesson.course.xmajors", "xmajor")
@@ -350,17 +350,17 @@ class ProfileLessonDataProvider extends AbstractProfileLessonProvider {
       courseXmajorInfos.addAll(entityDao.search(xmajorBuilder).asInstanceOf[List[Array[Any]]])
       k += 500
     }
-    val courseXmajors = CollectUtils.newHashMap()
+    val courseXmajors = Collections.newMap[Any]
     for (objects <- courseXmajorInfos) {
       val courseId = objects(0).asInstanceOf[java.lang.Long]
       val xmajorId = objects(1).asInstanceOf[java.lang.Integer]
       if (courseXmajors.containsKey(objects)) {
         courseXmajors.get(courseId).add(xmajorId)
       } else {
-        courseXmajors.put(courseId, CollectUtils.newHashSet(xmajorId))
+        courseXmajors.put(courseId, Collections.newHashSet(xmajorId))
       }
     }
-    val result = CollectUtils.newArrayList(lessons.size)
+    val result = Collections.newBuffer[Any](lessons.size)
     for (l <- lessons) {
       val nl = new LessonBean()
       result.add(nl)
@@ -441,18 +441,18 @@ class ProfileLessonDataProvider extends AbstractProfileLessonProvider {
       teachclass.setLesson(nl)
       teachclass.setGrade(l.getTeachClass.grade)
       for (og <- l.getTeachClass.getLimitGroups) {
-        val group = new CourseLimitGroupBean()
+        val group = new LessonLimitGroupBean()
         teachclass.addLimitGroups(group)
         group.setId(og.id)
         group.setForClass(og.isForClass)
         for (oi <- og.getItems) {
-          val item = new CourseLimitItemBean()
+          val item = new LessonLimitItemBean()
           item.setId(oi.id)
           item.setOperator(oi.getOperator)
           item.setContent(oi.getContent)
           var meta = metas.get(oi.getMeta.id)
           if (null == meta) {
-            meta = new CourseLimitMetaBean()
+            meta = new LessonLimitMetaBean()
             meta.setId(oi.getMeta.id)
             metas.put(oi.getMeta.id, meta)
           }

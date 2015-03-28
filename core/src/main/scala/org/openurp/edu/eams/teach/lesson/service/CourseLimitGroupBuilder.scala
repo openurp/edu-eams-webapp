@@ -3,6 +3,7 @@ package org.openurp.edu.eams.teach.lesson.service
 import org.beangle.data.model.Entity
 import org.openurp.edu.teach.lesson.LessonLimitGroup
 import org.openurp.edu.teach.lesson.LessonLimitMeta
+import org.openurp.edu.teach.lesson.LessonLimitMeta.LimitMeta
 
 
 
@@ -16,7 +17,7 @@ trait LessonLimitGroupBuilder {
 
   def notIn[T <: Entity[_]](entities: T*): LessonLimitGroupBuilder
 
-  def clear(meta: LessonLimitMeta): LessonLimitGroupBuilder
+  def clear(meta: LimitMeta): LessonLimitGroupBuilder
 
   def build(): LessonLimitGroup
 }

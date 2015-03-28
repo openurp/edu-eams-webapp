@@ -5,7 +5,7 @@ import java.util.Arrays
 
 import org.apache.commons.collections.CollectionUtils
 import org.beangle.commons.bean.transformers.PropertyTransformer
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.util.ValidEntityKeyPredicate

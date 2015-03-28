@@ -5,7 +5,7 @@ import java.util.Date
 
 
 import org.apache.commons.lang3.ArrayUtils
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.commons.dao.Operation
 import org.beangle.commons.dao.query.builder.Condition
@@ -49,8 +49,8 @@ class StdTotalCreditConstraintAction extends SemesterSupportAction {
     val departs = getDeparts
     val educations = getEducations
     val project = getProject
-    if (CollectUtils.isEmpty(stdTypes) || CollectUtils.isEmpty(departs) || 
-      CollectUtils.isEmpty(educations) || 
+    if (Collections.isEmpty(stdTypes) || Collections.isEmpty(departs) || 
+      Collections.isEmpty(educations) || 
       null == project) {
       builder.where("1=2")
     } else {
@@ -95,7 +95,7 @@ class StdTotalCreditConstraintAction extends SemesterSupportAction {
         val stdTotalCreditConstraint = entity.asInstanceOf[StdTotalCreditConstraint]
         put("stdTotalCreditConstraint", stdTotalCreditConstraint)
         if (stdTotalCreditConstraint.isPersisted) {
-          put("electedCredits", getStdsElectedCredits(CollectUtils.newArrayList(stdTotalCreditConstraint.getStd)))
+          put("electedCredits", getStdsElectedCredits(Collections.newBuffer[Any](stdTotalCreditConstraint.getStd)))
         }
       } else {
         val project = getProject
@@ -107,7 +107,7 @@ class StdTotalCreditConstraintAction extends SemesterSupportAction {
           put("stds", Collections.emptyList())
           put("electedCredits", Collections.emptyMap())
         }
-        val stdTotalCreditConstraints = CollectUtils.newArrayList()
+        val stdTotalCreditConstraints = Collections.newBuffer[Any]
         var i = 0
         while (i < entityIds.length) {
           var end = i + 500
@@ -127,7 +127,7 @@ class StdTotalCreditConstraintAction extends SemesterSupportAction {
           stdTotalCreditConstraints.addAll(entityDao.search(stdTotalCreditConstraintBuilder))
           i += 500
         }
-        val stds = CollectUtils.newArrayList()
+        val stds = Collections.newBuffer[Any]
         for (stdTotalCreditConstraint <- stdTotalCreditConstraints) {
           stds.add(stdTotalCreditConstraint.getStd)
         }
@@ -144,7 +144,7 @@ class StdTotalCreditConstraintAction extends SemesterSupportAction {
   }
 
   private def getStdsElectedCredits(stds: List[Student]): Map[Student, Float] = {
-    val electedCredits = CollectUtils.newHashMap()
+    val electedCredits = Collections.newMap[Any]
     if (!stds.isEmpty) {
       val courseTakes = entityDao.get(classOf[CourseTake], "std", stds)
       for (courseTake <- courseTakes) {
@@ -161,8 +161,8 @@ class StdTotalCreditConstraintAction extends SemesterSupportAction {
     val stdTypes = getStdTypes
     val educations = getEducations
     val builder = OqlBuilder.from(classOf[Student], "student")
-    if (CollectUtils.isEmpty(departs) || CollectUtils.isEmpty(stdTypes) || 
-      CollectUtils.isEmpty(educations)) {
+    if (Collections.isEmpty(departs) || Collections.isEmpty(stdTypes) || 
+      Collections.isEmpty(educations)) {
       builder.where("1=2")
     } else {
       builder.where((if (noCreditsConstraint) "not " else "") + "exists (from " + 
@@ -193,7 +193,7 @@ class StdTotalCreditConstraintAction extends SemesterSupportAction {
     } else if (ArrayUtils.isNotEmpty(codes)) {
       val stds = entityDao.get(classOf[Student], Array("code", "project", "department", "type", "education"), 
         Array(codes, project, departments, stdTypes, educations))
-      val stdMap = CollectUtils.newHashMap()
+      val stdMap = Collections.newMap[Any]
       for (student <- stds) {
         stdMap.put(student.getCode, student)
       }
@@ -226,11 +226,11 @@ class StdTotalCreditConstraintAction extends SemesterSupportAction {
 
   def save(): String = {
     val stdTotalCreditConstraint = populateEntity().asInstanceOf[StdTotalCreditConstraint]
-    var stds = CollectUtils.newArrayList()
+    var stds = Collections.newBuffer[Any]
 
-    val persistedConstraintStds = CollectUtils.newHashSet()
+    val persistedConstraintStds = Collections.newSet[Any]
     var stdIds: Array[Long] = null
-    var stdTotalCreditConstraints = CollectUtils.newArrayList()
+    var stdTotalCreditConstraints = Collections.newBuffer[Any]
     if (true == getBoolean("allNoCredit")) {
       stds = entityDao.search(getStdBuilder(null, true))
     } else {
@@ -249,7 +249,7 @@ class StdTotalCreditConstraintAction extends SemesterSupportAction {
       stdTotalCreditConstraints.add(constraint)
     }
     val createdAt = new Date()
-    val loggers = CollectUtils.newArrayList()
+    val loggers = Collections.newBuffer[Any]
     for (constraint <- stdTotalCreditConstraints) {
       constraint.setMaxCredit(stdTotalCreditConstraint.getMaxCredit)
       val logger = ConstraintLogger.genLogger(constraint, if (constraint.isPersisted) "UPDATE" else "CREATE")
@@ -274,7 +274,7 @@ class StdTotalCreditConstraintAction extends SemesterSupportAction {
     }
     if (ArrayUtils.isNotEmpty(ids)) {
       val createdAt = new Date()
-      val loggers = CollectUtils.newArrayList()
+      val loggers = Collections.newBuffer[Any]
       val constraints = entityDao.get(classOf[StdTotalCreditConstraint], ids)
       for (stdTotalCreditConstraint <- constraints) {
         stdTotalCreditConstraint.setMaxCredit(maxCredit)
@@ -298,10 +298,10 @@ class StdTotalCreditConstraintAction extends SemesterSupportAction {
     var stdTotalCreditConstraints: List[StdTotalCreditConstraint] = null
     stdTotalCreditConstraints = if (ArrayUtils.isEmpty(entityIds)) entityDao.getAll(classOf[StdTotalCreditConstraint]) else entityDao.get(classOf[StdTotalCreditConstraint], 
       entityIds)
-    val stds = CollectUtils.newHashSet()
-    val constraintMap = CollectUtils.newHashMap()
+    val stds = Collections.newSet[Any]
+    val constraintMap = Collections.newMap[Any]
     val createdAt = new Date()
-    val loggers = CollectUtils.newArrayList()
+    val loggers = Collections.newBuffer[Any]
     for (stdTotalCreditConstraint <- stdTotalCreditConstraints) {
       stds.add(stdTotalCreditConstraint.getStd)
       constraintMap.put(stdTotalCreditConstraint.getStd, stdTotalCreditConstraint)
@@ -326,7 +326,7 @@ class StdTotalCreditConstraintAction extends SemesterSupportAction {
 
   protected def removeAndForward(entities: Iterable[_]): String = {
     try {
-      val loggers = CollectUtils.newArrayList()
+      val loggers = Collections.newBuffer[Any]
       val createdAt = new Date()
       for (`object` <- entities) {
         val constraint = `object`.asInstanceOf[StdTotalCreditConstraint]

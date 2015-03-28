@@ -8,7 +8,7 @@ import org.apache.commons.collections.CollectionUtils
 import org.apache.commons.collections.Predicate
 import org.apache.struts2.ServletActionContext
 import org.beangle.commons.bean.comparators.PropertyComparator
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.model.dao.EntityDao
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Objects
@@ -178,7 +178,7 @@ class RestrictionHelperImpl extends RestrictionHelper {
       dataRealms
     } else {
       val stdTypeIds = String.valueOf(stdTypeId)
-      val newRealms = CollectUtils.newArrayList()
+      val newRealms = Collections.newBuffer[Any]
       var iterator = dataRealms.iterator()
       while (iterator.hasNext) {
         val newRealm = (iterator.next().clone()).asInstanceOf[DataRealm]
@@ -201,7 +201,7 @@ class RestrictionHelperImpl extends RestrictionHelper {
         throw new DepartAuthorityException(getUser, getResourceName)
       }
     }
-    val realms = CollectUtils.newArrayList()
+    val realms = Collections.newBuffer[Any]
     val realm = new DataRealm()
     val profile = profiles.get(0)
     if (SecurityUtils.getUserId == 1l) {
@@ -308,25 +308,25 @@ class RestrictionHelperImpl extends RestrictionHelper {
     if (null == field) {
       throw new RuntimeException("cannot find " + name + " in profile fields!")
     }
-    if (CollectUtils.isEmpty(profiles)) {
+    if (Collections.isEmpty(profiles)) {
       val currentRoleId = ActionContext.getContext.getSession.get("security.userCategoryId").asInstanceOf[java.lang.Integer]
       if (user.id == 1L) {
         if ("directions" == name || "majors" == name) {
-          CollectUtils.newArrayList()
+          Collections.newBuffer[Any]
         } else {
           profileService.getFieldValues(field)
         }
       } else {
-        CollectUtils.newArrayList()
+        Collections.newBuffer[Any]
       }
     } else {
-      val res = CollectUtils.newArrayList()
+      val res = Collections.newBuffer[Any]
       for (profile <- profiles) {
         if (null != profile.getProperty(name)) {
           val value = profile.getProperty(name).getValue
           if (value == "*") {
             if ("directions" == name || "majors" == name) {
-              return CollectUtils.newArrayList()
+              return Collections.newBuffer[Any]
             } else {
               return profileService.getFieldValues(field)
             }

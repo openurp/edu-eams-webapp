@@ -12,7 +12,7 @@ import org.apache.commons.collections.Transformer
 import org.apache.commons.lang3.ArrayUtils
 import org.beangle.commons.bean.comparators.MultiPropertyComparator
 import org.beangle.commons.bean.comparators.PropertyComparator
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.commons.conversion.impl.DefaultConversion
 import org.beangle.commons.dao.query.builder.Condition
@@ -43,14 +43,14 @@ import org.openurp.edu.eams.teach.Textbook
 import org.openurp.edu.eams.teach.code.school.CourseHourType
 import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.teach.schedule.CourseActivity
-import org.openurp.edu.teach.lesson.CourseLimitMeta.Operator
+import org.openurp.edu.teach.lesson.LessonLimitMeta.Operator
 import org.openurp.edu.eams.teach.lesson.CourseMaterial
 import org.openurp.edu.teach.lesson.CourseTake
 import org.openurp.edu.eams.teach.lesson.CourseTime
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.teach.lesson.model.CourseScheduleBean.CourseStatusEnum
 import org.openurp.edu.eams.teach.lesson.model.LessonMaterialBean
-import org.openurp.edu.eams.teach.lesson.service.CourseLimitUtils
+import org.openurp.edu.eams.teach.lesson.service.LessonLimitUtils
 import org.openurp.edu.eams.teach.lesson.service.CourseTableStyle
 import org.openurp.edu.eams.teach.lesson.service.LessonFilterStrategy
 import org.openurp.edu.eams.teach.lesson.service.LessonFilterStrategyFactory
@@ -90,9 +90,9 @@ class CourseTableAction extends SemesterSupportAction {
 
   var timeSettingService: TimeSettingService = _
 
-  var adminclassCourseGroups: Map[Adminclass, Map[CourseType, Float]] = CollectUtils.newHashMap()
+  var adminclassCourseGroups: Map[Adminclass, Map[CourseType, Float]] = Collections.newMap[Any]
 
-  var adminclassLessonGroups: Map[Adminclass, Map[CourseType, Set[Lesson]]] = CollectUtils.newHashMap()
+  var adminclassLessonGroups: Map[Adminclass, Map[CourseType, Set[Lesson]]] = Collections.newMap[Any]
 
   override def index(): String = {
     setSemesterDataRealm(hasStdTypeCollege)
@@ -102,7 +102,7 @@ class CourseTableAction extends SemesterSupportAction {
     val project = getProject
     put("campuses", project.getCampuses)
     put("teacherDeparts", departmentService.getTeachDeparts)
-    put("teachDeparts", lessonService.teachDepartsOfSemester(CollectUtils.newArrayList(project), getDeparts, 
+    put("teachDeparts", lessonService.teachDepartsOfSemester(Collections.newBuffer[Any](project), getDeparts, 
       getAttribute("semester").asInstanceOf[Semester]))
     put("courseTableType", get("courseTableType"))
     put("genders", baseCodeService.getCodes(classOf[Gender]))
@@ -118,7 +118,7 @@ class CourseTableAction extends SemesterSupportAction {
     val lesson = entityDao.get(classOf[Lesson], lessonId)
     put("lesson", lesson)
     val courseTakes = lesson.getTeachClass.getCourseTakes
-    val targetCourseTakes = CollectUtils.newArrayList()
+    val targetCourseTakes = Collections.newBuffer[Any]
     if (null != adminclassId) {
       for (courseTake <- courseTakes if courseTake.getStd.getAdminclass.id == adminclassId) {
         targetCourseTakes.add(courseTake)
@@ -158,12 +158,12 @@ class CourseTableAction extends SemesterSupportAction {
     val adminClassIds = Strings.splitToInt(get("adminClassIds"))
     val semesterId = getInt("semester.id")
     val semester = semesterService.getSemester(semesterId)
-    val courseTables = CollectUtils.newHashMap()
-    var adminclasses = CollectUtils.newArrayList()
+    val courseTables = Collections.newMap[Any]
+    var adminclasses = Collections.newBuffer[Any]
     if (ArrayUtils.isNotEmpty(adminClassIds)) {
       adminclasses = entityDao.get(classOf[Adminclass], adminClassIds)
     }
-    val adminclassForNoMajors = CollectUtils.newArrayList()
+    val adminclassForNoMajors = Collections.newBuffer[Any]
     val time = new CourseTime()
     for (adminclass <- adminclasses) {
       val courseActivities = teachResourceService.getAdminclassActivities(adminclass, time, semester)
@@ -187,8 +187,8 @@ class CourseTableAction extends SemesterSupportAction {
     val teacherIds = Strings.splitToLong(get("teacherIds"))
     val semesterId = getInt("semester.id")
     val semester = semesterService.getSemester(semesterId)
-    val courseTables = CollectUtils.newHashMap()
-    var teachers = CollectUtils.newArrayList()
+    val courseTables = Collections.newMap[Any]
+    var teachers = Collections.newBuffer[Any]
     if (ArrayUtils.isNotEmpty(teacherIds)) {
       teachers = entityDao.get(classOf[Teacher], teacherIds)
     }
@@ -211,8 +211,8 @@ class CourseTableAction extends SemesterSupportAction {
     val roomIds = Strings.splitToInt(get("roomIds"))
     val semesterId = getInt("semester.id")
     val semester = semesterService.getSemester(semesterId)
-    val courseTables = CollectUtils.newHashMap()
-    var classrooms = CollectUtils.newArrayList()
+    val courseTables = Collections.newMap[Any]
+    var classrooms = Collections.newBuffer[Any]
     if (ArrayUtils.isNotEmpty(roomIds)) {
       classrooms = entityDao.get(classOf[Room], roomIds)
     }
@@ -232,7 +232,7 @@ class CourseTableAction extends SemesterSupportAction {
   }
 
   private def putActivityId2ArrangeWeek(semester: Semester, courseActivities: Iterable[CourseActivity]) {
-    val activityId2ArrangeWeek = CollectUtils.newHashMap()
+    val activityId2ArrangeWeek = Collections.newMap[Any]
     val digestor = CourseActivityDigestor.getInstance
     for (courseActivity <- courseActivities) {
       activityId2ArrangeWeek.put(courseActivity.id, digestor.digest(getTextResource, Collections.singleton(courseActivity), 
@@ -350,7 +350,7 @@ class CourseTableAction extends SemesterSupportAction {
     }
     val clazz = CourseTable.getResourceClass(setting.getKind)
     val idClazz = Model.getType(clazz).idType
-    val rsList = CollectUtils.newArrayList()
+    val rsList = Collections.newBuffer[Any]
     for (a <- Strings.split(ids)) {
       rsList.add(DefaultConversion.Instance.convert(a, idClazz))
     }
@@ -361,11 +361,11 @@ class CourseTableAction extends SemesterSupportAction {
       orders.add(new Order("code asc"))
     }
     if ("program" == setting.getKind) {
-      orders = CollectUtils.newArrayList(new Order("name asc"))
+      orders = Collections.newBuffer[Any](new Order("name asc"))
     }
     val order = orders.get(0).asInstanceOf[Order]
     Collections.sort(resources, new PropertyComparator(getLastSubString(order.getProperty), order.isAscending))
-    val courseTableList = CollectUtils.newArrayList()
+    val courseTableList = Collections.newBuffer[Any]
     if (setting.getTablePerPage == 1) {
       for (resource <- resources) {
         courseTableList.add(buildCourseTable(setting, resource))
@@ -387,7 +387,7 @@ class CourseTableAction extends SemesterSupportAction {
     setting.setDisplaySemesterTime(true)
     put("courseTableList", courseTableList)
     if (setting.getTablePerPage == 1 && !setting.getIgnoreTask) {
-      val textbookMap = CollectUtils.newHashMap()
+      val textbookMap = Collections.newMap[Any]
       for (`object` <- courseTableList) {
         val table = `object`.asInstanceOf[CourseTable]
         for (lesson <- table.getLessons) {
@@ -395,7 +395,7 @@ class CourseTableAction extends SemesterSupportAction {
           if (!lessonMaterials.isEmpty) {
             val lessonMaterial = lessonMaterials.get(0)
             if (lessonMaterial.getPassed != null && true == lessonMaterial.getPassed) {
-              textbookMap.put(lesson, CollectUtils.newHashSet(lessonMaterials.get(0).getBooks))
+              textbookMap.put(lesson, Collections.newHashSet(lessonMaterials.get(0).getBooks))
             }
           } else {
             val courseMaterials = entityDao.search(OqlBuilder.from(classOf[CourseMaterial], "courseMaterial")
@@ -404,7 +404,7 @@ class CourseTableAction extends SemesterSupportAction {
               .where("courseMaterial.semester = :semester", lesson.getSemester)
               .where("courseMaterial.passed is true"))
             if (!courseMaterials.isEmpty) {
-              textbookMap.put(lesson, CollectUtils.newHashSet(courseMaterials.get(0).getBooks))
+              textbookMap.put(lesson, Collections.newHashSet(courseMaterials.get(0).getBooks))
             }
           }
         }
@@ -440,24 +440,24 @@ class CourseTableAction extends SemesterSupportAction {
       .append("    (select count(student.id) from adminClass.students student where student.gender.id=2) \n")
       .append("from\n")
       .append("	org.openurp.edu.teach.lesson.Lesson lesson \n")
-      .append("    join lesson.courseSchedule.activities activity\n")
+      .append("    join lesson.schedule.activities activity\n")
       .append("where\n")
       .append("lesson.semester=:semester\n")
       .append("and lesson.course.code in (:peCourseCodes)\n")
-      .append("and lesson.courseSchedule.status=:status\n")
+      .append("and lesson.schedule.status=:status\n")
       .append("order by\n")
       .append("    activity.time.weekId,\n")
       .append("    activity.time.startUnit,\n")
       .append("    activity.time.endUnit,\n")
       .append("    lesson.course.code,\n")
-    val arrangeQueryParams = CollectUtils.newHashMap()
+    val arrangeQueryParams = Collections.newMap[Any]
     arrangeQueryParams.put("peCourseCodes", peCourseCodes)
     arrangeQueryParams.put("semester", semester)
     arrangeQueryParams.put("status", CourseStatusEnum.ARRANGED)
     val arranges = entityDao.search(arrangeQuery.toString, arrangeQueryParams)
     val courseQuery = new StringBuilder()
     courseQuery.append("select distinct course from Course course where course.code in(:courseCodes)\n")
-    val courseQueryParams = CollectUtils.newHashMap()
+    val courseQueryParams = Collections.newMap[Any]
     courseQueryParams.put("courseCodes", peCourseCodes)
     val courses = entityDao.search(courseQuery.toString, courseQueryParams)
     val courseCodeNameMap = new HashMap[String, String]()
@@ -484,9 +484,9 @@ class CourseTableAction extends SemesterSupportAction {
     val unitRangeQuery = OqlBuilder.from(classOf[CourseActivity], "activity")
       .select("select distinct activity.time.startUnit, activity.time.endUnit")
       .where("activity.lesson.course.code in (:peCourseCodes)", courseCodes)
-      .where("activity.lesson.courseSchedule.status=:status", CourseStatusEnum.ARRANGED)
+      .where("activity.lesson.schedule.status=:status", CourseStatusEnum.ARRANGED)
       .where("activity.lesson.semester=:semester", semester)
-    val orders = CollectUtils.newArrayList(new Order("activity.time.startUnit"), new Order("activity.time.endUnit"))
+    val orders = Collections.newBuffer[Any](new Order("activity.time.startUnit"), new Order("activity.time.endUnit"))
     unitRangeQuery.orderBy(orders)
     val res = entityDao.search(unitRangeQuery)
     CollectionUtils.transform(res, new Transformer() {
@@ -507,10 +507,10 @@ class CourseTableAction extends SemesterSupportAction {
     val builder = OqlBuilder.from(classOf[Lesson], "lesson")
     builder.where("lesson.project = :project", getProject)
     builder.where("lesson.semester =:semester", semester)
-    val con = CourseLimitUtils.build(entity, "lgi")
+    val con = LessonLimitUtils.build(entity, "lgi")
     val params = con.getParams
     builder.where("exists(from lesson.teachClass.limitGroups lg join lg.items as lgi where (lgi.operator='" + 
-      Operator.EQUAL.name() + 
+      Operator.Equals.name() + 
       "' or lgi.operator='" + 
       Operator.IN.name() + 
       "') and " + 
@@ -531,17 +531,17 @@ class CourseTableAction extends SemesterSupportAction {
       val adminClass = resource.asInstanceOf[Adminclass]
       taskList = getLessons(setting.getSemester, resource)
       val plan = majorPlanService.majorPlanByAdminClass(adminClass)
-      val courseGroups = CollectUtils.newHashSet()
-      val newCourseGroups = CollectUtils.newHashMap()
-      val courses = CollectUtils.newHashSet()
-      val newLessonGroups = CollectUtils.newHashMap()
+      val courseGroups = Collections.newSet[Any]
+      val newCourseGroups = Collections.newMap[Any]
+      val courses = Collections.newSet[Any]
+      val newLessonGroups = Collections.newMap[Any]
       for (lesson <- taskList) {
         val courseType = lesson.getCourseType
         if (newLessonGroups.containsKey(courseType)) {
           newLessonGroups.get(courseType).add(lesson)
         } else {
           val courseGroup = if (plan == null) null else plan.getGroup(lesson.getCourseType)
-          newLessonGroups.put(courseType, CollectUtils.newHashSet(lesson))
+          newLessonGroups.put(courseType, Collections.newHashSet(lesson))
           newCourseGroups.put(courseType, if ((null == courseGroup)) 0 else courseGroup.getCredits)
           if (null != courseGroup) courseGroups.add(courseGroup)
         }
@@ -570,7 +570,7 @@ class CourseTableAction extends SemesterSupportAction {
         query.where("switch.semester = :semester", getSemester)
         query.where("switch.project = :project", getLoginStudent.getProject)
         query.where("switch.published is true")
-        if (CollectUtils.isEmpty(entityDao.search(query))) {
+        if (Collections.isEmpty(entityDao.search(query))) {
           return table
         }
       }
@@ -679,7 +679,7 @@ class CourseTableAction extends SemesterSupportAction {
         builder.where("lesson.teachDepart.id = :teachDepartId", teachDepartId)
       }
       builder.where("lesson.semester.id = :semesterId", semesterId)
-      builder.where("lesson.courseSchedule.status = :status", CourseStatusEnum.ARRANGED)
+      builder.where("lesson.schedule.status = :status", CourseStatusEnum.ARRANGED)
       builder.where("lesson.project.id=:projectid1", getSession.get("projectId").asInstanceOf[java.lang.Integer])
       put("lessons", entityDao.search(builder))
     }
@@ -688,8 +688,8 @@ class CourseTableAction extends SemesterSupportAction {
 
   def getLessonActivities(): String = {
     val lessonIds = Strings.splitToLong(get("lessonIds"))
-    var lessons = CollectUtils.newArrayList()
-    val activities = CollectUtils.newArrayList()
+    var lessons = Collections.newBuffer[Any]
+    val activities = Collections.newBuffer[Any]
     val semesterId = getInt("semesterId")
     if (null == semesterId) {
       return forwardError("没有找到学期")

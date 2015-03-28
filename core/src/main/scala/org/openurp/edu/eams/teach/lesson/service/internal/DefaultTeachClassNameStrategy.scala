@@ -1,24 +1,24 @@
 package org.openurp.edu.eams.teach.lesson.service.internal
 
-
-import javax.validation.constraints.Size
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.lang.Strings
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.openurp.edu.teach.lesson.CourseLimitGroup
-import org.openurp.edu.teach.lesson.CourseLimitItem
-import org.openurp.edu.teach.lesson.CourseLimitMeta
-import org.openurp.edu.teach.lesson.CourseLimitMeta.Operator
+import collection.mutable.Buffer
+import org.openurp.edu.teach.lesson.LessonLimitGroup
+import org.openurp.edu.teach.lesson.LessonLimitItem
+import org.openurp.edu.teach.lesson.LessonLimitMeta
+import org.openurp.edu.teach.lesson.LessonLimitMeta._
+import org.openurp.edu.teach.lesson.LessonLimitMeta.Operators._
+import org.openurp.edu.teach.lesson.LessonLimitMeta.Operators
 import org.openurp.edu.teach.lesson.TeachClass
 import org.openurp.edu.teach.lesson.model.TeachClassBean
 import org.openurp.edu.eams.teach.lesson.service.TeachClassNameStrategy
-import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitItemContentProvider
-import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitItemContentProviderFactory
-import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnum
+import org.openurp.edu.eams.teach.lesson.service.limit.LessonLimitItemContentProvider
+import org.openurp.edu.eams.teach.lesson.service.limit.LessonLimitItemContentProviderFactory
 import DefaultTeachClassNameStrategy._
-
-
+import org.beangle.commons.entity.metadata.Model
+import javax.validation.constraints.Size
 
 object DefaultTeachClassNameStrategy {
 
@@ -31,10 +31,10 @@ class DefaultTeachClassNameStrategy extends TeachClassNameStrategy {
 
   protected var logger: Logger = LoggerFactory.getLogger(getClass)
 
-  private var courseLimitItemContentProviderFactory: CourseLimitItemContentProviderFactory = _
+  var lessonLimitItemContentProviderFactory: LessonLimitItemContentProviderFactory = _
 
-  def genName(groups: List[CourseLimitGroup]): String = {
-    Strings.abbreviate(buildAll(groups).left, getNameMaxSize)
+  def genName(groups: List[LessonLimitGroup]): String = {
+    Strings.abbreviate(buildAll(groups)._1, getNameMaxSize)
   }
 
   def genName(teachClass: TeachClass): String = genName(teachClass.limitGroups)
@@ -48,92 +48,89 @@ class DefaultTeachClassNameStrategy extends TeachClassNameStrategy {
 
   def abbreviateName(teachClass: TeachClass) {
     if (null != teachClass && Strings.isBlank(teachClass.name)) {
-      teachClass.name=Strings.abbreviate(teachClass.name, getNameMaxSize)
+      teachClass.name = Strings.abbreviate(teachClass.name, getNameMaxSize)
     }
   }
 
-  def genFullname(groups: List[CourseLimitGroup]): String = {
-    Strings.abbreviate(buildAll(groups).right, getFullnameMaxSize)
+  def genFullname(groups: Seq[LessonLimitGroup]): String = {
+    Strings.abbreviate(buildAll(groups)._2, getFullnameMaxSize)
   }
 
   def genFullname(teachClass: TeachClass): String = genFullname(teachClass.limitGroups)
 
   def autoName(teachClass: TeachClass) {
     val names = buildAll(teachClass.limitGroups)
-    teachClass.name=names.left
-    teachClass.fullname=names.right
+    teachClass.name = names._1
+    teachClass.fullname = names._2
   }
 
-  private def buildAll(groups: List[CourseLimitGroup]): Pair[String, String] = {
-    val providers = CollectUtils.newHashMap()
-    val groupContentTitles = CollectUtils.newArrayList()
-    val excludeContents = CollectUtils.newHashMap()
-    for (courseLimitGroup <- groups) {
-      val metaContentTitles = CollectUtils.newHashMap()
-      for (item <- courseLimitGroup.items) {
+  private def buildAll(groups: Seq[LessonLimitGroup]): Pair[String, String] = {
+    val providers = Collections.newMap[LimitMeta, LessonLimitItemContentProvider[_]]
+    val groupContentTitles = Collections.newBuffer[collection.Map[LimitMeta, Pair[Operator, collection.Set[String]]]]
+    val excludeContents = Collections.newMap[LimitMeta, Buffer[Any]]
+    for (lessonLimitGroup <- groups) {
+      val metaContentTitles = Collections.newMap[LimitMeta, Pair[Operator, collection.Set[String]]]
+      for (item <- lessonLimitGroup.items) {
         val op = item.operator
         val meta = item.meta
-        var provider = providers.get(meta.id)
+        var provider = providers.get(meta).orNull
         if (null == provider) {
-          provider = courseLimitItemContentProviderFactory.provider(meta)
-          providers.put(meta.id, provider)
+          provider = lessonLimitItemContentProviderFactory.getProvider(meta)
+          providers.put(meta, provider)
         }
-        val contentIdTitles = provider.contentIdTitleMap(item.content)
-        val contentTitles = new LinkedHashSet[String](contentIdTitles.values)
-        if (Operator.NOT_EQUAL == op || Operator.NOT_IN == op) {
-          var oneMetaExcludeContents = excludeContents.get(meta.id)
+        val contentIdTitles = provider.getContentIdTitleMap(item.content)
+        val contentTitles = new collection.mutable.LinkedHashSet[String]
+        contentTitles ++= (contentIdTitles.values)
+        if (Operators.NOT_EQUAL == op || Operators.NOT_IN == op) {
+          var oneMetaExcludeContents = excludeContents.get(meta).orNull
           if (null == oneMetaExcludeContents) {
-            oneMetaExcludeContents = CollectUtils.newArrayList()
-            excludeContents.put(meta.id, oneMetaExcludeContents)
+            oneMetaExcludeContents = Collections.newBuffer[Any]
+            excludeContents.put(meta, oneMetaExcludeContents)
           }
-          oneMetaExcludeContents.add(contentTitles)
+          oneMetaExcludeContents += contentTitles
         }
-        metaContentTitles.put(meta.id, new Pair[CourseLimitMeta.Operator, Set[String]](op, contentTitles))
+        metaContentTitles.put(meta, new Pair[Operator, collection.Set[String]](op, contentTitles))
       }
-      groupContentTitles.add(metaContentTitles)
+      groupContentTitles += metaContentTitles
     }
     for (oneGroupContentTitles <- groupContentTitles; (key, value) <- oneGroupContentTitles) {
       val metaId = key
-      val op = value.left
-      if (Operator.EQUAL == op || Operator.IN == op) {
-        val contents = value.right
+      val op = value._1
+      if (Operators.Equals == op || Operators.IN == op) {
+        val contents = value._2
         val oneMetaExcludeContents = excludeContents.get(metaId)
         if (null != oneMetaExcludeContents) {
           for (oneMetaExcludeContentSet <- oneMetaExcludeContents) {
-            oneMetaExcludeContentSet.removeAll(contents)
+            oneMetaExcludeContentSet --= contents
           }
         }
       }
     }
     val fullNameBuilder = new StringBuilder()
     val nameBuilder = new StringBuilder()
-    val enums = CourseLimitMetaEnum.values
-    val metasEnums = CollectUtils.newHashMap()
-    for (courseLimitMetaEnum <- enums) {
-      metasEnums.put(courseLimitMetaEnum.metaId, courseLimitMetaEnum)
-    }
-    val metaTitles = CollectUtils.newHashMap()
-    metaTitles.put(CourseLimitMetaEnum.ADMINCLASS, "班级")
-    metaTitles.put(CourseLimitMetaEnum.DEPARTMENT, "院系")
-    metaTitles.put(CourseLimitMetaEnum.DIRECTION, "方向")
-    metaTitles.put(CourseLimitMetaEnum.EDUCATION, "学历层次")
-    metaTitles.put(CourseLimitMetaEnum.GENDER, "性别")
-    metaTitles.put(CourseLimitMetaEnum.GRADE, "年级")
-    metaTitles.put(CourseLimitMetaEnum.MAJOR, "专业")
-    metaTitles.put(CourseLimitMetaEnum.NORMALCLASS, "常规教学班")
-    metaTitles.put(CourseLimitMetaEnum.PROGRAM, "计划")
-    metaTitles.put(CourseLimitMetaEnum.STDLABEL, "学生标签")
-    metaTitles.put(CourseLimitMetaEnum.STDTYPE, "学生类别")
+    //    val metasEnums = Collections.newMap[LimitMeta,]
+    //    for (lessonLimitMetaEnum <- LessonLimitMeta.values) {
+    //      metasEnums.put(lessonLimitMetaEnum.id, lessonLimitMetaEnum)
+    //    }
+    val metaTitles = Collections.newMap[LimitMeta, String]
+    metaTitles.put(LessonLimitMeta.Adminclass, "班级")
+    metaTitles.put(LessonLimitMeta.Department, "院系")
+    metaTitles.put(LessonLimitMeta.Direction, "方向")
+    metaTitles.put(LessonLimitMeta.Education, "学历层次")
+    metaTitles.put(LessonLimitMeta.Gender, "性别")
+    metaTitles.put(LessonLimitMeta.Grade, "年级")
+    metaTitles.put(LessonLimitMeta.Major, "专业")
+    metaTitles.put(LessonLimitMeta.Program, "计划")
+    metaTitles.put(LessonLimitMeta.StdLabel, "学生标签")
+    metaTitles.put(LessonLimitMeta.StdType, "学生类别")
     for (oneGroupContentTitles <- groupContentTitles) {
       var isEmptyGroup = true
-      for ((key, value) <- oneGroupContentTitles) {
-        val metaId = key
-        val metaEnum = metasEnums.get(metaId)
+      for ((meta, value) <- oneGroupContentTitles) {
         val length = fullNameBuilder.length
-        if (CourseLimitMetaEnum.GRADE == metaEnum) {
+        if (LessonLimitMeta.Grade == meta) {
           appendGradeContents(fullNameBuilder, oneGroupContentTitles)
         } else {
-          appendEntityContents(fullNameBuilder, metaEnum, oneGroupContentTitles, metaTitles.get(metaEnum))
+          appendEntityContents(fullNameBuilder, meta, oneGroupContentTitles, metaTitles.get(meta).orNull)
         }
         isEmptyGroup = length == fullNameBuilder.length
       }
@@ -141,16 +138,16 @@ class DefaultTeachClassNameStrategy extends TeachClassNameStrategy {
         fullNameBuilder.append(";")
       }
       val sb = new StringBuilder()
-      appendEntityContents(sb, CourseLimitMetaEnum.ADMINCLASS, oneGroupContentTitles, "班级")
+      appendEntityContents(sb, LessonLimitMeta.Adminclass, oneGroupContentTitles, "班级")
       if (sb.length == 0) {
         appendGradeContents(sb, oneGroupContentTitles)
-        val containsMajor = containsMeta(CourseLimitMetaEnum.MAJOR, oneGroupContentTitles)
+        val containsMajor = containsMeta(LessonLimitMeta.Major, oneGroupContentTitles)
         if (containsMajor) {
-          appendEntityContents(sb, CourseLimitMetaEnum.MAJOR, oneGroupContentTitles, "专业")
+          appendEntityContents(sb, LessonLimitMeta.Major, oneGroupContentTitles, "专业")
         } else {
-          appendEntityContents(sb, CourseLimitMetaEnum.DEPARTMENT, oneGroupContentTitles, "院系")
+          appendEntityContents(sb, LessonLimitMeta.Department, oneGroupContentTitles, "院系")
         }
-        appendEntityContents(sb, CourseLimitMetaEnum.STDTYPE, oneGroupContentTitles, "方向")
+        appendEntityContents(sb, LessonLimitMeta.StdType, oneGroupContentTitles, "方向")
       }
       if (sb.length > 0) {
         if (nameBuilder.length > 0) {
@@ -170,55 +167,55 @@ class DefaultTeachClassNameStrategy extends TeachClassNameStrategy {
     new Pair[String, String](name, fullname)
   }
 
-  private def containsMeta(meta: CourseLimitMetaEnum, groupContents: Map[Long, Pair[Operator, Set[String]]]): Boolean = {
-    val pair = groupContents.get(meta.metaId)
+  private def containsMeta(meta: LimitMeta, groupContents: collection.Map[LimitMeta, Pair[Operator, collection.Set[String]]]): Boolean = {
+    val pair = groupContents.get(meta).orNull
     if (null != pair) {
-      return CollectUtils.isNotEmpty(pair.right)
+      return Collections.isNotEmpty(pair._2)
     }
     false
   }
 
-  private def appendEntityContents(sb: StringBuilder, 
-      meta: CourseLimitMetaEnum, 
-      oneGroupContentTitles: Map[Long, Pair[Operator, Set[String]]], 
-      key: String): StringBuilder = {
-    val directionPair = oneGroupContentTitles.get(meta.metaId)
+  private def appendEntityContents(sb: StringBuilder,
+    meta: LimitMeta,
+    oneGroupContentTitles: collection.Map[LimitMeta, Pair[Operator, collection.Set[String]]],
+    key: String): StringBuilder = {
+    val directionPair = oneGroupContentTitles.get(meta).orNull
     if (null != directionPair) {
-      val contents = directionPair.right
-      if (CollectUtils.isNotEmpty(contents)) {
+      val contents = directionPair._2
+      if (Collections.isNotEmpty(contents)) {
         if (sb.length > 0) {
           sb.append(",")
         }
         sb.append(key).append(":")
-        val directionOp = directionPair.left
-        if (directionOp == CourseLimitMeta.Operator.NOT_EQUAL || directionOp == CourseLimitMeta.Operator.NOT_IN) {
+        val directionOp = directionPair._1
+        if (directionOp == LessonLimitMeta.Operators.NOT_EQUAL || directionOp == LessonLimitMeta.Operators.NOT_IN) {
           sb.append("非 ")
         }
-        sb.append(Strings.join(contents.toArray(Array.ofDim[String](contents.size)), " "))
+        sb.append(Strings.join(contents.toArray, " "))
       }
     }
     sb
   }
 
-  private def appendGradeContents(sb: StringBuilder, oneGroupContentTitles: Map[Long, Pair[Operator, Set[String]]]): StringBuilder = {
-    val gradePair = oneGroupContentTitles.get(CourseLimitMetaEnum.GRADE.metaId)
+  private def appendGradeContents(sb: StringBuilder, oneGroupContentTitles: collection.Map[LimitMeta, Pair[Operator, collection.Set[String]]]): StringBuilder = {
+    val gradePair = oneGroupContentTitles.get(LessonLimitMeta.Grade).orNull
     if (null != gradePair) {
-      if (CollectUtils.isNotEmpty(gradePair.right)) {
+      if (Collections.isNotEmpty(gradePair._2)) {
         if (sb.length > 0) {
           sb.append(",")
         }
         sb.append("年级:")
-        val gradeOp = gradePair.left
-        if (gradeOp == CourseLimitMeta.Operator.NOT_EQUAL || gradeOp == CourseLimitMeta.Operator.NOT_IN) {
+        val gradeOp = gradePair._1
+        if (gradeOp == LessonLimitMeta.Operators.NOT_EQUAL || gradeOp == LessonLimitMeta.Operators.NOT_IN) {
           sb.append("非 ")
         }
-        for (grade <- gradePair.right) {
+        for (grade <- gradePair._2) {
           sb.append(grade).append("级 ")
         }
         sb.deleteCharAt(sb.length - 1)
-        if (gradeOp == CourseLimitMeta.Operator.GREATE_EQUAL_THAN) {
+        if (gradeOp == LessonLimitMeta.Operators.GREATE_EQUAL_THAN) {
           sb.append(" 及低年级")
-        } else if (gradeOp == CourseLimitMeta.Operator.LESS_EQUAL_THAN) {
+        } else if (gradeOp == LessonLimitMeta.Operators.LESS_EQUAL_THAN) {
           sb.append(" 及高年级")
         }
       }
@@ -231,12 +228,12 @@ class DefaultTeachClassNameStrategy extends TeachClassNameStrategy {
       fullnameMaxSize = 600
       val entityClass = Model.getType(classOf[TeachClassBean]).entityClass
       try {
-        fullnameMaxSize = entityClass.declaredField("fullname").annotation(classOf[Size])
+        fullnameMaxSize = entityClass.getDeclaredField("fullname").getAnnotation(classOf[Size])
           .max()
       } catch {
-        case e: NoSuchFieldException => logger.info("get " + entityClass.name + ".name max size failure", 
+        case e: NoSuchFieldException => logger.info("get " + entityClass.getName + ".name max size failure",
           e)
-        case e: SecurityException => logger.info("get " + entityClass.name + ".name max size failure", 
+        case e: SecurityException => logger.info("get " + entityClass.getName + ".name max size failure",
           e)
       }
     }
@@ -248,19 +245,14 @@ class DefaultTeachClassNameStrategy extends TeachClassNameStrategy {
       nameMaxSize = 100
       val entityClass = Model.getType(classOf[TeachClassBean]).entityClass
       try {
-        nameMaxSize = entityClass.declaredField("name").annotation(classOf[Size])
-          .max()
+        nameMaxSize = entityClass.getDeclaredField("name").getAnnotation(classOf[Size]).max()
       } catch {
-        case e: NoSuchFieldException => logger.info("get " + entityClass.name + ".name max size failure", 
+        case e: NoSuchFieldException => logger.info("get " + entityClass.getName + ".name max size failure",
           e)
-        case e: SecurityException => logger.info("get " + entityClass.name + ".name max size failure", 
+        case e: SecurityException => logger.info("get " + entityClass.getName + ".name max size failure",
           e)
       }
     }
     nameMaxSize
-  }
-
-  def setCourseLimitItemContentProviderFactory(courseLimitItemContentProviderFactory: CourseLimitItemContentProviderFactory) {
-    this.courseLimitItemContentProviderFactory = courseLimitItemContentProviderFactory
   }
 }

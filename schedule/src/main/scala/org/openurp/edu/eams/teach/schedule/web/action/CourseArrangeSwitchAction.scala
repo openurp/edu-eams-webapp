@@ -3,7 +3,7 @@ package org.openurp.edu.eams.teach.schedule.web.action
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
@@ -34,9 +34,9 @@ class CourseArrangeSwitchAction extends SemesterSupportAction {
     query.where(hql)
     query.param("project", getProject)
     val semesters = entityDao.search(query)
-    if (CollectUtils.isNotEmpty(semesters)) {
-      val semesterProjectIds = CollectUtils.newHashSet()
-      val switches = CollectUtils.newArrayList()
+    if (Collections.isNotEmpty(semesters)) {
+      val semesterProjectIds = Collections.newSet[Any]
+      val switches = Collections.newBuffer[Any]
       val project = getProject
       for (semester <- semesters) {
         val semesterProjectId = "semesterId:" + semester.id.toString + ";projectId:" + 

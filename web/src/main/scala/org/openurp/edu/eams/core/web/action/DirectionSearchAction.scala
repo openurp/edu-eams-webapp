@@ -2,7 +2,7 @@ package org.openurp.edu.eams.core.web.action
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
@@ -31,11 +31,11 @@ class DirectionSearchAction extends ProjectSupportAction {
     val query = OqlBuilder.from(classOf[Direction], "direction")
     populateConditions(query)
     val projects = getProjects
-    if (CollectUtils.isNotEmpty(projects)) {
+    if (Collections.isNotEmpty(projects)) {
       query.where("direction.major.project in (:projects)", projects)
     }
     val departments = getDeparts
-    if (CollectUtils.isNotEmpty(departments)) {
+    if (Collections.isNotEmpty(departments)) {
       query.where("(exists(from direction.departs dd where dd.depart in (:departs)) or size(direction.departs)=0)", 
         departments)
     }

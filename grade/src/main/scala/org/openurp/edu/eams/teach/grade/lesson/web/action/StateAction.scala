@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.grade.lesson.web.action
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.edu.teach.grade.CourseGrade
 import org.openurp.edu.teach.grade.model.CourseGradeState
@@ -16,7 +16,7 @@ class StateAction extends SemesterSupportAction {
     val lesson = entityDao.get(classOf[Lesson], getLong("lessonId"))
     val courseGradeStates = entityDao.get(classOf[CourseGradeState], "lesson", lesson)
     var gradeState: CourseGradeState = null
-    if (CollectUtils.isNotEmpty(courseGradeStates)) {
+    if (Collections.isNotEmpty(courseGradeStates)) {
       gradeState = courseGradeStates.get(0)
     }
     put("gradeState", gradeState)

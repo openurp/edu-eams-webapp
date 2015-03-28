@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.election.service.context
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 
 
 
@@ -9,5 +9,5 @@ import org.beangle.commons.collection.CollectUtils
 class ConflictStatWrapper( var id: Long) {
 
   
-  var conflicts: List[Long] = CollectUtils.newArrayList()
+  var conflicts: List[Long] = Collections.newBuffer[Any]
 }

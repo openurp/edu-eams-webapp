@@ -9,7 +9,7 @@ import java.util.Date
 
 
 import org.apache.commons.beanutils.BeanComparator
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
@@ -53,10 +53,10 @@ class AdminclassSearchAction extends BaseInfoAction {
       builder.orderBy(get(Order.ORDER_STR))
     }
     builder.where("adminclass.department in (:departments)", getDeparts)
-    if (CollectUtils.isNotEmpty(getStdTypes)) {
+    if (Collections.isNotEmpty(getStdTypes)) {
       builder.where("adminclass.stdType in (:stdTypes)", getStdTypes)
     }
-    if (CollectUtils.isNotEmpty(getEducations)) {
+    if (Collections.isNotEmpty(getEducations)) {
       builder.where("adminclass.education in (:educations)", getEducations)
     }
     builder.limit(getPageLimit)
@@ -79,13 +79,13 @@ class AdminclassSearchAction extends BaseInfoAction {
     builder.orderBy("code")
     val status = new HashMap[String, StudentJournal]()
     val students = entityDao.search(builder)
-    if (CollectUtils.isNotEmpty(students)) {
+    if (Collections.isNotEmpty(students)) {
       for (student <- students) {
         val query = OqlBuilder.from(classOf[StudentJournal], "studentJournal")
           .where("beginOn <= :now and :now <= endOn", new Date())
           .where("studentJournal.std=:student", student)
         val studentJournals = entityDao.search(query)
-        if (CollectUtils.isNotEmpty(studentJournals)) {
+        if (Collections.isNotEmpty(studentJournals)) {
           status.put(studentJournals.get(0).getStd.getCode, studentJournals.get(0))
         }
       }
@@ -99,13 +99,13 @@ class AdminclassSearchAction extends BaseInfoAction {
     val ids = Strings.splitToInt(get("adminclassIds"))
     val adminClassList = entityDao.get(classOf[Adminclass], "id", ids)
     val status = new HashMap[String, StudentJournal]()
-    if (CollectUtils.isNotEmpty(adminClassList)) {
-      for (adminclass <- adminClassList if CollectUtils.isNotEmpty(adminclass.getStudents); student <- adminclass.getStudents) {
+    if (Collections.isNotEmpty(adminClassList)) {
+      for (adminclass <- adminClassList if Collections.isNotEmpty(adminclass.getStudents); student <- adminclass.getStudents) {
         val query = OqlBuilder.from(classOf[StudentJournal], "studentJournal")
           .where("beginOn <= :now and :now <= endOn", new Date())
           .where("studentJournal.std=:student", student)
         val studentJournals = entityDao.search(query)
-        if (CollectUtils.isNotEmpty(studentJournals)) {
+        if (Collections.isNotEmpty(studentJournals)) {
           status.put(studentJournals.get(0).getStd.getCode, studentJournals.get(0))
         }
       }

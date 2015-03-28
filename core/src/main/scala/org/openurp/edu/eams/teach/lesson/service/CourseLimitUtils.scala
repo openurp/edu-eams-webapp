@@ -1,6 +1,5 @@
 package org.openurp.edu.eams.teach.lesson.service
 
-import org.beangle.commons.dao.query.builder.Condition
 import org.beangle.data.model.Entity
 import org.beangle.commons.lang.Strings
 import org.openurp.base.Department
@@ -10,15 +9,14 @@ import org.openurp.edu.base.Direction
 import org.openurp.edu.base.Major
 import org.openurp.code.edu.Education
 import org.openurp.edu.base.code.StdType
-
 import org.openurp.edu.base.Program
-
-
+import org.openurp.edu.teach.lesson.LessonLimitMeta
+import org.beangle.data.model.dao.Condition
 
 object LessonLimitUtils {
 
   def build[T <: Entity[_]](entity: T, alias: String): Condition = {
-    var metaId: java.lang.Long = null
+    var metaId: Int = 0
     if (entity.isInstanceOf[Gender]) {
       metaId = LessonLimitMeta.Gender.id
     } else if (entity.isInstanceOf[StdType]) {
@@ -36,16 +34,16 @@ object LessonLimitUtils {
     } else if (entity.isInstanceOf[Program]) {
       metaId = LessonLimitMeta.Program.id
     } else {
-      throw new RuntimeException("not supported limit meta class " + entity.getClass.name)
+      throw new RuntimeException("not supported limit meta class " + entity.getClass.getName)
     }
     build(metaId, alias, entity.id.toString)
   }
 
-  def build(metaId: java.lang.Long, alias: String, id: String): Condition = {
-    var template = " alias.meta.id = :metaId and case when alias.operator='EQUAL' and alias.content=:value then 1 " + 
-      "when alias.operator='IN' and instr(','||alias.content||',',:values)>0 then 1 " + 
-      "when alias.operator='NOT_EQUAL' and alias.content<>:value then 1 " + 
-      "when alias.operator='NOT_IN' and instr(','||alias.content||',',:values)=0 then 1 " + 
+  def build(metaId: Int, alias: String, id: String): Condition = {
+    var template = " alias.meta.id = :metaId and case when alias.operator='EQUAL' and alias.content=:value then 1 " +
+      "when alias.operator='IN' and instr(','||alias.content||',',:values)>0 then 1 " +
+      "when alias.operator='NOT_EQUAL' and alias.content<>:value then 1 " +
+      "when alias.operator='NOT_IN' and instr(','||alias.content||',',:values)=0 then 1 " +
       "else 0 end = 1 "
     val paramName = "metaValue" + randomInt()
     val paramName2 = paramName + "s"

@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.grade.lesson.web.action
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.data.model.Entity
@@ -44,7 +44,7 @@ class InputSwitchAction extends SemesterSupportAction {
     if (gradeInputSwitch.isPersisted) {
       query.where("gradeInputSwitch.id != :switchId", gradeInputSwitch.id)
     }
-    if (CollectUtils.isNotEmpty(entityDao.search(query))) {
+    if (Collections.isNotEmpty(entityDao.search(query))) {
       redirect("search", "info.save.failure.overlapAcross")
     } else {
       gradeInputSwitch.getTypes.clear()

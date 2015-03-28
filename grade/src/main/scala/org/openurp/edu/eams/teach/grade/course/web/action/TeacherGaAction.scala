@@ -2,7 +2,7 @@ package org.openurp.edu.eams.teach.grade.course.web.action
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.openurp.edu.teach.code.CourseTakeType
 import org.openurp.edu.teach.code.ExamStatus
 import org.openurp.edu.teach.code.GradeType
@@ -20,7 +20,7 @@ class TeacherGaAction extends TeacherAction {
   protected override def getGradeTypes(gradeState: CourseGradeState): List[GradeType] = {
     var gradeTypes = getAttribute("gradeTypes").asInstanceOf[List[GradeType]]
     if (null == gradeTypes) {
-      gradeTypes = CollectUtils.newArrayList()
+      gradeTypes = Collections.newBuffer[Any]
       val gis = getAttribute("gradeInputSwitch").asInstanceOf[GradeInputSwitch]
       val eles = settings.getSetting(getProject).getGaElementTypes
       for (`type` <- eles) {
@@ -66,7 +66,7 @@ class TeacherGaAction extends TeacherAction {
     val lesson = gradeState.getLesson
     putGradeMap(lesson, getCourseTakes(lesson))
     buildGradeConfig(lesson, getGradeTypes(gradeState))
-    val putSomeParams = CollectUtils.newHashSet()
+    val putSomeParams = Collections.newSet[Any]
     putSomeParams.add("isTeacher")
     putSomeParams.add("GA")
     putSomeParams.add("NEW")

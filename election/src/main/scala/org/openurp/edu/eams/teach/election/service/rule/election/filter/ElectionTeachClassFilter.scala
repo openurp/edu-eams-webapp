@@ -1,6 +1,6 @@
 package org.openurp.edu.eams.teach.election.service.rule.election.filter
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.lang.Strings
 import org.beangle.ems.rule.model.RuleConfig
 import org.beangle.ems.rule.model.RuleConfigParam
@@ -10,9 +10,9 @@ import org.openurp.edu.eams.teach.election.service.context.ElectState
 import org.openurp.edu.eams.teach.election.service.context.ElectionCourseContext
 import org.openurp.edu.eams.teach.election.service.context.PrepareContext
 import org.openurp.edu.eams.teach.election.service.context.PrepareContext.PreparedDataName
-import org.openurp.edu.eams.teach.election.service.helper.CourseLimitGroupHelper
+import org.openurp.edu.eams.teach.election.service.helper.LessonLimitGroupHelper
 import org.openurp.edu.eams.teach.election.service.rule.ElectRulePrepare
-import org.openurp.edu.teach.lesson.CourseLimitGroup
+import org.openurp.edu.teach.lesson.LessonLimitGroup
 import org.openurp.edu.teach.lesson.Lesson
 import ElectionTeachClassFilter._
 
@@ -49,10 +49,10 @@ class ElectionTeachClassFilter extends AbstractElectableLessonFilter() with Elec
       !retakeService.isCheckTeachClass(state.getProfile(entityDao).getElectConfigs)) {
       return true
     }
-    if (CollectUtils.isEmpty(lesson.getTeachClass.getLimitGroups)) {
+    if (Collections.isEmpty(lesson.getTeachClass.getLimitGroups)) {
       return true
     }
-    CourseLimitGroupHelper.isElectable(lesson, state)
+    LessonLimitGroupHelper.isElectable(lesson, state)
   }
 
   protected override def onExecuteRuleReturn(result: Boolean, context: ElectionCourseContext): Boolean = {
@@ -61,9 +61,9 @@ class ElectionTeachClassFilter extends AbstractElectableLessonFilter() with Elec
         ElectRuleType.ELECTION, false, context.getLesson))
       return result
     }
-    var limitGroup: CourseLimitGroup = null
-    limitGroup = if (checkGroupLimit) CourseLimitGroupHelper.getMatchCountCourseLimitGroup(context.getLesson, 
-      context.getState) else CourseLimitGroupHelper.getMatchCourseLimitGroup(context.getLesson, context.getState)
+    var limitGroup: LessonLimitGroup = null
+    limitGroup = if (checkGroupLimit) LessonLimitGroupHelper.getMatchCountLessonLimitGroup(context.getLesson, 
+      context.getState) else LessonLimitGroupHelper.getMatchLessonLimitGroup(context.getLesson, context.getState)
     if (checkTeachClass && limitGroup == null) {
       context.addMessage(new ElectMessage("匹配不到合适的授课对象组", ElectRuleType.ELECTION, false, context.getLesson))
       return false

@@ -2,7 +2,7 @@ package org.openurp.edu.eams.teach.election.service.rule.election
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.ems.rule.Context
 import org.openurp.base.Semester
 import org.openurp.edu.base.Student
@@ -65,7 +65,7 @@ class CourseCountConstraintChecker extends AbstractElectRuleExecutor with ElectR
         val courseTakes = context.getTakes
         var electedCount = 0
         val plan = context.getPlan
-        val electedCourseTypeCourseCounts = CollectUtils.newHashMap()
+        val electedCourseTypeCourseCounts = Collections.newMap[Any]
         val groups = plan.getGroups
         for (courseGroup <- groups if null != maxCourseCounts.get(courseGroup.getCourseType)) {
           electedCourseTypeCourseCounts.put(courseGroup.getCourseType, new CourseCountConstraintWrapper(maxCourseCounts.get(courseGroup.getCourseType), 

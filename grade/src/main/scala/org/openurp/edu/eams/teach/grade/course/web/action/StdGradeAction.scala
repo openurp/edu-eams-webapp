@@ -9,7 +9,7 @@ import java.util.Date
 
 import javax.servlet.http.HttpServletResponse
 import org.beangle.commons.lang.Strings
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.lang.Strings
@@ -77,7 +77,7 @@ class StdGradeAction extends StdGradeSearchAction {
   def getCourseInfo() {
     val lessonNo = get("lessonNo")
     val semesterId = getInt("semesterId")
-    val resMap = CollectUtils.newHashMap()
+    val resMap = Collections.newMap[Any]
     if (!Strings.isEmpty(lessonNo) && null != semesterId) {
       val builder = OqlBuilder.from(classOf[Lesson], "lesson")
       builder.where("lesson.no = :lessonNo", lessonNo)
@@ -123,10 +123,10 @@ class StdGradeAction extends StdGradeSearchAction {
 
   def getCourseByCode() {
     val courseCode = get("courseCode")
-    val courseMap = CollectUtils.newHashMap()
+    val courseMap = Collections.newMap[Any]
     if (!Strings.isEmpty(courseCode)) {
       val courses = entityDao.get(classOf[Course], "code", courseCode.trim())
-      if (CollectUtils.isEmpty(courses)) {
+      if (Collections.isEmpty(courses)) {
         courseMap.put("responseStr", "noData")
       } else if (courses.size > 1) {
         courseMap.put("responseStr", "dataException")
@@ -147,17 +147,17 @@ class StdGradeAction extends StdGradeSearchAction {
   def getStuInfo() {
     val lessonId = getLong("lessonId")
     val stdCode = get("stdCode")
-    val stdMap = CollectUtils.newHashMap()
+    val stdMap = Collections.newMap[Any]
     if (null != lessonId && "" != stdCode) {
       val stus = entityDao.get(classOf[Student], "code", stdCode)
-      if (CollectUtils.isEmpty(stus)) {
+      if (Collections.isEmpty(stus)) {
         stdMap.put("responseStr", "noStu")
       } else if (stus.size > 1) {
         stdMap.put("responseStr", "dataException")
       } else {
         val std = stus.get(0)
         val takes = getCourseTakeInfo(std, lessonId)
-        if (CollectUtils.isEmpty(takes)) {
+        if (Collections.isEmpty(takes)) {
           stdMap.put("dataException", "noTakes")
         } else if (takes.size > 1) {
           stdMap.put("dataException", "takeDataException")
@@ -179,7 +179,7 @@ class StdGradeAction extends StdGradeSearchAction {
     val stuCode = get("stdCode")
     val courseCode = get("courseCode")
     val gradeTypeId = getInt("gradeTypeId")
-    val resMap = CollectUtils.newHashMap()
+    val resMap = Collections.newMap[Any]
     if (semesterId != null && Strings.isNotEmpty(stuCode) && Strings.isNotEmpty(courseCode)) {
       val semester = entityDao.get(classOf[Semester], semesterId)
       val grade = getCourseGrade(stuCode.trim(), semester, courseCode, gradeTypeId)
@@ -239,7 +239,7 @@ class StdGradeAction extends StdGradeSearchAction {
     if (null != grade.getExamGrade(gradeType)) {
       return grade
     } else {
-      var takes = CollectUtils.newArrayList()
+      var takes = Collections.newBuffer[Any]
       val takeQuery = OqlBuilder.from(classOf[CourseTake], "take").where("take.lesson.course.code = :courseCode", 
         courseCode)
         .where("take.std = :std", grade.getStd)
@@ -273,7 +273,7 @@ class StdGradeAction extends StdGradeSearchAction {
         examTakeQuery.where("examTake.examType = :examTypeId", gradeType.getExamType)
         examTakeQuery.where("examTake.lesson = :lesson", grade.getLesson)
         val examTakes = entityDao.search(examTakeQuery)
-        if (CollectUtils.isNotEmpty(examTakes)) {
+        if (Collections.isNotEmpty(examTakes)) {
           examGrade.setExamStatus(examTakes.get(0).getExamStatus)
         }
       }
@@ -376,7 +376,7 @@ class StdGradeAction extends StdGradeSearchAction {
     query.where("take.std = :std", std)
     query.where("take.lesson = :takeLesson", lesson)
     val takes = entityDao.search(query)
-    if (CollectUtils.isEmpty(takes)) {
+    if (Collections.isEmpty(takes)) {
       return null
     }
     if (takes.size == 1) {
@@ -429,7 +429,7 @@ class StdGradeAction extends StdGradeSearchAction {
     val builder = OqlBuilder.from(classOf[CourseGradeState], "courseGradeStat")
     builder.where("courseGradeStat.lesson = :statLesson", lesson)
     val gradeStats = entityDao.search(builder)
-    calculator.calc(grade, if ((CollectUtils.isNotEmpty(gradeStats))) gradeStats.get(0) else null)
+    calculator.calc(grade, if ((Collections.isNotEmpty(gradeStats))) gradeStats.get(0) else null)
     grade.setScoreText(calculator.gradeRateService.convert(grade.getScore, grade.getMarkStyle, project))
     try {
       entityDao.saveOrUpdate(grade)
@@ -517,7 +517,7 @@ class StdGradeAction extends StdGradeSearchAction {
     if (Strings.isEmpty(courseGradeIdSeq)) return forwardError("error.parameters.needed")
     val courseGrades = entityDao.get(classOf[CourseGrade], Strings.splitToLong(courseGradeIdSeq))
     try {
-      if (CollectUtils.isNotEmpty(courseGrades)) entityDao.remove(courseGrades)
+      if (Collections.isNotEmpty(courseGrades)) entityDao.remove(courseGrades)
     } catch {
       case e: Exception => return redirect("search", "info.delete.failure")
     }
@@ -576,7 +576,7 @@ class StdGradeAction extends StdGradeSearchAction {
     }
     val markStyle = baseCodeService.getCode(classOf[ScoreMarkStyle], markStyleId).asInstanceOf[ScoreMarkStyle]
     val gradeType = baseCodeService.getCode(classOf[GradeType], gradeTypeId).asInstanceOf[GradeType]
-    val grades = CollectUtils.newArrayList()
+    val grades = Collections.newBuffer[Any]
     for (i <- 0 until stdCount.intValue()) {
       val stdCode = get("stdCode" + i)
       val courseTypeId = getInt("courseType" + i)

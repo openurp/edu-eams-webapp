@@ -4,7 +4,7 @@ import java.util.Date
 import javax.servlet.http.HttpServletRequest
 import org.apache.commons.collections.CollectionUtils
 import org.beangle.commons.bean.comparators.PropertyComparator
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.model.dao.EntityDao
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
@@ -48,14 +48,14 @@ class ProjectMajorSelect {
     if (Strings.isNotEmpty(fineResourceName)) {
       resource = restrictionHelper.getFuncPermissionService.getResource(fineResourceName)
     }
-    var departs = CollectUtils.newArrayList()
+    var departs = Collections.newBuffer[Any]
     if (null != resource) {
       val departs2 = restrictionHelper.getProperties(user, profiles, "departs", resource).asInstanceOf[List[Department]]
       for (d <- project.departments if departs2.contains(d)) departs.add(d)
     } else {
       departs = project.departments
     }
-    val departInfos = CollectUtils.newArrayList()
+    val departInfos = Collections.newBuffer[Any]
     for (depart <- departs) {
       departInfos.add(Array(depart.id, depart.getName))
     }
@@ -65,7 +65,7 @@ class ProjectMajorSelect {
       resource).asInstanceOf[List[Education]] else educations1
     val educations = CollectionUtils.intersection(educations1, educations2).asInstanceOf[List[Education]]
     Collections.sort(educations, new PropertyComparator("code"))
-    val educationInfos = CollectUtils.newArrayList()
+    val educationInfos = Collections.newBuffer[Any]
     for (education <- educations) {
       educationInfos.add(Array(education.id, education.getName))
     }
@@ -74,7 +74,7 @@ class ProjectMajorSelect {
     stdTypes2 = if (null != resource) restrictionHelper.getProperties(user, profiles, "stdTypes", resource).asInstanceOf[List[StdType]] else stdTypes1
     val stdTypes = CollectionUtils.intersection(stdTypes1, stdTypes2).asInstanceOf[List[StdType]]
     Collections.sort(stdTypes, new PropertyComparator("code"))
-    val stdTypeInfos = CollectUtils.newArrayList()
+    val stdTypeInfos = Collections.newBuffer[Any]
     for (stdType <- stdTypes) {
       stdTypeInfos.add(Array(stdType.id, stdType.getName))
     }

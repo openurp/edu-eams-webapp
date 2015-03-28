@@ -2,7 +2,7 @@ package org.openurp.edu.eams.teach.election.model.Enum
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 
 
 
@@ -20,7 +20,7 @@ object ElectRuleType extends Enumeration {
   }
 
   def valueMap(): Map[String, String] = {
-    val result = CollectUtils.newHashMap()
+    val result = Collections.newMap[Any]
     result.put(ELECTION.toString, "选课")
     result.put(WITHDRAW.toString, "退课")
     result.put(GENERAL.toString, "登录")
@@ -29,7 +29,7 @@ object ElectRuleType extends Enumeration {
 
   def strValues(): List[String] = {
     val values = values
-    val result = CollectUtils.newArrayList()
+    val result = Collections.newBuffer[Any]
     for (electRuleType <- values) {
       result.add(electRuleType.toString)
     }

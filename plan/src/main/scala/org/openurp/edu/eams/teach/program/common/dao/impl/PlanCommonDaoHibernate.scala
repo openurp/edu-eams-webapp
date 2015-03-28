@@ -3,7 +3,7 @@ package org.openurp.edu.eams.teach.program.common.dao.impl
 
 
 import org.apache.commons.lang3.Range
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.ems.dictionary.service.BaseCodeService
 import org.beangle.data.jpa.hibernate.HibernateEntityDao
@@ -109,7 +109,7 @@ class PlanCommonDaoHibernate extends HibernateEntityDao with PlanCommonDao {
   }
 
   def isDuplicate(program: Program): Boolean = {
-    CollectUtils.isNotEmpty(getDuplicatePrograms(program))
+    Collections.isNotEmpty(getDuplicatePrograms(program))
   }
 
   def getCreditByTerm(plan: MajorPlan, term: Int): java.lang.Float = {

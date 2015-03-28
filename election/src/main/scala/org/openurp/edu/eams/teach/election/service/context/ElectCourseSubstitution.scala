@@ -2,7 +2,7 @@ package org.openurp.edu.eams.teach.election.service.context
 
 import java.io.Serializable
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 
 
 
@@ -11,8 +11,8 @@ import org.beangle.commons.collection.CollectUtils
 class ElectCourseSubstitution extends Serializable {
 
   
-  var origins: Set[Long] = CollectUtils.newHashSet()
+  var origins: Set[Long] = Collections.newSet[Any]
 
   
-  var substitutes: Set[Long] = CollectUtils.newHashSet()
+  var substitutes: Set[Long] = Collections.newSet[Any]
 }

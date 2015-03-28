@@ -3,7 +3,7 @@ package org.openurp.edu.eams.teach.grade.lesson.web.action
 
 
 import org.beangle.commons.lang.Strings
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.base.Department
@@ -79,7 +79,7 @@ class MakeupAction extends SemesterSupportAction {
     val makeupCourseIds = get("makeupCourse.ids")
     val semesterId = getInt("semester.id")
     val examTakeId = Strings.split(makeupCourseIds, ",")
-    val examTasks = CollectUtils.newArrayList()
+    val examTasks = Collections.newBuffer[Any]
     for (i <- 0 until examTakeId.length) {
       val params = Strings.split(examTakeId(i), "@")
       examTasks.add(getMakeupTakes(semesterId, java.lang.Long.valueOf(params(0)), java.lang.Long.valueOf(params(1))))
@@ -114,7 +114,7 @@ class MakeupAction extends SemesterSupportAction {
     val semesterId = getInt("semester.id")
     val params = Strings.split(makeupCourseId, "@")
     val examTakes = getMakeupTakes(semesterId, java.lang.Long.valueOf(params(0)), java.lang.Long.valueOf(params(1)))
-    val examGradeMap = CollectUtils.newHashMap()
+    val examGradeMap = Collections.newMap[Any]
     for (examTake <- examTakes) {
       val grade = getCourseGrade(examTake.getLesson, examTake.getStd)
       var gradeType: GradeType = null
@@ -144,7 +144,7 @@ class MakeupAction extends SemesterSupportAction {
     val semesterId = getInt("semester.id")
     val params = Strings.split(courseId, "@")
     val examTakes = getMakeupTakes(semesterId, java.lang.Long.valueOf(params(0)), java.lang.Long.valueOf(params(1)))
-    val grades = CollectUtils.newArrayList()
+    val grades = Collections.newBuffer[Any]
     for (examTake <- examTakes) {
       val score = getFloat(examTake.id.toString)
       if (null != score) {

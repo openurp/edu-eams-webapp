@@ -2,7 +2,7 @@ package org.openurp.edu.eams.weekstate
 
 import java.util.{Arrays, Date, TreeMap}
 import collection.mutable.Buffer
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.lang.time.WeekDays._
 import org.beangle.commons.lang.time.WeekDays
@@ -51,12 +51,12 @@ val RESERVE_BITS =1
       val actual_weekOfYear = EamsDateUtil.SUNDAY_FIRST.weekOfYear(date)
       var actual_year_weekIndecies = actual_year2weekIndexOfYearList.get(java.lang.Integer.valueOf(actual_year))
       if (actual_year_weekIndecies == null) {
-        actual_year_weekIndecies = CollectUtils.newArrayList[Integer]
+        actual_year_weekIndecies = Collections.newBuffer[Any][Integer]
         actual_year2weekIndexOfYearList.put(actual_year, actual_year_weekIndecies)
       }
       actual_year_weekIndecies += actual_weekOfYear
     }
-    val states = CollectUtils.newArrayList[YearWeekTime]
+    val states = Collections.newBuffer[Any][YearWeekTime]
      val iter  = actual_year2weekIndexOfYearList.entrySet().iterator()
     while(iter.hasNext()){
       val entry = iter.next()
@@ -101,14 +101,14 @@ val RESERVE_BITS =1
   }
 
   def merge(states: List[YearWeekTime]): YearWeekTime = {
-    if (CollectUtils.isEmpty(states)) {
+    if (Collections.isEmpty(states)) {
       return null
     }
     merge(states.toArray)
   }
 
   def merge(states: Iterable[YearWeekTime]): YearWeekTime = {
-    if (CollectUtils.isEmpty(states)) {
+    if (Collections.isEmpty(states)) {
       return null
     }
     merge(states.toArray)
@@ -116,7 +116,7 @@ val RESERVE_BITS =1
 
   def parse(ws: String): Array[Integer] = {
       val weekState = new StringBuilder(ws).toString
-    val weekIndecies = CollectUtils.newArrayList[Integer]
+    val weekIndecies = Collections.newBuffer[Any][Integer]
     var i = 0
     while (i != -1) {
       i = weekState.indexOf('1', i)
@@ -162,12 +162,12 @@ class YearWeekTimeBuilder {
       val actual_year = EamsDateUtil.year(date)
       var actual_year_weekIndecies = actual_year2weekIndexOfYearList.get(java.lang.Integer.valueOf(actual_year))
       if (actual_year_weekIndecies == null) {
-        actual_year_weekIndecies = CollectUtils.newArrayList[Integer]
+        actual_year_weekIndecies = Collections.newBuffer[Any][Integer]
         actual_year2weekIndexOfYearList.put(actual_year, actual_year_weekIndecies)
       }
       actual_year_weekIndecies += actual_weekOfYear
     }
-    val states = CollectUtils.newArrayList[YearWeekTime]
+    val states = Collections.newBuffer[Any][YearWeekTime]
     val iter  = actual_year2weekIndexOfYearList.entrySet().iterator()
     while(iter.hasNext()){
       val entry = iter.next()

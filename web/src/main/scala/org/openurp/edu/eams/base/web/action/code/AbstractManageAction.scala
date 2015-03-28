@@ -8,7 +8,7 @@ import java.util.Date
 import org.apache.commons.lang.exception.ExceptionUtils
 import org.apache.commons.lang3.ClassUtils
 import org.apache.struts2.ServletActionContext
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.pojo.BaseCode
@@ -108,7 +108,7 @@ abstract class AbstractManageAction extends SearchAction {
       if (null != baseCodeObj.id) {
         query.where(shortName + " != :" + shortName, baseCodeObj)
       }
-      if (CollectUtils.isNotEmpty(entityDao.search(query))) {
+      if (Collections.isNotEmpty(entityDao.search(query))) {
         getCodeMeta(className)
         put("baseCode", baseCodeObj)
         addError(getText("error.code.existed"))
@@ -165,9 +165,9 @@ abstract class AbstractManageAction extends SearchAction {
       val classNameArray = Strings.split(classNames, ",")
       val keyArray = Strings.split(context.get(Context.KEYS).toString, ",")
       val titleArray = Strings.split(context.get(Context.TITLES).toString, ",")
-      val metadatas = CollectUtils.newArrayList()
+      val metadatas = Collections.newBuffer[Any]
       context.put("metadatas", metadatas)
-      val items = CollectUtils.newArrayList()
+      val items = Collections.newBuffer[Any]
       for (i <- 0 until classNameArray.length) {
         val codeMeta = entityDao.get(classOf[CodeMeta], "className", classNameArray(i))
           .get(0)

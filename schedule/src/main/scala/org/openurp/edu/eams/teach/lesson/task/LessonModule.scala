@@ -3,20 +3,20 @@ package org.openurp.edu.eams.teach.lesson.task
 import org.beangle.commons.inject.bind.AbstractBindModule
 
 import org.springframework.transaction.interceptor.TransactionProxyFactoryBean
-import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnum
-import org.openurp.edu.eams.teach.lesson.service.limit.impl.CourseLimitAdminclassProvider
-import org.openurp.edu.eams.teach.lesson.service.limit.impl.CourseLimitDepartmentProvider
-import org.openurp.edu.eams.teach.lesson.service.limit.impl.CourseLimitDirectionProvider
-import org.openurp.edu.eams.teach.lesson.service.limit.impl.CourseLimitEducationProvider
-import org.openurp.edu.eams.teach.lesson.service.limit.impl.CourseLimitGenderProvider
-import org.openurp.edu.eams.teach.lesson.service.limit.impl.CourseLimitGradeProvider
-import org.openurp.edu.eams.teach.lesson.service.limit.impl.CourseLimitMajorProvider
-import org.openurp.edu.eams.teach.lesson.service.limit.impl.CourseLimitNormalclassProvider
-import org.openurp.edu.eams.teach.lesson.service.limit.impl.CourseLimitProgramProvider
-import org.openurp.edu.eams.teach.lesson.service.limit.impl.CourseLimitStdLabelProvider
-import org.openurp.edu.eams.teach.lesson.service.limit.impl.CourseLimitStdTypeProvider
-import org.openurp.edu.eams.teach.lesson.service.limit.impl.DefaultCourseLimitItemContentProviderFactory
-import org.openurp.edu.eams.teach.lesson.service.limit.impl.DefaultCourseLimitMetaEnumProvider
+import org.openurp.edu.eams.teach.lesson.service.limit.LessonLimitMetaEnum
+import org.openurp.edu.eams.teach.lesson.service.limit.impl.LessonLimitAdminclassProvider
+import org.openurp.edu.eams.teach.lesson.service.limit.impl.LessonLimitDepartmentProvider
+import org.openurp.edu.eams.teach.lesson.service.limit.impl.LessonLimitDirectionProvider
+import org.openurp.edu.eams.teach.lesson.service.limit.impl.LessonLimitEducationProvider
+import org.openurp.edu.eams.teach.lesson.service.limit.impl.LessonLimitGenderProvider
+import org.openurp.edu.eams.teach.lesson.service.limit.impl.LessonLimitGradeProvider
+import org.openurp.edu.eams.teach.lesson.service.limit.impl.LessonLimitMajorProvider
+import org.openurp.edu.eams.teach.lesson.service.limit.impl.LessonLimitNormalclassProvider
+import org.openurp.edu.eams.teach.lesson.service.limit.impl.LessonLimitProgramProvider
+import org.openurp.edu.eams.teach.lesson.service.limit.impl.LessonLimitStdLabelProvider
+import org.openurp.edu.eams.teach.lesson.service.limit.impl.LessonLimitStdTypeProvider
+import org.openurp.edu.eams.teach.lesson.service.limit.impl.DefaultLessonLimitItemContentProviderFactory
+import org.openurp.edu.eams.teach.lesson.service.limit.impl.DefaultLessonLimitMetaEnumProvider
 import org.openurp.edu.eams.teach.lesson.task.dao.hibernate.LessonStatDaoHibernate
 import org.openurp.edu.eams.teach.lesson.task.service.genstrategy.impl.ClassicLessonGenStrategy
 import org.openurp.edu.eams.teach.lesson.task.service.helper.LessonExamArrangeHelper
@@ -48,16 +48,16 @@ class LessonModule extends AbstractBindModule {
     bind(classOf[TeachTaskGenAction])
     bind(classOf[LessonStatisticAction], classOf[LessonMultiDimensionStatAction])
     bind(classOf[LessonPlanCheckAction])
-    bind("courseLimitMetaEnumProvider", classOf[DefaultCourseLimitMetaEnumProvider])
-    bind("courseLimitItemContentProviderFactory", classOf[DefaultCourseLimitItemContentProviderFactory])
-      .property("providers", map(new Pair[Any, Any](CourseLimitMetaEnum.GRADE, classOf[CourseLimitGradeProvider]), 
-      new Pair[Any, Any](CourseLimitMetaEnum.STDTYPE, classOf[CourseLimitStdTypeProvider]), new Pair[Any, Any](CourseLimitMetaEnum.GENDER, 
-      classOf[CourseLimitGenderProvider]), new Pair[Any, Any](CourseLimitMetaEnum.DEPARTMENT, classOf[CourseLimitDepartmentProvider]), 
-      new Pair[Any, Any](CourseLimitMetaEnum.MAJOR, classOf[CourseLimitMajorProvider]), new Pair[Any, Any](CourseLimitMetaEnum.DIRECTION, 
-      classOf[CourseLimitDirectionProvider]), new Pair[Any, Any](CourseLimitMetaEnum.ADMINCLASS, classOf[CourseLimitAdminclassProvider]), 
-      new Pair[Any, Any](CourseLimitMetaEnum.EDUCATION, classOf[CourseLimitEducationProvider]), new Pair[Any, Any](CourseLimitMetaEnum.PROGRAM, 
-      classOf[CourseLimitProgramProvider]), new Pair[Any, Any](CourseLimitMetaEnum.NORMALCLASS, classOf[CourseLimitNormalclassProvider]), 
-      new Pair[Any, Any](CourseLimitMetaEnum.STDLABEL, classOf[CourseLimitStdLabelProvider])))
+    bind("lessonLimitMetaEnumProvider", classOf[DefaultLessonLimitMetaEnumProvider])
+    bind("lessonLimitItemContentProviderFactory", classOf[DefaultLessonLimitItemContentProviderFactory])
+      .property("providers", map(new Pair[Any, Any](LessonLimitMeta.Grade, classOf[LessonLimitGradeProvider]), 
+      new Pair[Any, Any](LessonLimitMeta.StdType, classOf[LessonLimitStdTypeProvider]), new Pair[Any, Any](LessonLimitMeta.Gender, 
+      classOf[LessonLimitGenderProvider]), new Pair[Any, Any](LessonLimitMeta.Department, classOf[LessonLimitDepartmentProvider]), 
+      new Pair[Any, Any](LessonLimitMeta.Major, classOf[LessonLimitMajorProvider]), new Pair[Any, Any](LessonLimitMeta.Direction, 
+      classOf[LessonLimitDirectionProvider]), new Pair[Any, Any](LessonLimitMeta.Adminclass, classOf[LessonLimitAdminclassProvider]), 
+      new Pair[Any, Any](LessonLimitMeta.Education, classOf[LessonLimitEducationProvider]), new Pair[Any, Any](LessonLimitMeta.Program, 
+      classOf[LessonLimitProgramProvider]), new Pair[Any, Any](LessonLimitMetaEnum.NORMALCLASS, classOf[LessonLimitNormalclassProvider]), 
+      new Pair[Any, Any](LessonLimitMeta.StdLabel, classOf[LessonLimitStdLabelProvider])))
     bind("lessonExamArrangeHelper", classOf[LessonExamArrangeHelper])
     bind("lessonStatDao", classOf[TransactionProxyFactoryBean])
       .proxy("target", classOf[LessonStatDaoHibernate])

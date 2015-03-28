@@ -5,7 +5,7 @@ import java.util.Arraysimport java.util.Date
 
 
 import org.beangle.commons.bean.comparators.PropertyComparator
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.commons.conversion.impl.DefaultConversion
 import org.beangle.data.jpa.dao.OqlBuilder
@@ -111,7 +111,7 @@ class CourseTableForStdAction extends AbstractStudentProjectSupportAction {
     }
     val clazz = CourseTable.getResourceClass(setting.getKind)
     val idClazz = Model.getType(clazz).idType
-    val rsList = CollectUtils.newArrayList()
+    val rsList = Collections.newBuffer[Any]
     for (a <- Strings.split(ids)) {
       rsList.add(DefaultConversion.Instance.convert(a, idClazz))
     }
@@ -123,7 +123,7 @@ class CourseTableForStdAction extends AbstractStudentProjectSupportAction {
     }
     val order = orders.get(0).asInstanceOf[Order]
     Collections.sort(resources, new PropertyComparator(getLastSubString(order.getProperty), order.isAscending))
-    val courseTableList = CollectUtils.newArrayList()
+    val courseTableList = Collections.newBuffer[Any]
     if (setting.getTablePerPage == 1) {
       for (resource <- resources) {
         courseTableList.add(buildCourseTable(setting, resource))
@@ -145,7 +145,7 @@ class CourseTableForStdAction extends AbstractStudentProjectSupportAction {
     setting.setDisplaySemesterTime(true)
     put("courseTableList", courseTableList)
     if (setting.getTablePerPage == 1) {
-      val textbookMap = CollectUtils.newHashMap()
+      val textbookMap = Collections.newMap[Any]
       for (`object` <- courseTableList) {
         val table = `object`.asInstanceOf[CourseTable]
         for (lesson <- table.getLessons) {
@@ -153,7 +153,7 @@ class CourseTableForStdAction extends AbstractStudentProjectSupportAction {
           if (!lessonMaterials.isEmpty) {
             val lessonMaterial = lessonMaterials.get(0)
             if (lessonMaterial.getPassed != null && true == lessonMaterial.getPassed) {
-              textbookMap.put(lesson, CollectUtils.newHashSet(lessonMaterials.get(0).getBooks))
+              textbookMap.put(lesson, Collections.newHashSet(lessonMaterials.get(0).getBooks))
             }
           } else {
             val courseMaterials = entityDao.search(OqlBuilder.from(classOf[CourseMaterial], "courseMaterial")
@@ -162,7 +162,7 @@ class CourseTableForStdAction extends AbstractStudentProjectSupportAction {
               .where("courseMaterial.semester = :semester", lesson.getSemester)
               .where("courseMaterial.passed is true"))
             if (!courseMaterials.isEmpty) {
-              textbookMap.put(lesson, CollectUtils.newHashSet(courseMaterials.get(0).getBooks))
+              textbookMap.put(lesson, Collections.newHashSet(courseMaterials.get(0).getBooks))
             }
           }
         }
@@ -181,7 +181,7 @@ class CourseTableForStdAction extends AbstractStudentProjectSupportAction {
 
   private def buildCourseTable(setting: CourseTableSetting, resource: Entity[_]): CourseTable = {
     val table = new CourseTable(resource, setting.getKind)
-    var taskList = CollectUtils.newArrayList()
+    var taskList = Collections.newBuffer[Any]
     if (CourseTable.CLASS == setting.getKind) {
       for (j <- 0 until setting.getTimes.length) {
         table.getActivities.addAll(teachResourceService.getAdminclassActivities(resource.asInstanceOf[Adminclass], 
@@ -195,7 +195,7 @@ class CourseTableForStdAction extends AbstractStudentProjectSupportAction {
         query.where("switch.semester = :semester", getSemester)
         query.where("switch.project = :project", getLoginStudent.getProject)
         query.where("switch.published is true")
-        if (CollectUtils.isEmpty(entityDao.search(query))) {
+        if (Collections.isEmpty(entityDao.search(query))) {
           if (null == table.getLessons) table.setLessons(taskList)
           return table
         }

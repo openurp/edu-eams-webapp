@@ -5,7 +5,7 @@ import java.util.Date
 
 
 import org.apache.commons.lang3.ArrayUtils
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model
@@ -64,8 +64,8 @@ class CourseTakeRestoreAction extends SemesterSupportAction {
       builder.orderBy("electLogger.createdAt,electLogger.id")
     }
     val loggers = entityDao.search(builder)
-    val stds = CollectUtils.newHashMap()
-    val lessons = CollectUtils.newHashMap()
+    val stds = Collections.newMap[Any]
+    val lessons = Collections.newMap[Any]
     for (electLogger <- loggers) {
       var lesson = lessons.get(electLogger.getLessonNo)
       if (null == lesson) {
@@ -102,8 +102,8 @@ class CourseTakeRestoreAction extends SemesterSupportAction {
     var failure = 0
     if (ArrayUtils.isNotEmpty(ids)) {
       val loggers = entityDao.get(classOf[ElectLogger], ids)
-      val stds = CollectUtils.newHashMap()
-      val lessons = CollectUtils.newHashMap()
+      val stds = Collections.newMap[Any]
+      val lessons = Collections.newMap[Any]
       val updatedAt = new Date()
       for (electLogger <- loggers) {
         val courseTake = Model.newInstance(classOf[CourseTake])

@@ -18,7 +18,7 @@ class LessonStatDaoHibernate extends HibernateEntityDao with LessonStatDao {
       "				inner join JCXX_JZG_T teacher2_ on teachers1_.LSID=teacher2_.id where" + 
       "				(teachtask0_.XNXQID in (:semesterIds))" + 
       "				)group by XNXQID,jszcid"
-    val query = getSession.createSQLQuery(queryString)
+    val query = currentSession.createSQLQuery(queryString)
     query.setParameterList("semesterIds", EntityUtils.extractIds(semesters))
     query.addScalar("XNXQID", StandardBasicTypes.LONG)
     query.addScalar("jszcid", StandardBasicTypes.LONG)

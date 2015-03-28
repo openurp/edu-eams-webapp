@@ -3,7 +3,7 @@ package org.openurp.edu.eams.core.web.action
 
 
 import org.apache.commons.lang3.ClassUtils
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.pojo.BaseCode
 import org.beangle.commons.lang.Strings
@@ -63,7 +63,7 @@ class ProjectCodeAction extends ProjectSupportAction {
     for (id <- addCodeIds) {
       val projectCode = new ProjectCodeBean()
       val codeMeats = getCodeMeta(Class.forName(className))
-      if (CollectUtils.isNotEmpty(codeMeats)) {
+      if (Collections.isNotEmpty(codeMeats)) {
         projectCode.setMeta(codeMeats.get(0))
       }
       projectCode.setProject(entityDao.get(classOf[Project], projectId))

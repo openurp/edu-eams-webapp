@@ -3,57 +3,57 @@ package org.openurp.edu.eams.teach.election.service.helper
 import java.util.Comparator
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.openurp.edu.base.Student
 import org.openurp.edu.eams.teach.election.service.context.ElectState
-import org.openurp.edu.teach.lesson.CourseLimitGroup
-import org.openurp.edu.teach.lesson.CourseLimitItem
-import org.openurp.edu.teach.lesson.CourseLimitMeta.Operator
+import org.openurp.edu.teach.lesson.LessonLimitGroup
+import org.openurp.edu.teach.lesson.LessonLimitItem
+import org.openurp.edu.teach.lesson.LessonLimitMeta.Operator
 import org.openurp.edu.teach.lesson.Lesson
-import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnum
-import CourseLimitGroupComparator._
+import org.openurp.edu.eams.teach.lesson.service.limit.LessonLimitMetaEnum
+import LessonLimitGroupComparator._
 
 
 
 
-object CourseLimitGroupHelper {
+object LessonLimitGroupHelper {
 
   
-  var comparator: CourseLimitGroupComparator = new CourseLimitGroupComparator()
+  var comparator: LessonLimitGroupComparator = new LessonLimitGroupComparator()
 
   def isElectable(lesson: Lesson, state: ElectState): Boolean = {
-    null != getMatchCourseLimitGroup(lesson, state)
+    null != getMatchLessonLimitGroup(lesson, state)
   }
 
-  def isElectable(lesson: Lesson, state: ElectState, types: Iterable[CourseLimitMetaEnum]): Boolean = {
-    null != getMatchCourseLimitGroup(lesson, state, types)
+  def isElectable(lesson: Lesson, state: ElectState, types: Iterable[LessonLimitMetaEnum]): Boolean = {
+    null != getMatchLessonLimitGroup(lesson, state, types)
   }
 
-  def isElectable(lesson: Lesson, state: ElectState, types: CourseLimitMetaEnum*): Boolean = {
-    null != getMatchCourseLimitGroup(lesson, state, types)
+  def isElectable(lesson: Lesson, state: ElectState, types: LessonLimitMetaEnum*): Boolean = {
+    null != getMatchLessonLimitGroup(lesson, state, types)
   }
 
-  def getMatchCourseLimitGroup(lesson: Lesson, state: ElectState, types: Iterable[CourseLimitMetaEnum]): CourseLimitGroup = {
-    val metaIds = CollectUtils.newHashSet()
+  def getMatchLessonLimitGroup(lesson: Lesson, state: ElectState, types: Iterable[LessonLimitMetaEnum]): LessonLimitGroup = {
+    val metaIds = Collections.newSet[Any]
     if (null != types) {
       for (metaEnum <- types) {
         metaIds.add(metaEnum.getMetaId)
       }
     }
-    getMatchCourseLimitGroup(lesson, state, metaIds)
+    getMatchLessonLimitGroup(lesson, state, metaIds)
   }
 
-  def getMatchCourseLimitGroup(lesson: Lesson, state: ElectState, types: CourseLimitMetaEnum*): CourseLimitGroup = {
-    val metaIds = CollectUtils.newHashSet()
+  def getMatchLessonLimitGroup(lesson: Lesson, state: ElectState, types: LessonLimitMetaEnum*): LessonLimitGroup = {
+    val metaIds = Collections.newSet[Any]
     if (null != types) {
       for (metaEnum <- types) {
         metaIds.add(metaEnum.getMetaId)
       }
     }
-    getMatchCourseLimitGroup(lesson, state, metaIds)
+    getMatchLessonLimitGroup(lesson, state, metaIds)
   }
 
-  def getMatchCountCourseLimitGroup(lesson: Lesson, state: ElectState): CourseLimitGroup = {
+  def getMatchCountLessonLimitGroup(lesson: Lesson, state: ElectState): LessonLimitGroup = {
     val groups = lesson.getTeachClass.getLimitGroups
     Collections.sort(groups, comparator)
     for (group <- lesson.getTeachClass.getLimitGroups) {
@@ -65,29 +65,29 @@ object CourseLimitGroupHelper {
         var itemPass = true
         val op = item.getOperator
         val metaId = item.getMeta.id
-        val values = CollectUtils.newHashSet(item.getContent.split(","))
+        val values = Collections.newHashSet(item.getContent.split(","))
         val sb = new StringBuilder()
-        if (metaId == CourseLimitMetaEnum.ADMINCLASS.getMetaId) {
+        if (metaId == LessonLimitMeta.Adminclass.getMetaId) {
           sb.append(state.getStd.getAdminclassId)
-        } else if (metaId == CourseLimitMetaEnum.DEPARTMENT.getMetaId) {
+        } else if (metaId == LessonLimitMeta.Department.getMetaId) {
           sb.append(state.getStd.getDepartId)
-        } else if (metaId == CourseLimitMetaEnum.DIRECTION.getMetaId) {
+        } else if (metaId == LessonLimitMeta.Direction.getMetaId) {
           sb.append(state.getStd.directionId)
-        } else if (metaId == CourseLimitMetaEnum.EDUCATION.getMetaId) {
+        } else if (metaId == LessonLimitMeta.Education.getMetaId) {
           sb.append(state.getStd.educationId)
-        } else if (metaId == CourseLimitMetaEnum.GENDER.getMetaId) {
+        } else if (metaId == LessonLimitMeta.Gender.getMetaId) {
           sb.append(state.getStd.getGenderId)
-        } else if (metaId == CourseLimitMetaEnum.GRADE.getMetaId) {
+        } else if (metaId == LessonLimitMeta.Grade.getMetaId) {
           sb.append(state.getStd.grade)
-        } else if (metaId == CourseLimitMetaEnum.MAJOR.getMetaId) {
+        } else if (metaId == LessonLimitMeta.Major.getMetaId) {
           sb.append(state.getStd.majorId)
-        } else if (metaId == CourseLimitMetaEnum.STDTYPE.getMetaId) {
+        } else if (metaId == LessonLimitMeta.StdType.getMetaId) {
           sb.append(state.getStd.stdTypeId)
-        } else if (metaId == CourseLimitMetaEnum.PROGRAM.getMetaId) {
+        } else if (metaId == LessonLimitMeta.Program.getMetaId) {
           sb.append(state.getStd.getProgramId)
         }
         val value = sb.toString
-        itemPass = if (op == Operator.EQUAL || op == Operator.IN) values.isEmpty || values.contains(value) else !values.isEmpty && !values.contains(value)
+        itemPass = if (op == Operator.Equals || op == Operator.IN) values.isEmpty || values.contains(value) else !values.isEmpty && !values.contains(value)
         if (!itemPass) {
           groupPass = false
           //break
@@ -100,12 +100,12 @@ object CourseLimitGroupHelper {
     null
   }
 
-  def getMatchCourseLimitGroup(lesson: Lesson, state: ElectState): CourseLimitGroup = {
+  def getMatchLessonLimitGroup(lesson: Lesson, state: ElectState): LessonLimitGroup = {
     val emptySet = Collections.emptySet()
-    getMatchCourseLimitGroup(lesson, state, emptySet)
+    getMatchLessonLimitGroup(lesson, state, emptySet)
   }
 
-  def getMatchCourseLimitGroup(lesson: Lesson, state: ElectState, types: Set[Long]): CourseLimitGroup = {
+  def getMatchLessonLimitGroup(lesson: Lesson, state: ElectState, types: Set[Long]): LessonLimitGroup = {
     val groups = lesson.getTeachClass.getLimitGroups
     Collections.sort(groups, comparator)
     for (group <- lesson.getTeachClass.getLimitGroups) {
@@ -114,32 +114,32 @@ object CourseLimitGroupHelper {
         var itemPass = true
         val op = item.getOperator
         val metaId = item.getMeta.id
-        if (CollectUtils.isNotEmpty(types) && !types.contains(metaId)) {
+        if (Collections.isNotEmpty(types) && !types.contains(metaId)) {
           //continue
         }
-        val values = CollectUtils.newHashSet(item.getContent.split(","))
+        val values = Collections.newHashSet(item.getContent.split(","))
         val sb = new StringBuilder()
-        if (metaId == CourseLimitMetaEnum.ADMINCLASS.getMetaId) {
+        if (metaId == LessonLimitMeta.Adminclass.getMetaId) {
           sb.append(state.getStd.getAdminclassId)
-        } else if (metaId == CourseLimitMetaEnum.DEPARTMENT.getMetaId) {
+        } else if (metaId == LessonLimitMeta.Department.getMetaId) {
           sb.append(state.getStd.getDepartId)
-        } else if (metaId == CourseLimitMetaEnum.DIRECTION.getMetaId) {
+        } else if (metaId == LessonLimitMeta.Direction.getMetaId) {
           sb.append(state.getStd.directionId)
-        } else if (metaId == CourseLimitMetaEnum.EDUCATION.getMetaId) {
+        } else if (metaId == LessonLimitMeta.Education.getMetaId) {
           sb.append(state.getStd.educationId)
-        } else if (metaId == CourseLimitMetaEnum.GENDER.getMetaId) {
+        } else if (metaId == LessonLimitMeta.Gender.getMetaId) {
           sb.append(state.getStd.getGenderId)
-        } else if (metaId == CourseLimitMetaEnum.GRADE.getMetaId) {
+        } else if (metaId == LessonLimitMeta.Grade.getMetaId) {
           sb.append(state.getStd.grade)
-        } else if (metaId == CourseLimitMetaEnum.MAJOR.getMetaId) {
+        } else if (metaId == LessonLimitMeta.Major.getMetaId) {
           sb.append(state.getStd.majorId)
-        } else if (metaId == CourseLimitMetaEnum.STDTYPE.getMetaId) {
+        } else if (metaId == LessonLimitMeta.StdType.getMetaId) {
           sb.append(state.getStd.stdTypeId)
-        } else if (metaId == CourseLimitMetaEnum.PROGRAM.getMetaId) {
+        } else if (metaId == LessonLimitMeta.Program.getMetaId) {
           sb.append(state.getStd.getProgramId)
         }
         val value = sb.toString
-        itemPass = if (op == Operator.EQUAL || op == Operator.IN) values.isEmpty || values.contains(value) else !values.isEmpty && !values.contains(value)
+        itemPass = if (op == Operator.Equals || op == Operator.IN) values.isEmpty || values.contains(value) else !values.isEmpty && !values.contains(value)
         if (!itemPass) {
           groupPass = false
           //break
@@ -152,7 +152,7 @@ object CourseLimitGroupHelper {
     null
   }
 
-  def getMatchCourseLimitGroup(lesson: Lesson, student: Student): CourseLimitGroup = {
+  def getMatchLessonLimitGroup(lesson: Lesson, student: Student): LessonLimitGroup = {
     val groups = lesson.getTeachClass.getLimitGroups
     Collections.sort(groups, comparator)
     for (group <- lesson.getTeachClass.getLimitGroups) {
@@ -161,26 +161,26 @@ object CourseLimitGroupHelper {
         var itemPass = true
         val op = item.getOperator
         val metaId = item.getMeta.id
-        val values = CollectUtils.newHashSet(item.getContent.split(","))
+        val values = Collections.newHashSet(item.getContent.split(","))
         var value: String = null
-        if (metaId == CourseLimitMetaEnum.ADMINCLASS.getMetaId) {
+        if (metaId == LessonLimitMeta.Adminclass.getMetaId) {
           value = if (student.getAdminclass == null) "" else student.getAdminclass.id + ""
-        } else if (metaId == CourseLimitMetaEnum.DEPARTMENT.getMetaId) {
+        } else if (metaId == LessonLimitMeta.Department.getMetaId) {
           value = student.department.id + ""
-        } else if (metaId == CourseLimitMetaEnum.DIRECTION.getMetaId) {
+        } else if (metaId == LessonLimitMeta.Direction.getMetaId) {
           value = if (student.direction == null) "" else student.direction.id + ""
-        } else if (metaId == CourseLimitMetaEnum.EDUCATION.getMetaId) {
+        } else if (metaId == LessonLimitMeta.Education.getMetaId) {
           value = student.education.id + ""
-        } else if (metaId == CourseLimitMetaEnum.GENDER.getMetaId) {
+        } else if (metaId == LessonLimitMeta.Gender.getMetaId) {
           value = student.getGender.id + ""
-        } else if (metaId == CourseLimitMetaEnum.GRADE.getMetaId) {
+        } else if (metaId == LessonLimitMeta.Grade.getMetaId) {
           value = student.grade
-        } else if (metaId == CourseLimitMetaEnum.MAJOR.getMetaId) {
+        } else if (metaId == LessonLimitMeta.Major.getMetaId) {
           value = student.major.id + ""
-        } else if (metaId == CourseLimitMetaEnum.STDTYPE.getMetaId) {
+        } else if (metaId == LessonLimitMeta.StdType.getMetaId) {
           value = student.getType.id + ""
         }
-        itemPass = if (op == Operator.EQUAL || op == Operator.IN) values.isEmpty || values.contains(value) else !values.isEmpty && !values.contains(value)
+        itemPass = if (op == Operator.Equals || op == Operator.IN) values.isEmpty || values.contains(value) else !values.isEmpty && !values.contains(value)
         if (!itemPass) {
           groupPass = false
           //break
@@ -193,7 +193,7 @@ object CourseLimitGroupHelper {
     null
   }
 
-  object CourseLimitGroupComparator {
+  object LessonLimitGroupComparator {
 
     private val MAXPRIORITY = 20000
 
@@ -206,13 +206,13 @@ object CourseLimitGroupHelper {
     private val ZEROPRIORITY = 500
   }
 
-  private class CourseLimitGroupComparator extends Comparator[CourseLimitGroup] {
+  private class LessonLimitGroupComparator extends Comparator[LessonLimitGroup] {
 
-    private var CourseLimitMetaIds: List[Long] = CollectUtils.newArrayList(CourseLimitMetaEnum.ADMINCLASS.getMetaId, 
-      CourseLimitMetaEnum.DIRECTION.getMetaId, CourseLimitMetaEnum.PROGRAM.getMetaId, CourseLimitMetaEnum.MAJOR.getMetaId, 
-      CourseLimitMetaEnum.DEPARTMENT.getMetaId)
+    private var LessonLimitMetaIds: List[Long] = Collections.newBuffer[Any](LessonLimitMeta.Adminclass.getMetaId, 
+      LessonLimitMeta.Direction.getMetaId, LessonLimitMeta.Program.getMetaId, LessonLimitMeta.Major.getMetaId, 
+      LessonLimitMeta.Department.getMetaId)
 
-    def compare(o1: CourseLimitGroup, o2: CourseLimitGroup): Int = {
+    def compare(o1: LessonLimitGroup, o2: LessonLimitGroup): Int = {
       val priorty1 = getPriority(o1)
       val priorty2 = getPriority(o2)
       if (priorty1 == priorty2) {
@@ -222,38 +222,38 @@ object CourseLimitGroupHelper {
       }
     }
 
-    private def getPriority(group: CourseLimitGroup): Int = {
+    private def getPriority(group: LessonLimitGroup): Int = {
       var priority = 0
       val hasMax = false
-      for (courseLimitItem <- group.getItems) {
-        if (Operator.NOT_IN == courseLimitItem.getOperator || Operator.NOT_EQUAL == courseLimitItem.getOperator) {
-          if (CourseLimitMetaEnum.PROGRAM.getMetaId == courseLimitItem.getMeta.id || 
-            CourseLimitMetaEnum.ADMINCLASS.getMetaId == courseLimitItem.getMeta.id) {
+      for (lessonLimitItem <- group.getItems) {
+        if (Operator.NOT_IN == lessonLimitItem.getOperator || Operator.NOT_EQUAL == lessonLimitItem.getOperator) {
+          if (LessonLimitMeta.Program.getMetaId == lessonLimitItem.getMeta.id || 
+            LessonLimitMeta.Adminclass.getMetaId == lessonLimitItem.getMeta.id) {
             if (!hasMax) {
               priority += MAXPRIORITY / 2
             }
-          } else if (CourseLimitMetaEnum.DIRECTION.getMetaId == courseLimitItem.getMeta.id) {
+          } else if (LessonLimitMeta.Direction.getMetaId == lessonLimitItem.getMeta.id) {
             priority += HIGHPRIORITY / 2
-          } else if (CourseLimitMetaEnum.MAJOR.getMetaId == courseLimitItem.getMeta.id) {
+          } else if (LessonLimitMeta.Major.getMetaId == lessonLimitItem.getMeta.id) {
             priority += NORMALPRIORITY / 2
-          } else if (CourseLimitMetaEnum.DEPARTMENT.getMetaId == courseLimitItem.getMeta.id) {
+          } else if (LessonLimitMeta.Department.getMetaId == lessonLimitItem.getMeta.id) {
             priority += LOWPRIORITY / 2
-          } else if (!CourseLimitMetaIds.contains(courseLimitItem.getMeta.id)) {
+          } else if (!LessonLimitMetaIds.contains(lessonLimitItem.getMeta.id)) {
             priority += ZEROPRIORITY / 2
           }
         } else {
-          if (CourseLimitMetaEnum.PROGRAM.getMetaId == courseLimitItem.getMeta.id || 
-            CourseLimitMetaEnum.ADMINCLASS.getMetaId == courseLimitItem.getMeta.id) {
+          if (LessonLimitMeta.Program.getMetaId == lessonLimitItem.getMeta.id || 
+            LessonLimitMeta.Adminclass.getMetaId == lessonLimitItem.getMeta.id) {
             if (!hasMax) {
               priority += MAXPRIORITY
             }
-          } else if (CourseLimitMetaEnum.DIRECTION.getMetaId == courseLimitItem.getMeta.id) {
+          } else if (LessonLimitMeta.Direction.getMetaId == lessonLimitItem.getMeta.id) {
             priority += HIGHPRIORITY
-          } else if (CourseLimitMetaEnum.MAJOR.getMetaId == courseLimitItem.getMeta.id) {
+          } else if (LessonLimitMeta.Major.getMetaId == lessonLimitItem.getMeta.id) {
             priority += NORMALPRIORITY
-          } else if (CourseLimitMetaEnum.DEPARTMENT.getMetaId == courseLimitItem.getMeta.id) {
+          } else if (LessonLimitMeta.Department.getMetaId == lessonLimitItem.getMeta.id) {
             priority += LOWPRIORITY
-          } else if (!CourseLimitMetaIds.contains(courseLimitItem.getMeta.id)) {
+          } else if (!LessonLimitMetaIds.contains(lessonLimitItem.getMeta.id)) {
             priority += ZEROPRIORITY
           }
         }

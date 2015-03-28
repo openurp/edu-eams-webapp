@@ -14,7 +14,7 @@ import org.apache.poi.ss.usermodel.Cell
 import org.apache.poi.ss.usermodel.Row
 import org.apache.poi.ss.usermodel.Sheet
 import org.apache.poi.ss.usermodel.Workbook
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.EntityType
 import org.beangle.commons.entity.metadata.Model
@@ -146,7 +146,7 @@ class CourseAction extends CourseSearchAction {
   }
 
   protected def getImporterListeners(): List[ItemImporterListener] = {
-    val listeners = CollectUtils.newArrayList()
+    val listeners = Collections.newBuffer[Any]
     listeners.add(new CourseImportListener(courseService, "code", baseCodeService.getCodes(classOf[CourseHourType]), 
       entityDao, entityDao.get(classOf[Project], getSession.get("projectId").asInstanceOf[java.lang.Integer])))
     listeners
@@ -237,7 +237,7 @@ class CourseAction extends CourseSearchAction {
       .orderBy("course.code")
     val codes = entityDao.search(query)
     var newCode = prefix + Strings.leftPad("1", standard.getSeqLength, '0')
-    if (CollectUtils.isNotEmpty(codes)) {
+    if (Collections.isNotEmpty(codes)) {
       var newNo = 0
       for (oldCode <- codes) {
         val oldNo = oldCode.substring(prefix.length)

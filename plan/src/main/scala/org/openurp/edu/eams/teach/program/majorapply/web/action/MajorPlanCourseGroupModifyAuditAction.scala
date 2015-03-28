@@ -1,6 +1,6 @@
 package org.openurp.edu.eams.teach.program.majorapply.web.action
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.security.blueprint.User
 import org.beangle.struts2.convention.route.Action
@@ -57,8 +57,8 @@ class MajorCourseGroupModifyAuditAction extends MajorCourseGroupModifyApplyActio
   }
 
   def applications(): String = {
-    if (CollectUtils.isEmpty(getProjects) || CollectUtils.isEmpty(getDeparts) || 
-      CollectUtils.isEmpty(getStdTypes)) {
+    if (Collections.isEmpty(getProjects) || Collections.isEmpty(getDeparts) || 
+      Collections.isEmpty(getStdTypes)) {
       return forwardError("对不起，您没有权限！")
     }
     val query = getQueryBuilder

@@ -4,7 +4,7 @@ package org.openurp.edu.eams.teach.grade.course.service.impl
 
 
 import org.beangle.commons.lang.Strings
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.dao.Operation
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.beangle.data.jpa.dao.OqlBuilder
@@ -44,7 +44,7 @@ class ExamTakeGeneratePublishListener extends BaseServiceImpl with CourseGradePu
   private var forbiddenCourseTakeTypeNames: Array[String] = new Array[String](0)
 
   def onPublish(grades: Iterable[CourseGrade], gradeState: CourseGradeState, gradeTypes: Array[GradeType]): List[Operation] = {
-    val operations = CollectUtils.newArrayList()
+    val operations = Collections.newBuffer[Any]
     var hasGa = false
     for (gradeType <- gradeTypes if gradeType.id == GradeTypeConstants.GA_ID) {
       hasGa = true
@@ -59,7 +59,7 @@ class ExamTakeGeneratePublishListener extends BaseServiceImpl with CourseGradePu
   }
 
   def onPublish(grade: CourseGrade, gradeTypes: Array[GradeType]): List[Operation] = {
-    val operations = CollectUtils.newArrayList()
+    val operations = Collections.newBuffer[Any]
     var hasGa = false
     for (gradeType <- gradeTypes if gradeType.id == GradeTypeConstants.GA_ID) {
       hasGa = true
@@ -105,7 +105,7 @@ class ExamTakeGeneratePublishListener extends BaseServiceImpl with CourseGradePu
     builder.where("examTake.lesson=:lesson and examTake.examType in (:examTypes) and examTake.activity is null", 
       lesson, Array(Makeup, Delay))
     val examTakes = entityDao.search(builder)
-    val takes = CollectUtils.newHashMap()
+    val takes = Collections.newMap[Any]
     for (examTake <- examTakes) {
       takes.put(examTake.getStd, examTake)
     }
@@ -117,7 +117,7 @@ class ExamTakeGeneratePublishListener extends BaseServiceImpl with CourseGradePu
     builder.where("examTake.std=:std and examTake.lesson=:lesson and examTake.examType in (:examTypes) and examTake.activity is null", 
       std, lesson, Array(Makeup, Delay))
     val examTakes = entityDao.search(builder)
-    val takes = CollectUtils.newHashMap()
+    val takes = Collections.newMap[Any]
     for (examTake <- examTakes) {
       takes.put(examTake.getStd, examTake)
     }
@@ -128,7 +128,7 @@ class ExamTakeGeneratePublishListener extends BaseServiceImpl with CourseGradePu
       setting: CourseGradeSetting, 
       gradeTypes: Array[GradeType], 
       examTakes: Map[Student, ExamTake]): List[Operation] = {
-    val operations = CollectUtils.newArrayList()
+    val operations = Collections.newBuffer[Any]
     val examGrade = grade.getExamGrade(new GradeType(GradeTypeConstants.END_ID))
     if (null == examGrade) return operations
     val lesson = grade.getLesson

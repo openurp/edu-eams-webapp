@@ -6,7 +6,7 @@ import java.util.Date
 
 
 
-import org.beangle.commons.collection.CollectUtils
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.commons.collection.page.Page
 import org.beangle.commons.collection.page.PageLimit
@@ -26,12 +26,12 @@ import org.openurp.edu.base.Teacher
 import org.openurp.edu.eams.system.security.DataRealm
 import org.openurp.edu.eams.teach.code.industry.ExamType
 import org.openurp.edu.teach.schedule.CourseActivity
-import org.openurp.edu.teach.lesson.CourseLimitMeta.Operator
+import org.openurp.edu.teach.lesson.LessonLimitMeta.Operator
 import org.openurp.edu.eams.teach.lesson.CourseTime
 import org.openurp.edu.teach.exam.ExamActivity
 import org.openurp.edu.teach.lesson.Lesson
-import org.openurp.edu.eams.teach.lesson.service.CourseLimitUtils
-import org.openurp.edu.eams.teach.lesson.service.limit.CourseLimitMetaEnum
+import org.openurp.edu.eams.teach.lesson.service.LessonLimitUtils
+import org.openurp.edu.eams.teach.lesson.service.limit.LessonLimitMetaEnum
 import org.openurp.edu.base.Program
 import org.openurp.edu.eams.teach.service.TeachResourceService
 import org.openurp.edu.eams.util.DataRealmLimit
@@ -133,7 +133,7 @@ class TeachResourceServiceImpl extends BaseServiceImpl with TeachResourceService
       pageLimit: PageLimit, 
       order: String): Iterable[Teacher] = {
     val builder = OqlBuilder.from(classOf[Teacher], "teacher")
-    if (CollectUtils.isNotEmpty(departments)) {
+    if (Collections.isNotEmpty(departments)) {
       builder.where("teacher.department in (:departments)", departments)
     }
     if (null != replaceTeacher) {
@@ -150,7 +150,7 @@ class TeachResourceServiceImpl extends BaseServiceImpl with TeachResourceService
         builder.where("teacher.department = :deparment", teacher.department)
       }
     }
-    val hql = new StringBuilder("not exists (from org.openurp.edu.teach.lesson.Lesson lesson join lesson.courseSchedule.activities activity " + 
+    val hql = new StringBuilder("not exists (from org.openurp.edu.teach.lesson.Lesson lesson join lesson.schedule.activities activity " + 
       "join activity.teachers actTeacher where actTeacher=teacher ")
     if (semester != null) {
       hql.append("and lesson.semester.id = " + semester.id + " ")
@@ -202,10 +202,10 @@ class TeachResourceServiceImpl extends BaseServiceImpl with TeachResourceService
     val builder = OqlBuilder.from(classOf[CourseActivity], "activity")
     builder.where("activity.lesson.semester =:semester", semester)
     setTimeQuery(time, builder)
-    val con = CourseLimitUtils.build(CourseLimitMetaEnum.ADMINCLASS.metaId, "lgi", adminclass.id.toString)
+    val con = LessonLimitUtils.build(LessonLimitMeta.Adminclass.id, "lgi", adminclass.id.toString)
     val params = con.params
     builder.where("exists(from activity.lesson.teachClass.limitGroups lg join lg.items as lgi where (lgi.operator='" + 
-      Operator.EQUAL.name() + 
+      Operator.Equals.name() + 
       "' or lgi.operator='" + 
       Operator.IN.name() + 
       "') and " + 
@@ -218,10 +218,10 @@ class TeachResourceServiceImpl extends BaseServiceImpl with TeachResourceService
     val builder = OqlBuilder.from(classOf[CourseActivity], "activity")
     builder.where("activity.lesson.semester =:semester", semester)
     setTimeQuery(time, builder)
-    val con = CourseLimitUtils.build(CourseLimitMetaEnum.PROGRAM.metaId, "lgi", program.id.toString)
+    val con = LessonLimitUtils.build(LessonLimitMeta.Program.id, "lgi", program.id.toString)
     val params = con.params
     builder.where("exists(from activity.lesson.teachClass.limitGroups lg join lg.items as lgi where (lgi.operator='" + 
-      Operator.EQUAL.name() + 
+      Operator.Equals.name() + 
       "' or lgi.operator='" + 
       Operator.IN.name() + 
       "') and " + 
@@ -274,7 +274,7 @@ class TeachResourceServiceImpl extends BaseServiceImpl with TeachResourceService
     val builder = OqlBuilder.from(classOf[CourseActivity], "activity")
     builder.join("activity.rooms", "room")
     builder.where("activity.lesson.semester =:semester", semester)
-    if (CollectUtils.isNotEmpty(departments)) {
+    if (Collections.isNotEmpty(departments)) {
       builder.where("activity.lesson.teachDepart in (:departments)", departments)
     }
     if (null != project) {
@@ -340,7 +340,7 @@ class TeachResourceServiceImpl extends BaseServiceImpl with TeachResourceService
       .where("activity.lesson.semester=:semester", semester)
       .where("activity.lesson.teachDepart in (:depart)", departments)
     val activitys = entityDao.search(builder)
-    val utilizations = CollectUtils.newHashMap()
+    val utilizations = Collections.newMap[Any]
     for (courseActivity <- activitys) {
       val rooms = courseActivity.rooms
       var capacity = 0
@@ -369,7 +369,7 @@ class TeachResourceServiceImpl extends BaseServiceImpl with TeachResourceService
       .where("activity.lesson.semester=:semester", semester)
       .where("activity.lesson.teachDepart in (:depart)", departments)
     val activitys = entityDao.search(builder)
-    val utilizations = CollectUtils.newHashMap()
+    val utilizations = Collections.newMap[Any]
     for (courseActivity <- activitys) {
       val rooms = courseActivity.rooms
       var capacity = 0
@@ -420,7 +420,7 @@ class TeachResourceServiceImpl extends BaseServiceImpl with TeachResourceService
       limit: PageLimit): Iterable[_] = null
 
   def getTeacherPeriod(lesson: Lesson, teacher: Teacher): Int = {
-    val courseActivities = lesson.courseSchedule.activities
+    val courseActivities = lesson.schedule.activities
     var period = 0
     for (courseActivity <- courseActivities if courseActivity.teachers.contains(teacher)) {
       val time = courseActivity.getTime
