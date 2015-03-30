@@ -11,8 +11,9 @@ import scala.collection.mutable.HashSet
 import java.util.ArrayList
 import org.beangle.commons.collection.Collections
 import scala.collection.mutable.Buffer
+import org.beangle.commons.bean.orderings.PropertyOrdering
 
-class MultiStdGrade(var semester: Semester, grades: Map[Student, List[CourseGrade]], var ratio: java.lang.Float) {
+class MultiStdGrade(var semester: Semester, grades: collection.Map[Student, Seq[CourseGrade]], var ratio: java.lang.Float) {
 
   private var adminClass: Adminclass = _
 
@@ -20,22 +21,19 @@ class MultiStdGrade(var semester: Semester, grades: Map[Student, List[CourseGrad
 
   var stdGrades: Buffer[StdGrade] = Collections.newBuffer[StdGrade]
 
-  stdGrades ++= (gradesMap.values)
-
-  var extraGradeMap: collection.mutable.Map[String, List[CourseGrade]] = Collections.newMap[String, List[CourseGrade]]
+  var extraGradeMap = Collections.newMap[String, Iterable[CourseGrade]]
 
   var maxDisplay: java.lang.Integer = new java.lang.Integer(courses.size + maxExtra)
 
+  val gradesMap = Collections.newMap[java.lang.Long, StdGrade]
 
-  val gradesMap = Collections.newMap()
-
-  val courseStdNumMap = Collections.newMap()
+  val courseStdNumMap = Collections.newMap[Course, CourseStdNum]
 
   for ((key, value) <- grades) {
     val stdGrade = new StdGrade(key, value, null, null)
     gradesMap.put(key.id, stdGrade)
     for (grade <- value) {
-      val courseStdNum = courseStdNumMap.get(grade.course).asInstanceOf[CourseStdNum]
+      val courseStdNum = courseStdNumMap.get(grade.course).orNull.asInstanceOf[CourseStdNum]
       if (null == courseStdNum) {
         courseStdNumMap.put(grade.course, new CourseStdNum(grade.course, new java.lang.Integer(1)))
       } else {
@@ -44,39 +42,41 @@ class MultiStdGrade(var semester: Semester, grades: Map[Student, List[CourseGrad
     }
   }
 
-  val courseStdNums = new ArrayList[CourseStdNum](courseStdNumMap.values)
+  stdGrades ++= (gradesMap.values)
 
-  Collections.sort(courseStdNums)
+  val courseStdNums = Collections.newBuffer[CourseStdNum]
+  courseStdNums ++= courseStdNumMap.values
+  courseStdNums.sorted
 
   var maxStdCount = 0
 
   if (Collections.isNotEmpty(courseStdNums)) {
-    maxStdCount = (courseStdNums.get(0)).asInstanceOf[CourseStdNum].count
+    maxStdCount = (courseStdNums(0)).asInstanceOf[CourseStdNum].count
       .intValue()
   }
 
   for (i <- 0 until courseStdNums.size) {
-    val rank = courseStdNums.get(i).asInstanceOf[CourseStdNum]
+    val rank = courseStdNums(i).asInstanceOf[CourseStdNum]
     if (new java.lang.Float(rank.count.intValue()).floatValue() /
       maxStdCount >
       ratio.floatValue()) {
-      courses.add(rank.course)
+      courses += (rank.course)
     }
   }
 
   var maxExtra = 0
 
-  var iter = stdGrades.iterator()
+  var iter = stdGrades.iterator
   while (iter.hasNext) {
     val stdGrade = iter.next()
     var myExtra = 0
-    val extraGrades = Collections.newBuffer()
-    val commonCourseSet = new HashSet[Course](courses)
-    var iterator = stdGrade.grades.iterator()
+    val extraGrades = Collections.newBuffer[CourseGrade]
+    val commonCourseSet = courses.toSet
+    var iterator = stdGrade.grades.iterator
     while (iterator.hasNext) {
       val courseGrade = iterator.next()
       if (!commonCourseSet.contains(courseGrade.course)) {
-        extraGrades.add(courseGrade)
+        extraGrades += courseGrade
         myExtra += 1
       }
     }
@@ -96,17 +96,17 @@ class MultiStdGrade(var semester: Semester, grades: Map[Student, List[CourseGrad
 
   def sortStdGrades(cmpWhat: String, isAsc: Boolean) {
     if (null != stdGrades) {
-      val cmp = new PropertyComparator(cmpWhat, isAsc)
-      Collections.sort(stdGrades, cmp)
+      val cmp = new PropertyOrdering(cmpWhat, isAsc)
+      stdGrades.sorted(cmp)
     }
   }
 
   def getExtraCourseNum(): Int = {
-    getMaxDisplay.intValue() - getCourses.size
+    maxDisplay.intValue() - courses.size
   }
 }
 
-class CourseStdNum(course2: Course, var count: java.lang.Integer) extends Comparable[_] {
+class CourseStdNum(course2: Course, var count: java.lang.Integer) extends Comparable[CourseStdNum] {
 
   var course: Course = course2
 
@@ -122,8 +122,7 @@ class CourseStdNum(course2: Course, var count: java.lang.Integer) extends Compar
     this.course = course
   }
 
-  def compareTo(`object`: AnyRef): Int = {
-    val myClass = `object`.asInstanceOf[CourseStdNum]
+  override def compareTo(myClass: CourseStdNum): Int = {
     Objects.compareBuilder.add(myClass.count, this.count)
       .toComparison()
   }

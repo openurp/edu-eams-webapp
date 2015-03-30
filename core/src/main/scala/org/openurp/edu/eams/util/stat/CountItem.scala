@@ -1,9 +1,6 @@
 package org.openurp.edu.eams.util.stat
 
-
-
-
-class CountItem(var count: Number, var what: AnyRef) extends Comparable[_] {
+class CountItem(var count: Number, var what: AnyRef) extends Comparable[CountItem] {
 
   def compareTo(arg0: AnyRef): Int = {
     count.intValue() - arg0.asInstanceOf[CountItem].count.intValue()

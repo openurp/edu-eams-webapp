@@ -6,55 +6,38 @@ import org.openurp.edu.base.Direction
 import org.openurp.edu.base.Major
 import org.openurp.edu.base.Student
 import org.openurp.code.edu.Education
-import org.openurp.edu.eams.core.code.nation.Degree
-import org.openurp.edu.eams.core.code.nation.StudyType
 import org.openurp.edu.base.code.StdType
 import org.openurp.edu.base.Program
-
-
-
+import org.openurp.code.edu.Degree
+import org.openurp.code.edu.StudyType
 
 class MajorPlanGenParameter {
 
-  
   var name: String = _
 
-  
   var grade: String = _
 
-  
   var education: Education = _
 
-  
   var stdType: StdType = _
 
-  
   var department: Department = _
 
-  
   var major: Major = _
 
-  
   var direction: Direction = _
 
-  
   var effectiveOn: Date = _
 
-  
   var invalidOn: Date = _
 
-  
   var duration: Float = _
 
-  
   var studyType: StudyType = _
 
-  
   var degree: Degree = _
 
-  
   var student: Student = _
 
-  
   var termsCount: Int = _
 }

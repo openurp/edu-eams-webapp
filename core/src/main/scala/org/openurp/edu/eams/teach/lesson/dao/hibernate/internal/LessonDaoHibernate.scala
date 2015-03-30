@@ -159,7 +159,7 @@ class LessonDaoHibernate(sf: SessionFactory) extends HibernateEntityDao(sf) with
   }
 
   def saveOrUpdate(lesson: Lesson) {
-    val iter = lesson.teachClass.limitGroups.iterator()
+    val iter = lesson.teachClass.limitGroups.iterator
     while (iter.hasNext) {
       if (Collections.isEmpty(iter.next().items)) {
         iter.remove()

@@ -2,23 +2,18 @@ package org.openurp.edu.eams.core.service.internal
 
 import java.sql.Date
 
-
 import java.util.GregorianCalendar
-
-
 
 import javax.persistence.EntityNotFoundException
 import org.beangle.commons.collection.Collections
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
-import org.openurp.edu.eams.base.Calendar
 import org.openurp.base.Semester
+import org.openurp.base.Calendar
 import org.openurp.base.model.SemesterBean
 import org.openurp.edu.base.Project
 import org.openurp.edu.eams.core.service.SemesterService
-
-
 
 class SemesterServiceImpl extends BaseServiceImpl with SemesterService {
 
@@ -29,10 +24,10 @@ class SemesterServiceImpl extends BaseServiceImpl with SemesterService {
 
   def getCalendar(project: Project): Calendar = project.calendar
 
-  def getCalendars(projects: List[Project]): List[Calendar] = {
+  def getCalendars(projects: Seq[Project]): Seq[Calendar] = {
     val query = OqlBuilder.from(classOf[Project], "project").where("project in (:projects))", projects)
     query.select("distinct project.calendar")
-    entityDao.search(query)
+    entityDao.search(query).asInstanceOf[Seq[Calendar]]
   }
 
   def getSemester(project: Project, schoolYear: String, name: String): Semester = {
@@ -40,7 +35,7 @@ class SemesterServiceImpl extends BaseServiceImpl with SemesterService {
     getSemester(calendar, schoolYear, name)
   }
 
-  def getSemestersOfOverlapped(semester: Semester): List[Semester] = {
+  def getSemestersOfOverlapped(semester: Semester): Seq[Semester] = {
     val builder = OqlBuilder.from(classOf[Semester], "semester")
     builder.where("semester.beginOn <= :endOn", semester.endOn)
     builder.where("semester.endOn >= :beginOn", semester.beginOn)
@@ -49,7 +44,7 @@ class SemesterServiceImpl extends BaseServiceImpl with SemesterService {
   }
 
   def getSemester(calendar: Calendar, date: Date): Semester = {
-    val params = Collections.newMap[Any]
+    val params = Collections.newMap[String, Any]
     params.put("calendar", calendar)
     params.put("date", date)
     val builder = OqlBuilder.from(classOf[Semester], "semester").where("semester.beginOn<=:date and semester.endOn>=:date and semester.calendar=:calendar")
@@ -58,12 +53,12 @@ class SemesterServiceImpl extends BaseServiceImpl with SemesterService {
     if (rs.size < 1) {
       null
     } else {
-      rs.get(0).asInstanceOf[Semester]
+      rs.head
     }
   }
 
   def getSemester(calendar: Calendar, begOn: Date, endOn: Date): Semester = {
-    val params = Collections.newMap[Any]
+    val params = Collections.newMap[String, Any]
     params.put("calendar", calendar)
     params.put("begOn", begOn)
     params.put("endOn", endOn)
@@ -74,7 +69,7 @@ class SemesterServiceImpl extends BaseServiceImpl with SemesterService {
     if (rs.size < 1) {
       null
     } else {
-      rs.get(0).asInstanceOf[Semester]
+      rs.head
     }
   }
 
@@ -87,7 +82,7 @@ class SemesterServiceImpl extends BaseServiceImpl with SemesterService {
     if (semesters.isEmpty) {
       null
     } else {
-      semesters.get(0).asInstanceOf[Semester]
+      semesters.head
     }
   }
 
@@ -98,27 +93,27 @@ class SemesterServiceImpl extends BaseServiceImpl with SemesterService {
       .orderBy("s.beginOn")
       .limit(1, 1)
     val nexts = entityDao.search(nextQuery)
-    if (nexts.isEmpty) null else nexts.get(0)
+    if (nexts.isEmpty) null else nexts(0)
   }
 
   def getPreviousSemester(calendar: Calendar): Semester = {
-    val params = new HashMap()
+    val params = Collections.newMap[String, Any]
     params.put("calendar", calendar)
     val rs = entityDao.search("@getPreviousSemester", params)
     if (rs.size < 1) throw new EntityNotFoundException("without schoolYear for calendar id:" + calendar)
-    rs.get(0).asInstanceOf[Semester]
+    rs(0).asInstanceOf[Semester]
   }
 
   def getCurSemester(calendar: Calendar): Semester = {
     val builder = OqlBuilder.from(classOf[Calendar], "calender").where("calender.id = :calenderId", calendar.id)
-    builder.join("calender.semesters", "semester").where("semester.beginOn <= :date and semester.endOn >= :date", 
+    builder.join("calender.semesters", "semester").where("semester.beginOn <= :date and semester.endOn >= :date",
       new java.util.Date())
     builder.select("semester")
     val rs = entityDao.search(builder)
     if (rs.size == 1) {
-      rs.get(0).asInstanceOf[Semester]
+      rs(0).asInstanceOf[Semester]
     } else {
-      calendar.nearest
+      null
     }
   }
 
@@ -142,16 +137,16 @@ class SemesterServiceImpl extends BaseServiceImpl with SemesterService {
     query.cacheable()
     val firDate = first.beginOn
     val secDate = second.beginOn
-    if (first.after(second)) {
+    if (first.beginOn.after(second.beginOn)) {
       val calendar = new GregorianCalendar()
       query.param("firstStart", secDate)
       query.param("secondStart", firDate)
-      -entityDao.search(query).get(0).asInstanceOf[Number]
+      0 - entityDao.search(query)(0).asInstanceOf[Number]
         .intValue()
     } else {
       query.param("firstStart", firDate)
       query.param("secondStart", secDate)
-      entityDao.search(query).get(0).asInstanceOf[Number]
+      entityDao.search(query)(0).asInstanceOf[Number]
         .intValue()
     }
   }
@@ -162,7 +157,7 @@ class SemesterServiceImpl extends BaseServiceImpl with SemesterService {
 
   def saveSemester(semester: Semester) {
     if (null == semester) return
-    if (Strings.isEmpty(semester.code)) semester.code=(semester.schoolYear + semester.name)
+    if (Strings.isEmpty(semester.code)) semester.code = (semester.schoolYear + semester.name)
     entityDao.saveOrUpdate(semester)
   }
 
@@ -187,27 +182,30 @@ class SemesterServiceImpl extends BaseServiceImpl with SemesterService {
   }
 
   def getNearestSemester(calendar: Calendar): Semester = {
-    val ss = entityDao.search("select id,schoolYear,name,endOn from org.openurp.edu.eams.core.Semester")
+    val ss = entityDao.search(OqlBuilder.oql("select id,schoolYear,name,endOn from org.openurp.edu.eams.core.Semester"))
     val query = OqlBuilder.from(classOf[Semester], "semester")
     query.where("semester.calendar = :calendar", calendar)
-      .where("((semester.beginOn-current_date())*(semester.endOn-current_date())) <= all(select (c.beginOn-current_date())*(c.endOn-current_date())from org.openurp.edu.eams.core.Semester as c where c.calendar =:calendar)", 
-      calendar)
+      .where("((semester.beginOn-current_date())*(semester.endOn-current_date())) <= all(select (c.beginOn-current_date())*(c.endOn-current_date())from org.openurp.edu.eams.core.Semester as c where c.calendar =:calendar)",
+        calendar)
     val semesters = entityDao.search(query)
     if (semesters.isEmpty) {
       null
     } else {
-      semesters.get(0).asInstanceOf[Semester]
+      semesters(0).asInstanceOf[Semester]
     }
   }
 
-  def getSemesters(semesterStartId: java.lang.Integer, semesterEndId: java.lang.Integer): List[Semester] = {
-    var semesterStart = new SemesterBean()
-    var semesterEnd = new SemesterBean()
-    if (semesterStartId != null) {
-      semesterStart = entityDao.get(classOf[Semester], semesterStartId)
+  def getSemesters(semesterStartId: java.lang.Integer, semesterEndId: java.lang.Integer): Seq[Semester] = {
+
+    val semesterStart = if (semesterStartId != null) {
+      entityDao.get(classOf[Semester], semesterStartId)
+    } else {
+      new SemesterBean()
     }
-    if (semesterEndId != null) {
-      semesterEnd = entityDao.get(classOf[Semester], semesterEndId)
+    val semesterEnd = if (semesterEndId != null) {
+      entityDao.get(classOf[Semester], semesterEndId)
+    } else {
+      new SemesterBean()
     }
     val builder = OqlBuilder.from(classOf[Semester], "semester")
     if (semesterStartId != null && semesterEndId == null) {
@@ -220,21 +218,19 @@ class SemesterServiceImpl extends BaseServiceImpl with SemesterService {
       builder.where("semester.beginOn >= :startTime", semesterStart.beginOn)
       builder.where("semester.beginOn <= :endTime", semesterEnd.beginOn)
     }
-    var semesterList = new ArrayList[Semester]()
-    semesterList = entityDao.search(builder)
-    semesterList
+    entityDao.search(builder)
   }
 
   def getPrevSemester(semester: Semester): Semester = {
-    val query = OqlBuilder.from(classOf[Semester], "semester").where("semester.calendar = :calendar", 
+    val query = OqlBuilder.from(classOf[Semester], "semester").where("semester.calendar = :calendar",
       semester.calendar)
-      .where("semester.endOn < (select cur.beginOn from " + classOf[Semester].name + 
-      " cur where cur.id = :curId)", semester.id)
+      .where("semester.endOn < (select cur.beginOn from " + classOf[Semester].getName +
+        " cur where cur.id = :curId)", semester.id)
       .orderBy("semester.endOn desc")
       .cacheable()
     val semesters = entityDao.search(query)
     if (Collections.isNotEmpty(semesters)) {
-      return semesters.get(0)
+      return semesters(0)
     }
     null
   }

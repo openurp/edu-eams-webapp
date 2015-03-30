@@ -2,16 +2,12 @@ package org.openurp.edu.eams.teach.service.internal
 
 import java.sql.Date
 
-
 import org.beangle.commons.collection.Collections
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
 import org.openurp.edu.base.Course
-import org.openurp.edu.base.CourseExtInfo
 import org.openurp.edu.eams.teach.service.CourseService
-
-
 
 class CourseServiceImpl extends BaseServiceImpl with CourseService {
 
@@ -20,57 +16,35 @@ class CourseServiceImpl extends BaseServiceImpl with CourseService {
       .where("course.code = :code", code)
     val courses = entityDao.search(query)
     if (Collections.isNotEmpty(courses)) {
-      return courses.get(0)
+      return courses(0)
     }
     null
   }
-
-  def getCourseExtInfo(courseId: java.lang.Long): CourseExtInfo = {
-    var extInfo: CourseExtInfo = null
-    if (courseId != null) {
-      val exts = entityDao.get(classOf[CourseExtInfo], "course.id", courseId)
-      if (Collections.isNotEmpty(exts)) {
-        extInfo = exts.get(0)
-      }
-    }
-    extInfo
-  }
-
+ 
   def saveOrUpdate(course: Course) {
     saveSetting(course)
     entityDao.saveOrUpdate(course)
   }
 
-  def saveOrUpdate(course: Course, extInfo: CourseExtInfo) {
-    saveSetting(course)
-    if (extInfo.isPersisted && Strings.isBlank(extInfo.requirement) && 
-      Strings.isBlank(extInfo.description)) {
-      entityDao.saveOrUpdate(course)
-    } else {
-      extInfo.course=course
-      entityDao.saveOrUpdate(course, extInfo)
-    }
-  }
-
   private def saveSetting(course: Course) {
-    if (!course.isPersisted) {
-      course.createdAt=new Date(System.currentTimeMillis())
-    }
-    course.updatedAt=new Date(System.currentTimeMillis())
-    if (null == course.createdAt) {
-      course.createdAt=new Date(System.currentTimeMillis())
-    }
+//    if (!course.isPersisted) {
+//      course.createdAt = new Date(System.currentTimeMillis())
+//    }
+//    course.updatedAt = new Date(System.currentTimeMillis())
+//    if (null == course.createdAt) {
+//      course.createdAt = new Date(System.currentTimeMillis())
+//    }
   }
 
   def getCourseByCodes(courseCodes: String): Array[String] = {
     if (Strings.isNotEmpty(courseCodes)) {
-      val query = OqlBuilder.from(classOf[Course]).where("code  in (:codes)", Strings.split(courseCodes.toUpperCase(), 
+      val query = OqlBuilder.from(classOf[Course]).where("code  in (:codes)", Strings.split(courseCodes.toUpperCase(),
         ','))
       val list = entityDao.search(query).asInstanceOf[List[Course]]
       val courseinfos = Array.ofDim[String](list.size)
       if (!list.isEmpty) {
         var i = 0
-        var iter = list.iterator()
+        var iter = list.iterator
         while (iter.hasNext) {
           val course = iter.next().asInstanceOf[Course]
           courseinfos(i) = course.name + "(" + course.credits + ")"
@@ -88,10 +62,10 @@ class CourseServiceImpl extends BaseServiceImpl with CourseService {
     if (Collections.isEmpty(list)) {
       return null
     }
-    list.get(0)
+    list(0)
   }
 
-  def searchCoursesByCodeOrName(codeOrName: String): List[Course] = {
+  def searchCoursesByCodeOrName(codeOrName: String): Seq[Course] = {
     val like = '%' + codeOrName + '%'
     if (Strings.isNotBlank(codeOrName) && codeOrName.contains("(")) {
       val str = codeOrName.split("\\(")
@@ -100,7 +74,7 @@ class CourseServiceImpl extends BaseServiceImpl with CourseService {
         if (code.endsWith(")")) {
           code = code.substring(0, code.length - 1)
         }
-        return entityDao.search(OqlBuilder.from(classOf[Course], "course").where("(course.name like :name and course.code like :code) or course.code like :codeOrName or course.name like :codeOrName", 
+        return entityDao.search(OqlBuilder.from(classOf[Course], "course").where("(course.name like :name and course.code like :code) or course.code like :codeOrName or course.name like :codeOrName",
           "%" + str(0).trim() + "%", "%" + code + "%", like)
           .where("course.enabled is true")
           .orderBy("course.code")
@@ -108,7 +82,7 @@ class CourseServiceImpl extends BaseServiceImpl with CourseService {
           .limit(1, 10))
       }
     }
-    entityDao.search(OqlBuilder.from(classOf[Course], "course").where("course.code like :code or course.name like :code", 
+    entityDao.search(OqlBuilder.from(classOf[Course], "course").where("course.code like :code or course.name like :code",
       like)
       .where("course.enabled is true")
       .orderBy("course.code")
@@ -116,10 +90,10 @@ class CourseServiceImpl extends BaseServiceImpl with CourseService {
       .limit(1, 10))
   }
 
-  def searchCourseByProjectAndCodeOrName(studentCode: String, codeOrName: String, projectId: String): List[Course] = {
+  def searchCourseByProjectAndCodeOrName(studentCode: String, codeOrName: String, projectId: String): Seq[Course] = {
     val like = '%' + codeOrName + '%'
     val proId = java.lang.Long.parseLong(projectId)
-    entityDao.search(OqlBuilder.from(classOf[Course], "course").where("course.code like :code or course.name like :code", 
+    entityDao.search(OqlBuilder.from(classOf[Course], "course").where("course.code like :code or course.name like :code",
       like)
       .where("course.project.id=:projectId", proId)
       .orderBy("course.code")

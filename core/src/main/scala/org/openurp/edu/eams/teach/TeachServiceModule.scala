@@ -2,7 +2,6 @@ package org.openurp.edu.eams.teach
 
 import org.beangle.commons.inject.bind.AbstractBindModule
 import org.beangle.commons.inject.bind.BeanConfig.ReferenceValue
-
 import org.springframework.transaction.interceptor.TransactionProxyFactoryBean
 import org.openurp.edu.eams.teach.grade.service.impl.BestGradeFilter
 import org.openurp.edu.eams.teach.grade.service.impl.BestOriginGradeFilter
@@ -51,6 +50,8 @@ import org.openurp.edu.eams.teach.service.internal.CourseServiceImpl
 import org.openurp.edu.eams.teach.service.internal.TeachResourceServiceImpl
 import org.openurp.edu.eams.teach.textbook.service.internal.DefaultTextbookOrderLineCodeGenerator
 import org.openurp.edu.eams.teach.textbook.service.internal.TextbookOrderLineServiceImpl
+import org.beangle.commons.inject.bind.Binder.ReferenceValue
+import org.openurp.edu.teach.grade.domain.impl.BestGradeCourseGradeProviderImpl
 
 
 
@@ -60,22 +61,8 @@ class TeachServiceModule extends AbstractBindModule {
     bind("courseService", classOf[CourseServiceImpl])
     bind("lessonService", classOf[LessonServiceImpl])
     bind("courseSubstitutionService", classOf[CourseSubstitutionServiceImpl])
-    bind("gradeRateService", classOf[GradeRateServiceImpl])
-    bind("bestGradeFilter", classOf[BestGradeFilter])
-    bind("gpaPolicy", classOf[DefaultGpaPolicy])
-    bind("bestOriginGradeFilter", classOf[BestOriginGradeFilter])
-    bind("passGradeFilter", classOf[PassGradeFilter])
     bind("gradeFilterRegistry", classOf[SpringGradeFilterRegistry])
-    bind("courseGradeService", classOf[CourseGradeServiceImpl])
-    bind("scriptGradeFilter", classOf[ScriptGradeFilter])
-    bind("courseGradeProvider", classOf[CourseGradeProviderImpl])
-    bind("courseGradeCalculator", classOf[DefaultCourseGradeCalculator])
-    bind("gpaService", classOf[DefaultGpaService])
-    bind("gpaStatService", classOf[DefaultGpaStatService])
-    bind("gradeCourseTypeProvider", classOf[GradeCourseTypeProviderImpl])
     bind("teachResourceService", classOf[TeachResourceServiceImpl])
-    bind("textbookOrderLineService", classOf[TextbookOrderLineServiceImpl])
-    bind("textbookOrderLineCodeGenerator", classOf[DefaultTextbookOrderLineCodeGenerator])
     bind("coursePlanProvider", classOf[CoursePlanProviderImpl])
     bind("bestGradeCourseGradeProvider", classOf[BestGradeCourseGradeProviderImpl])
     bind("lessonLimitService", classOf[LessonLimitServiceImpl])
@@ -92,13 +79,7 @@ class TeachServiceModule extends AbstractBindModule {
       .proxy("target", bean(classOf[LessonDaoHibernate]))
       .parent("baseTransactionProxy")
       .property("transactionAttributes", props("*=PROPAGATION_REQUIRED"))
-    bind("lessonPlanRelationDao", classOf[TransactionProxyFactoryBean])
-      .proxy("target", bean(classOf[LessonPlanRelationHibernateDao]))
-      .parent("baseTransactionProxy")
-      .property("transactionAttributes", props("related*=PROPAGATION_REQUIRED,readOnly", "possible*=PROPAGATION_REQUIRED,readOnly", 
-      "relations=PROPAGATION_REQUIRED,readOnly", "planAuditStatuses=PROPAGATION_REQUIRED,readOnly", "operateViolationCheck=PROPAGATION_REQUIRED,readOnly", 
-      "auditStatus=PROPAGATION_REQUIRED,readOnly", "save*=PROPAGATION_REQUIRED", "remove*=PROPAGATION_REQUIRED", 
-      "update*=PROPAGATION_REQUIRED"))
+    
     bind("lessonSeqNoGeneratorImpl", classOf[TransactionProxyFactoryBean])
       .proxy("target", classOf[LessonSeqNoGeneratorImpl])
       .parent("baseTransactionProxy")

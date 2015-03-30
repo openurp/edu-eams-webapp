@@ -7,13 +7,13 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.openurp.base.CourseUnit
 import org.openurp.base.Semester
-import org.openurp.edu.eams.base.util.WeekDay
 import org.openurp.edu.eams.teach.service.OccupyProcessor
 import org.openurp.edu.eams.teach.service.StdOccupyProvider
 import org.openurp.edu.eams.teach.service.wrapper.TimeZone
-
 import org.beangle.data.model.dao.EntityDao
 import org.beangle.data.model.dao.QueryBuilder
+import org.beangle.commons.lang.time.WeekDays.WeekDay
+import org.beangle.commons.collection.Collections
 
 abstract class AbstractStdOccupyProvider extends StdOccupyProvider {
 
@@ -31,23 +31,22 @@ abstract class AbstractStdOccupyProvider extends StdOccupyProvider {
     this.semester = semester
   }
 
-  protected def executeOccupyQuery(query: QueryBuilder, zone: TimeZone, processor: OccupyProcessor): Map[_,_] = {
+  protected def executeOccupyQuery(query: QueryBuilder[_], zone: TimeZone, processor: OccupyProcessor): collection.Map[_,_] = {
     val st = System.currentTimeMillis()
-    var params = query.params
-    if (null == params) {
-      params = new HashMap()
-    }
-    val occupis = new HashMap()
-    var iter = zone.weeks.iterator()
+    var params = Collections.newMap[String,Any]
+    params ++= query.params
+    
+    val occupis = Collections.newMap[Any,Any]
+    var iter = zone.weeks.iterator
     while (iter.hasNext) {
       val week = iter.next().asInstanceOf[WeekDay]
-      val weekOccupy = new HashMap()
-      var iter2 = zone.units.iterator()
+      val weekOccupy = Collections.newMap[Any,Any]
+      var iter2 = zone.units.iterator
       while (iter2.hasNext) {
         val unit = iter2.next().asInstanceOf[CourseUnit]
         for (weekState <- zone.weekStates) {
           params.put("weekId", new java.lang.Integer(week.id.intValue()))
-          params.put("startTime", unit.start)
+          params.put("startTime", unit.begin)
           params.put("endTime", unit.end)
           params.put("weekState", BitStrings.binValueOf(weekState))
           query.params(params)

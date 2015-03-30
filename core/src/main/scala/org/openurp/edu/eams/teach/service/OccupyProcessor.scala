@@ -8,5 +8,5 @@ import org.openurp.base.CourseUnit
 
 trait OccupyProcessor {
 
-  def process(weekOccupy: Map[_,_], unit: CourseUnit, datas: List[_]): Unit
+  def process(weekOccupy: collection.Map[_,_], unit: CourseUnit, datas: Iterable[Any]): Unit
 }

@@ -8,8 +8,6 @@ import org.beangle.commons.lang.Strings
 import org.openurp.base.Department
 import org.openurp.edu.eams.core.service.DepartmentService
 
-
-
 class DepartmentServiceImpl extends BaseServiceImpl with DepartmentService {
 
   def getDepartments(): Seq[Department] = {
@@ -22,24 +20,23 @@ class DepartmentServiceImpl extends BaseServiceImpl with DepartmentService {
   }
 
   def getColleges(): Seq[Department] = {
-    entityDao.search(OqlBuilder.from(classOf[Department], "depart").where("depart.college=true and depart.effectiveAt <= :now and (depart.invalidAt is null or depart.invalidAt >= :now)", 
+    entityDao.search(OqlBuilder.from(classOf[Department], "depart").where("depart.college=true and depart.effectiveAt <= :now and (depart.invalidAt is null or depart.invalidAt >= :now)",
       new java.util.Date())
       .orderBy("depart.code"))
   }
 
   def getAdministatives(): Seq[Department] = {
-    entityDao.search(OqlBuilder.from(classOf[Department], "depart").where("depart.college=false and depart.effectiveAt <= :now and (depart.invalidAt is null or depart.invalidAt >= :now)", 
+    entityDao.search(OqlBuilder.from(classOf[Department], "depart").where("depart.college=false and depart.effectiveAt <= :now and (depart.invalidAt is null or depart.invalidAt >= :now)",
       new java.util.Date())
       .orderBy("depart.code"))
   }
 
   def getDepartments(ids: Array[Integer]): Seq[Department] = {
-    if (null == ids || ids.length < 1) Collections.EMPTY_LIST else entityDao.get(classOf[Department], 
-      ids)
+    if (null == ids || ids.length < 1) List.empty else entityDao.find(classOf[Department], ids)
   }
 
   def getAdministatives(idSeq: String): Seq[Department] = {
-    getAdministatives(Strings.transformToInt(Strings.split(idSeq)))
+    getAdministatives(Strings.transformToInteger(Strings.split(idSeq)))
   }
 
   def getAdministatives(ids: Array[Integer]): Seq[Department] = {
@@ -49,7 +46,7 @@ class DepartmentServiceImpl extends BaseServiceImpl with DepartmentService {
   }
 
   def getColleges(idSeq: String): Seq[Department] = {
-    getColleges(Strings.transformToInt(Strings.split(idSeq)))
+    getColleges(Strings.transformToInteger(Strings.split(idSeq)))
   }
 
   def getColleges(ids: Array[Integer]): Seq[Department] = {
@@ -59,7 +56,7 @@ class DepartmentServiceImpl extends BaseServiceImpl with DepartmentService {
   }
 
   def getTeachDeparts(idSeq: String): Seq[Department] = {
-    if (Strings.isEmpty(idSeq)) Collections.EMPTY_LIST else {
+    if (Strings.isEmpty(idSeq)) List.empty else {
       entityDao.search(OqlBuilder.from(classOf[Department], "depart").where("depart.teaching=true")
         .where("depart.id in (:ids)", Strings.transformToInt(Strings.split(idSeq))))
     }
@@ -72,10 +69,6 @@ class DepartmentServiceImpl extends BaseServiceImpl with DepartmentService {
   }
 
   def saveOrUpdate(department: Department) {
-    if (!department.isPersisted) {
-      department.createdAt=new Date(System.currentTimeMillis())
-    }
-    department.updatedAt=new Date(System.currentTimeMillis())
     this.entityDao.saveOrUpdate(department)
   }
 
@@ -85,13 +78,13 @@ class DepartmentServiceImpl extends BaseServiceImpl with DepartmentService {
   }
 
   def getDepartments(idSeq: String): Seq[Department] = {
-    this.departments(Strings.transformToInt(Strings.split(idSeq)))
+    this.getDepartments(Strings.transformToInteger(Strings.split(idSeq)))
   }
 
   def getTeachDeparts(): Seq[Department] = {
     entityDao.search(OqlBuilder.from(classOf[Department], "department").where("department.teaching=true")
-      .where("department.effectiveAt <= :now and (department.invalidAt is null or department.invalidAt >= :now)", 
-      new java.util.Date())
+      .where("department.effectiveAt <= :now and (department.invalidAt is null or department.invalidAt >= :now)",
+        new java.util.Date())
       .orderBy("department.code"))
   }
 }

@@ -1,119 +1,104 @@
 package org.openurp.edu.eams.teach.time.util
 
 import java.sql.Date
-
-
-
-import java.util.regex.Matcher
 import java.util.regex.Pattern
+
+import scala.annotation.migration
+
 import org.beangle.commons.collection.Collections
 import org.beangle.commons.lang.Numbers
 import org.beangle.commons.lang.Strings
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import org.beangle.commons.logging.Logging
 import org.openurp.base.Semester
 import org.openurp.edu.eams.core.service.SemesterService
-import TermCalculator._
-
-
 
 object TermCalculator {
 
-  private var termMap: Map[String, Set[Integer]] = Collections.newMap[Any]
+  private var termMap = Collections.newMap[String, Set[Integer]]
 
-  val autumn = Collections.newHashSet(1, 3, 5, 7, 9, 11)
+  val autumn = Set(1, 3, 5, 7, 9, 11)
 
-  val spring = Collections.newHashSet(2, 3, 4, 8, 10, 12)
+  val spring = Set(2, 3, 4, 8, 10, 12)
 
-  val all = Collections.newHashSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)
+  val all = Set(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)
 
-  termMap.put("春", spring)
+  termMap.put("春", spring.map { a => Integer.valueOf(a) })
 
-  termMap.put("秋", autumn)
+  termMap.put("秋", autumn.map { a => Integer.valueOf(a) })
 
-  termMap.put("春季", spring)
+  termMap.put("春季", spring.map { a => Integer.valueOf(a) })
 
-  termMap.put("春秋", all)
+  termMap.put("春秋", all.map { a => Integer.valueOf(a) })
 
-  termMap.put("春,秋", all)
+  termMap.put("春,秋", all.map { a => Integer.valueOf(a) })
 
   def inTerm(termStr: String, term: java.lang.Integer): Boolean = {
     if (Strings.contains(termStr, "*")) return true
-    var termSet = termMap.get(termStr)
+    var termSet = termMap.get(termStr).orNull
     if (null == termSet) {
       val terms = Strings.split(termStr, ",")
-      termSet = new HashSet[Integer](3)
+      val newSet = Collections.newSet[Integer]
       for (one <- terms) {
-        termSet.add(Numbers.toInt(one))
+        newSet += Numbers.convert2Int(one)
       }
-      termMap.put(termStr, termSet)
+      termMap.put(termStr, newSet.toSet)
     }
     termSet.contains(term)
   }
 
   def lessOrEqualTerm(termStr: String, term: java.lang.Integer): Boolean = {
     if (Strings.contains(termStr, "*")) return true
-    var termSet = termMap.get(termStr)
+    var termSet = termMap.get(termStr).orNull
     if (null == termSet) {
       val terms = Strings.split(termStr, ",")
-      termSet = new HashSet[Integer](3)
+      val newtermSet = Collections.newSet[Integer]
       for (one <- terms) {
-        termSet.add(Numbers.toInt(one))
+        newtermSet += Numbers.convert2Int(one)
       }
-      termMap.put(termStr, termSet)
+      termMap.put(termStr, newtermSet.toSet)
     }
-    for (t <- termSet if t.compareTo(term) <= 0) return true
-    false
+    termSet.exists { t => t.compareTo(term) <= 0 }
   }
 }
 
-class TermCalculator(private var semesterService: SemesterService, private var semester: Semester)
-    {
+class TermCalculator(private var semesterService: SemesterService, private var semester: Semester) extends Logging {
 
-  protected val logger = LoggerFactory.getLogger(this.getClass)
-
-  private var termCalcCache: Map[String, Integer] = Collections.newMap[Any]
-
-  this.semester.calendar.id
+  private var termCalcCache = Collections.newMap[String, Integer]
 
   def getTermBetween(pre: Semester, post: Semester, omitSmallTerm: Boolean): Int = {
-    semesterService.termsBetween(pre, post, omitSmallTerm)
+    semesterService.getTermsBetween(pre, post, omitSmallTerm)
   }
 
   def getTerm(begOn: java.util.Date, endOn: java.util.Date, omitSmallTerm: Boolean): Int = {
-    var term = termCalcCache.get(begOn.toString + "~" + endOn.toString)
+    var term = termCalcCache.get(begOn.toString + "~" + endOn.toString).orNull
     if (term != null) {
       return term
     }
-    val enrollSemester = semesterService.semester(semester.calendar, new Date(begOn.getTime), new Date(endOn.getTime))
-    if (logger.isDebugEnabled) {
-      logger.debug("calculate a term for [{}~{}]", begOn.toString, endOn.toString)
-    }
+    val enrollSemester = semesterService.getSemester(semester.calendar, new Date(begOn.getTime), new Date(endOn.getTime))
+    debug(s"calculate a term for [$begOn~$endOn]")
     if (null == enrollSemester) {
-      logger.info("cannot find enrollterm for grade {}~{}", begOn.toString, endOn.toString)
+      info(s"cannot find enrollterm for grade $begOn~$endOn")
       term = new java.lang.Integer(-1)
     } else {
-      term = new java.lang.Integer(semesterService.termsBetween(enrollSemester, semester, omitSmallTerm))
+      term = new java.lang.Integer(semesterService.getTermsBetween(enrollSemester, semester, omitSmallTerm))
     }
     termCalcCache.put(begOn.toString + "~" + endOn.toString, term)
     if (term == null) -1 else term
   }
 
   def getTerm(date: java.util.Date, omitSmallTerm: Boolean): Int = {
-    var term = termCalcCache.get(date.toString)
-    termCalcCache.clear()
+    var term = termCalcCache.get(date.toString).orNull
+    //    termCalcCache.clear()
     if (term != null) {
       return term
     }
-    val enrollSemester = semesterService.semester(semester.calendar, new Date(date.getTime))
-    if (logger.isDebugEnabled) {
-      logger.debug("calculate a term for [{}]", date.toString)
-    }
+    val enrollSemester = semesterService.getSemester(semester.calendar, new Date(date.getTime))
+    debug("calculate a term for [$date]")
     if (null == enrollSemester) {
-      logger.info("cannot find enrollterm for grade {}", date.toString)
+      info("cannot find enrollterm for grade $date")
       term = new java.lang.Integer(-1)
     } else {
-      term = new java.lang.Integer(semesterService.termsBetween(enrollSemester, semester, omitSmallTerm))
+      term = new java.lang.Integer(semesterService.getTermsBetween(enrollSemester, semester, omitSmallTerm))
     }
     termCalcCache.put(date.toString, term)
     if (term == null) -1 else term
@@ -134,15 +119,13 @@ class TermCalculator(private var semesterService: SemesterService, private var s
       dateString = if (month == "2") matcher.group(1) + "-0" + month + '-' + "28" else matcher.group(1) + "-0" + month + '-' + matcher.group(3)
     }
     val date = Date.valueOf(dateString)
-    val enrollSemester = semesterService.semester(semester.calendar, date)
-    if (logger.isDebugEnabled) {
-      logger.debug("calculate a term for [{}]", grade)
-    }
+    val enrollSemester = semesterService.getSemester(semester.calendar, date)
+    debug(s"calculate a term for [$grade]")
     if (null == enrollSemester) {
-      logger.info("cannot find enrollterm for grade {}", grade)
+      info(s"cannot find enrollterm for grade grade")
       term = new java.lang.Integer(-1)
     } else {
-      term = new java.lang.Integer(semesterService.termsBetween(enrollSemester, semester, omitSmallTerm))
+      term = new java.lang.Integer(semesterService.getTermsBetween(enrollSemester, semester, omitSmallTerm))
     }
     termCalcCache.put(grade, term)
     if (term == null) -1 else term

@@ -7,5 +7,5 @@ import org.openurp.edu.base.Student
 
 trait StudentSource {
 
-  def getStudents(): Set[Student]
+  def students: Iterable[Student]
 }

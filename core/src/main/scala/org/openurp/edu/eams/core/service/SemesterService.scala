@@ -1,10 +1,9 @@
 package org.openurp.edu.eams.core.service
 
 import java.sql.Date
-
-import org.openurp.edu.eams.base.Calendar
 import org.openurp.base.Semester
 import org.openurp.edu.base.Project
+import org.openurp.base.Calendar
 
 
 
@@ -12,7 +11,7 @@ trait SemesterService {
 
   def getSemester(id: java.lang.Integer): Semester
 
-  def getSemestersOfOverlapped(semester: Semester): List[Semester]
+  def getSemestersOfOverlapped(semester: Semester): Seq[Semester]
 
   def getSemester(calendar: Calendar, year: String, term: String): Semester
 
@@ -45,9 +44,9 @@ trait SemesterService {
 
   def getCalendar(project: Project): Calendar
 
-  def getCalendars(projects: List[Project]): List[Calendar]
+  def getCalendars(projects: Seq[Project]): Seq[Calendar]
 
-  def getSemesters(semesterStartId: java.lang.Integer, semesterEndId: java.lang.Integer): List[Semester]
+  def getSemesters(semesterStartId: java.lang.Integer, semesterEndId: java.lang.Integer): Seq[Semester]
 
   def getSemester(calendar: Calendar, begOn: Date, endOn: Date): Semester
 

@@ -29,20 +29,20 @@ object LessonDataRealmBuilder {
 
   private val IN_EDUCATION_IDS = "{0}.id in (:educationIds_{1})"
 
-  def start(entityDao: EntityDao, query: OqlBuilder, lessonAlias: String): LessonDataRealmBuilder = {
+  def start(entityDao: EntityDao, query: OqlBuilder[_], lessonAlias: String): LessonDataRealmBuilder = {
     new LessonDataRealmBuilder(entityDao, query, lessonAlias)
   }
 }
 
-class LessonDataRealmBuilder private () {
+class LessonDataRealmBuilder  {
 
   private var entityDao: EntityDao = _
 
-  private var query: OqlBuilder = _
+  private var query: OqlBuilder[_] = _
 
   private var lessonAlias: String = _
 
-  private def this(entityDao: EntityDao, query: OqlBuilder, lessonAlias: String) {
+  private def this(entityDao: EntityDao, query: OqlBuilder[_], lessonAlias: String) {
     this()
     this.entityDao = entityDao
     this.query = query
@@ -50,12 +50,12 @@ class LessonDataRealmBuilder private () {
   }
 
   def restrictProjects(projects: List[Project]): LessonDataRealmBuilder = {
-    query.where(MessageFormat.format(IN_PROJECTS, lessonAlias, System.currentTimeMillis()), projects)
+    query.where(MessageFormat.format(IN_PROJECTS, lessonAlias, java.lang.Long.valueOf(System.currentTimeMillis)), projects)
     this
   }
 
   def restrictTeachDeparts(departs: List[Department]): LessonDataRealmBuilder = {
-    query.where(MessageFormat.format(IN_TEACT_DEPARTS, lessonAlias, System.currentTimeMillis()), departs)
+    query.where(MessageFormat.format(IN_TEACT_DEPARTS, lessonAlias, java.lang.Long.valueOf(System.currentTimeMillis)), departs)
     this
   }
 
@@ -64,12 +64,12 @@ class LessonDataRealmBuilder private () {
   def restrictEducations(educations: List[Education]): LessonDataRealmBuilder = this
 
   def restrictProjects(projectIds: Array[Integer]): LessonDataRealmBuilder = {
-    query.where(MessageFormat.format(IN_PROJECT_IDS, lessonAlias, System.currentTimeMillis()), projectIds)
+    query.where(MessageFormat.format(IN_PROJECT_IDS, lessonAlias, java.lang.Long.valueOf(System.currentTimeMillis)), projectIds)
     this
   }
 
   def restrictTeachDeparts(departIds: Array[Long]): LessonDataRealmBuilder = {
-    query.where(MessageFormat.format(IN_TEACH_DEPART_IDS, lessonAlias, System.currentTimeMillis()), departIds)
+    query.where(MessageFormat.format(IN_TEACH_DEPART_IDS, lessonAlias, java.lang.Long.valueOf(System.currentTimeMillis)), departIds)
     this
   }
 
@@ -77,5 +77,5 @@ class LessonDataRealmBuilder private () {
 
   def restrictEducations(educationIds: Array[Integer]): LessonDataRealmBuilder = this
 
-  def finish(): OqlBuilder = query
+  def finish(): OqlBuilder[_] = query
 }

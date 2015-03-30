@@ -19,7 +19,7 @@ object DataRealm {
     if (null == realms || realms.isEmpty) {
       return realm
     }
-    var iter = realms.iterator()
+    var iter = realms.iterator
     while (iter.hasNext) {
       val thisRealm = iter.next().asInstanceOf[DataRealm]
       realm.merge(thisRealm)

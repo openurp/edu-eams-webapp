@@ -4,46 +4,41 @@ import org.beangle.commons.collection.Collections
 import org.openurp.edu.base.Course
 import org.openurp.edu.teach.grade.CourseGrade
 import org.openurp.edu.eams.teach.planaudit.service.StdGrade
+import java.util.ArrayList
+import scala.collection.mutable.Buffer
 
+class StdGradeImpl(val grades: Seq[CourseGrade]) extends StdGrade {
 
+  private var gradeMap = Collections.newMap[Course, Buffer[CourseGrade]]
 
-class StdGradeImpl(courseGrades: List[CourseGrade]) extends StdGrade {
+  private var usedCourses = Collections.newSet[Course]
 
-  private var gradeMap: Map[Course, List[CourseGrade]] = new HashMap[Course, List[CourseGrade]]()
+  private var noGradeCourses = Collections.newSet[Course]
 
-  private var usedCourses: Set[Course] = new HashSet[Course]()
-
-  private var noGradeCourses: Set[Course] = new HashSet[Course]()
-
-  for (courseGrade <- courseGrades) {
-    var gradelist = gradeMap.get(courseGrade.course)
+  for (courseGrade <- grades) {
+    var gradelist = gradeMap.get(courseGrade.course).orNull
     if (null == gradelist) {
-      gradelist = new ArrayList[CourseGrade]()
+      gradelist = Collections.newBuffer[CourseGrade]
       gradeMap.put(courseGrade.course, gradelist)
     }
-    gradelist.add(courseGrade)
+    gradelist += (courseGrade)
   }
 
   for (course <- gradeMap.keySet) {
-    val gradelist = gradeMap.get(course)
-    Collections.sort(gradelist)
+    val gradelist = gradeMap.get(course).orNull
+    gradelist.sortWith((g1, g2) => g1.compare(g2) < 0)
   }
 
-  def getGrades(course: Course): List[CourseGrade] = {
-    if (noGradeCourses.contains(course)) return Collections.emptyList()
-    var courseGrades = gradeMap.get(course)
-    if (null == courseGrades) courseGrades = new ArrayList[CourseGrade]()
-    courseGrades
+  def getGrades(course: Course): Seq[CourseGrade] = {
+    if (noGradeCourses.contains(course)) return List.empty
+    gradeMap.get(course).getOrElse(List.empty)
   }
 
-  def useGrades(course: Course): List[CourseGrade] = {
+  def useGrades(course: Course): Seq[CourseGrade] = {
     if (noGradeCourses.contains(course)) {
-      return Collections.emptyList()
+      return List.empty
     }
-    var courseGrades = gradeMap.get(course)
-    if (null == courseGrades) {
-      courseGrades = new ArrayList[CourseGrade]()
-    }
+    val courseGrades = gradeMap.get(course).getOrElse(List.empty)
     usedCourses.add(course)
     courseGrades
   }
@@ -52,25 +47,17 @@ class StdGradeImpl(courseGrades: List[CourseGrade]) extends StdGrade {
     Collections.subtract(gradeMap.keySet, usedCourses)
   }
 
-  def getGrades(): List[CourseGrade] = {
-    val grades = new ArrayList[CourseGrade]()
-    for (course <- gradeMap.keySet) {
-      grades.addAll(gradeMap.get(course))
-    }
-    grades
-  }
-
   def addNoGradeCourse(course: Course) {
     noGradeCourses.add(course)
   }
 
-  def getCoursePassedMap(): Map[Long, Boolean] = {
-    val passedMap = Collections.newMap()
+  def getCoursePassedMap(): collection.Map[java.lang.Long, Boolean] = {
+    val passedMap = Collections.newMap[java.lang.Long, Boolean]
     for (course <- gradeMap.keySet) {
       val grades = gradeMap.get(course)
       if (!grades.isEmpty) {
         val g = grades.get(0)
-        passedMap.put(course.id, g.isPassed)
+        passedMap.put(course.id, g.passed)
       }
     }
     passedMap

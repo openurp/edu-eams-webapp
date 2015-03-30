@@ -57,7 +57,7 @@ val RESERVE_BITS =1
       actual_year_weekIndecies += actual_weekOfYear
     }
     val states = Collections.newBuffer[Any][YearWeekTime]
-     val iter  = actual_year2weekIndexOfYearList.entrySet().iterator()
+     val iter  = actual_year2weekIndexOfYearList.entrySet().iterator
     while(iter.hasNext()){
       val entry = iter.next()
       val year = entry.getKey.asInstanceOf[Int]
@@ -168,7 +168,7 @@ class YearWeekTimeBuilder {
       actual_year_weekIndecies += actual_weekOfYear
     }
     val states = Collections.newBuffer[Any][YearWeekTime]
-    val iter  = actual_year2weekIndexOfYearList.entrySet().iterator()
+    val iter  = actual_year2weekIndexOfYearList.entrySet().iterator
     while(iter.hasNext()){
       val entry = iter.next()
       val year = entry.getKey.asInstanceOf[Int]

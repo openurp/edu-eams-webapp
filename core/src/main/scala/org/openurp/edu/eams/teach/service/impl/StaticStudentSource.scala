@@ -8,9 +8,4 @@ class StaticStudentSource extends StudentSource {
 
   var students: Set[Student] = _
 
-  def getStudents(): Set[Student] = students
-
-  def setStudents(students: Set[Student]) {
-    this.students = students
-  }
 }

@@ -9,5 +9,5 @@ trait SqlDao {
 
   def executeUpdate(sql: String, params: Map[_,_]): Unit
 
-  def batchUpdate(sqls: List[String]): Unit
+  def batchUpdate(sqls: Iterable[String]): Unit
 }

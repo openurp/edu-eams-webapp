@@ -35,6 +35,7 @@ import org.openurp.edu.eams.teach.lesson.service.TeachClassNameStrategy
 import org.openurp.edu.base.Program
 import org.openurp.edu.teach.code.model.ElectionModeBean
 import org.openurp.edu.teach.code.model.CourseTakeTypeBean
+import org.openurp.edu.teach.lesson.model.LessonLimitGroupBean
 
 class LessonLimitServiceImpl extends BaseServiceImpl with LessonLimitService {
 
@@ -324,9 +325,20 @@ class LessonLimitServiceImpl extends BaseServiceImpl with LessonLimitService {
     new DefaultLessonLimitGroupBuilder(group)
   }
 
+  private def getOrCreateDefaultLimitGroup(teachClass: TeachClass): LessonLimitGroup = {
+    teachClass.limitGroups find (g => g.forClass) match {
+      case Some(g) => g
+      case None =>
+        val g = new LessonLimitGroupBean
+        g.lesson = teachClass.lesson
+        g.forClass = true
+        teachClass.limitGroups += g
+        g
+    }
+  }
   override def builder(teachClass: TeachClass): LessonLimitGroupBuilder = {
     val clb = teachClass.asInstanceOf[TeachClassBean]
-    val group = clb.orCreateDefaultLimitGroup
+    val group = getOrCreateDefaultLimitGroup(clb)
     new DefaultLessonLimitGroupBuilder(group)
   }
 
@@ -368,13 +380,13 @@ class LessonLimitServiceImpl extends BaseServiceImpl with LessonLimitService {
   def limitTeachClass(operator: Operator, teachClass: TeachClass, grades: String*) {
     if (grades.length > 0) {
       val clb = teachClass.asInstanceOf[TeachClassBean]
-      val group = clb.orCreateDefaultLimitGroup
+      val group = getOrCreateDefaultLimitGroup(clb)
       val bdr = builder(group)
       bdr.clear(LessonLimitMeta.Grade)
       operator match {
-        case IN => bdr.inGrades(grades)
-        case Equals => bdr.inGrades(grades)
-        case NOT_IN => bdr.notInGrades(grades)
+        case IN => bdr.inGrades(grades: _*)
+        case Equals => bdr.inGrades(grades: _*)
+        case NOT_IN => bdr.notInGrades(grades: _*)
         case _ => throw new RuntimeException("not supported LessonLimitItem operator")
       }
     }
@@ -383,7 +395,7 @@ class LessonLimitServiceImpl extends BaseServiceImpl with LessonLimitService {
   def limitTeachClass[T <: Entity[_]](operator: Operator, teachClass: TeachClass, entities: T*) {
     if (entities.length > 0) {
       val clb = teachClass.asInstanceOf[TeachClassBean]
-      val group = clb.orCreateDefaultLimitGroup
+      val group = getOrCreateDefaultLimitGroup(clb)
       val bdr = builder(group)
       val first = entities(0)
       if (first.isInstanceOf[Adminclass]) {
@@ -406,9 +418,9 @@ class LessonLimitServiceImpl extends BaseServiceImpl with LessonLimitService {
         throw new RuntimeException("not supported limit meta class " + first.getClass.getName)
       }
       operator match {
-        case IN => bdr.in(entities)
-        case Equals => bdr.in(entities)
-        case NOT_IN => bdr.notIn(entities)
+        case IN => bdr.in(entities: _*)
+        case Equals => bdr.in(entities: _*)
+        case NOT_IN => bdr.notIn(entities: _*)
         case _ => throw new RuntimeException("not supported LessonLimitItem operator")
       }
     }
@@ -426,7 +438,7 @@ class LessonLimitServiceImpl extends BaseServiceImpl with LessonLimitService {
       } else if (LessonLimitMeta.Adminclass.id == limitMetaId) {
         if (LessonLimitMeta.Adminclass.id == item.meta.id) {
           return new Pair[Operator, Seq[_]](item.operator, entityDao.find(classOf[Adminclass],
-            Strings.splitToInteger(item.content)))
+            Strings.splitToLong(item.content)))
         }
       } else if (LessonLimitMeta.Department.id == limitMetaId) {
         if (LessonLimitMeta.Department.id == item.meta.id) {

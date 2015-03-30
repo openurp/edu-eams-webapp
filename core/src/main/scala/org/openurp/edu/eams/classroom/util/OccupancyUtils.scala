@@ -3,9 +3,9 @@ package org.openurp.edu.eams.classroom.util
 import java.util.Date
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.base.Room
-import org.openurp.edu.eams.classroom.RoomUsageCapacity
 import org.beangle.commons.lang.time.YearWeekTime
 import org.openurp.base.code.RoomUsage
+import org.openurp.lg.room.UsageCapacity
 
 object OccupancyUtils {
 
@@ -21,7 +21,7 @@ object OccupancyUtils {
         " and occupancy.time.start < " + 
         units(i).end.value + 
         " and occupancy.time.end > " + 
-        units(i).start.value + 
+        units(i).begin.value + 
         ")"
       if (i > 0) {
         hql.append(" or ")
@@ -37,7 +37,7 @@ object OccupancyUtils {
     query
   }
 
-  def buildFreeroomQuery(usage: RoomUsage, units: Array[YearWeekTime]): OqlBuilder[RoomUsageCapacity] = {
+  def buildFreeroomQuery(usage: RoomUsage, units: Array[YearWeekTime]): OqlBuilder[UsageCapacity] = {
     val hql = new StringBuilder(" from org.openurp.edu.eams.classroom.Occupancy occupancy where occupancy.room = classroom")
     var ocuupy = ""
     for (i <- 0 until units.length) {
@@ -49,7 +49,7 @@ object OccupancyUtils {
         " and occupancy.time.start < " + 
        units(i).end.value + 
         " and occupancy.time.end > " + 
-       units(i).start.value + 
+       units(i).begin.value + 
         ")"
       if (i > 0) {
         hql.append(" or ")
@@ -59,7 +59,7 @@ object OccupancyUtils {
       hql.append(ocuupy)
     }
     hql.append(")")
-    val query = OqlBuilder.from(classOf[RoomUsageCapacity], "roomUsageCapacity")
+    val query = OqlBuilder.from(classOf[UsageCapacity], "roomUsageCapacity")
       .join("roomUsageCapacity.room", "classroom")
       .where("classroom.effectiveAt <= :now and (classroom.invalidAt is null or classroom.invalidAt >= :now)", 
       new Date())

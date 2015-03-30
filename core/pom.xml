@@ -20,6 +20,16 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>org.beangle.security</groupId>
+			<artifactId>beangle-security-blueprint</artifactId>
+			<version>${beangle.security.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.beangle.spring</groupId>
+			<artifactId>beangle-spring-context</artifactId>
+			<version>${beangle.spring.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.openurp.edu.teach</groupId>
 			<artifactId>openurp-edu-teach-model</artifactId>
 			<version>${openurp.edu.version}</version>

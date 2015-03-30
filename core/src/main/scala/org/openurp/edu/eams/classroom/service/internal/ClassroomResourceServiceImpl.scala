@@ -25,7 +25,7 @@ class RoomResourceServiceImpl extends BaseServiceImpl with RoomResourceService {
     }
     query.where("classroom.effectiveAt <= :now and (classroom.invalidAt is null or classroom.invalidAt >= :now)")
     query.orderBy("classroom.code")
-    val params = Collections.newMap[String,Any]()
+    val params = Collections.newMap[String,Any]
     params.put("year", unit.year)
     params.put("weekState", unit.state)
     params.put("weekday", unit.day)

@@ -23,7 +23,7 @@ class PlanAuditObserverStack(initObersers: PlanAuditObserver*) extends Observabl
   }
 
   def notifyStart() {
-    var iterator = observers.iterator()
+    var iterator = observers.iterator
     while (iterator.hasNext) {
       val observer = iterator.next()
       observer.notifyStart()
@@ -32,7 +32,7 @@ class PlanAuditObserverStack(initObersers: PlanAuditObserver*) extends Observabl
 
   def notifyBegin(context: PlanAuditContext, index: Int): Boolean = {
     var canAudit = true
-    var iterator = observers.iterator()
+    var iterator = observers.iterator
     while (iterator.hasNext) {
       val observer = iterator.next()
       canAudit &= observer.notifyBegin(context, index)
@@ -41,7 +41,7 @@ class PlanAuditObserverStack(initObersers: PlanAuditObserver*) extends Observabl
   }
 
   def notifyEnd(context: PlanAuditContext, index: Int) {
-    var iterator = observers.iterator()
+    var iterator = observers.iterator
     while (iterator.hasNext) {
       val observer = iterator.next()
       observer.notifyEnd(context, index)
@@ -49,7 +49,7 @@ class PlanAuditObserverStack(initObersers: PlanAuditObserver*) extends Observabl
   }
 
   def finish() {
-    var iterator = observers.iterator()
+    var iterator = observers.iterator
     while (iterator.hasNext) {
       val observer = iterator.next()
       observer.finish()

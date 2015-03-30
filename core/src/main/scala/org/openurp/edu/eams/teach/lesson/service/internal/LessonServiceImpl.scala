@@ -18,6 +18,9 @@ import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.teach.lesson.LessonLimitItem
 import org.openurp.edu.teach.lesson.CourseTake
 import org.openurp.edu.teach.lesson.Lesson
+import org.openurp.edu.teach.lesson.CourseSchedule
+import org.openurp.edu.teach.lesson.model.LessonBean
+import org.openurp.edu.teach.lesson.model.CourseScheduleBean
 import org.openurp.edu.eams.teach.lesson.dao.LessonDao
 import org.openurp.edu.eams.teach.lesson.service.LessonLimitUtils
 import org.openurp.edu.eams.teach.lesson.service.LessonFilterStrategy
@@ -28,6 +31,7 @@ import org.openurp.edu.eams.teach.lesson.service.TaskCopyParams
 import org.openurp.edu.eams.teach.lesson.util.LessonElectionUtil
 import org.openurp.edu.teach.lesson.LessonLimitMeta
 import org.openurp.base.User
+import org.openurp.edu.base.States
 
 class LogHelper {
 
@@ -145,10 +149,36 @@ class LessonServiceImpl extends BaseServiceImpl with LessonService {
     }
   }
 
+  def clone(lesson: Lesson): Lesson = {
+    val newlesson = new LessonBean
+    newlesson.semester = lesson.semester
+    newlesson.course = lesson.course
+    newlesson.campus = lesson.campus
+    newlesson.courseType = lesson.courseType
+
+    newlesson.langType = lesson.langType
+    newlesson.remark = lesson.remark
+    newlesson.state = States.Draft
+    newlesson.teachDepart = lesson.teachDepart
+    newlesson.teachers ++= lesson.teachers
+
+    val newSchedule = new CourseScheduleBean
+    newlesson.schedule = newSchedule
+    newSchedule.lesson = newlesson
+    newSchedule.startWeek = lesson.schedule.startWeek
+    newSchedule.endWeek = lesson.schedule.endWeek
+    newSchedule.period = lesson.schedule.period
+    newSchedule.roomType = lesson.schedule.roomType
+
+    //FIMXE 
+    //    newlesson.exam=lesson.exam
+    newlesson
+  }
+
   def copy(lessons: List[Lesson], params: TaskCopyParams): Seq[Lesson] = {
     val copiedTasks = Collections.newBuffer[Lesson]
     for (lesson <- lessons) {
-      val copy = lesson.clone()
+      val copy = clone(lesson)
       if (!params.isCopyCourseTakes) {
         copy.teachClass.courseTakes.clear()
         copy.teachClass.stdCount = 0
@@ -157,7 +187,7 @@ class LessonServiceImpl extends BaseServiceImpl with LessonService {
           take.electionMode = Model.newInstance(classOf[ElectionMode], ElectionMode.ASSIGEND)
         }
       }
-      copy.auditStatus = CommonAuditState.UNSUBMITTED
+      copy.state = States.Draft
       copy.semester = params.semester
       LessonElectionUtil.normalizeTeachClass(copy)
       copiedTasks += copy

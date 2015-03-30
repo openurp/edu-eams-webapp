@@ -1,26 +1,28 @@
 package org.openurp.edu.eams.teach.grade.service.stat
+
 import java.util.Comparator
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Collections
 import org.openurp.edu.base.Student
 import org.openurp.edu.teach.grade.CourseGrade
-import org.openurp.edu.teach.grade.domain.StdGpa
 import org.openurp.edu.teach.grade.domain.GradeFilter
-import org.beangle.commons.collection.Collections
+import org.openurp.edu.teach.grade.domain.StdGpa
+import scala.collection.mutable.Buffer
 
 class StdGrade {
 
   var std: Student = _
 
-  var grades: List[CourseGrade] = _
+  var grades: Seq[CourseGrade] = _
 
   var gradeFilters: List[GradeFilter] = _
 
   var stdGpa: StdGpa = _
 
-  var cmp: Comparator[CourseGrade] = _
+  var cmp: Ordering[CourseGrade] = _
 
-  def toGradeMap(): Map[String, CourseGrade] = {
-    val gradeMap = Collections.newMap()
+  def toGradeMap(): collection.Map[String, CourseGrade] = {
+    val gradeMap = Collections.newMap[String, CourseGrade]
     if (null == grades || grades.isEmpty) gradeMap else {
       var iter = grades.iterator
       while (iter.hasNext) {
@@ -32,8 +34,8 @@ class StdGrade {
   }
 
   def this(std: Student,
-    courseGrades: List[CourseGrade],
-    cmp: Comparator,
+    courseGrades: Seq[CourseGrade],
+    cmp: Ordering[CourseGrade],
     gradeFilters: List[GradeFilter]) {
     this()
     this.std = std
@@ -45,7 +47,7 @@ class StdGrade {
       }
     }
     if (null != cmp) {
-      Collections.sort(grades, cmp)
+      grades.sorted(cmp)
     }
     this.cmp = cmp
   }
@@ -60,48 +62,15 @@ class StdGrade {
     if (null == grades || grades.isEmpty) {
       return new java.lang.Float(0)
     }
-    var credits = 0
-    var iter = grades.iterator()
+    var credits = 0f
+    var iter = grades.iterator
     while (iter.hasNext) {
       val courseGrade = iter.next().asInstanceOf[CourseGrade]
-      if (courseGrade.isPassed) {
+      if (courseGrade.passed) {
         credits += courseGrade.course.credits
       }
     }
     new java.lang.Float(credits)
   }
 
-  def addGrade(grade: CourseGrade) {
-    this.grades.add(grade)
-  }
-
-  def getGrades(): List[CourseGrade] = grades
-
-  def getStd(): Student = std
-
-  def setStd(std: Student) {
-    this.std = std
-  }
-
-  def getStdGpa(): StdGpa = stdGpa
-
-  def setStdGpa(stdGpa: StdGpa) {
-    this.stdGpa = stdGpa
-  }
-
-  def setGrades(grades: List[CourseGrade]) {
-    this.grades = grades
-  }
-
-  def getGradeFilters(): List[GradeFilter] = gradeFilters
-
-  def setGradeFilters(gradeFilters: List[GradeFilter]) {
-    this.gradeFilters = gradeFilters
-  }
-
-  def getCmp(): Comparator[CourseGrade] = cmp
-
-  def setCmp(cmp: Comparator[CourseGrade]) {
-    this.cmp = cmp
-  }
 }

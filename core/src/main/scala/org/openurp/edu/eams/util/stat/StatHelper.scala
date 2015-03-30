@@ -1,11 +1,9 @@
 package org.openurp.edu.eams.util.stat
 
-
 import org.beangle.data.model.dao.EntityDao
 import org.beangle.data.model.Entity
 import StatHelper._
-
-
+import org.beangle.commons.collection.Collections
 
 object StatHelper {
 
@@ -15,10 +13,11 @@ object StatHelper {
       val data = iter.next().asInstanceOf[Array[Any]]
       for (i <- 0 until clazzes.length) {
         if (null == clazzes(i)) //continue
-        if (null != data(i)) {
-          val id = data(i).asInstanceOf[Number].longValue()
-          data(i) = entityDao.get(clazzes(i), new java.lang.Long(id))
-        }
+          if (null != data(i)) {
+            val id = data(i).asInstanceOf[Number].longValue()
+            val c = clazzes(i).asInstanceOf[Class[Entity[java.lang.Long]]]
+            data(i) = entityDao.get(c, new java.lang.Long(id))
+          }
       }
     }
   }
@@ -26,20 +25,21 @@ object StatHelper {
 
 class StatHelper(private var entityDao: EntityDao) {
 
-  private def setStatEntities(statMap: Map[_,_], entityClass: Class[_]): List[_] = {
-    val entities = entityDao.get(entityClass, "id", statMap.keySet)
-    var iter = entities.iterator()
+  private def setStatEntities(statMap: Map[java.io.Serializable, _], entityClass: Class[_]): Iterable[_] = {
+    val clazz = entityClass.asInstanceOf[Class[Entity[java.io.Serializable]]]
+    val entities = entityDao.find(clazz, statMap.keySet)
+    var iter = entities.iterator
     while (iter.hasNext) {
-      val entity = iter.next().asInstanceOf[Entity[_]]
+      val entity = iter.next().asInstanceOf[Entity[java.io.Serializable]]
       val stat = statMap.get(entity.id).asInstanceOf[StatItem]
-      stat.what=entity
+      stat.what = entity
     }
-    new ArrayList(statMap.values)
+    statMap.values
   }
 
-  private def buildStatMap(stats: Iterable[_]): Map[_,_] = {
-    val statMap = new HashMap()
-    var iter = stats.iterator()
+  private def buildStatMap(stats: Iterable[_]): collection.Map[Any, StatItem] = {
+    val statMap = Collections.newMap[Any, StatItem]
+    var iter = stats.iterator
     while (iter.hasNext) {
       val element = iter.next().asInstanceOf[StatItem]
       statMap.put(element.what, element)
@@ -48,16 +48,14 @@ class StatHelper(private var entityDao: EntityDao) {
   }
 
   def replaceIdWith(datas: Iterable[_], clazzes: Array[Class[_]]) {
-    var iter = datas.iterator()
+    var iter = datas.iterator
     while (iter.hasNext) {
       val data = iter.next().asInstanceOf[Array[Any]]
-      for (i <- 0 until clazzes.length) {
-        if (null == clazzes(i)) {
-          //continue
-        }
+      for (i <- 0 until clazzes.length if null != clazzes(i)) {
         if (null != data(i)) {
           val id = data(i).asInstanceOf[Number].longValue()
-          data(i) = entityDao.get(clazzes(i), new java.lang.Long(id).intValue())
+          val c = clazzes(i).asInstanceOf[Class[Entity[java.lang.Long]]]
+          data(i) = entityDao.get(c, new java.lang.Long(id))
         }
       }
     }

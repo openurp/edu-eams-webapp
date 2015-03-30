@@ -1,18 +1,13 @@
 package org.openurp.edu.eams.web.helper
 
 
-import javax.servlet.http.HttpSession
 import org.beangle.data.model.dao.EntityDao
 import org.beangle.data.jpa.dao.OqlBuilder
-import org.beangle.security.blueprint.Profile
-import org.beangle.security.blueprint.User
-import org.beangle.security.blueprint.data.service.DataPermissionService
-import org.beangle.security.blueprint.function.FuncResource
-import org.beangle.security.blueprint.function.service.FuncPermissionService
 import org.openurp.edu.base.Project
 import org.openurp.edu.eams.core.service.DepartmentService
 import org.openurp.edu.eams.system.security.DataRealm
 import RestrictionHelper._
+import org.openurp.base.User
 
 
 

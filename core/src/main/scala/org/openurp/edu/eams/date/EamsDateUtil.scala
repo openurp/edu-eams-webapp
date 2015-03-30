@@ -162,8 +162,8 @@ class EamsDateUtil (var firstDayOnSunday: Boolean) {
   def weekOfYear(date: Date): Int = getWeekOfYear(date, firstDayOnSunday)
 
   private def getWeekOfYear(date: Date, firstDayOnSunday: Boolean): Int = {
-    val year = year(date)
-    val firstDayOfYear = java.sql.Date.valueOf("" + year + "-01-01")
+    val y = year(date)
+    val firstDayOfYear = java.sql.Date.valueOf("" + y + "-01-01")
     nthWeekRelativeFromStart(firstDayOfYear, date)
   }
 

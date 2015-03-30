@@ -12,7 +12,7 @@ trait CourseService {
 
   def saveOrUpdate(course: Course): Unit
 
-  def searchCoursesByCodeOrName(codeOrName: String): List[Course]
+  def searchCoursesByCodeOrName(codeOrName: String): Seq[Course]
 
-  def searchCourseByProjectAndCodeOrName(studentCode: String, codeOrName: String, projectId: String): List[Course]
+  def searchCourseByProjectAndCodeOrName(studentCode: String, codeOrName: String, projectId: String): Seq[Course]
 }

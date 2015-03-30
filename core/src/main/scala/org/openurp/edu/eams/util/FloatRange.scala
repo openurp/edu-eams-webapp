@@ -92,7 +92,7 @@ class FloatRange extends Component {
   }
 
   private def containsFloat(value: Float, nearType: NearType.NearType): Boolean = {
-    if (nearType == NearType.Equals) {
+    if (nearType == NearType.EQUAL) {
       return containsFloat(value)
     }
     if (nearType == NearType.OVER) {

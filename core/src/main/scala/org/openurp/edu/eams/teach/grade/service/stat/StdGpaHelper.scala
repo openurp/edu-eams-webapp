@@ -4,10 +4,6 @@ import org.openurp.edu.teach.grade.domain.StdGpa
 import org.openurp.edu.teach.grade.service.GpaService
 import scala.collection.mutable.ListBuffer
 
-
-
-
-
 object StdGpaHelper {
 
   def statGpa(multiStdGrade: MultiStdGrade, gpaService: GpaService) {
@@ -17,8 +13,8 @@ object StdGpaHelper {
     }
     for (stdGrade <- stdGradeList) {
       val stdGpa = new StdGpa(stdGrade.std)
-      stdGpa.gpa=gpaService.gpa(stdGrade.std, stdGrade.grades)
-      stdGrade.stdGpa=stdGpa
+      stdGpa.gpa = gpaService.calcGpa(stdGrade.std, stdGrade.grades)
+      stdGrade.stdGpa = stdGpa
     }
   }
 }

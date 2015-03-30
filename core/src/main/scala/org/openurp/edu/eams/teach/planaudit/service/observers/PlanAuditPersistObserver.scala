@@ -87,12 +87,12 @@ class PlanAuditPersistObserver extends BaseServiceImpl with PlanAuditObserver {
     }
     target.auditStat=source.auditStat
     target.passed=source.isPassed
-    val targetGroupResults = Collections.newMap[Any]
-    val sourceGroupResults = Collections.newMap[Any]
+    val targetGroupResults = Collections.newMap[Any,Any]
+    val sourceGroupResults = Collections.newMap[Any,Any]
     for (result <- target.children) targetGroupResults.put(result.name, result)
     for (result <- source.children) sourceGroupResults.put(result.name, result)
-    val targetCourseResults = Collections.newMap[Any]
-    val sourceCourseResults = Collections.newMap[Any]
+    val targetCourseResults = Collections.newMap[Any,Any]
+    val sourceCourseResults = Collections.newMap[Any,Any]
     for (courseResult <- target.courseResults) targetCourseResults.put(courseResult.course, courseResult)
     for (courseResult <- source.courseResults) sourceCourseResults.put(courseResult.course, courseResult)
     val removed = Collections.subtract(targetGroupResults.keySet, sourceGroupResults.keySet)

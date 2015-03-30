@@ -60,7 +60,7 @@ class ExamActivityDigestor private () {
     val hasRoom = Strings.contains(format, room)
     val hasTeacher = Strings.contains(format, "teacher")
     val arrangeInfoBuf = new StringBuffer()
-    var iter = activity.examRooms.iterator()
+    var iter = activity.examRooms.iterator
     while (iter.hasNext) {
       val examRoom = iter.next()
       arrangeInfoBuf.append(format)
