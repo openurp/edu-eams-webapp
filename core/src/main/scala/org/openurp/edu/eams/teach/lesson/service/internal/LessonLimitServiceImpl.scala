@@ -121,7 +121,7 @@ class LessonLimitServiceImpl extends BaseServiceImpl with LessonLimitService {
       }
       val grades = Strings.split(tmp_grade)
       if (grades.length > 0) {
-        limitTeachClass(Operators.IN, target, grades: _*)
+        limitTeachClass(Operators.IN, target, grades)
       }
     } else if (LessonLimitMeta.Major.id == mergeType) {
       val tmp_collection = Collections.newSet[Major]
@@ -377,7 +377,7 @@ class LessonLimitServiceImpl extends BaseServiceImpl with LessonLimitService {
     possibleTakes
   }
 
-  def limitTeachClass(operator: Operator, teachClass: TeachClass, grades: String*) {
+  def limitTeachClass(operator: Operator, teachClass: TeachClass, grades: Array[String]) {
     if (grades.length > 0) {
       val clb = teachClass.asInstanceOf[TeachClassBean]
       val group = getOrCreateDefaultLimitGroup(clb)
@@ -392,7 +392,7 @@ class LessonLimitServiceImpl extends BaseServiceImpl with LessonLimitService {
     }
   }
 
-  def limitTeachClass[T <: Entity[_]](operator: Operator, teachClass: TeachClass, entities: T*) {
+  override def limitTeachClass[T <: Entity[_]](operator: Operator, teachClass: TeachClass, entities: T*) {
     if (entities.length > 0) {
       val clb = teachClass.asInstanceOf[TeachClassBean]
       val group = getOrCreateDefaultLimitGroup(clb)

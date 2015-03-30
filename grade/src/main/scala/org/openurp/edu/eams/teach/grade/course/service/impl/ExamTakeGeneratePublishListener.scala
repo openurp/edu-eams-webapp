@@ -134,7 +134,7 @@ class ExamTakeGeneratePublishListener extends BaseServiceImpl with CourseGradePu
     val lesson = grade.getLesson
     val std = grade.getStd
     var take: ExamTake = null
-    if (!grade.isPassed && !examGrade.isPassed) {
+    if (!grade.passed && !examGrade.passed) {
       val examTypeId = getMakeupOrDelayExamTypeId(setting, examGrade)
       if (null != examTypeId) take = getOrCreateExamTake(std, lesson, new ExamType(examTypeId), examTakes)
       if (null == take) {

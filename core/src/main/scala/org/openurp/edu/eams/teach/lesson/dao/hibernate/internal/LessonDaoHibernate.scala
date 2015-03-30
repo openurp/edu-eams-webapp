@@ -124,10 +124,9 @@ class LessonDaoHibernate(sf: SessionFactory) extends HibernateEntityDao(sf) with
   def saveMergeResult(lessons: Array[Lesson], index: Int) {
     saveOrUpdate(lessons(index))
     for (i <- 0 until lessons.length) {
-      if (i == index) {
-        //continue
+      if (i != index) {
+        remove(lessons(i))
       }
-      remove(lessons(i))
     }
   }
 
@@ -158,14 +157,17 @@ class LessonDaoHibernate(sf: SessionFactory) extends HibernateEntityDao(sf) with
     currentSession.flush()
   }
 
-  def saveOrUpdate(lesson: Lesson) {
-    val iter = lesson.teachClass.limitGroups.iterator
-    while (iter.hasNext) {
-      if (Collections.isEmpty(iter.next().items)) {
-        iter.remove()
+  override def saveOrUpdate[E](entities: Iterable[E]): Unit = {
+    for (entity <- entities) {
+      val lesson = entity.asInstanceOf[Lesson]
+      val iter = lesson.teachClass.limitGroups.iterator
+      while (iter.hasNext) {
+        if (Collections.isEmpty(iter.next().items)) {
+          iter.remove()
+        }
       }
+      lessonSeqNoGenerator.genLessonSeqNo(lesson)
+      super.saveOrUpdate(lesson)
     }
-    lessonSeqNoGenerator.genLessonSeqNo(lesson)
-    super.saveOrUpdate(lesson)
   }
 }

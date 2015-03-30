@@ -1,16 +1,18 @@
 package org.openurp.edu.eams.teach.lesson.util
 
-import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.GregorianCalendar
 
 import org.beangle.commons.lang.Strings
-import org.beangle.commons.text.i18n.TextResource
 import org.beangle.commons.lang.time.WeekDays
+import org.beangle.commons.lang.time.WeekDays._
+import org.beangle.commons.lang.time.WeekDays.WeekDay
+import org.beangle.commons.text.i18n.TextResource
 import org.openurp.edu.eams.date.EamsDateUtil
 import org.openurp.edu.teach.exam.ExamActivity
 import org.openurp.edu.teach.exam.ExamRoom
+
 import ExamActivityDigestor._
 
 object ExamActivityDigestor {
@@ -44,57 +46,48 @@ object ExamActivityDigestor {
   def getInstance(): ExamActivityDigestor = new ExamActivityDigestor()
 }
 
-class ExamActivityDigestor private () {
+class ExamActivityDigestor  {
 
-  private var delimeter: String = ","
+    var delimeter: String = ","
 
   def digest(activity: ExamActivity, resource: TextResource): String = {
     digest(activity, resource, defaultFormat)
   }
 
-  def digest(activity: ExamActivity, resource: TextResource, format: String): String = {
+  def digest(activity: ExamActivity, resource: TextResource, f: String): String = {
     if (null == activity) return ""
-    if (Strings.isEmpty(format)) {
-      format = defaultFormat
-    }
+    val format = if (Strings.isEmpty(f)) defaultFormat else f
     val hasRoom = Strings.contains(format, room)
     val hasTeacher = Strings.contains(format, "teacher")
     val arrangeInfoBuf = new StringBuffer()
-    var iter = activity.examRooms.iterator
+    var iter = activity.rooms.iterator
     while (iter.hasNext) {
       val examRoom = iter.next()
       arrangeInfoBuf.append(format)
       var replaceStart = 0
       replaceStart = arrangeInfoBuf.indexOf(day)
       if (-1 != replaceStart) {
-        var dayIndex = activity.startAt.day
-        if (dayIndex == 0) {
-          dayIndex = 6
-        } else {
-          dayIndex -= 1
-        }
-        arrangeInfoBuf.replace(replaceStart, replaceStart + day.length, WeekDays.All(dayIndex).name)
+        arrangeInfoBuf.replace(replaceStart, replaceStart + day.length, WeekDays.of(activity.examOn).toString)
       }
       replaceStart = arrangeInfoBuf.indexOf(units)
       if (-1 != replaceStart) {
       }
       replaceStart = arrangeInfoBuf.indexOf(time)
       if (-1 != replaceStart) {
-        val sdm = new SimpleDateFormat("HH:mm")
-        arrangeInfoBuf.replace(replaceStart, replaceStart + time.length, sdm.format(activity.startAt) + "-" + sdm.format(activity.endAt))
+        arrangeInfoBuf.replace(replaceStart, replaceStart + time.length, activity.beginAt.toString + "-" + activity.endAt.toString)
       }
       replaceStart = arrangeInfoBuf.indexOf(date)
       if (-1 != replaceStart) {
-        arrangeInfoBuf.replace(replaceStart, replaceStart + date.length, df.format(activity.startAt))
+        arrangeInfoBuf.replace(replaceStart, replaceStart + date.length, df.format(activity.beginAt))
       }
       replaceStart = arrangeInfoBuf.indexOf(weeks)
       if (-1 != replaceStart) {
-        val teachWeek = EamsDateUtil.SUNDAY_FIRST.weekOfYear(examRoom.getsemester.beginOn)
-        val examWeek = EamsDateUtil.SUNDAY_FIRST.weekOfYear(activity.startAt)
+        val teachWeek = EamsDateUtil.SUNDAY_FIRST.weekOfYear(examRoom.semester.beginOn)
+        val examWeek = EamsDateUtil.SUNDAY_FIRST.weekOfYear(activity.examOn)
         val c = Calendar.getInstance
-        c.setTime(activity.startAt)
-        if (c.get(Calendar.YEAR) > activity.semester.startYear) {
-          val year = SemesterUtil.startYear(activity.semester)
+        c.setTime(activity.examOn)
+        if (c.get(Calendar.YEAR) > EamsDateUtil.year(activity.semester.beginOn)) {
+          val year = EamsDateUtil.year(activity.semester.beginOn)
           val LastDay = year + "-12-31"
           val gregorianCalendar = new GregorianCalendar()
           gregorianCalendar.setTime(java.sql.Date.valueOf(LastDay))
@@ -124,7 +117,7 @@ class ExamActivityDigestor private () {
         }
         replaceStart = arrangeInfoBuf.indexOf(district)
         if (-1 != replaceStart) {
-          if (null != examRoom.room && null != examRoom.room.building && 
+          if (null != examRoom.room && null != examRoom.room.building &&
             null != examRoom.room.building.campus) {
             arrangeInfoBuf.replace(replaceStart, replaceStart + district.length, examRoom.room.building.campus.name)
           } else {
@@ -134,13 +127,9 @@ class ExamActivityDigestor private () {
       }
       arrangeInfoBuf.append(delimeter)
     }
-    if (arrangeInfoBuf.lastIndexOf(delimeter) != -1) arrangeInfoBuf.delete(arrangeInfoBuf.lastIndexOf(delimeter), 
+    if (arrangeInfoBuf.lastIndexOf(delimeter) != -1) arrangeInfoBuf.delete(arrangeInfoBuf.lastIndexOf(delimeter),
       arrangeInfoBuf.length)
     arrangeInfoBuf.toString
   }
 
-  def setDelimeter(delimeter: String): ExamActivityDigestor = {
-    this.delimeter = delimeter
-    this
-  }
 }

@@ -7,7 +7,7 @@ import org.openurp.edu.eams.teach.service.wrapper.TimeZone
 
 trait StdOccupyProvider {
 
-  def getOccupyCount(stdSource: StudentSource, zone: TimeZone): Map[_,_]
+  def getOccupyCount(stdSource: StudentSource, zone: TimeZone): collection.Map[_,_]
 
-  def getOccupyInfo(stdSource: StudentSource, zone: TimeZone): Map[_,_]
+  def getOccupyInfo(stdSource: StudentSource, zone: TimeZone): collection.Map[_,_]
 }

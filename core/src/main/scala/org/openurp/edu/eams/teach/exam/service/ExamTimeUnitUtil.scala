@@ -7,7 +7,7 @@ import java.util.Date
 import java.util.GregorianCalendar
 import org.beangle.commons.lang.Strings
 import org.openurp.base.Semester
-import org.openurp.edu.eams.base.util.WeekStates
+import org.openurp.edu.eams.weekstate.WeekStates
 import org.beangle.commons.lang.time.YearWeekTime
 import org.openurp.edu.eams.date.EamsDateUtil
 import org.openurp.edu.teach.exam.ExamActivity

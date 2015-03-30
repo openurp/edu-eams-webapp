@@ -45,7 +45,7 @@ class LessonServiceImpl extends BaseServiceImpl with LessonService {
 
   private var lessonLogHelper: LessonLogHelper = _
 
-  def teachDepartsOfSemester(projects: List[Project], departments: List[Department], semester: Semester): Seq[Department] = {
+  def teachDepartsOfSemester(projects: Seq[Project], departments: Seq[Department], semester: Semester): Seq[Department] = {
     if (Collections.isNotEmpty(projects) && Collections.isNotEmpty(departments)) {
       val query = OqlBuilder.from(classOf[Lesson].getName + " lesson")
       query.select("distinct(lesson.teachDepart)")
@@ -57,7 +57,7 @@ class LessonServiceImpl extends BaseServiceImpl with LessonService {
     }
   }
 
-  def courseTypesOfSemester(projects: List[Project], departments: List[Department], semester: Semester): Seq[CourseType] = {
+  def courseTypesOfSemester(projects: Seq[Project], departments: Seq[Department], semester: Semester): Seq[CourseType] = {
     if (Collections.isNotEmpty(projects) && Collections.isNotEmpty(departments)) {
       val query = OqlBuilder.from(classOf[Lesson].getName + " lesson")
       query.select("distinct(lesson.courseType)")
@@ -69,7 +69,7 @@ class LessonServiceImpl extends BaseServiceImpl with LessonService {
     }
   }
 
-  def attendDepartsOfSemester(projects: List[Project], semester: Semester): Seq[Department] = {
+  def attendDepartsOfSemester(projects: Seq[Project], semester: Semester): Seq[Department] = {
     if (Collections.isNotEmpty(projects)) {
       val qq = OqlBuilder.from[LessonLimitItem](classOf[Lesson].getName + " lesson")
       qq.join("lesson.teachClass.limitGroups", "lgroup").join("lgroup.items", "litem")
@@ -102,7 +102,7 @@ class LessonServiceImpl extends BaseServiceImpl with LessonService {
     }
   }
 
-  def canAttendDepartsOfSemester(projects: List[Project], departments: List[Department], semester: Semester): Seq[Department] = {
+  def canAttendDepartsOfSemester(projects: Seq[Project], departments: Seq[Department], semester: Semester): Seq[Department] = {
     if (Collections.isNotEmpty(projects) && Collections.isNotEmpty(departments)) {
       val query = OqlBuilder.from(classOf[Department], "department")
       query.where("exists (from org.openurp.edu.teach.plan.MajorPlan plan" +
@@ -175,7 +175,7 @@ class LessonServiceImpl extends BaseServiceImpl with LessonService {
     newlesson
   }
 
-  def copy(lessons: List[Lesson], params: TaskCopyParams): Seq[Lesson] = {
+  def copy(lessons: Seq[Lesson], params: TaskCopyParams): Seq[Lesson] = {
     val copiedTasks = Collections.newBuffer[Lesson]
     for (lesson <- lessons) {
       val copy = clone(lesson)
@@ -210,7 +210,7 @@ class LessonServiceImpl extends BaseServiceImpl with LessonService {
     entityDao.search(builder)
   }
 
-  def fillTeachers(teacherIds: Array[java.lang.Long], lesson: Lesson) {
+  override def fillTeachers(teacherIds: Array[java.lang.Long], lesson: Lesson) {
     lesson.teachers.clear()
     if (teacherIds != null && teacherIds.length > 0) {
       lesson.teachers ++= (entityDao.find(classOf[User], teacherIds))

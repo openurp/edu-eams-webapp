@@ -33,14 +33,14 @@ abstract class AbstractLessonLimitEntityProvider[T <: Entity[ID], ID <: Serializ
     queryBuilder
   }
 
-  protected override def getCascadeContents(content: Array[Serializable],
-    term: String, limit: PageLimit, cascadeField: Map[Long, String]): Seq[T] = {
+  override def getCascadeContents(content: Array[Serializable],
+    term: String, limit: PageLimit, cascadeField: collection.Map[java.lang.Long, String]): Seq[T] = {
     val builder = getQueryBuilder(content, term, limit)
     addCascadeQuery(builder, cascadeField)
     entityDao.search(builder)
   }
 
-  protected def addCascadeQuery(builder: OqlBuilder[T], cascadeField: Map[Long, String]) {
+  protected def addCascadeQuery(builder: OqlBuilder[T], cascadeField: collection.Map[java.lang.Long, String]) {
   }
 
   protected override def getOtherContents(content: Array[Serializable], term: String, limit: PageLimit): Seq[T] = {

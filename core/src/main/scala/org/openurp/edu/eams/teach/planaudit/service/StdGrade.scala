@@ -15,5 +15,5 @@ trait StdGrade {
 
   def addNoGradeCourse(course: Course): Unit
 
-  def getCoursePassedMap(): collection.Map[Long, Boolean]
+  def getCoursePassedMap(): collection.Map[java.lang.Long, Boolean]
 }

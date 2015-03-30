@@ -87,7 +87,7 @@ class AdminclassServiceImpl extends BaseServiceImpl with AdminclassService with 
     }
   }
 
-  def batchUpdateStdCountOfClass(adminclassIds: Array[Integer]) {
+  def batchUpdateStdCountOfClass(adminclassIds: Array[java.lang.Long]) {
     if (null != adminclassIds) {
       for (i <- 0 until adminclassIds.length) {
         updateActualStdCount(adminclassIds(i))
@@ -96,7 +96,7 @@ class AdminclassServiceImpl extends BaseServiceImpl with AdminclassService with 
     }
   }
 
-  def batchAddStudentClass(students: List[_], adminclasses: List[_]) {
+  def batchAddStudentClass(students: Seq[_], adminclasses: Seq[_]) {
     var iterator = adminclasses.iterator
     while (iterator.hasNext) {
       val adminclass = iterator.next().asInstanceOf[Adminclass]
@@ -130,12 +130,12 @@ class AdminclassServiceImpl extends BaseServiceImpl with AdminclassService with 
     entityDao.saveOrUpdate(adminclasses)
   }
 
-  def updateStudentAdminclass(std: Student, adminclasses: Iterable[_], project: Project) {
-    val orig = EntityUtils.extractIds(adminclasses)
-    val dest = EntityUtils.extractIds(List(std.adminclass))
+  def updateStudentAdminclass(std: Student, adminclasses: Iterable[Adminclass], project: Project) {
+    val orig = adminclasses.map { a => a.id }
+    val dest = if (null == std.adminclass) List.empty else List(std.adminclass.id)
     val addClassList = Collections.subtract(orig, dest)
     val subClassList = Collections.subtract(dest, orig)
-    batchRemoveStudentClass(List(std), entityDao.findBy(classOf[Adminclass], "id",  subClassList.toArray))
+    batchRemoveStudentClass(List(std), entityDao.findBy(classOf[Adminclass], "id", subClassList.toArray))
     batchAddStudentClass(List(std), entityDao.findBy(classOf[Adminclass], "id", addClassList.toArray))
   }
 }

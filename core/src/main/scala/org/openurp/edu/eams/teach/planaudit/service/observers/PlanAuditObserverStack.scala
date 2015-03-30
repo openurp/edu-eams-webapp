@@ -1,13 +1,8 @@
 package org.openurp.edu.eams.teach.planaudit.service.observers
 
-
-
-
 import java.util.Observable
 import org.openurp.edu.eams.teach.planaudit.service.PlanAuditContext
-
-
-
+import org.beangle.commons.collection.Collections
 
 class PlanAuditObserverStack(initObersers: PlanAuditObserver*) extends Observable() with PlanAuditObserver {
 
@@ -15,11 +10,10 @@ class PlanAuditObserverStack(initObersers: PlanAuditObserver*) extends Observabl
     addObserver(ob)
   }
 
-  
-  var observers: List[PlanAuditObserver] = new ArrayList[PlanAuditObserver]()
+  var observers = Collections.newBuffer[PlanAuditObserver]
 
   def addObserver(observer: PlanAuditObserver) {
-    observers.add(observer)
+    observers += (observer)
   }
 
   def notifyStart() {

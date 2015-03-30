@@ -1,23 +1,16 @@
 package org.openurp.edu.eams.teach.lesson.util
 
 import java.text.SimpleDateFormat
-import org.beangle.commons.bean.comparators.MultiPropertyComparator
+
+import org.beangle.commons.bean.orderings.MultiPropertyOrdering
 import org.beangle.commons.collection.Collections
-import org.beangle.commons.lang.BitStrings
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.text.i18n.TextResource
-import org.openurp.base.Room
-import org.openurp.base.Semester
-import org.beangle.commons.lang.time.WeekDays
-import org.beangle.commons.lang.time.YearWeekTime
 import org.openurp.edu.base.Teacher
 import org.openurp.edu.eams.number.NumberRangeDigestor
-import org.openurp.edu.teach.schedule.CourseActivity
+import org.openurp.edu.eams.weekstate.WeekStates
 import org.openurp.edu.teach.lesson.Lesson
-import org.openurp.edu.eams.util.TimeUtils
-import org.openurp.edu.eams.weekstate.SemesterWeekTimeBuilder
-import CourseActivityDigestor._
-import org.beangle.commons.bean.orderings.MultiPropertyOrdering
+import org.openurp.edu.teach.schedule.CourseActivity
 
 object CourseActivityDigestor {
 
@@ -54,10 +47,9 @@ object CourseActivityDigestor {
   def getInstance(): CourseActivityDigestor = new CourseActivityDigestor()
 }
 
-import CourseActivityDigestor._
-
 class CourseActivityDigestor {
 
+  import CourseActivityDigestor._
   private var delimeter: String = ","
 
   def digest(textResource: TextResource, lesson: Lesson): String = {
@@ -72,6 +64,10 @@ class CourseActivityDigestor {
     digest(textResource, activities, defaultFormat)
   }
 
+  private def isSameActivityExcept(activity1: CourseActivity, activity2: CourseActivity, hasTeacher: Boolean, hasRoom: Boolean): Boolean = {
+    //FIXME
+    false
+  }
   def digest(textResource: TextResource, activities: Iterable[CourseActivity], f: String): String = {
     if (Collections.isEmpty(activities)) return ""
     val format = if (Strings.isEmpty(f)) defaultFormat else f
@@ -88,14 +84,14 @@ class CourseActivityDigestor {
         if (Collections.isNotEmpty(activity.teachers)) teachers ++= activity.teachers
       }
       var merged = false
-      for (added <- mergedActivities if added.isSameActivityExcept(activity, hasTeacher, hasRoom)) {
-        if (added.time.startUnit > activity.time.startUnit) {
-          added.time.startUnit = activity.time.startUnit
+      for (added <- mergedActivities if isSameActivityExcept(added, activity, hasTeacher, hasRoom)) {
+        if (added.time.begin.value > activity.time.begin.value) {
+          added.time.begin = activity.time.begin
         }
-        if (added.time.endUnit < activity.time.endUnit) {
-          added.time.endUnit = activity.time.endUnit
+        if (added.time.end.value < activity.time.end.value) {
+          added.time.end = activity.time.end
         }
-        added.time.newWeekState(BitStrings.or(added.time.weekState, activity.time.weekState))
+        added.time.state = added.time.state | activity.time.state
         merged = true
       }
       if (!merged) {
@@ -144,7 +140,7 @@ class CourseActivityDigestor {
       }
       replaceStart = CourseArrangeBuf.indexOf(time)
       if (-1 != replaceStart) {
-        if (0 != activity.time.begin) {
+        if (null != activity.time.begin) {
           CourseArrangeBuf.replace(replaceStart, replaceStart + time.length, activity.time.begin.toString +
             "-" + activity.time.end.toString)
         } else {
@@ -163,7 +159,7 @@ class CourseActivityDigestor {
       }
       replaceStart = CourseArrangeBuf.indexOf(weeks)
       if (-1 != replaceStart) {
-        val weekIndeciesInSemester = SemesterWeekTimeBuilder.parse(activity.time.weekState, WeekStateDirection.LTR)
+        val weekIndeciesInSemester = WeekStates.parse(activity.time.state.toString)
         CourseArrangeBuf.replace(replaceStart, replaceStart + weeks.length, NumberRangeDigestor.digest(weekIndeciesInSemester,
           textResource) +
           " ")
@@ -171,11 +167,8 @@ class CourseActivityDigestor {
       val sdf = new SimpleDateFormat("M月dd日起")
       replaceStart = CourseArrangeBuf.indexOf(starton)
       if (-1 != replaceStart) {
-        val timeUnits = YearWeekTimeUtil.convertToYearWeekTimes(semester, activity.time)
-        if (null != timeUnits && timeUnits.length > 0) {
-          val unit = timeUnits(0)
-          CourseArrangeBuf.replace(replaceStart, replaceStart + starton.length, sdf.format(unit.firstDate))
-        }
+        val unit = activity.time
+        CourseArrangeBuf.replace(replaceStart, replaceStart + starton.length, sdf.format(unit.firstDate))
       }
       replaceStart = CourseArrangeBuf.indexOf(room)
       if (-1 != replaceStart) {

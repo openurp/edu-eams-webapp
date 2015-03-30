@@ -3,38 +3,22 @@ package org.openurp.edu.eams.system.report
 import org.openurp.edu.base.Project
 import org.beangle.data.model.LongIdEntity
 
+trait ReportTemplate extends LongIdEntity {
+  var project: Project = _
 
-trait ReportTemplate extends LongIdEntity{
+  var category: String = _
 
-  def getProject(): Project
+  var code: String = _
 
-  def setProject(project: Project): Unit
+  var name: String = _
 
-  def getCategory(): String
+  var remark: String = _
 
-  def setCategory(category: String): Unit
+  var template: String = _
 
-  def getCode(): String
+  var options: String = _
 
-  def setCode(code: String): Unit
+  var pageSize: String = "A4"
 
-  def getName(): String
-
-  def setName(name: String): Unit
-
-  def getTemplate(): String
-
-  def setTemplate(template: String): Unit
-
-  def getRemark(): String
-
-  def setRemark(remark: String): Unit
-
-  def getOptions(): String
-
-  def setOptions(options: String): Unit
-
-  def getPageSize(): String
-
-  def getOrientation(): String
+  var orientation: String = "Portrait"
 }

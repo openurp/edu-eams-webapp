@@ -53,7 +53,7 @@ class CourseTakeOccupyProvider extends AbstractStdOccupyProvider {
     params.put("semesterId", semester.id)
     query.params(params)
     val occupis = executeOccupyQuery(query, zone, new OccupyProcessor() {
-      def process(weekOccupy: collection.mutable.Map[Any, Any], unit: CourseUnit, datas: List[_]) {
+      def process(weekOccupy: collection.mutable.Map[Any, Any], unit: CourseUnit, datas: Iterable[CourseTake]) {
         var count = weekOccupy.get(unit).orNull.asInstanceOf[Number]
         if (null == count) {
           count = new java.lang.Integer(0)
@@ -83,7 +83,6 @@ class CourseTakeOccupyProvider extends AbstractStdOccupyProvider {
     params.put("semester", semester)
     query.params(params)
     val occupis = executeOccupyQuery(query, zone, new OccupyProcessor() {
-
       def process(weekOccupy: collection.mutable.Map[Any, Any], unit: CourseUnit, datas: Iterable[CourseTake]) {
         var list = weekOccupy.get(unit).orNull.asInstanceOf[Buffer[Any]]
         if (null == list) {

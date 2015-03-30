@@ -2,7 +2,6 @@ package org.openurp.edu.eams.number
 
 import java.util.Arrays
 import org.beangle.commons.text.i18n.TextResource
-import org.openurp.edu.eams.weekstate.SemesterWeekTimeBuilder
 
 object NumberRangeDigestor {
 

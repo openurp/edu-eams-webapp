@@ -1,6 +1,5 @@
 package org.openurp.edu.eams.web.helper
 
-
 import org.beangle.data.model.dao.EntityDao
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.edu.base.Project
@@ -8,8 +7,6 @@ import org.openurp.edu.eams.core.service.DepartmentService
 import org.openurp.edu.eams.system.security.DataRealm
 import RestrictionHelper._
 import org.openurp.base.User
-
-
 
 object RestrictionHelper {
 
@@ -36,7 +33,7 @@ object RestrictionHelper {
 
 trait RestrictionHelper {
 
-  def getUser(session: HttpSession): User
+  //  def getUser(session: HttpSession): User
 
   def setDataRealm(realmScope: Int): Unit
 
@@ -52,7 +49,7 @@ trait RestrictionHelper {
 
   def getProjects(resourceName: String): List[_]
 
-  def getProjects(resource: FuncResource): List[_]
+  //  def getProjects(resource: FuncResource): List[_]
 
   def getColleges(): List[_]
 
@@ -62,7 +59,7 @@ trait RestrictionHelper {
 
   def getDataRealmsWith(stdTypeId: java.lang.Long): List[DataRealm]
 
-  def getDataRealms(funcPermissionService: FuncPermissionService): List[_]
+  //  def getDataRealms(funcPermissionService: FuncPermissionService): List[_]
 
   def getDepartmentIdSeq(): String
 
@@ -70,14 +67,14 @@ trait RestrictionHelper {
 
   def getEducationIdSeq(): String
 
-  def getResource(): FuncResource
+  //  def getResource(): FuncResource
 
   def applyRestriction(builder: OqlBuilder[_]): Unit
-
-  def getProperties(user: User, 
-      profiles: List[Profile], 
-      name: String, 
-      resource: FuncResource): List[_]
+  //
+  //  def getProperties(user: User, 
+  //      profiles: List[Profile], 
+  //      name: String, 
+  //      resource: FuncResource): List[_]
 
   def getProperties(name: String): List[_]
 
@@ -85,11 +82,11 @@ trait RestrictionHelper {
 
   def setEntityDao(entityDao: EntityDao): Unit
 
-  def setFuncPermissionService(funcPermissionService: FuncPermissionService): Unit
-
-  def setDataPermissionService(dataPermissionService: DataPermissionService): Unit
-
-  def getFuncPermissionService(): FuncPermissionService
-
-  def getDataPermissionService(): DataPermissionService
+  //  def setFuncPermissionService(funcPermissionService: FuncPermissionService): Unit
+  //
+  //  def setDataPermissionService(dataPermissionService: DataPermissionService): Unit
+  //
+  //  def getFuncPermissionService(): FuncPermissionService
+  //
+  //  def getDataPermissionService(): DataPermissionService
 }

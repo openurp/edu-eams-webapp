@@ -8,7 +8,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openurp.edu.eams</groupId>
 	<artifactId>openurp-edu-eams-core</artifactId>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<name>Openurp Education EAMS Core</name>
 
 	<properties>
@@ -16,6 +16,7 @@
 		<openurp.base.version>0.0.1-SNAPSHOT</openurp.base.version>
 		<openurp.peopleapi.version>0.0.1-SNAPSHOT</openurp.peopleapi.version>
 		<openurp.lgapi.version>0.0.1-SNAPSHOT</openurp.lgapi.version>
+		<spring.version>4.0.4.RELEASE</spring.version>
 	</properties>
 
 	<dependencies>
@@ -28,6 +29,11 @@
 			<groupId>org.beangle.spring</groupId>
 			<artifactId>beangle-spring-context</artifactId>
 			<version>${beangle.spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>
+			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.openurp.edu.teach</groupId>

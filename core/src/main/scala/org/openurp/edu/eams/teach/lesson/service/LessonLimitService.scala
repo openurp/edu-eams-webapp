@@ -26,39 +26,39 @@ trait LessonLimitService {
   @Deprecated
   def merge(mergeType: java.lang.Long, target: TeachClass, source: TeachClass): Unit
 
-  def xtractEducationLimit(teachClass: TeachClass): Pair[Operator, List[Education]]
+  def xtractEducationLimit(teachClass: TeachClass): Pair[Operator, Seq[Education]]
 
-  def xtractEducationLimit(group: LessonLimitGroup): Pair[Operator, List[Education]]
+  def xtractEducationLimit(group: LessonLimitGroup): Pair[Operator, Seq[Education]]
 
-  def xtractAdminclassLimit(teachClass: TeachClass): Pair[Operator, List[Adminclass]]
+  def xtractAdminclassLimit(teachClass: TeachClass): Pair[Operator, Seq[Adminclass]]
 
-  def xtractAdminclassLimit(group: LessonLimitGroup): Pair[Operator, List[Adminclass]]
+  def xtractAdminclassLimit(group: LessonLimitGroup): Pair[Operator, Seq[Adminclass]]
 
-  def xtractGradeLimit(teachClass: TeachClass): Pair[Operator, List[String]]
+  def xtractGradeLimit(teachClass: TeachClass): Pair[Operator, Seq[String]]
 
-  def xtractGradeLimit(group: LessonLimitGroup): Pair[Operator, List[String]]
+  def xtractGradeLimit(group: LessonLimitGroup): Pair[Operator, Seq[String]]
 
-  def xtractStdTypeLimit(teachClass: TeachClass): Pair[Operator, List[StdType]]
+  def xtractStdTypeLimit(teachClass: TeachClass): Pair[Operator, Seq[StdType]]
 
-  def xtractStdTypeLimit(group: LessonLimitGroup): Pair[Operator, List[StdType]]
+  def xtractStdTypeLimit(group: LessonLimitGroup): Pair[Operator, Seq[StdType]]
 
-  def xtractAttendDepartLimit(teachClass: TeachClass): Pair[Operator, List[Department]]
+  def xtractAttendDepartLimit(teachClass: TeachClass): Pair[Operator, Seq[Department]]
 
-  def xtractAttendDepartLimit(group: LessonLimitGroup): Pair[Operator, List[Department]]
+  def xtractAttendDepartLimit(group: LessonLimitGroup): Pair[Operator, Seq[Department]]
 
-  def xtractMajorLimit(teachClass: TeachClass): Pair[Operator, List[Major]]
+  def xtractMajorLimit(teachClass: TeachClass): Pair[Operator, Seq[Major]]
 
-  def xtractMajorLimit(group: LessonLimitGroup): Pair[Operator, List[Major]]
+  def xtractMajorLimit(group: LessonLimitGroup): Pair[Operator, Seq[Major]]
 
-  def xtractDirectionLimit(teachClass: TeachClass): Pair[Operator, List[Direction]]
+  def xtractDirectionLimit(teachClass: TeachClass): Pair[Operator, Seq[Direction]]
 
-  def xtractDirectionLimit(group: LessonLimitGroup): Pair[Operator, List[Direction]]
+  def xtractDirectionLimit(group: LessonLimitGroup): Pair[Operator, Seq[Direction]]
 
-  def xtractProgramLimit(teachClass: TeachClass): Pair[Operator, List[Program]]
+  def xtractProgramLimit(teachClass: TeachClass): Pair[Operator, Seq[Program]]
 
-  def xtractProgramLimit(group: LessonLimitGroup): Pair[Operator, List[Program]]
+  def xtractProgramLimit(group: LessonLimitGroup): Pair[Operator, Seq[Program]]
 
-  def limitTeachClass(operator: Operator, teachClass: TeachClass, grades: String*): Unit
+  def limitTeachClass(operator: Operator, teachClass: TeachClass, grades: Array[String]): Unit
 
   def limitTeachClass[T <: Entity[_]](operator: Operator, teachClass: TeachClass, entities: T*): Unit
 
@@ -102,15 +102,15 @@ trait LessonLimitService {
 
   def builder(teachClass: TeachClass): LessonLimitGroupBuilder
 
-  def extractLonelyTakes(teachClass: TeachClass): Set[CourseTake]
+  def extractLonelyTakes(teachClass: TeachClass): collection.Set[CourseTake]
 
-  def extractPossibleCourseTakes(teachClass: TeachClass): Set[CourseTake]
+  def extractPossibleCourseTakes(teachClass: TeachClass): collection.Set[CourseTake]
 
   def isAutoName(lesson: Lesson): Boolean
 
-  def xtractStdLabelLimit(group: LessonLimitGroup): Pair[Operator, List[StdLabel]]
+  def xtractStdLabelLimit(group: LessonLimitGroup): Pair[Operator, Seq[StdLabel]]
 
-  def xtractStdLabelLimit(teachClass: TeachClass): Pair[Operator, List[StdLabel]]
+  def xtractStdLabelLimit(teachClass: TeachClass): Pair[Operator, Seq[StdLabel]]
 
   def xtractLimitGroup(group: LessonLimitGroup): LessonLimitGroupPair
 }

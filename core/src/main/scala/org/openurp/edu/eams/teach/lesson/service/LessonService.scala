@@ -15,23 +15,23 @@ import org.openurp.edu.teach.lesson.Lesson
 
 trait LessonService {
 
-  def teachDepartsOfSemester(projects: List[Project], departments: List[Department], semester: Semester): List[Department]
+  def teachDepartsOfSemester(projects: Seq[Project], departments: Seq[Department], semester: Semester): Seq[Department]
 
-  def courseTypesOfSemester(projects: List[Project], departments: List[Department], semester: Semester): List[CourseType]
+  def courseTypesOfSemester(projects: Seq[Project], departments: Seq[Department], semester: Semester): Seq[CourseType]
 
-  def attendDepartsOfSemester(projects: List[Project], semester: Semester): List[Department]
+  def attendDepartsOfSemester(projects: Seq[Project], semester: Semester): Seq[Department]
 
-  def canAttendDepartsOfSemester(projects: List[Project], departments: List[Department], semester: Semester): List[Department]
+  def canAttendDepartsOfSemester(projects: Seq[Project], departments: Seq[Department], semester: Semester): Seq[Department]
 
-  def getProjectsForTeacher(teacher: Teacher): List[Project]
+  def getProjectsForTeacher(teacher: Teacher): Seq[Project]
 
-  def getLessonByCategory(id: Serializable, strategy: LessonFilterStrategy, semesters: Iterable[Semester]): List[Lesson]
+  def getLessonByCategory(id: Serializable, strategy: LessonFilterStrategy, semesters: Iterable[Semester]): Seq[Lesson]
 
-  def getLessonByCategory(id: Serializable, strategy: LessonFilterStrategy, semester: Semester): List[Lesson]
+  def getLessonByCategory(id: Serializable, strategy: LessonFilterStrategy, semester: Semester): Seq[Lesson]
 
-  def copy(lessons: List[Lesson], params: TaskCopyParams): List[Lesson]
+  def copy(lessons: Seq[Lesson], params: TaskCopyParams): Seq[Lesson]
 
-  def getLessons[T <: Entity[_]](semester: Semester, entity: T): List[Lesson]
+  def getLessons[T <: Entity[_]](semester: Semester, entity: T): Seq[Lesson]
 
-  def fillTeachers(teacherIds: Array[Long], lesson: Lesson): Unit
+  def fillTeachers(teacherIds: Array[java.lang.Long], lesson: Lesson): Unit
 }

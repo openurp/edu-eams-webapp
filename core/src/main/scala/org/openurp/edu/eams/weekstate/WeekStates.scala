@@ -1,23 +1,23 @@
-package org.openurp.edu.eams.base.util
+package org.openurp.edu.eams.weekstate
 
 import java.util.Calendar
 import java.util.GregorianCalendar
+
+import org.beangle.commons.collection.Collections
 import org.beangle.commons.lang.Numbers
 import org.beangle.commons.lang.Strings
-import org.beangle.commons.text.i18n.TextResource
-import org.openurp.edu.eams.number.DefaultNumberRangeFormatter
-import org.openurp.edu.eams.number.NumberRange
-import org.openurp.edu.eams.number.NumberRangeDigestor
-import org.openurp.edu.eams.weekstate.SemesterWeekTimeBuilder
+import org.beangle.commons.lang.time.WeekDays.Sun
+import org.beangle.commons.lang.time.WeekDays.WeekDay
 import org.beangle.commons.lang.time.WeekState
-import org.openurp.base.Semester
-import org.beangle.commons.lang.time.WeekDays._
 import org.beangle.commons.lang.time.YearWeekTime
-import org.beangle.commons.lang.time.WeekDays
+import org.openurp.base.Semester
+import org.openurp.edu.eams.number.NumberRangeDigestor
 
 object WeekStates {
 
   val OVERALLWEEKS = 53
+  val RESERVE_BITS = 1
+
   def relativeMerge(units: Iterable[YearWeekTime], semester: Semester): String = {
     var thisYearWeeks = Strings.repeat("0", OVERALLWEEKS)
     var nextYearWeeks = ""
@@ -46,7 +46,7 @@ object WeekStates {
       }
       weekStates = thisYearWeeks + nextYearWeeks
     }
-    var weekday =  first.day.index
+    var weekday = first.day.index
     if (semester.firstWeekday != Sun && weekday < semester.firstWeekday.index) {
       weekStates = weekStates.substring(1)
     }
@@ -155,12 +155,32 @@ object WeekStates {
     }
     0
   }
-  
+
   def digest(state: WeekState): String = {
     if (null == state) return ""
-    val weekIndecies = SemesterWeekTimeBuilder.parse(state.toString /**FIXME*/)
+    val weekIndecies = parse(state.toString /**FIXME*/ )
     val digest = NumberRangeDigestor.digest(weekIndecies, null)
     digest.replace("[", "").replace("]", "").replace("number.range.odd", "单")
       .replace("number.range.even", "双")
   }
+
+  def parse(weekState: String): Array[Integer] = {
+    // weekState = new StringBuilder(weekState).reverse().toString
+    val weekIndecies = Collections.newBuffer[Integer]
+    var i = 0
+    while (i != -1) {
+      i = weekState.indexOf('1', i)
+      if (i != -1) {
+        weekIndecies += i
+        i = i + 1
+      }
+    }
+    for (j <- 0 until weekIndecies.size) {
+      var weekIndex = weekIndecies(j)
+      weekIndex = if (weekIndex >= RESERVE_BITS) weekIndex - RESERVE_BITS + 1 else weekIndex - RESERVE_BITS
+      weekIndecies.update(j, weekIndex)
+    }
+    weekIndecies.toArray
+  }
+
 }

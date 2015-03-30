@@ -10,7 +10,7 @@ trait RoomService {
 
   def getRoom(id: java.lang.Integer): Room
 
-  def getBuildings(campusId: java.lang.Integer): List[Building]
+  def getBuildings(campusId: java.lang.Integer): Seq[Building]
 
   def saveOrUpdate(classroom: Room): Unit
 

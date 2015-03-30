@@ -1,8 +1,5 @@
 package org.openurp.edu.eams.weekstate
 
-
-
-
 object BinaryConverter {
 
   def toString(number: java.lang.Long): String = java.lang.Long.toBinaryString(number)

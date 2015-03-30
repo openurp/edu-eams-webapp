@@ -1,31 +1,16 @@
 package org.openurp.edu.eams.teach
 
 import org.beangle.commons.inject.bind.AbstractBindModule
-import org.beangle.commons.inject.bind.BeanConfig.ReferenceValue
-import org.springframework.transaction.interceptor.TransactionProxyFactoryBean
-import org.openurp.edu.eams.teach.grade.service.impl.BestGradeFilter
-import org.openurp.edu.eams.teach.grade.service.impl.BestOriginGradeFilter
-import org.openurp.edu.eams.teach.grade.service.impl.DefaultCourseGradeCalculator
-import org.openurp.edu.eams.teach.grade.service.impl.DefaultGpaPolicy
-import org.openurp.edu.eams.teach.grade.service.impl.DefaultGpaService
-import org.openurp.edu.eams.teach.grade.service.impl.DefaultGpaStatService
-import org.openurp.edu.eams.teach.grade.service.impl.PassGradeFilter
-import org.openurp.edu.eams.teach.grade.service.impl.ScriptGradeFilter
+import org.beangle.commons.inject.bind.Binder.ReferenceValue
 import org.openurp.edu.eams.teach.grade.service.impl.SpringGradeFilterRegistry
-import org.openurp.edu.eams.teach.grade.service.internal.BestGradeCourseGradeProviderImpl
-import org.openurp.edu.eams.teach.grade.service.internal.CourseGradeProviderImpl
-import org.openurp.edu.eams.teach.grade.service.internal.CourseGradeServiceImpl
-import org.openurp.edu.eams.teach.grade.service.internal.GradeCourseTypeProviderImpl
-import org.openurp.edu.eams.teach.grade.service.internal.GradeRateServiceImpl
 import org.openurp.edu.eams.teach.lesson.dao.hibernate.internal.CoursePrefixSeqNoGeneratorImpl
 import org.openurp.edu.eams.teach.lesson.dao.hibernate.internal.LessonDaoHibernate
-import org.openurp.edu.eams.teach.lesson.dao.hibernate.internal.LessonPlanRelationHibernateDao
 import org.openurp.edu.eams.teach.lesson.dao.hibernate.internal.LessonSeqNoGeneratorImpl
 import org.openurp.edu.eams.teach.lesson.service.LessonFilterStrategy
 import org.openurp.edu.eams.teach.lesson.service.LessonLogHelper
+import org.openurp.edu.eams.teach.lesson.service.internal.DefaultTeachClassNameStrategy
 import org.openurp.edu.eams.teach.lesson.service.internal.LessonLimitExtractorServiceImpl
 import org.openurp.edu.eams.teach.lesson.service.internal.LessonLimitServiceImpl
-import org.openurp.edu.eams.teach.lesson.service.internal.DefaultTeachClassNameStrategy
 import org.openurp.edu.eams.teach.lesson.service.internal.LessonServiceImpl
 import org.openurp.edu.eams.teach.lesson.service.internal.filterStrategy.DefaultLessonFilterStrategyFactory
 import org.openurp.edu.eams.teach.lesson.service.internal.filterStrategy.LessonFilterByAdminclassStrategy
@@ -48,16 +33,13 @@ import org.openurp.edu.eams.teach.program.service.internal.CoursePlanProviderImp
 import org.openurp.edu.eams.teach.program.service.internal.CourseSubstitutionServiceImpl
 import org.openurp.edu.eams.teach.service.internal.CourseServiceImpl
 import org.openurp.edu.eams.teach.service.internal.TeachResourceServiceImpl
-import org.openurp.edu.eams.teach.textbook.service.internal.DefaultTextbookOrderLineCodeGenerator
-import org.openurp.edu.eams.teach.textbook.service.internal.TextbookOrderLineServiceImpl
-import org.beangle.commons.inject.bind.Binder.ReferenceValue
 import org.openurp.edu.teach.grade.domain.impl.BestGradeCourseGradeProviderImpl
-
+import org.springframework.transaction.interceptor.TransactionProxyFactoryBean
 
 
 class TeachServiceModule extends AbstractBindModule {
 
-  protected override def doBinding() {
+  protected override def binding() {
     bind("courseService", classOf[CourseServiceImpl])
     bind("lessonService", classOf[LessonServiceImpl])
     bind("courseSubstitutionService", classOf[CourseSubstitutionServiceImpl])

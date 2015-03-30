@@ -14,7 +14,7 @@ object FloatRange {
     val EQUAL = new NearType()
 
     class NearType extends Val
-
+    import scala.language.implicitConversions
     implicit def convertValue(v: Value): NearType = v.asInstanceOf[NearType]
   }
 }
@@ -23,16 +23,12 @@ import FloatRange._
 
 class FloatRange extends Component {
 
-  
   var min: Float = 0f
 
-  
   var minInclusive: Boolean = true
 
-  
   var max: Float = 0f
 
-  
   var maxInclusive: Boolean = true
 
   def this(number: Float) {
@@ -56,15 +52,14 @@ class FloatRange extends Component {
     }
   }
 
-  def this(min: Float, 
-      minInclusive: Boolean, 
-      max: Float, 
-      maxInclusive: Boolean) {
+  def this(min: Float,
+    minInclusive: Boolean,
+    max: Float,
+    maxInclusive: Boolean) {
     this(min, max)
     this.minInclusive = minInclusive
     this.maxInclusive = maxInclusive
   }
-
 
   def minExclusive() {
     this.minInclusive = false
@@ -152,17 +147,17 @@ class FloatRange extends Component {
 
   def getDistance(): Float = max - min
 
-  private def minIn(a: Float, 
-      b: Float, 
-      c: Float, 
-      d: Float): Float = {
+  private def minIn(a: Float,
+    b: Float,
+    c: Float,
+    d: Float): Float = {
     Math.min(Math.min(Math.min(a, b), c), d)
   }
 
-  private def maxIn(a: Float, 
-      b: Float, 
-      c: Float, 
-      d: Float): Float = {
+  private def maxIn(a: Float,
+    b: Float,
+    c: Float,
+    d: Float): Float = {
     Math.max(Math.max(Math.max(a, b), c), d)
   }
 

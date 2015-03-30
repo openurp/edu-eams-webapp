@@ -518,8 +518,8 @@ class StdElectCourseAction extends AbstractStudentProjectSupportAction {
     val auditResult = planAuditService.audit(std, new PlanAuditContext())
     val failCourses = Collections.newBuffer[Any]
     if (null != auditResult) {
-      for (groupAuditResult <- auditResult.getGroupResults if !groupAuditResult.getAuditStat.isPassed; 
-           courseAuditResult <- groupAuditResult.getCourseResults if !groupAuditResult.getAuditStat.isPassed && null == courseAuditResult.getScores
+      for (groupAuditResult <- auditResult.getGroupResults if !groupAuditResult.getAuditStat.passed; 
+           courseAuditResult <- groupAuditResult.getCourseResults if !groupAuditResult.getAuditStat.passed && null == courseAuditResult.getScores
           if !cheatedCourses.contains(courseAuditResult.getCourse)) {
         groupAuditResult.getCourseResults.add(courseAuditResult)
         failCourses.add(courseAuditResult.getCourse)

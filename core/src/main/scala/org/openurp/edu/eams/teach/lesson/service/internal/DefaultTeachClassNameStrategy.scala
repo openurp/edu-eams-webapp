@@ -33,7 +33,7 @@ class DefaultTeachClassNameStrategy extends TeachClassNameStrategy {
 
   var lessonLimitItemContentProviderFactory: LessonLimitItemContentProviderFactory = _
 
-  def genName(groups: List[LessonLimitGroup]): String = {
+  override def genName(groups: Seq[LessonLimitGroup]): String = {
     Strings.abbreviate(buildAll(groups)._1, getNameMaxSize)
   }
 

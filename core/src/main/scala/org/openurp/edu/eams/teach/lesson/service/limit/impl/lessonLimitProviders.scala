@@ -22,9 +22,9 @@ import scala.collection.mutable.HashSet
 import scala.collection.mutable.LinkedHashMap
 import org.beangle.commons.collection.Collections
 
-class LessonLimitAdminclassProvider extends AbstractLessonLimitNamedEntityProvider[Adminclass, Integer] {
+class LessonLimitAdminclassProvider extends AbstractLessonLimitNamedEntityProvider[Adminclass, java.lang.Long] {
 
-  protected override def addCascadeQuery(builder: OqlBuilder[Adminclass], cascadeField: Map[Long, String]) {
+  protected override def addCascadeQuery(builder: OqlBuilder[Adminclass], cascadeField: collection.Map[java.lang.Long, String]) {
     if (cascadeField.isEmpty) {
       return
     }
@@ -59,7 +59,7 @@ class LessonLimitDepartmentProvider extends AbstractLessonLimitNamedEntityProvid
 
 class LessonLimitDirectionProvider extends AbstractLessonLimitNamedEntityProvider[Direction, Integer] {
 
-  protected override def addCascadeQuery(builder: OqlBuilder[Direction], cascadeField: Map[Long, String]) {
+  protected override def addCascadeQuery(builder: OqlBuilder[Direction], cascadeField: collection.Map[java.lang.Long, String]) {
     if (cascadeField.isEmpty) {
       return
     }
@@ -106,7 +106,7 @@ class LessonLimitGenderProvider extends AbstractLessonLimitNamedEntityProvider[G
 
 class LessonLimitMajorProvider extends AbstractLessonLimitNamedEntityProvider[Major, Integer] {
 
-  protected override def addCascadeQuery(builder: OqlBuilder[Major], cascadeField: Map[Long, String]) {
+  protected override def addCascadeQuery(builder: OqlBuilder[Major], cascadeField: collection.Map[java.lang.Long, String]) {
     if (cascadeField.isEmpty) {
       return
     }
@@ -127,9 +127,9 @@ class LessonLimitMajorProvider extends AbstractLessonLimitNamedEntityProvider[Ma
   }
 }
 
-class LessonLimitProgramProvider extends AbstractLessonLimitNamedEntityProvider[Program, Long] {
+class LessonLimitProgramProvider extends AbstractLessonLimitNamedEntityProvider[Program, java.lang.Long] {
 
-  protected override def addCascadeQuery(builder: OqlBuilder[Program], cascadeField: Map[Long, String]) {
+  protected override def addCascadeQuery(builder: OqlBuilder[Program], cascadeField: collection.Map[java.lang.Long, String]) {
     if (cascadeField.isEmpty) {
       return
     }
@@ -196,5 +196,5 @@ class LessonLimitGradeProvider extends AbstractLessonLimitContentProvider[String
   protected override def getCascadeContents(content: Array[Serializable],
     term: String,
     limit: PageLimit,
-    cascadeField: Map[Long, String]): List[String] = null
+    cascadeField: collection.Map[java.lang.Long, String]): List[String] = null
 }

@@ -37,14 +37,14 @@ abstract class AbstractLessonLimitContentProvider[T] extends BaseServiceImpl wit
   def getCascadeContents(content: String,
     term: String,
     limit: PageLimit,
-    cascadeField: Map[Long, String]): Seq[T] = {
+    cascadeField: collection.Map[java.lang.Long, String]): Seq[T] = {
     getCascadeContents(getContentValues(content), term, limit, cascadeField)
   }
 
   protected def getCascadeContents(content: Array[Serializable],
     term: String,
     limit: PageLimit,
-    cascadeField: Map[Long, String]): Seq[T]
+    cascadeField: collection.Map[java.lang.Long, String]): Seq[T]
 
   def getContents(content: String): collection.Map[String, T] = {
     getContentMap(getContentValues(content))

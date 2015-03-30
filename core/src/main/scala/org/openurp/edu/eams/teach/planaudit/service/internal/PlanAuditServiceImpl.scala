@@ -62,7 +62,7 @@ class PlanAuditServiceImpl extends BaseServiceImpl with PlanAuditService {
     if (context.auditTerms != null && context.auditTerms.length != 0) {
       creditsRequired = 0
       for (i <- 0 until context.auditTerms.length; group <- context.coursePlan.groups if group.parent == null) {
-        creditsRequired += PlanUtils.groupCredits(group, java.lang.Integer.valueOf(context.auditTerms(i)))
+        creditsRequired += PlanUtils.getGroupCredits(group, java.lang.Integer.valueOf(context.auditTerms(i)))
       }
     }
     planAuditResult.auditStat.creditsRequired = creditsRequired

@@ -1,6 +1,6 @@
 package org.openurp.edu.eams.number
 
-class Skip1Range(number: Int,val i18nKey: String) extends NumberRange(number) {
+class Skip1Range(number: Int, i18nKey: String) extends NumberRange(number, i18nKey) {
 
   override def internalTest(number: Int): Boolean = {
     if (number == this.end) {

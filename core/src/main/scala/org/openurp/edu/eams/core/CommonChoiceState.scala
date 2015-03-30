@@ -14,6 +14,7 @@ object CommonChoiceState extends Enumeration {
 
     def getName(): String = fullName
   }
+  import scala.language.implicitConversions
 
   implicit def convertValue(v: Value): CommonChoiceState = v.asInstanceOf[CommonChoiceState]
 }

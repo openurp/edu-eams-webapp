@@ -4,20 +4,16 @@ import NumberRange._
 
 object NumberRange {
 
-  def newInstance(number: Int): NumberRange = new ContinueRange(number)
+  def newInstance(number: Int): NumberRange = new ContinueRange(number,"")
 }
 
-abstract class NumberRange protected (number: Int) {
+abstract class NumberRange protected (val start: Int, var i18nKey: String) {
 
-  val start = number
-
-  var end: java.lang.Integer = number
+  var end: java.lang.Integer = start
 
   protected var lastEnd: java.lang.Integer = _
 
   protected var abandon: Boolean = false
-
-  var i18nKey: String = _
 
   def isAbandon(): Boolean = abandon
 

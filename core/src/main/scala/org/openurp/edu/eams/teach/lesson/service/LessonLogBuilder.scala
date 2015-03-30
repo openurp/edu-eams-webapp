@@ -1,14 +1,9 @@
 package org.openurp.edu.eams.teach.lesson.service
 
-
-
-
 import org.beangle.commons.lang.Strings
 import org.openurp.edu.base.Teacher
 import org.openurp.edu.teach.lesson.Lesson
 import org.beangle.commons.collection.Collections
-
-
 
 object LessonLogBuilder {
 
@@ -42,6 +37,7 @@ object LessonLogBuilder {
 
     class Operation extends Val
 
+    import scala.language.implicitConversions
     implicit def convertValue(v: Value): Operation = v.asInstanceOf[Operation]
   }
 
@@ -103,7 +99,7 @@ object LessonLogBuilder {
     val sb = new StringBuilder()
     append(sb, "课程序号", lesson.no)
     append(sb, "学期", lesson.semester.schoolYear + '-' + lesson.semester.name)
-    append(sb, "课程", lesson.course.name + '[' + lesson.course.code + 
+    append(sb, "课程", lesson.course.name + '[' + lesson.course.code +
       ']')
     append(sb, "教学项目", lesson.project.name)
     append(sb, "课程类别", lesson.courseType.name)

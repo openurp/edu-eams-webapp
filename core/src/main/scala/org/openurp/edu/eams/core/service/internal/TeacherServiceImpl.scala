@@ -58,7 +58,7 @@ class TeacherServiceImpl extends BaseServiceImpl with TeacherService {
     if (!teacherIds.isEmpty) entityDao.findBy(classOf[Teacher], "id", teacherIds) else List.empty
   }
 
-  def getTeachersByNO(teacherNOs: Array[String]): Seq[Teacher] = {
+  override def getTeachersByNO(teacherNOs: Array[String]): Seq[Teacher] = {
     if (null == teacherNOs || teacherNOs.length < 1) List.empty
     else entityDao.findBy(classOf[Teacher], "code", teacherNOs)
   }

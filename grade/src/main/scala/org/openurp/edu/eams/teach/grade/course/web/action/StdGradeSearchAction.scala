@@ -44,13 +44,13 @@ class StdGradeSearchAction extends SemesterSupportAction {
       if (null != scoreTo) {
         query.where("courseGrade.score<=:scoreTo", scoreTo)
       }
-      val isPassed = getInt("isPass")
-      if (null != isPassed) {
-        if (isPassed.intValue() == 1) {
+      val passed = getInt("isPass")
+      if (null != passed) {
+        if (passed.intValue() == 1) {
           query.where("courseGrade.passed = true")
-        } else if (isPassed.intValue() == 0) {
+        } else if (passed.intValue() == 0) {
           query.where("courseGrade.passed = false")
-        } else if (isPassed.intValue() == 3) {
+        } else if (passed.intValue() == 3) {
           val hql = "courseGrade.passed = false and not exists(from " + classOf[CourseGrade].getName + 
             " cg where cg.std = courseGrade.std and cg.course = courseGrade.course and cg.passed = true)"
           query.where(hql)

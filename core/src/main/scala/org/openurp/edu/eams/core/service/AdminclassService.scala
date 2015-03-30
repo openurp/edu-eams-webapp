@@ -6,25 +6,25 @@ import org.openurp.edu.base.Adminclass
 
 trait AdminclassService {
 
-  def getAdminclass(id: java.lang.Integer): Adminclass
+  def getAdminclass(id: java.lang.Long): Adminclass
 
   def getAdminclass(code: String): Adminclass
 
   def saveOrUpdate(adminclass: Adminclass): Unit
 
-  def removeAdminclass(id: java.lang.Integer): Unit
+  def removeAdminclass(id: java.lang.Long): Unit
 
-  def updateStdCount(adminclassId: java.lang.Integer): Int
+  def updateStdCount(adminclassId: java.lang.Long): Int
 
-  def updateActualStdCount(adminclassId: java.lang.Integer): Int
+  def updateActualStdCount(adminclassId: java.lang.Long): Int
 
   def batchUpdateStdCountOfClass(adminclassIdSeq: String): Unit
 
-  def batchUpdateStdCountOfClass(adminclassIds: Array[Integer]): Unit
+  def batchUpdateStdCountOfClass(adminclassIds: Array[java.lang.Long]): Unit
 
-  def batchRemoveStudentClass(students: List[_], adminclasses: List[_]): Unit
+  def batchRemoveStudentClass(students: Seq[_], adminclasses: Seq[_]): Unit
 
-  def batchAddStudentClass(students: List[_], adminclasses: List[_]): Unit
+  def batchAddStudentClass(students: Seq[_], adminclasses: Seq[_]): Unit
 
-  def updateStudentAdminclass(std: Student, adminclasses: Iterable[_], project: Project): Unit
+  def updateStudentAdminclass(std: Student, adminclasses: Iterable[Adminclass], project: Project): Unit
 }

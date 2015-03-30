@@ -5,9 +5,9 @@ import org.openurp.edu.teach.lesson.LessonLimitMeta.LimitMeta
 
 trait LessonLimitMetaProvider {
 
-  def getLessonLimitMetas(): List[LimitMeta]
+  def getLessonLimitMetas(): Seq[LimitMeta]
 
-  def getLessonLimitMetaIds(): List[Int]
+  def getLessonLimitMetaIds(): Seq[Int]
 
-  def getLessonLimitMetaPairs(): Pair[List[Int], List[LimitMeta]]
+  def getLessonLimitMetaPairs(): Pair[Seq[Int], Seq[LimitMeta]]
 }

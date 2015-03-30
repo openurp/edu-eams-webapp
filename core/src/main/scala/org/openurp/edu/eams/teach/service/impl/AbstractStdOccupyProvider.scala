@@ -14,33 +14,26 @@ import org.beangle.data.model.dao.EntityDao
 import org.beangle.data.model.dao.QueryBuilder
 import org.beangle.commons.lang.time.WeekDays.WeekDay
 import org.beangle.commons.collection.Collections
+import org.openurp.edu.teach.lesson.CourseTake
 
 abstract class AbstractStdOccupyProvider extends StdOccupyProvider {
 
   protected var logger: Logger = LoggerFactory.getLogger(getClass)
 
-  protected var entityDao: EntityDao = _
+  var entityDao: EntityDao = _
 
-  protected var semester: Semester = _
+  var semester: Semester = _
 
-  def setEntityService(entityDao: EntityDao) {
-    this.entityDao = entityDao
-  }
-
-  def setSemester(semester: Semester) {
-    this.semester = semester
-  }
-
-  protected def executeOccupyQuery(query: QueryBuilder[_], zone: TimeZone, processor: OccupyProcessor): collection.Map[_,_] = {
+  protected def executeOccupyQuery(query: QueryBuilder[_], zone: TimeZone, processor: OccupyProcessor): collection.Map[_, _] = {
     val st = System.currentTimeMillis()
-    var params = Collections.newMap[String,Any]
+    var params = Collections.newMap[String, Any]
     params ++= query.params
-    
-    val occupis = Collections.newMap[Any,Any]
+
+    val occupis = Collections.newMap[Any, Any]
     var iter = zone.weeks.iterator
     while (iter.hasNext) {
       val week = iter.next().asInstanceOf[WeekDay]
-      val weekOccupy = Collections.newMap[Any,Any]
+      val weekOccupy = Collections.newMap[Any, Any]
       var iter2 = zone.units.iterator
       while (iter2.hasNext) {
         val unit = iter2.next().asInstanceOf[CourseUnit]
@@ -52,7 +45,7 @@ abstract class AbstractStdOccupyProvider extends StdOccupyProvider {
           query.params(params)
           val datas = entityDao.search(query)
           if (!datas.isEmpty) {
-            processor.process(weekOccupy, unit, datas)
+            processor.process(weekOccupy, unit, datas.asInstanceOf[Iterable[CourseTake]])
           }
         }
       }

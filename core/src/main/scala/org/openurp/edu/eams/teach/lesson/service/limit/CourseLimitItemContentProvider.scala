@@ -9,12 +9,12 @@ trait LessonLimitItemContentProvider[T] {
 
   def getContentIdTitleMap(content: String): collection.Map[String, String]
 
-  def getOtherContents(content: String, term: String, limit: PageLimit): List[T]
+  def getOtherContents(content: String, term: String, limit: PageLimit): Seq[T]
 
   def getCascadeContents(content: String,
     term: String,
     limit: PageLimit,
-    cascadeField: Map[Long, String]): List[T]
+    cascadeField: collection.Map[java.lang.Long, String]): Seq[T]
 
   def meta: LimitMeta
 

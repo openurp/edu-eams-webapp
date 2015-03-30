@@ -1,20 +1,8 @@
 package org.openurp.edu.eams.util.stat
 
-class CountItem(var count: Number, var what: AnyRef) extends Comparable[CountItem] {
+class CountItem(var count: Number, var what: AnyRef) extends Ordered[CountItem] {
 
-  def compareTo(arg0: AnyRef): Int = {
-    count.intValue() - arg0.asInstanceOf[CountItem].count.intValue()
-  }
-
-  def getCount(): Number = count
-
-  def setCount(count: java.lang.Integer) {
-    this.count = count
-  }
-
-  def getWhat(): AnyRef = what
-
-  def setWhat(what: AnyRef) {
-    this.what = what
+  override def compare(arg0: CountItem): Int = {
+    count.intValue() - arg0.count.intValue()
   }
 }

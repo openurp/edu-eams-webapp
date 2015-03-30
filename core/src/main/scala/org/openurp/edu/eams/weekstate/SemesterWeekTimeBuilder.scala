@@ -1,32 +1,23 @@
 package org.openurp.edu.eams.weekstate
 
-
 import java.util.Date
 import org.beangle.commons.lang.Strings
-import org.openurp.base.Semester
-import org.openurp.edu.eams.date.EamsDateUtil
-import org.beangle.commons.lang.time.WeekDays._
-import org.openurp.edu.eams.date.RelativeDateUtil
-import SemesterWeekTimeBuilder._
-import org.openurp.base.SemesterWeekTime
+import org.beangle.commons.lang.time.WeekDays.WeekDay
+import org.beangle.commons.lang.time.WeekDays
 import org.beangle.commons.lang.time.YearWeekTime
 import org.beangle.commons.collection.Collections
 import org.beangle.commons.lang.time.WeekState
+import org.openurp.base.Semester
+import org.openurp.edu.eams.date.EamsDateUtil
+import org.openurp.edu.eams.date.RelativeDateUtil
+import org.openurp.base.SemesterWeekTime
+import SemesterWeekTimeBuilder._
 
 object SemesterWeekTimeBuilder {
 
-val RESERVE_BITS =1
+  val RESERVE_BITS = 1
 
-val MAX_LENGTH=53
-
-  def RTL(semester: Semester): SemesterWeekTimeBuilder = {
-    val helper = new SemesterWeekTimeBuilder()
-    helper.semester = semester
-    if (semester != null) {
-      helper.rdateUtil = RelativeDateUtil.startOn(semester)
-    }
-    helper
-  }
+  val MAX_LENGTH = 53
 
   def merge(state1: SemesterWeekTime, state2: SemesterWeekTime): SemesterWeekTime = {
     if (state1 == null && state2 == null) {
@@ -43,17 +34,13 @@ val MAX_LENGTH=53
       throw new RuntimeException("Merge Error: Semester Different")
     }
     val res = new SemesterWeekTime(state1)
-    res.weekState=state1.number | state2.number
+    res.state = state1.state | state2.state
     res
   }
 
   def merge(states: Array[SemesterWeekTime]): SemesterWeekTime = {
-    if (states == null || states.length == 0) {
-      return null
-    }
-    if (states.length == 1) {
-      return states(0)
-    }
+    if (states == null || states.length == 0) return null
+    if (states.length == 1) return states(0)
     var res = states(0)
     for (i <- 1 until states.length) {
       res = merge(res, states(i))
@@ -62,52 +49,26 @@ val MAX_LENGTH=53
   }
 
   def merge(states: List[SemesterWeekTime]): SemesterWeekTime = {
-    if (Collections.isEmpty(states)) {
-      return null
-    }
+    if (Collections.isEmpty(states)) return null
     merge(states.toArray)
   }
 
   def merge(states: Iterable[SemesterWeekTime]): SemesterWeekTime = {
-    if (Collections.isEmpty(states)) {
-      return null
-    }
+    if (Collections.isEmpty(states)) return null
     merge(states.toArray)
-  }
-
-  def parse(weekState: String): Array[Integer] = {
-     // weekState = new StringBuilder(weekState).reverse().toString
-    val weekIndecies = Collections.newBuffer[Any][Integer]
-    var i = 0
-    while (i != -1) {
-      i = weekState.indexOf('1', i)
-      if (i == -1) {
-        //break
-      }
-      weekIndecies += i
-      i = i + 1
-    }
-    for (j <- 0 until weekIndecies.size) {
-      var weekIndex = weekIndecies(j)
-      weekIndex = if (weekIndex >= RESERVE_BITS) weekIndex - RESERVE_BITS + 1 else weekIndex - RESERVE_BITS
-      weekIndecies.update(j, weekIndex)
-    }
-    weekIndecies.toArray
-  }
-
-  def parse(weekState: java.lang.Long): Array[Integer] = {
-    parse(BinaryConverter.toString(weekState))
   }
 }
 
-class SemesterWeekTimeBuilder{
-
-  private var semester: Semester = _
+class SemesterWeekTimeBuilder(val semester: Semester) {
 
   private var rdateUtil: RelativeDateUtil = _
 
+  if (null != semester) {
+    rdateUtil = RelativeDateUtil.startOn(semester)
+  }
+
   def build(date: Date): SemesterWeekTime = {
-    build(Array(rdateUtil.weekIndex(date)), EamsDateUtil.day(date))
+    build(Array(rdateUtil.weekIndex(date)), WeekDays.of(date))
   }
 
   def build(relativeWeekIndecies: Array[Int], weekday: WeekDay): SemesterWeekTime = {
@@ -115,21 +76,10 @@ class SemesterWeekTimeBuilder{
       return null
     }
     val weekState = new SemesterWeekTime()
-    weekState.semester=semester
-    weekState.state=buildString(relativeWeekIndecies)
-    weekState.day=weekday
+    weekState.semester = semester
+    weekState.state = buildString(relativeWeekIndecies)
+    weekState.day = weekday
     weekState
-  }
-
-  def build(relativeWeekIndecies: Array[Integer], weekday: WeekDay): SemesterWeekTime = {
-    if (relativeWeekIndecies == null || relativeWeekIndecies.length == 0) {
-      return null
-    }
-    val weekIndeciesArray = Array.ofDim[Int](relativeWeekIndecies.length)
-    for (i <- 0 until relativeWeekIndecies.length) {
-      weekIndeciesArray(i) = relativeWeekIndecies(i)
-    }
-    build(weekIndeciesArray, weekday)
   }
 
   def build(relativeWeekIndecies: String, weekday: WeekDay): SemesterWeekTime = {
@@ -142,24 +92,26 @@ class SemesterWeekTimeBuilder{
     }
     var year_weekStateString = new StringBuilder(BinaryConverter.toString(yearWeekState.state.value))
     val weekday = yearWeekState.day
-    val sem_weekIndecies = Collections.newBuffer[Any][Integer]
+    val sem_weekIndecies = Collections.newBuffer[Int]
     var oneIndex = -1
-    while (oneIndex < year_weekStateString.length) {
+    var break = false
+    while (oneIndex < year_weekStateString.length && !break) {
       oneIndex = year_weekStateString.indexOf('1', oneIndex + 1)
       if (oneIndex == -1) {
-        //break
+        break = true
+      } else {
+        val year_weekIndex = oneIndex + 1
+        val date = EamsDateUtil.SUNDAY_FIRST.date(yearWeekState.year, year_weekIndex, weekday)
+        val sem_weekIndex = rdateUtil.weekIndex(date)
+        if (sem_weekIndex < -RESERVE_BITS) {
+          throw new RuntimeException("Convert Error: weekIndex is less than -" + RESERVE_BITS +
+            " weeks")
+        }
+        if (sem_weekIndex > MAX_LENGTH) {
+          throw new RuntimeException("Convert Error: weekIndex is greater than " + MAX_LENGTH)
+        }
+        sem_weekIndecies += (sem_weekIndex)
       }
-      val year_weekIndex = oneIndex + 1
-      val date = EamsDateUtil.SUNDAY_FIRST.date(yearWeekState.year, year_weekIndex, weekday)
-      val sem_weekIndex = rdateUtil.weekIndex(date)
-      if (sem_weekIndex < -RESERVE_BITS) {
-        throw new RuntimeException("Convert Error: weekIndex is less than -" + RESERVE_BITS + 
-          " weeks")
-      }
-      if (sem_weekIndex > BasicWeekState.MAX_LENGTH) {
-        throw new RuntimeException("Convert Error: weekIndex is greater than " + MAX_LENGTH)
-      }
-      sem_weekIndecies += (sem_weekIndex)
     }
     build(sem_weekIndecies.toArray, yearWeekState.day)
   }
@@ -172,7 +124,7 @@ class SemesterWeekTimeBuilder{
     for (i <- 1 until yearWeekStates.length if weekday != yearWeekStates(i).day) {
       throw new RuntimeException("Convert error: weekday should be same")
     }
-    val states = Collections.newBuffer[Any][SemesterWeekTime]
+    val states = Collections.newBuffer[SemesterWeekTime]
     for (i <- 0 until yearWeekStates.length) {
       val state = convertFrom(yearWeekStates(i))
       if (state != null) {
@@ -187,19 +139,15 @@ class SemesterWeekTimeBuilder{
     for (i <- 1 until states.size) {
       number = number | states(i).state.value
     }
-    state.state=new WeekState(number)
+    state.state = new WeekState(number)
     state
-  }
-
-  def convertFrom(yearWeekStates: List[YearWeekTime]): SemesterWeekTime = {
-    convertFrom(yearWeekStates.toArray)
   }
 
   def convertFrom(yearWeekStates: Iterable[YearWeekTime]): SemesterWeekTime = {
     convertFrom(yearWeekStates.toArray)
   }
 
-  protected def buildString(weekIndecies: Array[Int]): String = {
+  protected def buildString(weekIndecies: Array[Int]): WeekState = {
     val res = Strings.repeat("0", MAX_LENGTH)
     val originCharAt = RESERVE_BITS
     val sb = new StringBuilder(res)
@@ -219,10 +167,7 @@ class SemesterWeekTimeBuilder{
         sb.setCharAt(charAt, '1')
       }
     }
-      Strings.leftPad(sb.toString.replaceAll("^0+1", "1"), /*this.paddingLength*/0, '0')
+    WeekState(Strings.leftPad(sb.toString.replaceAll("^0+1", "1"), /*this.paddingLength*/ 0, '0'))
   }
 
-  def parse(weekState: String): Array[Integer] = parse(weekState)
-
-  def parse(weekState: java.lang.Long): Array[Integer] = parse(weekState)
 }

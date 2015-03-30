@@ -34,7 +34,7 @@ object FloatSegment {
   }
 }
 
-class FloatSegment(var min: Float, var max: Float) extends Comparable[Any] {
+class FloatSegment(var min: Float, var max: Float) extends Ordered[FloatSegment] {
 
   var count: Int = 0
 
@@ -53,30 +53,12 @@ class FloatSegment(var min: Float, var max: Float) extends Comparable[Any] {
     }
   }
 
-  def getCount(): Int = count
 
-  def getMax(): Float = max
-
-  def setMax(max: Float) {
-    this.max = max
-  }
-
-  def getMin(): Float = min
-
-  def setMin(min: Float) {
-    this.min = min
-  }
-
-  def setCount(count: Int) {
-    this.count = count
-  }
-
-  def compareTo(`object`: AnyRef): Int = {
-    val myClass = `object`.asInstanceOf[FloatSegment]
+  def compare(myClass: FloatSegment): Int = {
     java.lang.Float.compare(myClass.min, this.min)
   }
 
-  def clone(): AnyRef = new FloatSegment(getMin, getMax)
+  override def clone(): AnyRef = new FloatSegment(min, max)
 
   def emptySeg(): Boolean = {
     if (min == 0 && max == 0) true else false

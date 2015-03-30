@@ -23,6 +23,8 @@ class MultiStdGrade(var semester: Semester, grades: collection.Map[Student, Seq[
 
   var extraGradeMap = Collections.newMap[String, Iterable[CourseGrade]]
 
+  var maxExtra = 0
+
   var maxDisplay: java.lang.Integer = new java.lang.Integer(courses.size + maxExtra)
 
   val gradesMap = Collections.newMap[java.lang.Long, StdGrade]
@@ -63,8 +65,6 @@ class MultiStdGrade(var semester: Semester, grades: collection.Map[Student, Seq[
       courses += (rank.course)
     }
   }
-
-  var maxExtra = 0
 
   var iter = stdGrades.iterator
   while (iter.hasNext) {

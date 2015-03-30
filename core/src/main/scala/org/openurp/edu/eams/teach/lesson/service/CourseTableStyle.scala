@@ -16,5 +16,6 @@ object CourseTableStyle extends Enumeration {
     this.withName(name)
   }
 
+  import scala.language.implicitConversions
   implicit def convertValue(v: Value): CourseTableStyle = v.asInstanceOf[CourseTableStyle]
 }

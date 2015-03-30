@@ -36,7 +36,7 @@ class MakeupGradeFilter extends GradeFilter {
           newGrade.setCourseType(courseGrade.getCourseType)
           newGrade.setCourseTakeType(courseGrade.getCourseTakeType)
           newGrade.setScore(examGrade.getScore)
-          newGrade.setPassed(examGrade.isPassed)
+          newGrade.setPassed(examGrade.passed)
           newGrade.setMarkStyle(examGrade.getMarkStyle)
           newGrade.setGp(gradeRateService.calcGp(newGrade))
           finded = true

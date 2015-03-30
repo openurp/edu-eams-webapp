@@ -161,14 +161,14 @@ trait TeachResourceService {
     user: User,
     replaceTeacher:  User,
     pageLimit: PageLimit,
-    order: String): Iterable[Teacher]
+    order: String): Iterable[User]
 
   def getFreeTeachersOf(departments: Seq[Department],
     times: Array[YearWeekTime],
     teacher:  User,
     replaceTeacher:  User,
     pageLimit: PageLimit,
-    order: String): Iterable[Teacher]
+    order: String): Iterable[User]
 
   def getTeacherPeriod(lesson: Lesson, teacher: Teacher): Int
 

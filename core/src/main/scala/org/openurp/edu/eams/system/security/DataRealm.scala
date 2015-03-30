@@ -62,7 +62,7 @@ class DataRealm(var studentTypeIdSeq: String, var departmentIdSeq: String) exten
 
   def isVO(): Boolean = false
 
-  def clone(): AnyRef = {
+  override def clone(): AnyRef = {
     new DataRealm(studentTypeIdSeq, departmentIdSeq)
   }
 

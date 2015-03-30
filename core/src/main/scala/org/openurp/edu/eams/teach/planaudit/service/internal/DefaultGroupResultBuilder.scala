@@ -23,7 +23,7 @@ class DefaultGroupResultBuilder extends GroupResultBuilder {
       val auditedCourses = Collections.newSet[Any]
       for (i <- 0 until context.auditTerms.length) {
         val term = java.lang.Integer.valueOf(context.auditTerms(i))
-        creditsRequired += PlanUtils.groupCredits(group, term)
+        creditsRequired += PlanUtils.getGroupCredits(group, term)
         if (group.children.isEmpty && !group.planCourses.isEmpty && group.compulsory) {
           creditsNeedCompare = true
           for (

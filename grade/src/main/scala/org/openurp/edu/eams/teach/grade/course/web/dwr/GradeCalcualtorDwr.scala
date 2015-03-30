@@ -60,7 +60,7 @@ class GradeCalcualtorDwr {
     val gaState = state.getState(new GradeType(GradeTypeConstants.GA_ID))
     var gaStyle: ScoreMarkStyle = null
     gaStyle = if (null == gaState) state.getScoreMarkStyle else gaState.getScoreMarkStyle
-    val passed = gradeRateService.isPassed(ga, gaStyle, grade.getProject)
+    val passed = gradeRateService.passed(ga, gaStyle, grade.getProject)
     gradeRateService.convert(ga, gaStyle, grade.getProject) + 
       "," + 
       (if (passed) 1 else 0)

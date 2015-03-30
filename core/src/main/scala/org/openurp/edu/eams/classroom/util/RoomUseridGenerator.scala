@@ -16,11 +16,12 @@ object RoomUseridGenerator {
 
     class Usage extends Val
 
+    import scala.language.implicitConversions
     implicit def convertValue(v: Value): Usage = v.asInstanceOf[Usage]
   }
 
   import Usage._
-  
+
   def gen(obj: AnyRef, usage: Usage): String = {
     var objId: AnyRef = null
     objId = if (obj.isInstanceOf[Entity[_]]) obj.asInstanceOf[Entity[AnyRef]].id else obj

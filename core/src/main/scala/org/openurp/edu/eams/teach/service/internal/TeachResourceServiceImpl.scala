@@ -129,10 +129,10 @@ class TeachResourceServiceImpl extends BaseServiceImpl with TeachResourceService
     departments: Seq[Department],
     times: Array[YearWeekTime],
     user: User,
-    replaceTeacher: Teacher,
+    replaceTeacher: User,
     pageLimit: PageLimit,
-    order: String): Iterable[Teacher] = {
-    val builder = OqlBuilder.from(classOf[Teacher], "teacher")
+    order: String): Iterable[User] = {
+    val builder = OqlBuilder.from(classOf[User], "teacher")
     if (Collections.isNotEmpty(departments)) {
       builder.where("teacher.department in (:departments)", departments)
     }
@@ -185,7 +185,7 @@ class TeachResourceServiceImpl extends BaseServiceImpl with TeachResourceService
     teacher: User,
     replaceTeacher: User,
     pageLimit: PageLimit,
-    order: String): Iterable[Teacher] = {
+    order: String): Iterable[User] = {
     getFreeTeachersOf(null, departments, times, teacher, replaceTeacher, pageLimit, order)
   }
 
