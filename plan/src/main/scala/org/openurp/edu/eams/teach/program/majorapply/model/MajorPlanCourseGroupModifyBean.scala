@@ -2,12 +2,12 @@ package org.openurp.edu.eams.teach.program.majorapply.model
 
 import java.util.Date
 import javax.persistence.CascadeType
-import javax.persistence.Entity
-import javax.persistence.FetchType
-import javax.persistence.ManyToOne
+
+
+
 import javax.persistence.OneToOne
 import javax.persistence.Table
-import org.beangle.commons.entity.pojo.LongIdObject
+import org.beangle.data.model.bean.LongIdBean
 import org.beangle.security.blueprint.User
 import com.ekingstar.eams.base.Department
 import org.openurp.edu.eams.teach.program.majorapply.model.component.FakePlan
@@ -34,9 +34,9 @@ object MajorCourseGroupModifyBean {
 }
 
 @SerialVersionUID(5737589654235506632L)
-@Entity(name = "org.openurp.edu.eams.teach.program.majorapply.model.MajorCourseGroupModifyBean")
+
 @Table(name = "T_MAJOR_PLAN_CG_MODIFIES")
-class MajorCourseGroupModifyBean extends LongIdObject {
+class MajorCourseGroupModifyBean extends LongIdBean {
 
   
   var requisitionType: String = _
@@ -44,7 +44,7 @@ class MajorCourseGroupModifyBean extends LongIdObject {
   
   var majorPlan: FakePlan = _
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  
   
   var department: Department = _
 
@@ -75,7 +75,7 @@ class MajorCourseGroupModifyBean extends LongIdObject {
   
   var practiceSign: String = _
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  
   
   var proposer: User = _
 
@@ -87,7 +87,7 @@ class MajorCourseGroupModifyBean extends LongIdObject {
   
   var newPlanCourseGroup: MajorCourseGroupModifyDetailAfterBean = _
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  
   
   var assessor: User = _
 }

@@ -10,7 +10,7 @@ import java.util.Date
 
 
 
-import javax.persistence.EntityNotFoundException
+NotFoundException
 import javax.servlet.http.HttpServletResponse
 import org.apache.commons.lang3.ArrayUtils
 import org.beangle.commons.collection.Collections

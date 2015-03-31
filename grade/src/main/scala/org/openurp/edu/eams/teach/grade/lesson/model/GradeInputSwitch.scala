@@ -2,13 +2,13 @@ package org.openurp.edu.eams.teach.grade.lesson.model
 
 import java.util.Date
 
-import javax.persistence.Entity
-import javax.persistence.FetchType
+
+
 import javax.persistence.ManyToMany
-import javax.persistence.ManyToOne
-import javax.validation.constraints.NotNull
+
+
 import org.beangle.commons.collection.Collections
-import org.beangle.commons.entity.pojo.LongIdObject
+import org.beangle.data.model.bean.LongIdBean
 import org.openurp.base.Semester
 import org.openurp.edu.base.Project
 import org.openurp.edu.teach.code.GradeType
@@ -17,16 +17,16 @@ import org.openurp.edu.teach.code.GradeType
 
 
 @SerialVersionUID(6765368922449105678L)
-@Entity(name = "org.openurp.edu.eams.teach.grade.lesson.model.GradeInputSwitch")
-class GradeInputSwitch extends LongIdObject {
 
-  @NotNull
-  @ManyToOne(fetch = FetchType.LAZY)
+class GradeInputSwitch extends LongIdBean {
+
+  
+  
   
   var project: Project = _
 
-  @NotNull
-  @ManyToOne(fetch = FetchType.LAZY)
+  
+  
   
   var semester: Semester = _
 
@@ -36,7 +36,7 @@ class GradeInputSwitch extends LongIdObject {
   
   var endAt: Date = _
 
-  @ManyToMany
+  
   
   var types: Set[GradeType] = Collections.newSet[Any]
 

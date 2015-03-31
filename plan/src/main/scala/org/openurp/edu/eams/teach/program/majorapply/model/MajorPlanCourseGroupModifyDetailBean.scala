@@ -1,10 +1,10 @@
 package org.openurp.edu.eams.teach.program.majorapply.model
 
 import javax.persistence.Column
-import javax.persistence.FetchType
-import javax.persistence.ManyToOne
-import javax.persistence.MappedSuperclass
-import org.beangle.commons.entity.pojo.LongIdObject
+
+
+
+import org.beangle.data.model.bean.LongIdBean
 import org.hibernate.annotations.Target
 import com.ekingstar.eams.teach.code.school.CourseType
 import org.openurp.edu.eams.teach.program.GroupRelation
@@ -15,10 +15,10 @@ import org.openurp.edu.eams.teach.program.model.ExpressionGroupRelation
 
 
 @SerialVersionUID(5552733977609925991L)
-@MappedSuperclass
-abstract class MajorCourseGroupModifyDetailBean extends LongIdObject {
 
-  @ManyToOne(fetch = FetchType.LAZY)
+abstract class MajorCourseGroupModifyDetailBean extends LongIdBean {
+
+  
   protected var courseType: CourseType = _
 
   @Target(classOf[ExpressionGroupRelation])

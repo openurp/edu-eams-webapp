@@ -3,7 +3,7 @@ package org.openurp.edu.eams.core.web.action
 import java.sql.BatchUpdateException
 
 
-import javax.persistence.EntityExistsException
+ExistsException
 import org.beangle.commons.collection.Order
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model

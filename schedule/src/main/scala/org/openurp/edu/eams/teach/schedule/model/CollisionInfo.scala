@@ -5,8 +5,6 @@ import org.beangle.commons.collection.Collections
 import org.openurp.edu.eams.teach.lesson.CourseTime
 
 
-
-
 class CollisionInfo {
 
   

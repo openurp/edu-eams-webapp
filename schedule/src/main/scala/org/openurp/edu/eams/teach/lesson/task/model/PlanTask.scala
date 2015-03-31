@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.teach.lesson.task.model
 
 import java.util.Date
-import org.beangle.commons.entity.pojo.LongIdObject
+import org.beangle.data.model.bean.LongIdBean
 import org.beangle.security.blueprint.User
 import org.openurp.base.Semester
 import org.openurp.edu.base.Course
@@ -22,7 +22,7 @@ object PlanTask {
 
 @SerialVersionUID(7435640814616551019L)
 @Deprecated
-class PlanTask extends LongIdObject {
+class PlanTask extends LongIdBean {
 
   
   var semester: Semester = _

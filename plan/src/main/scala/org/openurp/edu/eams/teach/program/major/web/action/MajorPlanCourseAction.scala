@@ -1,6 +1,6 @@
 package org.openurp.edu.eams.teach.program.major.web.action
 
-import javax.persistence.EntityNotFoundException
+NotFoundException
 import org.beangle.commons.lang.Strings
 
 import org.beangle.struts2.convention.route.Action

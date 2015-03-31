@@ -1,9 +1,9 @@
 package org.openurp.edu.eams.teach.schedule.model
 
 
-import javax.persistence.FetchType
-import javax.persistence.ManyToOne
-import org.beangle.commons.entity.pojo.LongIdObject
+
+
+import org.beangle.data.model.bean.LongIdBean
 import org.openurp.base.Semester
 import org.openurp.edu.eams.base.util.WeekDay
 import org.openurp.edu.eams.teach.lesson.CourseTime
@@ -22,7 +22,7 @@ object CourseTableSetting {
 }
 
 @SerialVersionUID(1L)
-class CourseTableSetting extends LongIdObject() {
+class CourseTableSetting extends LongIdBean() {
 
   
   var tablePerPage: Int = 1
@@ -36,7 +36,7 @@ class CourseTableSetting extends LongIdObject() {
   
   var kind: String = _
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  
   
   var semester: Semester = _
 

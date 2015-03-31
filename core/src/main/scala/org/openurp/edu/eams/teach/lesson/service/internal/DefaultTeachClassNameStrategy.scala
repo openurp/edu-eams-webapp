@@ -20,6 +20,7 @@ import DefaultTeachClassNameStrategy._
 import org.beangle.commons.entity.metadata.Model
 import javax.validation.constraints.Size
 
+
 object DefaultTeachClassNameStrategy {
 
   private var fullnameMaxSize: java.lang.Integer = _

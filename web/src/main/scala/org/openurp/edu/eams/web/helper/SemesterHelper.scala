@@ -1,7 +1,7 @@
 package org.openurp.edu.eams.web.helper
 
 
-import javax.persistence.EntityNotFoundException
+NotFoundException
 import javax.servlet.http.HttpServletRequest
 import org.apache.struts2.ServletActionContext
 import org.beangle.data.model.dao.EntityDao

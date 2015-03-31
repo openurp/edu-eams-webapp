@@ -1,10 +1,10 @@
 package org.openurp.edu.eams.teach.schedule.model
 
 import java.io.Serializable
-import javax.persistence.Entity
-import javax.validation.constraints.NotNull
-import javax.validation.constraints.Size
-import org.beangle.commons.entity.pojo.LongIdObject
+
+
+
+import org.beangle.data.model.bean.LongIdBean
 import org.beangle.commons.lang.Numbers
 import org.beangle.commons.lang.Objects
 import org.beangle.commons.lang.Strings
@@ -36,8 +36,8 @@ object AvailableTime {
 }
 
 @SerialVersionUID(-3056451280716927057L)
-@Entity(name = "org.openurp.edu.eams.teach.schedule.model.AvailableTime")
-class AvailableTime extends LongIdObject with Serializable with Cloneable {
+
+class AvailableTime extends LongIdBean with Serializable with Cloneable {
 
   def this(available: String) {
     this()
@@ -53,17 +53,17 @@ class AvailableTime extends LongIdObject with Serializable with Cloneable {
     time
   }
 
-  @NotNull
-  @Size(max = 200)
+  
+  
   
   var available: String = _
 
-  @Size(max = 200)
+  
   
   var remark: String = _
 
-  @NotNull
-  @Size(max = 20)
+  
+  
   
   var struct: String = AvailableTime.STRUCTS
 

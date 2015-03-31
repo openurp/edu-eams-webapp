@@ -2,12 +2,12 @@ package org.openurp.edu.eams.teach.schedule.model
 
 import java.util.Date
 
-import javax.persistence.Entity
-import javax.persistence.FetchType
-import javax.persistence.ManyToOne
-import javax.validation.constraints.NotNull
-import javax.validation.constraints.Size
-import org.beangle.commons.entity.pojo.LongIdObject
+
+
+
+
+
+import org.beangle.data.model.bean.LongIdBean
 import org.openurp.base.Semester
 import org.openurp.edu.base.Student
 import org.openurp.edu.teach.lesson.Lesson
@@ -16,16 +16,16 @@ import org.openurp.edu.teach.lesson.Lesson
 
 
 @SerialVersionUID(-8117374983277305725L)
-@Entity(name = "org.openurp.edu.eams.teach.schedule.model.CourseTableCheck")
-class CourseTableCheck extends LongIdObject() {
 
-  @NotNull
-  @ManyToOne(fetch = FetchType.LAZY)
+class CourseTableCheck extends LongIdBean() {
+
+  
+  
   
   var std: Student = _
 
-  @NotNull
-  @ManyToOne(fetch = FetchType.LAZY)
+  
+  
   
   var semester: Semester = _
 
@@ -38,7 +38,7 @@ class CourseTableCheck extends LongIdObject() {
   
   var confirm: Boolean = true
 
-  @Size(max = 500)
+  
   
   var remark: String = _
 

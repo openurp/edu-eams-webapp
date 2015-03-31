@@ -3,7 +3,7 @@ package org.openurp.edu.eams.core.web.action
 import java.util.Date
 
 
-import javax.persistence.EntityExistsException
+ExistsException
 import org.beangle.commons.collection.Collections
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.entity.metadata.Model

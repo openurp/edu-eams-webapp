@@ -1,17 +1,9 @@
 package org.openurp.edu.eams.teach.election.model.constraint
 
-import javax.persistence.MappedSuperclass
-import javax.validation.constraints.NotNull
-import org.beangle.commons.entity.pojo.LongIdObject
-
-
-
+import org.beangle.data.model.bean.LongIdBean
 
 @SerialVersionUID(6763813672438837820L)
-@MappedSuperclass
-abstract class AbstractCreditConstraint extends LongIdObject {
-
-  @NotNull
+abstract class AbstractCreditConstraint extends LongIdBean {
   
   var maxCredit: java.lang.Float = _
 }

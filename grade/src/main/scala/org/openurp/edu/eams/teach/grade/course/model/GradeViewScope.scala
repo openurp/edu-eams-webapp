@@ -1,11 +1,11 @@
 package org.openurp.edu.eams.teach.grade.course.model
 
 
-import javax.persistence.Entity
+
 import javax.persistence.ManyToMany
 import org.beangle.commons.collection.Collections
 import org.beangle.commons.entity.metadata.Model
-import org.beangle.commons.entity.pojo.LongIdObject
+import org.beangle.data.model.bean.LongIdBean
 import org.openurp.edu.base.Project
 import org.openurp.code.edu.Education
 import org.openurp.edu.base.code.StdType
@@ -15,18 +15,18 @@ import org.openurp.edu.eams.core.model.ProjectBean
 
 
 @SerialVersionUID(-5774562389434565471L)
-@Entity(name = "org.openurp.edu.eams.teach.grade.course.model.GradeViewScope")
-class GradeViewScope extends LongIdObject {
 
-  @ManyToMany
+class GradeViewScope extends LongIdBean {
+
+  
   
   var projects: Set[Project] = _
 
-  @ManyToMany
+  
   
   var educations: Set[Education] = _
 
-  @ManyToMany
+  
   
   var stdTypes: Set[StdType] = _
 

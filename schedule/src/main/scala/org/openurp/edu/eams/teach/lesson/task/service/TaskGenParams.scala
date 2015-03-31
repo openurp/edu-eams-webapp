@@ -2,7 +2,7 @@ package org.openurp.edu.eams.teach.lesson.task.service
 
 
 
-import org.beangle.commons.entity.pojo.LongIdObject
+import org.beangle.data.model.bean.LongIdBean
 import org.openurp.base.Semester
 import org.openurp.edu.eams.base.code.school.RoomType
 import org.openurp.edu.base.Course
@@ -12,7 +12,7 @@ import org.openurp.edu.base.code.CourseType
 
 
 @SerialVersionUID(7046399461690215375L)
-class TaskGenParams extends LongIdObject {
+class TaskGenParams extends LongIdBean {
 
   
   var semester: Semester = _

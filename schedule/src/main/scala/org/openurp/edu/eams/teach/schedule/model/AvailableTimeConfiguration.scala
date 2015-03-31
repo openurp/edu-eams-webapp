@@ -1,12 +1,12 @@
 package org.openurp.edu.eams.teach.schedule.model
 
-import org.beangle.commons.entity.pojo.LongIdObject
+import org.beangle.data.model.bean.LongIdBean
 
 
 
 
 @SerialVersionUID(3240925805188364485L)
-class AvailableTimeConfiguration extends LongIdObject() {
+class AvailableTimeConfiguration extends LongIdBean() {
 
   
   var name: String = _

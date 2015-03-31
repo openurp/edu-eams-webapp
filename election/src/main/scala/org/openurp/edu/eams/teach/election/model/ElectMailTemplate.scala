@@ -1,8 +1,8 @@
 package org.openurp.edu.eams.teach.election.model
 
-import javax.persistence.Entity
-import javax.validation.constraints.NotNull
-import org.beangle.commons.entity.pojo.LongIdObject
+
+
+import org.beangle.data.model.bean.LongIdBean
 import ElectMailTemplate._
 
 
@@ -14,14 +14,14 @@ object ElectMailTemplate {
 }
 
 @SerialVersionUID(-4430290657221915091L)
-@Entity(name = "org.openurp.edu.eams.teach.election.model.ElectMailTemplate")
-class ElectMailTemplate extends LongIdObject {
 
-  @NotNull
+class ElectMailTemplate extends LongIdBean {
+
+  
   
   var title: String = _
 
-  @NotNull
+  
   
   var content: String = _
 }

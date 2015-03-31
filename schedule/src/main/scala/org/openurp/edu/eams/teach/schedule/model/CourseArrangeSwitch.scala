@@ -1,10 +1,10 @@
 package org.openurp.edu.eams.teach.schedule.model
 
-import javax.persistence.Entity
-import javax.persistence.FetchType
-import javax.persistence.ManyToOne
-import org.beangle.commons.entity.pojo.LongIdObject
-import org.hibernate.annotations.NaturalId
+
+
+
+import org.beangle.data.model.bean.LongIdBean
+
 import org.openurp.base.Semester
 import org.openurp.edu.base.Project
 
@@ -12,16 +12,16 @@ import org.openurp.edu.base.Project
 
 
 @SerialVersionUID(-1830248177687127758L)
-@Entity(name = "org.openurp.edu.eams.teach.schedule.model.CourseArrangeSwitch")
-class CourseArrangeSwitch extends LongIdObject {
 
-  @NaturalId
-  @ManyToOne(fetch = FetchType.LAZY)
+class CourseArrangeSwitch extends LongIdBean {
+
+  
+  
   
   var semester: Semester = _
 
-  @NaturalId
-  @ManyToOne(fetch = FetchType.LAZY)
+  
+  
   
   var project: Project = _
 

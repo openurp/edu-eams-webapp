@@ -3,15 +3,14 @@ package org.openurp.edu.eams.teach.schedule.dao.hibernate
 
 
 import org.beangle.commons.collection.Collections
-import org.beangle.commons.entity.util.EntityUtils
 import org.beangle.data.jpa.hibernate.HibernateEntityDao
 import org.hibernate.Query
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.teach.schedule.dao.CourseActivityDao
+import org.hibernate.SessionFactory
 
 
-
-class CourseActivityDaoHibernate extends HibernateEntityDao with CourseActivityDao {
+class CourseActivityDaoHibernate(sf:SessionFactory) extends HibernateEntityDao(sf) with CourseActivityDao {
 
   def removeActivities(lessons: Iterable[Lesson]) {
     val getJSZYHQL = "select jszy.id from RoomOccupation jszy where jszy.id in (select kchd.roomOccupation.id from CourseActivity kchd where kchd.task in (:tasks))"

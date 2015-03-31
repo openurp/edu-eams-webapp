@@ -1,14 +1,14 @@
 package org.openurp.edu.eams.teach.grade.course.model
 
-import javax.persistence.Entity
-import org.beangle.commons.entity.pojo.LongIdObject
+
+import org.beangle.data.model.bean.LongIdBean
 
 
 
 
 @SerialVersionUID(428221810871042136L)
-@Entity(name = "org.openurp.edu.eams.teach.grade.course.model.ScoreSection")
-class ScoreSection extends LongIdObject {
+
+class ScoreSection extends LongIdBean {
 
   
   var fromScore: Float = _

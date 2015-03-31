@@ -4,7 +4,7 @@ import java.util.Date
 
 
 
-import javax.persistence.EntityExistsException
+ExistsException
 import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.data.jpa.dao.OqlBuilder

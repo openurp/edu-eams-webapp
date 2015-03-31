@@ -5,7 +5,7 @@ package org.openurp.edu.eams.teach.program.majorapply.model
 import javax.persistence.CollectionTable
 import javax.persistence.Column
 import javax.persistence.ElementCollection
-import javax.persistence.Entity
+
 import javax.persistence.JoinColumn
 import javax.persistence.MapKeyColumn
 import javax.persistence.OneToOne
@@ -18,7 +18,7 @@ import org.openurp.edu.teach.plan.MajorCourseGroup
 
 
 @SerialVersionUID(7799663739549705026L)
-@Entity(name = "org.openurp.edu.eams.teach.program.majorapply.model.MajorPlanCourseModifyDetailAfterBean")
+
 @Table(name = "T_MAJOR_PLAN_C_MOD_AFTERS")
 class MajorPlanCourseModifyDetailAfterBean extends MajorPlanCourseModifyDetailBean() {
 

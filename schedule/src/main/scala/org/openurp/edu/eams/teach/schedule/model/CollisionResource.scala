@@ -1,18 +1,10 @@
 package org.openurp.edu.eams.teach.schedule.model
 
-import javax.persistence.Entity
-import javax.persistence.EnumType
-import javax.persistence.Enumerated
-import javax.persistence.FetchType
-import javax.persistence.ManyToOne
-import org.beangle.commons.entity.pojo.LongIdObject
-import org.hibernate.annotations.NaturalId
+
 import org.openurp.base.Semester
 import org.openurp.edu.teach.lesson.Lesson
-import CollisionResource._
 
-
-
+import org.beangle.data.model.bean.LongIdBean
 
 object CollisionResource {
 
@@ -32,34 +24,21 @@ object CollisionResource {
   }
 }
 
-@SerialVersionUID(1L)
-@Entity(name = "org.openurp.edu.eams.teach.schedule.model.CollisionResource")
-class CollisionResource extends LongIdObject() {
-
-  @NaturalId
-  @ManyToOne(fetch = FetchType.LAZY)
-  
+class CollisionResource extends LongIdBean {
+  import CollisionResource._
   var semester: Semester = _
 
-  @NaturalId
-  @ManyToOne(fetch = FetchType.LAZY)
-  
   var lesson: Lesson = _
 
-  @NaturalId
-  
   var resourceId: String = _
 
-  @NaturalId
-  @Enumerated(value = EnumType.STRING)
-  
   var resourceType: ResourceType = _
 
-  def this(semester: Semester, 
-      lesson: Lesson, 
-      resourceId: String, 
-      resourceType: ResourceType) {
-    super()
+  def this(semester: Semester,
+    lesson: Lesson,
+    resourceId: String,
+    resourceType: ResourceType) {
+    this()
     this.semester = semester
     this.lesson = lesson
     this.resourceId = resourceId

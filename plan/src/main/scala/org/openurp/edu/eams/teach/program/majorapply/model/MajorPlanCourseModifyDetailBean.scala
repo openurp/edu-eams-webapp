@@ -1,11 +1,11 @@
 package org.openurp.edu.eams.teach.program.majorapply.model
 
 
-import javax.persistence.FetchType
-import javax.persistence.ManyToOne
-import javax.persistence.MappedSuperclass
+
+
+
 import org.apache.commons.beanutils.PropertyUtils
-import org.beangle.commons.entity.pojo.LongIdObject
+import org.beangle.data.model.bean.LongIdBean
 import org.beangle.commons.lang.Objects
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.lang.Throwables
@@ -21,13 +21,13 @@ import org.openurp.edu.eams.teach.program.majorapply.model.component.FakeCourseG
 
 
 @SerialVersionUID(5552733977609925991L)
-@MappedSuperclass
-abstract class MajorPlanCourseModifyDetailBean extends LongIdObject with Comparable[_] with Cloneable {
 
-  @ManyToOne(fetch = FetchType.LAZY)
+abstract class MajorPlanCourseModifyDetailBean extends LongIdBean with Comparable[_] with Cloneable {
+
+  
   protected var course: Course = _
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  
   protected var department: Department = _
 
   protected var terms: String = _

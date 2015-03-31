@@ -1,12 +1,12 @@
 package org.openurp.edu.eams.teach.grade.course.model
 
-import javax.persistence.Entity
-import javax.persistence.EnumType
-import javax.persistence.Enumerated
-import javax.persistence.FetchType
-import javax.persistence.ManyToOne
-import javax.validation.constraints.NotNull
-import javax.validation.constraints.Size
+
+
+
+
+
+
+
 import org.beangle.commons.entity.pojo.NumberIdTimeObject
 import org.openurp.base.Semester
 import org.openurp.edu.base.Project
@@ -56,41 +56,41 @@ object GradeModifyApplyBean {
 }
 
 @SerialVersionUID(-4325413107423926231L)
-@Entity(name = "org.openurp.edu.eams.teach.grade.course.model.GradeModifyApply")
+
 class GradeModifyApplyBean extends NumberIdTimeObject[Long] with GradeModifyApply {
 
-  @NotNull
-  @ManyToOne(fetch = FetchType.LAZY)
+  
+  
   
   var std: Student = _
 
-  @NotNull
-  @ManyToOne(fetch = FetchType.LAZY)
+  
+  
   
   var semester: Semester = _
 
-  @NotNull
-  @ManyToOne(fetch = FetchType.LAZY)
+  
+  
   
   var project: Project = _
 
-  @NotNull
-  @ManyToOne(fetch = FetchType.LAZY)
+  
+  
   
   var course: Course = _
 
-  @NotNull
-  @ManyToOne(fetch = FetchType.LAZY)
+  
+  
   
   var gradeType: GradeType = _
 
-  @NotNull
-  @ManyToOne(fetch = FetchType.LAZY)
+  
+  
   
   var examStatus: ExamStatus = _
 
-  @NotNull
-  @ManyToOne(fetch = FetchType.LAZY)
+  
+  
   
   var examStatusBefore: ExamStatus = _
 
@@ -106,7 +106,7 @@ class GradeModifyApplyBean extends NumberIdTimeObject[Long] with GradeModifyAppl
   
   var scoreText: String = _
 
-  @NotNull
+  
   @Enumerated(value = EnumType.STRING)
   
   var status: GradeModifyStatus = GradeModifyStatus.NOT_AUDIT
@@ -117,15 +117,15 @@ class GradeModifyApplyBean extends NumberIdTimeObject[Long] with GradeModifyAppl
   
   var auditReason: String = _
 
-  @Size(max = 50)
+  
   
   var applyer: String = _
 
-  @Size(max = 50)
+  
   
   var auditer: String = _
 
-  @Size(max = 50)
+  
   
   var finalAuditer: String = _
 

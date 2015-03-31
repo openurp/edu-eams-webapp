@@ -1,22 +1,16 @@
 package org.openurp.edu.eams.teach.election.model.constraint
 
 import java.util.Date
-import javax.persistence.Entity
-import javax.persistence.EnumType
-import javax.persistence.Enumerated
-import javax.persistence.FetchType
-import javax.persistence.ManyToOne
-import javax.validation.constraints.NotNull
-import javax.validation.constraints.Size
-import org.beangle.commons.entity.pojo.LongIdObject
+
+
+
+
+import org.beangle.data.model.bean.LongIdBean
 import org.openurp.base.Semester
 import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.eams.teach.election.CourseTypeCreditConstraint
 import org.openurp.edu.eams.teach.election.model.Enum.ConstraintType
 import ConstraintLogger._
-
-
-
 
 object ConstraintLogger {
 
@@ -86,35 +80,19 @@ object ConstraintLogger {
 }
 
 @SerialVersionUID(-3518168114908289841L)
-@Entity(name = "org.openurp.edu.eams.teach.election.model.constraint.ConstraintLogger")
-class ConstraintLogger extends LongIdObject() {
+class ConstraintLogger extends LongIdBean() {
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  
   var semester: Semester = _
 
-  @NotNull
-  @Enumerated(value = EnumType.STRING)
-  
   var constraintType: ConstraintType = _
 
-  @NotNull
-  @Size(max = 30)
-  
   var `type`: String = _
 
-  @NotNull
-  
   var key: String = _
 
-  
   var value: String = _
 
-  @NotNull
-  
   var createdAt: Date = _
 
-  @NotNull
-  
   var operator: String = _
 }

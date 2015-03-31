@@ -1,10 +1,7 @@
 package org.openurp.edu.eams.core.service.internal
 
 import java.sql.Date
-
 import java.util.GregorianCalendar
-
-import javax.persistence.EntityNotFoundException
 import org.beangle.commons.collection.Collections
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.beangle.data.jpa.dao.OqlBuilder
@@ -14,6 +11,7 @@ import org.openurp.base.Calendar
 import org.openurp.base.model.SemesterBean
 import org.openurp.edu.base.Project
 import org.openurp.edu.eams.core.service.SemesterService
+import javax.persistence.EntityNotFoundException
 
 class SemesterServiceImpl extends BaseServiceImpl with SemesterService {
 
