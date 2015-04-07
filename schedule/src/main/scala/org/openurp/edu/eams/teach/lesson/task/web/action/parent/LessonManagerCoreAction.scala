@@ -1,19 +1,8 @@
 package org.openurp.edu.eams.teach.lesson.task.web.action.parent
 
-import org.beangle.commons.web.util.RequestUtils.encodeAttachName
 import java.io.IOException
-
 import java.util.Date
-
-
 import java.util.LinkedHashMap
-
-
-
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
-import org.apache.commons.lang3.ArrayUtils
-import org.apache.struts2.ServletActionContext
 import org.beangle.commons.collection.Collections
 import org.beangle.commons.collection.Order
 import org.beangle.commons.collection.page.PageLimit
@@ -22,25 +11,11 @@ import org.beangle.data.model.Entity
 import org.beangle.commons.entity.metadata.Model
 import org.beangle.commons.lang.Arrays
 import org.beangle.commons.lang.Strings
-
-import org.beangle.commons.transfer.TransferResult
-import org.beangle.commons.transfer.excel.ExcelTemplateWriter
-import org.beangle.commons.transfer.exporter.Context
-import org.beangle.commons.transfer.exporter.DefaultPropertyExtractor
-import org.beangle.commons.transfer.exporter.Exporter
-import org.beangle.commons.transfer.exporter.TemplateExporter
-import org.beangle.commons.transfer.io.TransferFormat
-import org.beangle.commons.web.util.RequestUtils
-import org.beangle.ems.config.model.PropertyConfigItemBean
-import org.beangle.struts2.convention.route.Action
 import org.openurp.base.Campus
 import org.openurp.base.Department
 import org.openurp.base.Semester
 import org.openurp.code.person.Gender
-import org.openurp.edu.eams.base.code.school.RoomType
-import org.openurp.edu.eams.base.model.WeekState
 import org.beangle.commons.lang.time.WeekDays
-import org.openurp.edu.eams.base.util.WeekStates
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.eams.core.CommonAuditState
 import org.openurp.edu.base.Project
@@ -48,31 +23,18 @@ import org.openurp.code.edu.Education
 import org.openurp.edu.base.code.StdType
 import org.openurp.edu.eams.core.service.AdminclassService
 import org.openurp.edu.eams.core.service.TimeSettingService
-import org.openurp.edu.eams.system.doc.service.DocPath
 import org.openurp.edu.base.Course
-import org.openurp.edu.eams.teach.code.industry.ExamMode
-import org.openurp.edu.eams.teach.code.industry.ExamType
-import org.openurp.edu.eams.teach.code.industry.TeachLangType
-import org.openurp.edu.eams.teach.code.school.CourseHourType
 import org.openurp.edu.base.code.CourseType
-import org.openurp.edu.eams.teach.exam.ExamTurn
 import org.openurp.edu.eams.teach.exam.service.ExamYearWeekTimeUtil
 import org.openurp.edu.teach.lesson.LessonLimitGroup
 import org.openurp.edu.teach.lesson.LessonLimitItem
 import org.openurp.edu.teach.lesson.LessonLimitMeta
-import org.openurp.edu.teach.lesson.LessonLimitMeta.Operator
 import org.openurp.edu.teach.lesson.CourseTake
 import org.openurp.edu.teach.exam.ExamActivity
 import org.openurp.edu.teach.lesson.Lesson
-import org.openurp.edu.teach.lesson.LessonTag
 import org.openurp.edu.teach.lesson.TeachClass
 import org.openurp.edu.eams.teach.lesson.dao.LessonDao
 import org.openurp.edu.eams.teach.lesson.dao.LessonSeqNoGenerator
-import org.openurp.edu.eams.teach.lesson.model.LessonLimitMetaBean
-import org.openurp.edu.eams.teach.lesson.model.CourseScheduleBean
-import org.openurp.edu.eams.teach.lesson.model.CourseScheduleBean.CourseStatusEnum
-import org.openurp.edu.eams.teach.lesson.model.LessonTagBean
-import org.openurp.edu.eams.teach.lesson.model.NormalClassBean
 import org.openurp.edu.teach.lesson.model.TeachClassBean
 import org.openurp.edu.eams.teach.lesson.service.LessonLimitGroupBuilder
 import org.openurp.edu.eams.teach.lesson.service.LessonLogBuilder
@@ -82,8 +44,6 @@ import org.openurp.edu.eams.teach.lesson.service.TaskCopyParams
 import org.openurp.edu.eams.teach.lesson.service.TeachClassNameStrategy
 import org.openurp.edu.eams.teach.lesson.service.limit.LessonLimitItemContentProvider
 import org.openurp.edu.eams.teach.lesson.service.limit.LessonLimitItemContentProviderFactory
-import org.openurp.edu.eams.teach.lesson.service.limit.LessonLimitMetaEnum
-import org.openurp.edu.eams.teach.lesson.service.limit.LessonLimitMetaEnumProvider
 import org.openurp.edu.eams.teach.lesson.task.service.LessonCollegeSwitchService
 import org.openurp.edu.eams.teach.lesson.task.service.LessonMergeSplitService
 import org.openurp.edu.eams.teach.lesson.task.service.helper.LessonExamArrangeHelper
@@ -94,8 +54,19 @@ import org.openurp.edu.eams.teach.lesson.task.util.ProjectUtils
 import org.openurp.edu.eams.teach.lesson.task.web.action.TeachTaskSearchAction
 import org.openurp.edu.eams.teach.lesson.util.CourseActivityDigestor
 import org.openurp.edu.eams.teach.lesson.util.YearWeekTimeUtil
-import org.openurp.edu.eams.web.helper.BaseInfoSearchHelper
 import LessonManagerCoreAction._
+import org.openurp.edu.teach.lesson.LessonLimitMeta
+import org.openurp.edu.teach.code.LessonTag
+import org.openurp.edu.teach.lesson.model.CourseScheduleBean
+import org.openurp.edu.base.code.CourseHourType
+import org.openurp.edu.teach.code.TeachLangType
+import org.openurp.edu.teach.code.model.LessonTagBean
+import org.openurp.edu.eams.teach.lesson.service.LessonOperateViolation
+import org.openurp.base.code.RoomType
+import org.openurp.edu.base.code.ExamMode
+import org.mockito.internal.util.collections.ArrayUtils
+import org.openurp.edu.teach.code.ExamType
+import org.openurp.edu.eams.weekstate.WeekStates
 
 
 

@@ -6,6 +6,9 @@ import java.util.Timer
 import java.util.TimerTask
 import java.util.concurrent.BlockingQueue
 import java.util.concurrent.LinkedBlockingQueue
+import org.beangle.commons.collection.Collections
+import scala.collection.mutable.HashMap
+import ch.qos.logback.core.status.Status
 
 
 
@@ -41,7 +44,7 @@ abstract class AbstractAjaxProgressBar extends AjaxProgressBar {
   }
 
   def notify(kind: Status, message: String, increase: Boolean) {
-    val json = new HashMap[String, String]()
+    val json = Collections.newMap[String, String]
     json.put("status", kind.toString)
     json.put("message", message)
     json.put("increase", java.lang.Boolean.toString(increase))
@@ -52,7 +55,7 @@ abstract class AbstractAjaxProgressBar extends AjaxProgressBar {
       message: String, 
       increase: Boolean, 
       extras: Pair[String, String]*) {
-    val json = new HashMap[String, String]()
+    val json = Collections.newMap[String, String]
     json.put("status", kind.toString)
     json.put("message", message)
     json.put("increase", java.lang.Boolean.toString(increase))

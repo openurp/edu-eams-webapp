@@ -1,7 +1,6 @@
 package org.openurp.edu.eams.teach.lesson.task.dao.hibernate
 
 
-import org.beangle.commons.entity.util.EntityUtils
 import org.beangle.data.jpa.hibernate.HibernateEntityDao
 import org.hibernate.SQLQuery
 import org.hibernate.`type`.StandardBasicTypes

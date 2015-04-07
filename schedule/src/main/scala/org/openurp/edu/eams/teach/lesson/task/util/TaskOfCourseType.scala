@@ -25,8 +25,8 @@ class TaskOfCourseType {
   }
 
   override def toString(): String = {
-    (if ((null == courseType)) "null" else courseType.getName) + 
+    (if ((null == courseType)) "null" else courseType.name) + 
       " " + 
-      (if ((null == adminclass)) "null" else adminclass.getName)
+      (if ((null == adminclass)) "null" else adminclass.name)
   }
 }

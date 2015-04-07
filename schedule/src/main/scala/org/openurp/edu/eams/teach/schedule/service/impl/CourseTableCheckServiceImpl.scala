@@ -22,7 +22,7 @@ class CourseTableCheckServiceImpl extends BaseServiceImpl with CourseTableCheckS
   def statCheckBy(semester: Semester, 
       dataRealm: DataRealm, 
       attr: String, 
-      clazz: Class[_]): List[_] = {
+      clazz: Class[_]): Seq[_] = {
     statCheckBy(semester, dataRealm, Array("check.std.stdType.id", "check.std.department.id"), attr, 
       clazz)
   }
@@ -31,7 +31,7 @@ class CourseTableCheckServiceImpl extends BaseServiceImpl with CourseTableCheckS
       dataRealm: DataRealm, 
       dataRealmAttrs: Array[String], 
       attr: String, 
-      clazz: Class[_]): List[_] = {
+      clazz: Class[_]): Seq[_] = {
     val entityQuery = OqlBuilder.from(classOf[CourseTableCheck], "check")
     entityQuery.select("select new  org.openurp.edu.eams.util.stat.StatItem(" + 
       attr + 
@@ -43,7 +43,7 @@ class CourseTableCheckServiceImpl extends BaseServiceImpl with CourseTableCheckS
     new StatHelper(entityDao).setStatEntities(stats, clazz)
   }
 
-  def statCheckByDepart(semester: Semester, dataRealm: DataRealm, project: Project): List[_] = {
+  def statCheckByDepart(semester: Semester, dataRealm: DataRealm, project: Project): Seq[_] = {
     val query = OqlBuilder.from(classOf[CourseTableCheck], "check")
     query.select("check.std.type.id,check.std.department.id,check.std.grade,count(check.confirm),sum(CASE WHEN check.confirm=true THEN 1 ELSE 0 END )")
     query.where("check.semester=:semester", semester)

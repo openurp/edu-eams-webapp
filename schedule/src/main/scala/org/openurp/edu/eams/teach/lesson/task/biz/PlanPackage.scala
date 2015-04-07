@@ -3,11 +3,13 @@ package org.openurp.edu.eams.teach.lesson.task.biz
 
 
 
-import java.util.TreeSet
 import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.teach.lesson.task.biz.comparator.LessonComparator
 import org.openurp.edu.teach.plan.MajorPlan
+import org.beangle.commons.collection.Collections
+import scala.collection.mutable.HashSet
+import java.util.ArrayList
 
 
 
@@ -21,46 +23,47 @@ class PlanPackage {
   var plan: MajorPlan = _
 
   
-  var groupPackages: List[CourseGroupPackage] = new ArrayList[CourseGroupPackage]()
+  var groupPackages = Collections.newBuffer[CourseGroupPackage]
 
   
-  var classPackages: List[AdminclassPackage] = new ArrayList[AdminclassPackage]()
+  var classPackages = Collections.newBuffer[AdminclassPackage]
 
   
   var otherClassPackage: AdminclassPackage = new AdminclassPackage()
 
   def getGroupPackage(courseType: CourseType): CourseGroupPackage = {
-    groupPackages.find(_.getCourseGroup.getCourseType == courseType)
+    groupPackages.find(_.courseGroup.courseType == courseType)
       .getOrElse(null)
   }
 
-  def getLessons(): List[Lesson] = {
-    val result = new TreeSet[Lesson](LessonComparator.COMPARATOR)
+  def getLessons(): HashSet[Lesson] = {
+//    val result = new TreeSet[Lesson](LessonComparator.COMPARATOR)
+    val result = new HashSet[Lesson]
     for (pkg <- classPackages) {
-      result.addAll(pkg.getLessons)
+      result++=(pkg.getLessons)
     }
-    result.addAll(otherClassPackage.getLessons)
-    new ArrayList[Lesson](result)
+    result++=(otherClassPackage.getLessons)
+    result
   }
 
-  def getCourseTypesOfPlan(): List[CourseType] = {
-    val result = new ArrayList[CourseType]()
+  def getCourseTypesOfPlan() = {
+    val result = Collections.newBuffer[CourseType]
     for (pkg <- groupPackages) {
-      result.add(pkg.getCourseGroup.getCourseType)
+      result += (pkg.courseGroup.courseType)
     }
-    for (classPackage <- classPackages; courseTypePackage <- classPackage.getCourseTypePackages if !result.contains(courseTypePackage.getCourseType)) {
-      result.add(courseTypePackage.getCourseType)
+    for (classPackage <- classPackages; courseTypePackage <- classPackage.courseTypePackages if !result.contains(courseTypePackage.courseType)) {
+      result +=(courseTypePackage.courseType)
     }
-    for (courseTypePackage <- otherClassPackage.getCourseTypePackages if !result.contains(courseTypePackage.getCourseType)) {
-      result.add(courseTypePackage.getCourseType)
+    for (courseTypePackage <- otherClassPackage.courseTypePackages if !result.contains(courseTypePackage.courseType)) {
+      result += (courseTypePackage.courseType)
     }
     result
   }
 
-  def getCourseTypesOfPackage(): List[CourseType] = {
+  def getCourseTypesOfPackage = {
     val result = getCourseTypesOfPlan
-    for (pkg <- classPackages; pkg1 <- pkg.getCourseTypePackages if !result.contains(pkg1.getCourseType)) {
-      result.add(pkg1.getCourseType)
+    for (pkg <- classPackages; pkg1 <- pkg.courseTypePackages if !result.contains(pkg1.courseType)) {
+      result+=(pkg1.courseType)
     }
     result
   }

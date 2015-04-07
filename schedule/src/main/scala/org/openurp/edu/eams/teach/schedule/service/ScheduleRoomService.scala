@@ -7,7 +7,6 @@ import org.openurp.base.Room
 import org.openurp.base.Department
 import org.beangle.commons.lang.time.YearWeekTime
 import org.openurp.edu.teach.schedule.CourseActivity
-import org.openurp.edu.eams.teach.lesson.CourseTime
 
 
 
@@ -19,5 +18,5 @@ trait ScheduleRoomService {
 
   def getFreeRoomsOfConditions(units: Array[YearWeekTime]): OqlBuilder[Room]
 
-  def getRooms(classroom: Room, departments: List[Department], pageLimit: PageLimit): List[Room]
+  def getRooms(classroom: Room, departments: List[Department], pageLimit: PageLimit): Seq[Room]
 }

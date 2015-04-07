@@ -11,7 +11,7 @@ import org.openurp.edu.base.Project
 
 
 
-@SerialVersionUID(-1830248177687127758L)
+//@SerialVersionUID(-1830248177687127758L)
 
 class CourseArrangeSwitch extends LongIdBean {
 

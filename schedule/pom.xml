@@ -17,6 +17,11 @@
 			<artifactId>openurp-edu-eams-web</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+    <dependency>
+      <groupId>org.openurp.code</groupId>
+      <artifactId>openurp-code-model-job</artifactId>
+      <version>0.0.2-SNAPSHOT</version>
+    </dependency>
 	</dependencies>
 </project>
 

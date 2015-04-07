@@ -1,7 +1,6 @@
 package org.openurp.edu.eams.teach.lesson.task
 
 import org.beangle.commons.inject.bind.AbstractBindModule
-
 import org.springframework.transaction.interceptor.TransactionProxyFactoryBean
 import org.openurp.edu.eams.teach.lesson.service.limit.LessonLimitMetaEnum
 import org.openurp.edu.eams.teach.lesson.service.limit.impl.LessonLimitAdminclassProvider
@@ -37,6 +36,7 @@ import org.openurp.edu.eams.teach.lesson.task.web.action.TeachTaskCollegeAction
 import org.openurp.edu.eams.teach.lesson.task.web.action.TeachTaskGenAction
 import org.openurp.edu.eams.teach.lesson.task.web.action.TeachTaskSearchAction
 import org.openurp.edu.eams.teach.lesson.task.web.action.parent.LessonPlanCheckAction
+import org.openurp.edu.teach.lesson.LessonLimitMeta
 
 
 
@@ -48,7 +48,6 @@ class LessonModule extends AbstractBindModule {
     bind(classOf[TeachTaskGenAction])
     bind(classOf[LessonStatisticAction], classOf[LessonMultiDimensionStatAction])
     bind(classOf[LessonPlanCheckAction])
-    bind("lessonLimitMetaEnumProvider", classOf[DefaultLessonLimitMetaEnumProvider])
     bind("lessonLimitItemContentProviderFactory", classOf[DefaultLessonLimitItemContentProviderFactory])
       .property("providers", map(new Pair[Any, Any](LessonLimitMeta.Grade, classOf[LessonLimitGradeProvider]), 
       new Pair[Any, Any](LessonLimitMeta.StdType, classOf[LessonLimitStdTypeProvider]), new Pair[Any, Any](LessonLimitMeta.Gender, 
@@ -56,7 +55,7 @@ class LessonModule extends AbstractBindModule {
       new Pair[Any, Any](LessonLimitMeta.Major, classOf[LessonLimitMajorProvider]), new Pair[Any, Any](LessonLimitMeta.Direction, 
       classOf[LessonLimitDirectionProvider]), new Pair[Any, Any](LessonLimitMeta.Adminclass, classOf[LessonLimitAdminclassProvider]), 
       new Pair[Any, Any](LessonLimitMeta.Education, classOf[LessonLimitEducationProvider]), new Pair[Any, Any](LessonLimitMeta.Program, 
-      classOf[LessonLimitProgramProvider]), new Pair[Any, Any](LessonLimitMetaEnum.NORMALCLASS, classOf[LessonLimitNormalclassProvider]), 
+      classOf[LessonLimitProgramProvider]), 
       new Pair[Any, Any](LessonLimitMeta.StdLabel, classOf[LessonLimitStdLabelProvider])))
     bind("lessonExamArrangeHelper", classOf[LessonExamArrangeHelper])
     bind("lessonStatDao", classOf[TransactionProxyFactoryBean])
@@ -65,7 +64,6 @@ class LessonModule extends AbstractBindModule {
     bind("teachTaskGenService", classOf[TeachTaskGenServiceImpl])
     bind("lessonStatService", classOf[LessonStatServiceImpl])
     bind("lessonPlanCheckService", classOf[LessonPlanCheckServiceImpl])
-    bind("lessonPlanRelationService", classOf[LessonPlanRelationServiceImpl])
     bind("lessonMergeSplitService", classOf[LessonMergeSplitServiceImpl])
     bind("lessonCollegeSwitchService", classOf[LessonCollegeSwitchServiceImpl])
     bind("lessonGenService", classOf[LessonGenServiceImpl])

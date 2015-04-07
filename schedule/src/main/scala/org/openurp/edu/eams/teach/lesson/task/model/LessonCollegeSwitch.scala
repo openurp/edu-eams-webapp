@@ -11,20 +11,13 @@ import org.openurp.edu.base.Project
 
 
 
-@SerialVersionUID(722650431966747311L)
+//@SerialVersionUID(722650431966747311L)
 
 class LessonCollegeSwitch extends LongIdBean {
 
-  
-  
-  
   var project: Project = _
 
-  
-  
-  
   var semester: Semester = _
 
-  
   var open: Boolean = _
 }

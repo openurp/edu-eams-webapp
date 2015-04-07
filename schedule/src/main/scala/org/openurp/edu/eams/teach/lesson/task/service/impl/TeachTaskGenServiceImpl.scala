@@ -2,24 +2,16 @@ package org.openurp.edu.eams.teach.lesson.task.service.impl
 
 import java.sql.Date
 import java.text.MessageFormat
-
-
-
-
 import org.beangle.commons.collection.Collections
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.beangle.commons.lang.Strings
 import org.openurp.base.Semester
-import org.openurp.edu.eams.base.util.WeekStates
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.eams.core.service.SemesterService
 import org.openurp.edu.base.Course
-import org.openurp.edu.eams.teach.lesson.CourseSchedule
 import org.openurp.edu.teach.lesson.Lesson
-import org.openurp.edu.teach.lesson.LessonPlanRelation
 import org.openurp.edu.teach.lesson.TeachClass
 import org.openurp.edu.eams.teach.lesson.dao.LessonDao
-import org.openurp.edu.eams.teach.lesson.model.LessonBean
 import org.openurp.edu.eams.teach.lesson.service.LessonLimitGroupBuilder
 import org.openurp.edu.eams.teach.lesson.service.LessonLimitService
 import org.openurp.edu.eams.teach.lesson.service.LessonLogBuilder
@@ -36,29 +28,31 @@ import org.openurp.edu.teach.plan.MajorPlanCourse
 import org.openurp.edu.eams.teach.program.util.PlanUtils
 import org.openurp.edu.eams.teach.time.util.TermCalculator
 import org.openurp.edu.eams.teach.util.AdminclassQueryBuilder
+import org.openurp.edu.teach.lesson.model.LessonBean
+import org.openurp.edu.eams.weekstate
 
 
 
 class TeachTaskGenServiceImpl extends BaseServiceImpl with TeachTaskGenService {
 
-  private var lessonDao: LessonDao = _
+  var lessonDao: LessonDao = _
 
-  private var lessonLogHelper: LessonLogHelper = _
+  var lessonLogHelper: LessonLogHelper = _
 
-  private var semesterService: SemesterService = _
+  var semesterService: SemesterService = _
 
-  private var lessonLimitService: LessonLimitService = _
+  var lessonLimitService: LessonLimitService = _
 
-  private var lessonPlanRelationService: LessonPlanRelationService = _
+  var lessonPlanRelationService: LessonPlanRelationService = _
 
-  private var teachClassNameStrategy: TeachClassNameStrategy = _
+  var teachClassNameStrategy: TeachClassNameStrategy = _
 
-  def genLessons(planIds: Array[Long], observer: TaskGenObserver, params: TaskGenParams) {
+  def genLessons(planIds: Array[Integer], observer: TaskGenObserver, params: TaskGenParams) {
     if (null != observer) {
       observer.notifyStart(observer.messageOf("info.taskGenInit.start") + "(" + planIds.length + 
         ")", planIds.length, null)
     }
-    val plans = entityDao.get(classOf[MajorPlan], planIds)
+    val plans = entityDao.find(classOf[MajorPlan], planIds)
     for (plan <- plans) {
       genLessons(plan, observer, params)
     }
@@ -69,50 +63,50 @@ class TeachTaskGenServiceImpl extends BaseServiceImpl with TeachTaskGenService {
     return
   }
 
-  def previewLessonGen(planIds: Array[Long], params: TaskGenParams): List[LessonGenPreview] = {
-    val res = new ArrayList[LessonGenPreview]()
-    val plans = entityDao.get(classOf[MajorPlan], planIds)
+  def previewLessonGen(planIds: Array[Integer], params: TaskGenParams): Seq[LessonGenPreview] = {
+    val res = Collections.newBuffer[LessonGenPreview]()
+    val plans = entityDao.find(classOf[MajorPlan], planIds)
     for (plan <- plans) {
-      res.add(previewLessonGen(plan, params))
+      res += previewLessonGen(plan, params)
     }
     res
   }
 
   private def previewLessonGen(plan: MajorPlan, params: TaskGenParams): LessonGenPreview = {
-    val termCalc = new TermCalculator(semesterService, params.getSemester)
+    val termCalc = new TermCalculator(semesterService, params.semester)
     var term = -1
-    term = if (plan.getProgram.getInvalidOn != null) termCalc.getTerm(plan.getProgram.getEffectiveOn, 
-      plan.getProgram.getInvalidOn, params.isOmitSmallTerm) else termCalc.getTerm(plan.getProgram.getEffectiveOn, 
-      Date.valueOf("2099-09-09"), params.isOmitSmallTerm)
+    term = if (plan.program.beginOn != null) termCalc.getTerm(plan.program.beginOn, 
+      plan.program.endOn, params.omitSmallTerm) else termCalc.getTerm(plan.program.beginOn, 
+      Date.valueOf("2099-09-09"), params.omitSmallTerm)
     val preview = new LessonGenPreview(plan, term)
     if (term <= 0) {
-      preview.setError("还没到该计划生成任务的时候")
+      preview.error = "还没到该计划生成任务的时候"
       return preview
     }
     val planCourses = getPlanCourses(preview)
-    if (Strings.isNotEmpty(preview.getError)) {
+    if (Strings.isNotEmpty(preview.error)) {
       return preview
     }
-    preview.setError(filterPlanCourses(planCourses, plan, params))
-    preview.getLessons.addAll(makeLessons(plan, planCourses, params))
+    preview.error = filterPlanCourses(planCourses, plan, params)
+    preview.lessons ++= makeLessons(plan, planCourses, params)
     preview
   }
 
-  private def getPlanCourses(preview: LessonGenPreview): List[MajorPlanCourse] = {
-    val planCourses = PlanUtils.getPlanCourses(preview.getPlan, preview.getTerm)
+  private def getPlanCourses(preview: LessonGenPreview): Seq[PlanCourse] = {
+    val planCourses = PlanUtils.getPlanCourses(preview.plan, preview.term)
     if (Collections.isEmpty(planCourses)) {
-      preview.setError(MessageFormat.format("该计划在第{0}学期没有课程", preview.getTerm))
+      preview.error = MessageFormat.format("该计划在第{0}学期没有课程", preview.term)
     }
     planCourses
   }
 
-  private def filterPlanCourses(planCourses: List[MajorPlanCourse], plan: MajorPlan, params: TaskGenParams): String = {
+  private def filterPlanCourses(planCourses: Seq[PlanCourse], plan: MajorPlan, params: TaskGenParams): String = {
     val adminclasses = entityDao.search(AdminclassQueryBuilder.build(plan))
     new MajorPlanCourseFilter(planCourses, params, adminclasses) {
 
       override def shouldRemove(planCourse: MajorPlanCourse): Boolean = {
         val adminclasses = other.asInstanceOf[List[Adminclass]]
-        if (Collections.isEmpty(adminclasses) && !params.isAllowNoAdminclass) {
+        if (Collections.isEmpty(adminclasses) && !params.allowNoAdminclass) {
           return true
         }
         return false
@@ -122,18 +116,18 @@ class TeachTaskGenServiceImpl extends BaseServiceImpl with TeachTaskGenService {
     if (Collections.isEmpty(adminclasses) && Collections.isEmpty(planCourses)) {
       return "没有行政班无法生成任务"
     }
-    val existCourses = new HashSet[Course]()
-    for (relation <- lessonPlanRelationService.relations(plan, params.getSemester)) {
+    val existCourses = Collections.newSet[Course]
+    for (relation <- lessonPlanRelationService.relations(plan, params.semester)) {
       existCourses.add(relation.getLesson.getCourse)
     }
     new MajorPlanCourseFilter(planCourses, params, existCourses) {
 
       override def shouldRemove(planCourse: MajorPlanCourse): Boolean = {
-        if (params.isRemoveGenerated) {
+        if (params.removeGenerated) {
           return false
         }
         val courses = other.asInstanceOf[Set[Course]]
-        for (course <- courses if planCourse.getCourse == course) {
+        for (course <- courses if planCourse.course == course) {
           return true
         }
         return false
@@ -146,7 +140,7 @@ class TeachTaskGenServiceImpl extends BaseServiceImpl with TeachTaskGenService {
     new MajorPlanCourseFilter(planCourses, params) {
 
       override def shouldRemove(planCourse: MajorPlanCourse): Boolean = {
-        if (!params.isIgnoreCloseRequest) {
+        if (!params.ignoreCloseRequest) {
         }
         return false
       }
@@ -155,8 +149,8 @@ class TeachTaskGenServiceImpl extends BaseServiceImpl with TeachTaskGenService {
     new MajorPlanCourseFilter(planCourses, params) {
 
       override def shouldRemove(planCourse: MajorPlanCourse): Boolean = {
-        if (Collections.isNotEmpty(params.getOnlyGenCourseTypes) && 
-          !params.getOnlyGenCourseTypes.contains(planCourse.getCourseGroup.getCourseType)) {
+        if (Collections.isNotEmpty(params.onlyGenCourseTypes) && 
+          !params.onlyGenCourseTypes.contains(planCourse.group.courseType)) {
           return true
         }
         return false
@@ -166,8 +160,8 @@ class TeachTaskGenServiceImpl extends BaseServiceImpl with TeachTaskGenService {
     new MajorPlanCourseFilter(planCourses, params) {
 
       override def shouldRemove(planCourse: MajorPlanCourse): Boolean = {
-        if (Collections.isNotEmpty(params.getOnlyGenCourses) && 
-          !params.getOnlyGenCourses.contains(planCourse.getCourse)) {
+        if (Collections.isNotEmpty(params.onlyGenCourses) && 
+          !params.onlyGenCourses.contains(planCourse.course)) {
           return true
         }
         return false
@@ -177,7 +171,7 @@ class TeachTaskGenServiceImpl extends BaseServiceImpl with TeachTaskGenService {
     new MajorPlanCourseFilter(planCourses, params) {
 
       override def shouldRemove(planCourse: MajorPlanCourse): Boolean = {
-        if (params.getDontGenCourses.contains(planCourse.getCourse)) {
+        if (params.dontGenCourses.contains(planCourse.course)) {
           return true
         }
         return false
@@ -187,40 +181,40 @@ class TeachTaskGenServiceImpl extends BaseServiceImpl with TeachTaskGenService {
     null
   }
 
-  private def makeLessons(plan: MajorPlan, planCourses: List[MajorPlanCourse], params: TaskGenParams): List[Lesson] = {
-    val res = new ArrayList[Lesson]()
+  private def makeLessons(plan: MajorPlan, planCourses: Seq[PlanCourse], params: TaskGenParams): Seq[Lesson] = {
+    val res = Collections.newBuffer[Lesson]
     if (Collections.isEmpty(planCourses)) {
       return res
     }
     val adminclasses = entityDao.search(AdminclassQueryBuilder.build(plan))
     if (Collections.isNotEmpty(adminclasses)) {
       for (adminclass <- adminclasses) {
-        val lessons = new ArrayList[Lesson]()
+        val lessons = Collections.newBuffer[Lesson]()
         for (planCourse <- planCourses) {
           val lesson = makeNewLesson(planCourse, plan, adminclass, params)
-          lessons.add(lesson)
+          lessons += lesson
         }
-        res.addAll(lessons)
+        res ++= lessons
       }
     } else {
-      val lessons = new ArrayList[Lesson]()
+      val lessons = Collections.newBuffer[Lesson]
       for (planCourse <- planCourses) {
         val lesson = makeNewLesson(planCourse, plan, null, params)
-        lessons.add(lesson)
+        lessons += lesson
       }
-      res.addAll(lessons)
+      res ++= lessons
     }
     res
   }
 
   private def genLessons(plan: MajorPlan, observer: TaskGenObserver, params: TaskGenParams) {
     val preview = previewLessonGen(plan, params)
-    if (params.isRemoveGenerated) {
-      observer.outputNotifyRemove(preview.getTerm, plan, "info.plan.removeGenTask", false)
+    if (params.removeGenerated ) {
+      observer.outputNotifyRemove(preview.term, plan, "info.plan.removeGenTask", false)
     }
     try {
-      lessonDao.saveGenResult(plan, params.getSemester, preview.getLessons, params.isRemoveGenerated)
-      for (lesson <- preview.getLessons) {
+      lessonDao.saveGenResult(plan, params.semester, preview.lessons, params.removeGenerated)
+      for (lesson <- preview.lessons) {
         lessonLogHelper.log(LessonLogBuilder.create(lesson, "生成任务"))
       }
     } catch {
@@ -231,7 +225,7 @@ class TeachTaskGenServiceImpl extends BaseServiceImpl with TeachTaskGenService {
       }
     }
     if (null != observer) {
-      observer.outputNotify(preview.getTerm, preview.getLessons.size, plan)
+      observer.outputNotify(preview.term, preview.lessons.size, plan)
     }
   }
 
@@ -239,97 +233,75 @@ class TeachTaskGenServiceImpl extends BaseServiceImpl with TeachTaskGenService {
       plan: MajorPlan, 
       adminClass: Adminclass, 
       params: TaskGenParams): Lesson = {
-    val lesson = LessonBean.getDefault
-    lesson.setProject(plan.getProgram.major.getProject)
-    lesson.setTeachDepart(planCourse.department)
-    lesson.setCourse(planCourse.getCourse)
-    lesson.setCourseType(planCourse.getCourseGroup.getCourseType)
-    lesson.setSemester(params.getSemester)
-    lesson.setExamMode(planCourse.getCourse.getExamMode)
-    val courseSchedule = lesson.getCourseSchedule
-    val startWeek = params.getStartWeek
+    val lesson = new LessonBean
+    lesson.project = plan.program.major.project
+    lesson.teachDepart = planCourse.department
+    lesson.course = planCourse.course
+    lesson.courseType = planCourse.group.courseType
+    lesson.semester = params.semester
+//    lesson.examMode = planCourse.getCourse.getExamMode
+    val courseSchedule = lesson.schedule
+    val startWeek = params.startWeek
     var endWeek = startWeek
-    val course = planCourse.getCourse
-    endWeek = if (course.getWeeks != null && course.getWeeks > 0) params.getStartWeek + course.getWeeks - 1 else if (course.getWeekHour != 0) params.getStartWeek + (course.getPeriod / course.getWeekHour).toInt - 
-      1 else params.getStartWeek + params.getWeeks - 1
-    courseSchedule.setWeekState(WeekStates.build(startWeek + "-" + endWeek))
-    courseSchedule.setRoomType(params.getRoomType)
-    val teachClass = lesson.getTeachClass
-    teachClass.setGrade(plan.getProgram.grade)
-    teachClass.setDepart(plan.getProgram.department)
+    val course = planCourse.course
+    endWeek = if (course.weeks != null && course.weeks > 0) params.startWeek + course.weeks - 1 
+    else if (course.weekHour != 0) params.startWeek + (course.period / course.weekHour).toInt - 1 
+    else params.startWeek + params.weeks - 1
+    courseSchedule.weekState = WeekStates.build(startWeek + "-" + endWeek)
+    courseSchedule.roomType = params.classroomType
+    val teachClass = lesson.teachClass
+    teachClass.grade = plan.program.grade
+    teachClass.depart = plan.program.department
     val builder = lessonLimitService.builder(teachClass)
     if (null != adminClass) {
-      if (adminClass.getStdCount == 0) {
-        teachClass.setLimitCount(adminClass.getPlanCount)
-      } else {
-        teachClass.setLimitCount(adminClass.getStdCount)
-      }
+      teachClass.limitCount = if (adminClass.stdCount == 0) adminClass.planCount else adminClass.stdCount
+//      if (adminClass.stdCount == 0) {
+//        teachClass.limitCount = adminClass.planCount
+//      } else {
+//        teachClass.limitCount = adminClass.stdCount
+//      }
       builder.in(adminClass)
     } else {
-      builder.inGrades(plan.getProgram.grade)
-      builder.in(plan.getProgram.education)
-      if (plan.getProgram.stdType != null) {
-        builder.in(plan.getProgram.stdType)
+      builder.inGrades(plan.program.grade)
+      builder.in(plan.program.education)
+      if (plan.program.stdType != null) {
+        builder.in(plan.program.stdType)
       }
-      builder.in(plan.getProgram.department)
-      builder.in(plan.getProgram.major)
-      if (plan.getProgram.direction != null) {
-        builder.in(plan.getProgram.direction)
+      builder.in(plan.program.department)
+      builder.in(plan.program.major)
+      if (plan.program.direction != null) {
+        builder.in(plan.program.direction)
       }
-      builder.in(plan.getProgram)
+      builder.in(plan.program)
     }
     teachClassNameStrategy.autoName(teachClass)
-    lesson.setCreatedAt(new Date(System.currentTimeMillis()))
-    lesson.setUpdatedAt(new Date(System.currentTimeMillis()))
+//    lesson.setCreatedAt(new Date(System.currentTimeMillis()))
+    lesson.updatedAt = new Date(System.currentTimeMillis())
     lesson
-  }
-
-  def setSemesterService(semesterService: SemesterService) {
-    this.semesterService = semesterService
-  }
-
-  def setLessonDao(lessonDao: LessonDao) {
-    this.lessonDao = lessonDao
-  }
-
-  def setLessonLimitService(lessonLimitService: LessonLimitService) {
-    this.lessonLimitService = lessonLimitService
-  }
-
-  def setLessonPlanRelationService(lessonPlanRelationService: LessonPlanRelationService) {
-    this.lessonPlanRelationService = lessonPlanRelationService
-  }
-
-  def setLessonLogHelper(lessonLogHelper: LessonLogHelper) {
-    this.lessonLogHelper = lessonLogHelper
-  }
-
-  def setTeachClassNameStrategy(teachClassNameStrategy: TeachClassNameStrategy) {
-    this.teachClassNameStrategy = teachClassNameStrategy
   }
 }
 
-abstract class MajorPlanCourseFilter(private var planCourses: List[MajorPlanCourse], protected var params: TaskGenParams)
+abstract class MajorPlanCourseFilter(private var planCourses: Seq[PlanCourse], protected var params: TaskGenParams)
     {
 
   protected var other: AnyRef = _
 
-  def this(planCourses: List[MajorPlanCourse], params: TaskGenParams, other: AnyRef) {
-    super()
+  def this(planCourses: Seq[PlanCourse], params: TaskGenParams, other: AnyRef) {
+    this()
     this.planCourses = planCourses
     this.params = params
     this.other = other
   }
 
   def filter() {
-    val removeIndecies = new ArrayList[Integer](20)
-    for (i <- 0 until planCourses.size if shouldRemove(planCourses.get(i))) {
-      removeIndecies.add(0, i)
+    val removeIndecies = Collections.newBuffer[Integer](20)
+    for (i <- 0 until planCourses.size if shouldRemove(planCourses(i))) {
+        i ::= removeIndecies
     }
     for (i <- removeIndecies) {
-      planCourses.remove(i.intValue())
+      planCourses --= (i.intValue())
     }
   }
 
-  def shouldRemove(planCourse: MajorPlanCourse): Boolean
+  def shouldRemove(planCourse: PlanCourse): Boolean
 }

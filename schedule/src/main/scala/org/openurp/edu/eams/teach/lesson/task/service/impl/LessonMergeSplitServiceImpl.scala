@@ -3,34 +3,35 @@ package org.openurp.edu.eams.teach.lesson.task.service.impl
 
 
 
-import org.apache.commons.collections.CollectionUtils
 import org.beangle.commons.collection.Collections
-import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.openurp.edu.teach.code.CourseTakeType
 import org.openurp.edu.teach.lesson.LessonLimitGroup
 import org.openurp.edu.teach.lesson.CourseTake
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.teach.lesson.TeachClass
-import org.openurp.edu.eams.teach.lesson.dao.LessonDao
-import org.openurp.edu.eams.teach.lesson.service.LessonLimitService
-import org.openurp.edu.eams.teach.lesson.service.LessonLogBuilder
-import org.openurp.edu.eams.teach.lesson.service.LessonLogHelper
-import org.openurp.edu.eams.teach.lesson.service.TeachClassNameStrategy
 import org.openurp.edu.eams.teach.lesson.task.service.LessonMergeSplitService
 import org.openurp.edu.eams.teach.lesson.task.splitter.AbstractTeachClassSplitter
+import org.beangle.commons.dao.impl.BaseServiceImpl
+import org.openurp.edu.eams.teach.lesson.dao.LessonDao
+import org.openurp.edu.eams.teach.lesson.service.LessonLimitService
+import org.openurp.edu.eams.teach.lesson.service.TeachClassNameStrategy
 import org.openurp.edu.eams.teach.lesson.util.LessonElectionUtil
+import org.openurp.edu.eams.teach.lesson.service.LessonLogHelper
+import scala.collection.mutable.HashSet
+import org.openurp.edu.eams.teach.lesson.service.LessonLogBuilder
+import org.openurp.edu.teach.code.model.CourseTakeTypeBean
 
 
 
 class LessonMergeSplitServiceImpl extends BaseServiceImpl with LessonMergeSplitService {
 
-  private var lessonDao: LessonDao = _
+  var lessonDao: LessonDao = _
 
-  private var lessonLimitService: LessonLimitService = _
+  var lessonLimitService: LessonLimitService = _
 
-  private var lessonLogHelper: LessonLogHelper = _
+  var lessonLogHelper: LessonLogHelper = _
 
-  private var teachClassNameStrategy: TeachClassNameStrategy = _
+  var teachClassNameStrategy: TeachClassNameStrategy = _
 
   def merge(taskIds: Array[Long]): Lesson = merge(taskIds, 0)
 
@@ -44,12 +45,12 @@ class LessonMergeSplitServiceImpl extends BaseServiceImpl with LessonMergeSplitS
     null
   }
 
-  private def merge(taskIds: Array[Long], target: Int): Lesson = {
+  private def merge(taskIds: Array[java.lang.Long], target: Int): Lesson = {
     if (null == taskIds || taskIds.length == 0 || target >= taskIds.length || 
       target < 0) {
       return null
     }
-    val taskList = entityDao.get(classOf[Lesson], taskIds)
+    val taskList = entityDao.find(classOf[Lesson], taskIds)
     if (taskList.isEmpty || taskList.size != taskIds.length) {
       return null
     }
@@ -95,26 +96,27 @@ class LessonMergeSplitServiceImpl extends BaseServiceImpl with LessonMergeSplitS
     if (splitUnitNums != null) {
       mode.setSplitStdNums(splitUnitNums)
     }
-    val splitClasses = mode.splitClass(lesson.getTeachClass, num)
+    val splitClasses = mode.splitClass(lesson.teachClass, num)
     LessonElectionUtil.normalizeTeachClass(lesson)
     for (j <- 1 until lessons.length) {
-      lessons(j).setTeachClass(splitClasses(j))
-      for (take <- lessons(j).getTeachClass.getCourseTakes) {
-        take.setCourseTakeType(new CourseTakeType(CourseTakeType.NORMAL))
+      lessons(j).teachClass = splitClasses(j)
+      for (take <- lessons(j).teachClass.courseTakes) {
+//        take.courseTakeType = new CourseTakeType(CourseTakeType.NORMAL )
+        take.courseTakeType = new CourseTakeTypeBean
       }
       LessonElectionUtil.normalizeTeachClass(lessons(j))
-      if (Collections.isNotEmpty(lessons(j).getTeachClass.getCourseTakes) && 
-        lessons(j).getTeachClass.getCourseTakes.iterator().next()
-        .isPersisted) {
-        val persistedTakes = new HashSet[CourseTake](lessons(j).getTeachClass.getCourseTakes)
-        lessons(j).getTeachClass.getCourseTakes.clear()
+      if (Collections.isNotEmpty(lessons(j).teachClass.courseTakes) && 
+        lessons(j).teachClass.courseTakes.iterator.next.persisted) {
+//        val persistedTakes = new HashSet[CourseTake](lessons(j).teachClass.getCourseTakes)
+        val persistedTakes = Collections.newSet[CourseTake]
+        lessons(j).teachClass.courseTakes.clear()
         for (persistedTake <- persistedTakes) {
-          persistedTake.setLesson(lesson)
+          persistedTake.lesson = lesson
         }
         lessonDao.saveOrUpdate(lessons(j))
-        lessons(j).getTeachClass.getCourseTakes.addAll(persistedTakes)
+        lessons(j).teachClass.courseTakes ++= persistedTakes
         for (persistedTake <- persistedTakes) {
-          persistedTake.setLesson(lessons(j))
+          persistedTake.lesson = lessons(j)
         }
         lessonDao.saveOrUpdate(lessons(j))
       } else {
@@ -122,14 +124,14 @@ class LessonMergeSplitServiceImpl extends BaseServiceImpl with LessonMergeSplitS
       }
       lessonLogHelper.log(LessonLogBuilder.create(lessons(j), "拆分任务,新建任务"))
     }
-    lesson.getTeachClass.getLimitGroups.clear()
+    lesson.teachClass.limitGroups.clear()
     lessonDao.saveOrUpdate(lesson)
-    lesson.getTeachClass.getLimitGroups.addAll(splitClasses(0).getLimitGroups)
-    lesson.getTeachClass.setName(splitClasses(0).getName)
-    lesson.getTeachClass.setCourseTakes(new HashSet[CourseTake]())
-    LessonElectionUtil.addCourseTakes(lesson.getTeachClass, splitClasses(0).getCourseTakes)
-    lesson.getTeachClass.setStdCount(splitClasses(0).getStdCount)
-    lesson.getTeachClass.setLimitCount(splitClasses(0).getLimitCount)
+    lesson.teachClass.limitGroups ++= splitClasses(0).limitGroups
+    lesson.teachClass.name = splitClasses(0).name
+    lesson.teachClass.courseTakes = Collections.newBuffer[CourseTake]
+    LessonElectionUtil.addCourseTakes(lesson.teachClass, splitClasses(0).courseTakes)
+    lesson.teachClass.stdCount = splitClasses(0).stdCount
+    lesson.teachClass.limitCount = splitClasses(0).limitCount
     LessonElectionUtil.normalizeTeachClass(lesson)
     lessonDao.saveOrUpdate(lesson)
     lessonLogHelper.log(LessonLogBuilder.update(lesson, "拆分任务,更新任务"))
@@ -141,31 +143,15 @@ class LessonMergeSplitServiceImpl extends BaseServiceImpl with LessonMergeSplitS
       target, source)
     entityDao.executeUpdate("update " + classOf[LessonLimitGroup].getName + " clg set clg.lesson=?1 where clg.lesson=?2", 
       target, source)
-    teachClassNameStrategy.autoName(target.getTeachClass)
+    teachClassNameStrategy.autoName(target.teachClass)
     var limitCount = 0
-    limitCount += target.getTeachClass.getLimitCount
-    limitCount += source.getTeachClass.getLimitCount
-    target.getTeachClass.setLimitCount(limitCount)
+    limitCount += target.teachClass.limitCount
+    limitCount += source.teachClass.limitCount
+    target.teachClass.limitCount = limitCount
     var stdCount = 0
-    stdCount += target.getTeachClass.getStdCount
-    stdCount += source.getTeachClass.getStdCount
-    target.getTeachClass.setStdCount(stdCount)
+    stdCount += target.teachClass.stdCount
+    stdCount += source.teachClass.stdCount
+    target.teachClass.stdCount = stdCount
     target
-  }
-
-  def setLessonDao(lessonDao: LessonDao) {
-    this.lessonDao = lessonDao
-  }
-
-  def setLessonLimitService(lessonLimitService: LessonLimitService) {
-    this.lessonLimitService = lessonLimitService
-  }
-
-  def setLessonLogHelper(lessonLogHelper: LessonLogHelper) {
-    this.lessonLogHelper = lessonLogHelper
-  }
-
-  def setTeachClassNameStrategy(teachClassNameStrategy: TeachClassNameStrategy) {
-    this.teachClassNameStrategy = teachClassNameStrategy
   }
 }

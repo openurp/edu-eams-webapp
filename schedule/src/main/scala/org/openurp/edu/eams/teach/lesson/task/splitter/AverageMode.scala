@@ -6,6 +6,7 @@ import org.openurp.edu.teach.lesson.CourseTake
 import org.openurp.edu.teach.exam.ExamTake
 import org.openurp.edu.teach.lesson.TeachClass
 import org.openurp.edu.eams.teach.lesson.util.LessonElectionUtil
+import org.beangle.commons.collection.Collections
 
 
 
@@ -14,16 +15,16 @@ class AverageMode extends AbstractTeachClassSplitter() {
   this.name = "average_split"
 
   def splitClass(target: TeachClass, num: Int): Array[TeachClass] = {
-    val originalLimitCount = target.getLimitCount
+    val originalLimitCount = target.limitCount
     val courseTakes = util.extractPossibleCourseTakes(target)
     val takesArr = splitTakes(courseTakes, num)
     val teachClasses = Array.ofDim[TeachClass](takesArr.length)
     for (i <- 0 until takesArr.length) {
       teachClasses(i) = target.clone()
-      teachClasses(i).setCourseTakes(new HashSet[CourseTake]())
-      teachClasses(i).setExamTakes(new HashSet[ExamTake]())
-      teachClasses(i).setName(target.getName + (i + 1))
-      teachClasses(i).setLimitCount(0)
+      teachClasses(i).courseTakes = Collections.newBuffer[CourseTake]
+      teachClasses(i).examTakes = Collections.newSet[ExamTake]
+      teachClasses(i).name = target.name + (i + 1)
+      teachClasses(i).limitCount = 0
       LessonElectionUtil.addCourseTakes(teachClasses(i), takesArr(i))
     }
     var mod = originalLimitCount % teachClasses.length
@@ -33,7 +34,7 @@ class AverageMode extends AbstractTeachClassSplitter() {
         newLimitCount += 1
         mod -= 1
       }
-      teachClass.setLimitCount(newLimitCount)
+      teachClass.limitCount = newLimitCount
     }
     teachClasses
   }

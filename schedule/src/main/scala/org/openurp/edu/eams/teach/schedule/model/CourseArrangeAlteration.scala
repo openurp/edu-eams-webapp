@@ -6,7 +6,7 @@ import org.beangle.data.model.bean.LongIdBean
 import org.beangle.security.blueprint.User
 import org.openurp.base.Semester
 
-@SerialVersionUID(1L)
+//@SerialVersionUID(1L)
 
 class CourseArrangeAlteration extends LongIdBean {
 

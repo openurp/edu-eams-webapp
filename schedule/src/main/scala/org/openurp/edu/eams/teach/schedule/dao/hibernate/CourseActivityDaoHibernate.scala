@@ -8,7 +8,7 @@ import org.hibernate.Query
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.teach.schedule.dao.CourseActivityDao
 import org.hibernate.SessionFactory
-
+import collection.JavaConversions._
 
 class CourseActivityDaoHibernate(sf:SessionFactory) extends HibernateEntityDao(sf) with CourseActivityDao {
 
@@ -19,7 +19,7 @@ class CourseActivityDaoHibernate(sf:SessionFactory) extends HibernateEntityDao(s
     val res = query.list()
     val jszhIds = Collections.newBuffer[Any]
     for (i <- 0 until res.size) {
-      jszhIds.add(res.get(i).asInstanceOf[java.lang.Long])
+      jszhIds += res.get(i).asInstanceOf[java.lang.Long]
     }
     val deleteKCHDHQL = "delete from CourseActivity where  task in (:tasks) "
     query = currentSession.createQuery(deleteKCHDHQL)

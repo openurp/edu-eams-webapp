@@ -18,7 +18,7 @@ class TaskGroupCopyParam {
   var replaceCourse: Course = _
 
   def this(toSemester: Semester, copyTeacher: Boolean, replaceCourse: Course) {
-    super()
+    this()
     this.toSemester = toSemester
     this.copyTeacher = copyTeacher
     this.replaceCourse = replaceCourse

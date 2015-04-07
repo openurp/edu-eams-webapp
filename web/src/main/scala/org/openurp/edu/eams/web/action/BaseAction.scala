@@ -3,25 +3,15 @@ package org.openurp.edu.eams.web.action
 
 
 
-import javax.servlet.http.HttpServletResponse
-import org.apache.struts2.ServletActionContext
-import org.beangle.data.jpa.dao.OqlBuilder
-import org.beangle.commons.entity.pojo.BaseCode
 import org.beangle.commons.event.Event
 import org.beangle.commons.event.EventMulticaster
 import org.beangle.commons.lang.Assert
 import org.beangle.commons.lang.Objects
 import org.beangle.commons.lang.Strings
-import org.beangle.ems.dictionary.service.BaseCodeService
-import org.beangle.ems.web.action.SecurityActionSupport
-import org.beangle.security.blueprint.nav.MenuProfile
-import org.beangle.struts2.convention.route.Action
-import org.openurp.edu.eams.base.BaseInfo
 import org.openurp.base.Semester
 import org.openurp.edu.base.Project
 import org.openurp.edu.base.Student
 import org.openurp.edu.base.Teacher
-import org.openurp.edu.eams.core.service.BaseInfoService
 import org.openurp.edu.eams.core.service.DepartmentService
 import org.openurp.edu.eams.core.service.SemesterService
 import org.openurp.edu.eams.system.security.EamsUserCategory
@@ -29,7 +19,11 @@ import org.openurp.edu.eams.web.helper.LogHelper
 import org.openurp.edu.eams.web.helper.SemesterHelper
 import org.openurp.edu.eams.web.util.OutputProcessObserver
 import org.openurp.edu.eams.web.util.OutputWebObserver
-import com.opensymphony.xwork2.ActionContext
+import org.openurp.code.BaseCode
+import org.beangle.data.jpa.dao.OqlBuilder
+import org.beangle.security.blueprint.MenuProfile
+import org.openurp.code.service.BaseCodeService
+import org.beangle.data.model.dao.EntityDao
 
 
 
@@ -37,7 +31,7 @@ abstract class BaseAction extends SecurityActionSupport {
 
   var baseCodeService: BaseCodeService = _
 
-  var baseInfoService: BaseInfoService = _
+//  var baseInfoService: BaseInfoService = _
 
   var eventMulticaster: EventMulticaster = _
 
@@ -49,6 +43,8 @@ abstract class BaseAction extends SecurityActionSupport {
 
   var semesterHelper: SemesterHelper = _
 
+  var entityDao:EntityDao =_
+  
   protected def getUserCategoryId(): java.lang.Integer = {
     var userCategoryId = ActionContext.getContext.getSession.get("security.userCategoryId").asInstanceOf[java.lang.Integer]
     val loginName = getUsername
@@ -59,9 +55,9 @@ abstract class BaseAction extends SecurityActionSupport {
       if (!ids.isEmpty) {
         userCategoryId = EamsUserCategory.STD_USER
       } else {
-        query = OqlBuilder.from(classOf[Teacher], "t").select("t.id")
+        val teacherQuery = OqlBuilder.from(classOf[Teacher], "t").select("t.id")
           .where("t.code=:code", loginName)
-        ids = entityDao.search(query).asInstanceOf[List[Long]]
+        ids = entityDao.search(teacherQuery).asInstanceOf[List[Long]]
         if (!ids.isEmpty) {
           userCategoryId = EamsUserCategory.TEACHER_USER
           val menuProfileId = ServletActionContext.getRequest.getSession.getAttribute("menuProfileId").asInstanceOf[java.lang.Integer]
@@ -82,7 +78,7 @@ abstract class BaseAction extends SecurityActionSupport {
     val loginName = getUsername
     if (null != loginName) {
       val projectId = getSession.get("projectId").asInstanceOf[java.lang.Integer]
-      val students = entityDao.get(classOf[Student], "code", loginName)
+      val students = entityDao.findBy(classOf[Student], "code", List(loginName))
       var std: Student = null
       if (!students.isEmpty) {
         std = students.get(0)
@@ -93,13 +89,13 @@ abstract class BaseAction extends SecurityActionSupport {
       if (null != projectId) {
         val query = OqlBuilder.from(classOf[Student], "std")
         query.where("std.project.id=:projectId", projectId)
-        if (std.getPerson != null) {
-          query.where("std.person = :person", std.getPerson)
+        if (std.person != null) {
+          query.where("std.person = :person", std.person)
         }
-        val it = entityDao.search(query).iterator()
+        val it = entityDao.search(query).iterator
         if (it.hasNext) it.next() else null
       } else {
-        getSession.put("projectId", std.getProject.id)
+        getSession.put("projectId", std.project.id)
         std
       }
     } else {
@@ -110,7 +106,7 @@ abstract class BaseAction extends SecurityActionSupport {
   protected def getLoginTeacher(): Teacher = {
     val loginName = getUsername
     if (null == loginName) null else {
-      val it = entityDao.get(classOf[Teacher], "code", loginName).iterator()
+      val it = entityDao.findBy(classOf[Teacher], "code", List(loginName)).iterator()
       if (it.hasNext) it.next() else null
     }
   }
@@ -183,27 +179,4 @@ abstract class BaseAction extends SecurityActionSupport {
     eventMulticaster.multicast(event)
   }
 
-  protected def debug(debubObj: AnyRef) {
-    logger.debug(String.valueOf(debubObj))
-  }
-
-  protected def debug(debubObj: AnyRef, e: Exception) {
-    logger.debug(String.valueOf(debubObj), e)
-  }
-
-  protected def info(infoObj: AnyRef) {
-    logger.info(String.valueOf(infoObj))
-  }
-
-  protected def info(infoObj: AnyRef, e: Exception) {
-    logger.info(String.valueOf(infoObj), e)
-  }
-
-  protected def error(errorObj: AnyRef) {
-    logger.error(String.valueOf(errorObj))
-  }
-
-  protected def error(errorObj: AnyRef, e: Exception) {
-    logger.error(String.valueOf(errorObj), e)
-  }
 }

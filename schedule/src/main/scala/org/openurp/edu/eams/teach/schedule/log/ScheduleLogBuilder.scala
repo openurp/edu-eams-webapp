@@ -7,6 +7,8 @@ import org.beangle.commons.lang.Strings
 import org.openurp.edu.base.Teacher
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.teach.lesson.util.CourseActivityDigestor
+import scala.collection.mutable.HashMap
+import org.beangle.commons.collection.Collections
 
 
 
@@ -45,22 +47,22 @@ object ScheduleLogBuilder {
     implicit def convertValue(v: Value): Operation = v.asInstanceOf[Operation]
   }
 
-  private def makeInformations(lesson: Lesson): Map[String, String] = {
-    val empty = new HashMap[String, String]()
+  private def makeInformations(lesson: Lesson): collection.mutable.Map[String, String] = {
+    val empty = Collections.newMap[String, String]
     for (i <- 0 until LOG_FIELDS.length) {
       empty.put(LOG_FIELDS(i), "")
     }
     empty.put(LESSON_ID, String.valueOf(lesson.id))
-    empty.put(LESSON_PROJECT, String.valueOf(lesson.getProject.getName))
-    empty.put(LESSON_SEMESTER, lesson.getSemester.getSchoolYear + "学年" + lesson.getSemester.getName + 
+    empty.put(LESSON_PROJECT, String.valueOf(lesson.project.name))
+    empty.put(LESSON_SEMESTER, lesson.semester.schoolYear + "学年" + lesson.semester.name + 
       "学期")
-    empty.put(LESSON_NO, lesson.getNo)
-    empty.put(COURSE_CODE, lesson.getCourse.getCode)
-    empty.put(COURSE_NAME, lesson.getCourse.getName)
+    empty.put(LESSON_NO, lesson.no)
+    empty.put(COURSE_CODE, lesson.course.code)
+    empty.put(COURSE_NAME, lesson.course.name)
     empty
   }
 
-  private def toString(informations: Map[String, String]): String = {
+  private def toString(informations: collection.Map[String, String]): String = {
     val sb = new StringBuilder()
     for (i <- 0 until LOG_FIELDS.length) {
       sb.append(LOG_FIELDS(i)).append("=").append(informations.get(LOG_FIELDS(i)))
@@ -73,67 +75,67 @@ object ScheduleLogBuilder {
 
   def create(lesson: Lesson, reason: String): Array[String] = {
     val map = makeInformations(lesson)
-    map.put(TYPE, ScheduleLogBuilder.Operation.CREATE.name())
+    map.put(TYPE, ScheduleLogBuilder.Operation.CREATE.toString)
     map.put(DETAIL, stringify(lesson))
     if (Strings.isNotEmpty(reason)) {
       map.put(REASON, reason)
     }
-    Array(toString(map), Operation.CREATE.name())
+    Array(toString(map), Operation.CREATE.toString)
   }
 
   def delete(lesson: Lesson, reason: String): Array[String] = {
     val map = makeInformations(lesson)
-    map.put(TYPE, ScheduleLogBuilder.Operation.DELETE.name())
+    map.put(TYPE, ScheduleLogBuilder.Operation.DELETE.toString)
     if (Strings.isNotEmpty(reason)) {
       map.put(REASON, reason)
     }
-    Array(toString(map), Operation.DELETE.name())
+    Array(toString(map), Operation.DELETE.toString)
   }
 
   def update(lesson: Lesson, reason: String): Array[String] = {
     val map = makeInformations(lesson)
-    map.put(TYPE, ScheduleLogBuilder.Operation.UPDATE.name())
+    map.put(TYPE, ScheduleLogBuilder.Operation.UPDATE.toString)
     map.put(DETAIL, stringify(lesson))
     if (Strings.isNotEmpty(reason)) {
       map.put(REASON, reason)
     }
-    Array(toString(map), Operation.UPDATE.name())
+    Array(toString(map), Operation.UPDATE.toString)
   }
 
   private def stringify(lesson: Lesson): String = {
     val sb = new StringBuilder()
-    append(sb, "课程序号", lesson.getNo)
-    append(sb, "学期", lesson.getSemester.getSchoolYear + "学年" + lesson.getSemester.getName + 
+    append(sb, "课程序号", lesson.no)
+    append(sb, "学期", lesson.semester.schoolYear + "学年" + lesson.semester.name + 
       "学期")
-    append(sb, "课程", lesson.getCourse.getName + '[' + lesson.getCourse.getCode + 
+    append(sb, "课程", lesson.course.name + '[' + lesson.course.code + 
       ']')
-    append(sb, "教学项目", lesson.getProject.getName)
-    append(sb, "教学班", lesson.getTeachClass.getName)
+    append(sb, "教学项目", lesson.project.name)
+    append(sb, "教学班", lesson.teachClass.name)
     val tsb = new StringBuilder()
-    var iter = lesson.getTeachers.iterator()
+    var iter = lesson.teachers.iterator
     while (iter.hasNext) {
       val teacher = iter.next()
-      tsb.append(teacher.getName + '[' + teacher.getCode + ']')
+      tsb.append(teacher.name + '[' + teacher.code + ']')
       if (iter.hasNext) {
         tsb.append(',')
       }
     }
     append(sb, "授课教师", tsb.toString)
-    append(sb, "课程类别", lesson.getCourseType.getName)
-    append(sb, "开课院系", lesson.getTeachDepart.getName)
-    append(sb, "年级", lesson.getTeachClass.grade)
-    append(sb, "起迄周", lesson.getCourseSchedule.getStartWeek + "-" + lesson.getCourseSchedule.getEndWeek + 
+    append(sb, "课程类别", lesson.courseType.name)
+    append(sb, "开课院系", lesson.teachDepart.name)
+    append(sb, "年级", lesson.teachClass.grade)
+    append(sb, "起迄周", lesson.schedule.startWeek + "-" + lesson.schedule.endWeek + 
       "周")
-    append(sb, "实际人数", lesson.getTeachClass.getStdCount)
-    append(sb, "人数上限", lesson.getTeachClass.getLimitCount)
-    append(sb, "课时", lesson.getCourseSchedule.getPeriod)
+    append(sb, "实际人数", lesson.teachClass.stdCount)
+    append(sb, "人数上限", lesson.teachClass.limitCount)
+    append(sb, "课时", lesson.schedule.period)
     append(sb, "排课结果", CourseActivityDigestor.getInstance.setDelimeter(";")
       .digest(null, lesson))
     sb.replace(sb.length - 1, sb.length, "")
     sb.toString
   }
 
-  private def append(sb: StringBuilder, fieldName: String, value: AnyRef) {
+  private def append(sb: StringBuilder, fieldName: String, value: Any) {
     if (value == null) {
       sb.append(fieldName).append("=空\n")
     } else {

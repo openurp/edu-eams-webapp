@@ -146,7 +146,7 @@ class LessonDaoHibernate(sf: SessionFactory) extends HibernateEntityDao(sf) with
 
   def saveGenResult(plan: MajorPlan,
     semester: Semester,
-    lessons: List[Lesson],
+    lessons: collection.mutable.Buffer[Lesson],
     removeExists: Boolean) {
     currentSession.setFlushMode(FlushMode.COMMIT)
     lessonSeqNoGenerator.genLessonSeqNos(lessons)

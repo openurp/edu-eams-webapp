@@ -1,21 +1,13 @@
 package org.openurp.edu.eams.teach.lesson.task.web.action.old
 
 import org.beangle.commons.lang.Strings
-import org.beangle.struts2.convention.route.Action
 import org.openurp.base.Semester
-import org.openurp.edu.eams.base.code.school.RoomType
 import org.openurp.edu.base.Teacher
 import org.openurp.edu.eams.core.service.SemesterService
 import org.openurp.edu.eams.core.service.TeacherService
-import org.openurp.edu.eams.teach.Textbook
-import org.openurp.edu.eams.teach.code.industry.Press
-import org.openurp.edu.eams.teach.code.industry.TeachLangType
-import org.openurp.edu.eams.teach.code.school.BookType
 import org.openurp.edu.teach.lesson.Lesson
 import org.openurp.edu.eams.teach.lesson.task.model.RequirePrefer
 import org.openurp.edu.eams.teach.lesson.task.service.RequirePreferService
-import org.openurp.edu.eams.web.Constants
-import org.openurp.edu.eams.web.action.BaseAction
 import RequirePreferAction._
 
 

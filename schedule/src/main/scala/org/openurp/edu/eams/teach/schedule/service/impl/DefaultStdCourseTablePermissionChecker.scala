@@ -31,12 +31,12 @@ class DefaultStdCourseTablePermissionChecker extends BaseServiceImpl with StdCou
       return null
     } else if (CourseTable.CLASS == kind) {
       try {
-        var adminclass = std.getAdminclass
+        var adminclass = std.adminclass
         if (null == adminclass) {
           val student = entityDao.get(classOf[Student], std.id)
-          adminclass = student.getAdminclass
+          adminclass = student.adminclass
         }
-        if (null == adminclass.id || ids == std.getAdminclass.id + "") {
+        if (null == adminclass.id || ids == std.adminclass.id + "") {
           return "没有权限"
         }
       } catch {

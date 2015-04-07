@@ -10,7 +10,6 @@ import org.openurp.edu.base.Adminclass
 import org.openurp.edu.eams.core.service.SemesterService
 import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.teach.lesson.Lesson
-import org.openurp.edu.teach.lesson.LessonPlanRelation
 import org.openurp.edu.eams.teach.lesson.service.LessonLimitService
 import org.openurp.edu.eams.teach.lesson.task.biz.AdminclassPackage
 import org.openurp.edu.eams.teach.lesson.task.biz.CourseGroupPackage
@@ -28,28 +27,28 @@ import org.openurp.edu.eams.teach.util.AdminclassQueryBuilder
 
 class LessonPlanCheckServiceImpl extends BaseServiceImpl with LessonPlanCheckService {
 
-  protected var semesterService: SemesterService = _
+  var semesterService: SemesterService = _
 
-  protected var lessonLimitService: LessonLimitService = _
+  var lessonLimitService: LessonLimitService = _
 
-  protected var lessonPlanRelationService: LessonPlanRelationService = _
+  var lessonPlanRelationService: LessonPlanRelationService = _
 
-  def makePackages(relations: List[LessonPlanRelation]): List[PlanPackage] = {
-    val packages = new ArrayList[PlanPackage]()
+  def makePackages(relations: Seq[LessonPlanRelation]): Seq[PlanPackage] = {
+    val packages = Collections.newBuffer[PlanPackage]
     for (relation <- relations) {
       val plan = relation.getPlan
       val lesson = relation.getLesson
       var planPackage = searchPlanPackage(packages, plan)
       if (planPackage == null) {
         planPackage = newPlanPackage(plan, lesson.getSemester)
-        packages.add(planPackage)
+        packages += planPackage
       }
       if (lesson.isTransient) {
         //continue
       }
       var lessonBelongToAdminclass = false
-      for (classPackage <- planPackage.getClassPackages) {
-        if (classPackage.getAdminclass == null) {
+      for (classPackage <- planPackage.classPackages) {
+        if (classPackage.adminclass == null) {
           lessonBelongToAdminclass = true
           addLesson(classPackage, lesson)
         } else {
@@ -61,39 +60,39 @@ class LessonPlanCheckServiceImpl extends BaseServiceImpl with LessonPlanCheckSer
         }
       }
       if (!lessonBelongToAdminclass) {
-        addLesson(planPackage.getOtherClassPackage, lesson)
+        addLesson(planPackage.otherClassPackage, lesson)
       }
     }
     packages
   }
 
   private def addLesson(classPackage: AdminclassPackage, lesson: Lesson) {
-    val packages = classPackage.getCourseTypePackages
-    var courseTypePackage = searchCourseTypePackage(packages, lesson.getCourseType)
+    val packages = classPackage.courseTypePackages
+    var courseTypePackage = searchCourseTypePackage(packages, lesson.courseType)
     if (courseTypePackage == null) {
       courseTypePackage = new CourseTypePackage()
-      courseTypePackage.setCourseType(lesson.getCourseType)
-      classPackage.getCourseTypePackages.add(courseTypePackage)
+      courseTypePackage.courseType = lesson.courseType
+      classPackage.courseTypePackages += courseTypePackage
     }
-    courseTypePackage.getLessons.add(lesson)
+    courseTypePackage.lessons += lesson
   }
 
-  private def searchCourseTypePackage(packages: List[CourseTypePackage], courseType: CourseType): CourseTypePackage = {
+  private def searchCourseTypePackage(packages: Seq[CourseTypePackage], courseType: CourseType): CourseTypePackage = {
     if (packages.size != 0 && 
-      packages.get(packages.size - 1).getCourseType == courseType) {
-      return packages.get(packages.size - 1)
+      packages(packages.size - 1).courseType == courseType) {
+      packages(packages.size - 1)
     }
-    for (courseTypePackage <- packages if courseTypePackage.getCourseType == courseType) {
-      return courseTypePackage
+    for (courseTypePackage <- packages if courseTypePackage.courseType == courseType) {
+      courseTypePackage
     }
     null
   }
 
-  private def searchPlanPackage(packages: List[PlanPackage], plan: MajorPlan): PlanPackage = {
-    if (packages.size != 0 && packages.get(packages.size - 1).getPlan == plan) {
-      return packages.get(packages.size - 1)
+  private def searchPlanPackage(packages: Seq[PlanPackage], plan: MajorPlan): PlanPackage = {
+    if (packages.size != 0 && packages(packages.size - 1).plan == plan) {
+      return packages(packages.size - 1)
     }
-    for (planPackage <- packages if planPackage.getPlan == plan) {
+    for (planPackage <- packages if planPackage.plan == plan) {
       return planPackage
     }
     null
@@ -102,43 +101,35 @@ class LessonPlanCheckServiceImpl extends BaseServiceImpl with LessonPlanCheckSer
   private def newPlanPackage(plan: MajorPlan, semester: Semester): PlanPackage = {
     val adminclasses = entityDao.search(AdminclassQueryBuilder.build(plan).cacheable())
     val planPackage = new PlanPackage()
-    planPackage.setPlan(plan)
+    planPackage.plan = plan
     if (Collections.isEmpty(adminclasses)) {
-      planPackage.getClassPackages.add(new AdminclassPackage())
+      planPackage.classPackages += new AdminclassPackage
     } else {
       for (adminclass <- adminclasses) {
-        planPackage.getClassPackages.add(new AdminclassPackage(adminclass))
+        planPackage.classPackages += new AdminclassPackage(adminclass)
       }
     }
     val termCalc = new TermCalculator(semesterService, semester)
     var term = -1
-    term = if (plan.getProgram.getInvalidOn != null) termCalc.getTerm(plan.getProgram.getEffectiveOn, 
-      plan.getProgram.getInvalidOn, true) else termCalc.getTerm(plan.getProgram.getEffectiveOn, Date.valueOf("2099-09-09"), 
+    term = if (plan.program.endOn != null) termCalc.getTerm(plan.program.beginOn, 
+      plan.program.endOn, true) else termCalc.getTerm(plan.program.beginOn, Date.valueOf("2099-09-09"), 
       true)
-    planPackage.setTerm(term)
-    for (group <- plan.getGroups) {
+    planPackage.term = term
+    for (group <- plan.groups) {
       val cgPackage = makeCourseGroupPackage(group, term)
-      if (Collections.isEmpty(cgPackage.getPlanCourses) && PlanUtils.getGroupCredits(group, term) == 0f) {
+      if (Collections.isEmpty(cgPackage.planCourses) && PlanUtils.getGroupCredits(group, term) == 0f) {
         //continue
       }
-      planPackage.getGroupPackages.add(cgPackage)
+      planPackage.groupPackages += cgPackage
     }
     planPackage
   }
 
   private def makeCourseGroupPackage(group: CourseGroup, term: Int): CourseGroupPackage = {
     val pkg = new CourseGroupPackage()
-    pkg.setCourseGroup(group)
-    pkg.getPlanCourses.addAll(PlanUtils.getPlanCourses(group, term))
-    pkg.setCredits(PlanUtils.getGroupCredits(group, term))
+    pkg.courseGroup = group
+    pkg.planCourses ++= PlanUtils.getPlanCourses(group, term)
+    pkg.credits = PlanUtils.getGroupCredits(group, term)
     pkg
-  }
-
-  def setSemesterService(semesterService: SemesterService) {
-    this.semesterService = semesterService
-  }
-
-  def setLessonLimitService(lessonLimitService: LessonLimitService) {
-    this.lessonLimitService = lessonLimitService
   }
 }

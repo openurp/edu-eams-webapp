@@ -1,8 +1,6 @@
 package org.openurp.edu.eams.teach.schedule.service.impl
 
 import java.util.Date
-
-
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.openurp.base.Department
@@ -13,34 +11,35 @@ import org.openurp.edu.eams.teach.schedule.service.StdStatService
 import org.openurp.edu.eams.util.DataRealmUtils
 import org.openurp.edu.eams.util.stat.StatGroup
 import org.openurp.edu.eams.util.stat.StatHelper
+import org.beangle.commons.collection.Collections
 
 
 
 class StdStatServiceImpl extends BaseServiceImpl with StdStatService {
 
-  def statOnCampusByStdType(dataRealm: DataRealm): List[_] = {
+  def statOnCampusByStdType(dataRealm: DataRealm): Seq[_] = {
     statOnCampusByStdTypeAndDepart(dataRealm, Array(classOf[StdType]))
   }
 
-  def statOnCampusByDepart(dataRealm: DataRealm): List[_] = {
+  def statOnCampusByDepart(dataRealm: DataRealm): Seq[_] = {
     statOnCampusByStdTypeAndDepart(dataRealm, Array(classOf[Department]))
   }
 
-  def statOnCampusByStdTypeDepart(dataRealm: DataRealm): List[_] = {
+  def statOnCampusByStdTypeDepart(dataRealm: DataRealm): Seq[_] = {
     statOnCampusByStdTypeAndDepart(dataRealm, Array(classOf[StdType], classOf[Department]))
   }
 
-  def statOnCampusByDepartStdType(dataRealm: DataRealm): List[_] = {
+  def statOnCampusByDepartStdType(dataRealm: DataRealm): Seq[_] = {
     statOnCampusByStdTypeAndDepart(dataRealm, Array(classOf[Department], classOf[StdType]))
   }
 
-  def statOnCampusByStdTypeAndDepart(dataRealm: DataRealm, groupClasses: Array[Class[_]]): List[_] = {
+  def statOnCampusByStdTypeAndDepart(dataRealm: DataRealm, groupClasses: Array[Class[_]]): Seq[_] = {
     val entityQuery = OqlBuilder.from(classOf[Student], "std")
     if (null != dataRealm) {
       DataRealmUtils.addDataRealm(entityQuery, Array("std.type.id", "std.department.id"), dataRealm)
     }
     val selectClause = new StringBuffer("")
-    val classAttrMap = new HashMap()
+    val classAttrMap = Collections.newMap[Any,Any]
     classAttrMap.put(classOf[StdType], "std.type.id")
     classAttrMap.put(classOf[Department], "std.department.id")
     for (i <- 0 until groupClasses.length) {

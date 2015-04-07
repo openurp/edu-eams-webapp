@@ -4,23 +4,24 @@ package org.openurp.edu.eams.teach.lesson.task.util
 
 import org.openurp.base.Department
 import org.openurp.edu.base.Project
+import org.beangle.commons.collection.Collections
 
 
 
 object ProjectUtils {
 
-  def getColleges(project: Project): List[Department] = {
-    val res = new ArrayList[Department]()
-    for (depart <- project.departments if depart.isCollege) {
-      res.add(depart)
+  def getColleges(project: Project): Seq[Department] = {
+    val res = Collections.newBuffer[Department]
+    for (depart <- project.departments if depart.college) {
+      res += depart
     }
     res
   }
 
-  def getTeachDeparts(project: Project): List[Department] = {
-    val res = new ArrayList[Department]()
-    for (depart <- project.departments if depart.isTeaching) {
-      res.add(depart)
+  def getTeachDeparts(project: Project): Seq[Department] = {
+    val res = Collections.newBuffer[Department]
+    for (depart <- project.departments if depart.teaching) {
+      res += depart
     }
     res
   }

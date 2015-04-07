@@ -7,11 +7,11 @@ import org.openurp.edu.eams.system.security.DataRealm
 
 trait StdStatService {
 
-  def statOnCampusByStdType(dataRealm: DataRealm): List[_]
+  def statOnCampusByStdType(dataRealm: DataRealm): Seq[_]
 
-  def statOnCampusByDepart(dataRealm: DataRealm): List[_]
+  def statOnCampusByDepart(dataRealm: DataRealm): Seq[_]
 
-  def statOnCampusByStdTypeDepart(dataRealm: DataRealm): List[_]
+  def statOnCampusByStdTypeDepart(dataRealm: DataRealm): Seq[_]
 
-  def statOnCampusByDepartStdType(dataRealm: DataRealm): List[_]
+  def statOnCampusByDepartStdType(dataRealm: DataRealm): Seq[_]
 }

@@ -15,8 +15,8 @@ object PlanCourseComparator {
 class PlanCourseComparator private () extends Comparator[PlanCourse]() {
 
   def compare(o1: PlanCourse, o2: PlanCourse): Int = {
-    Objects.compareBuilder().add(o1.getCourseGroup.getCourseType.getCode, o2.getCourseGroup.getCourseType.getCode)
-      .add(o1.getCourse.getCode, o2.getCourse.getCode)
+    Objects.compareBuilder.add(o1.group.courseType.code, o2.group.courseType.code)
+      .add(o1.course.code, o2.course.code)
       .add(o1.id, o2.id)
       .toComparison()
   }

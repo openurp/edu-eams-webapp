@@ -5,8 +5,6 @@ package org.openurp.edu.eams.teach.schedule.model
 
 import org.beangle.data.model.bean.LongIdBean
 import org.openurp.base.Semester
-import org.openurp.edu.eams.base.util.WeekDay
-import org.openurp.edu.eams.teach.lesson.CourseTime
 import CourseTableSetting._
 
 

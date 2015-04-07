@@ -2,11 +2,9 @@ package org.openurp.edu.eams.web.action.common
 
 
 
-import org.apache.commons.collections.CollectionUtils
 import org.beangle.commons.collection.Collections
 import org.beangle.commons.lang.Strings
 import org.openurp.base.Department
-import org.openurp.edu.eams.base.School
 import org.openurp.edu.base.Project
 import org.openurp.code.edu.Education
 import org.openurp.edu.base.code.StdType

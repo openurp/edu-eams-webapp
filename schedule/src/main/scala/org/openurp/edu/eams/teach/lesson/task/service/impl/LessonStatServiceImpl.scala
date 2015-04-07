@@ -1,15 +1,7 @@
 package org.openurp.edu.eams.teach.lesson.task.service.impl
 
 import java.text.MessageFormat
-
-
-
-
-
 import java.util.LinkedList
-
-
-
 import org.beangle.commons.collection.Collections
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.beangle.data.jpa.dao.OqlBuilder
@@ -17,21 +9,17 @@ import org.beangle.data.model.Entity
 import org.beangle.commons.lang.Strings
 import org.openurp.base.Department
 import org.openurp.base.Semester
-import org.openurp.edu.eams.base.code.school.RoomType
 import org.openurp.edu.base.Adminclass
 import org.openurp.edu.eams.core.CommonAuditState
 import org.openurp.edu.base.Project
 import org.openurp.edu.base.Teacher
-import org.openurp.edu.eams.core.code.nation.TeacherTitle
 import org.openurp.edu.base.code.StdType
 import org.openurp.edu.eams.core.service.SemesterService
 import org.openurp.edu.eams.system.security.DataRealm
 import org.openurp.edu.base.code.CourseType
 import org.openurp.edu.teach.schedule.CourseActivity
 import org.openurp.edu.teach.lesson.Lesson
-import org.openurp.edu.teach.lesson.LessonTag
 import org.openurp.edu.eams.teach.lesson.service.LessonLimitService
-import org.openurp.edu.eams.teach.lesson.service.limit.LessonLimitMetaEnum
 import org.openurp.edu.eams.teach.lesson.task.dao.LessonStatDao
 import org.openurp.edu.eams.teach.lesson.task.service.LessonStatService
 import org.openurp.edu.eams.teach.lesson.task.util.TaskOfCourseType
@@ -44,8 +32,9 @@ import org.openurp.edu.eams.teach.util.AdminclassQueryBuilder
 import org.openurp.edu.eams.util.stat.StatGroup
 import org.openurp.edu.eams.util.stat.StatHelper
 import org.openurp.edu.eams.util.stat.StatItem
-
-
+import org.openurp.edu.teach.lesson.LessonLimitMeta
+import org.openurp.edu.teach.code.LessonTag
+import org.openurp.code.job.ProfessionalTitle
 
 class LessonStatServiceImpl extends BaseServiceImpl with LessonStatService {
 
@@ -53,18 +42,18 @@ class LessonStatServiceImpl extends BaseServiceImpl with LessonStatService {
 
   var lessonLimitService: LessonLimitService = _
 
-  def countByAdminclass(project: Project, semester: Semester, dataRealm: DataRealm): List[_] = {
+  def countByAdminclass(project: Project, semester: Semester, dataRealm: DataRealm): Seq[_] = {
     var query = OqlBuilder.from(classOf[Lesson], "lesson").select("distinct lesson")
       .join("lesson.teachClass.limitGroups", "lgroup")
       .join("lgroup.items", "litem")
-      .where("litem.meta.id = :metaId", LessonLimitMeta.Adminclass.getMetaId)
+      .where("litem.meta.id = :metaId", LessonLimitMeta.Adminclass.id)
       .where("litem.content like '_%'")
       .where("not exists (select tag.id from lesson.tags tag where tag.id=:guaPai)", LessonTag.PredefinedTags.GUAPAI.id)
       .where("lesson.semester = :semester", semester)
       .where("lesson.project = :project", project)
       .where("lesson.teachDepart.id in (:departIds)", Strings.splitToInt(dataRealm.departmentIdSeq))
     var commonLessons = entityDao.search(query)
-    var tmpMap = new HashMap[Integer, StatItem]()
+    var tmpMap = Collections.newMap[Integer, StatItem]
     for (lesson <- commonLessons) {
       val adminclasses = lessonLimitService.extractAdminclasses(lesson.getTeachClass)
       for (adminclass <- adminclasses) {
@@ -84,14 +73,14 @@ class LessonStatServiceImpl extends BaseServiceImpl with LessonStatService {
     query = OqlBuilder.from(classOf[Lesson], "lesson").select("distinct lesson")
       .join("lesson.teachClass.limitGroups", "lgroup")
       .join("lgroup.items", "litem")
-      .where("litem.meta.id = :metaId", LessonLimitMeta.Adminclass.getMetaId)
+      .where("litem.meta.id = :metaId", LessonLimitMeta.Adminclass.id)
       .where("litem.content like '_%'")
       .where("exists (select tag.id from lesson.tags tag where tag.id=:guaPai)", LessonTag.PredefinedTags.GUAPAI.id)
       .where("lesson.semester = :semester", semester)
       .where("lesson.project = :project", project)
       .where("lesson.teachDepart.id in (:departIds)", Strings.splitToInt(dataRealm.departmentIdSeq))
     commonLessons = entityDao.search(query)
-    tmpMap = new HashMap[Integer, StatItem]()
+    tmpMap = Collections.newMap[Integer, StatItem]
     for (lesson <- commonLessons) {
       val adminclasses = lessonLimitService.extractAdminclasses(lesson.getTeachClass)
       for (adminclass <- adminclasses) {
@@ -103,52 +92,52 @@ class LessonStatServiceImpl extends BaseServiceImpl with LessonStatService {
         val countors = item.getCountors
         countors(0) = countors(0).asInstanceOf[java.lang.Integer] + 1
         countors(1) = countors(1).asInstanceOf[java.lang.Float] + lesson.getCourse.getWeekHour
-        countors(2) = countors(2).asInstanceOf[java.lang.Float] + 
+        countors(2) = countors(2).asInstanceOf[java.lang.Float] +
           lesson.getCourse.getWeekHour * lesson.getCourseSchedule.getWeeks
         countors(3) = countors(3).asInstanceOf[java.lang.Float] + lesson.getCourse.getCredits
       }
     }
     val gpTasks = tmpMap.values
-    val statMap = new HashMap()
-    var iter = commonTasks.iterator()
+    val statMap = Collections.newMap[Any, Any]
+    var iter = commonTasks.iterator
     while (iter.hasNext) {
       val element = iter.next().asInstanceOf[StatItem]
-      statMap.put(element.getWhat, element)
+      statMap.put(element.what, element)
     }
-    var iter = gpTasks.iterator()
+    iter = gpTasks.iterator
     while (iter.hasNext) {
       val pgStat = iter.next().asInstanceOf[StatItem]
-      val stat = statMap.get(pgStat.getWhat).asInstanceOf[StatItem]
+      val stat = statMap.get(pgStat.what).asInstanceOf[StatItem]
       if (null == stat) {
-        statMap.put(pgStat.getWhat, new StatItem(pgStat.getWhat, java.lang.Integer.valueOf(1), pgStat.getCountors()(1), 
-          pgStat.getCountors()(2), pgStat.getCountors()(3)))
+        statMap.put(pgStat.what, new StatItem(pgStat.what, java.lang.Integer.valueOf(1), pgStat.countors(1),
+          pgStat.countors(2), pgStat.countors(3)))
       } else {
-        stat.getCountors()(0) = java.lang.Integer.valueOf(stat.getCountors()(0).asInstanceOf[Number].intValue() + 
+        stat.countors(0) = java.lang.Integer.valueOf(stat.countors(0).asInstanceOf[Number].intValue() +
           1)
-        stat.getCountors()(1) = new java.lang.Float(pgStat.getCountors()(1).asInstanceOf[Number].floatValue() + 
-          stat.getCountors()(1).asInstanceOf[Number].floatValue())
-        stat.getCountors()(2) = java.lang.Integer.valueOf(pgStat.getCountors()(2).asInstanceOf[Number].intValue() + 
-          stat.getCountors()(2).asInstanceOf[Number].intValue())
-        stat.getCountors()(3) = new java.lang.Float(pgStat.getCountors()(3).asInstanceOf[Number].floatValue() + 
-          stat.getCountors()(3).asInstanceOf[Number].floatValue())
+        stat.countors(1) = new java.lang.Float(pgStat.countors(1).asInstanceOf[Number].floatValue() +
+          stat.countors(1).asInstanceOf[Number].floatValue())
+        stat.countors(2) = java.lang.Integer.valueOf(pgStat.countors(2).asInstanceOf[Number].intValue() +
+          stat.countors(2).asInstanceOf[Number].intValue())
+        stat.countors(3) = new java.lang.Float(pgStat.countors(3).asInstanceOf[Number].floatValue() +
+          stat.countors(3).asInstanceOf[Number].floatValue())
       }
     }
-    val adminClasses = entityDao.get(classOf[Adminclass], "id", statMap.keySet)
+    val adminClasses = entityDao.findBy(classOf[Adminclass], "id", statMap.keySet)
     for (adminClass <- adminClasses) {
       val stat = statMap.get(adminClass.id).asInstanceOf[StatItem]
-      stat.setWhat(adminClass)
+      stat.what = adminClass
     }
-    new ArrayList(statMap.values)
+    Collections.newBuffer(statMap.values)
   }
 
-  def countByTeacher(project: Project, semester: Semester, dataRealm: DataRealm): List[_] = {
+  def countByTeacher(project: Project, semester: Semester, dataRealm: DataRealm): Seq[_] = {
     val query = OqlBuilder.from(classOf[Lesson], "lesson")
-    query.select("select new org.openurp.edu.eams.util.stat.StatItem(" + 
-      "teacher.id," + 
-      "count(*)," + 
-      "sum(lesson.course.weekHour)," + 
-      "sum(lesson.course.weekHour * (lesson.schedule.endWeek - lesson.schedule.startWeek + 1))," + 
-      "sum(lesson.course.credits)" + 
+    query.select("select new org.openurp.edu.eams.util.stat.StatItem(" +
+      "teacher.id," +
+      "count(*)," +
+      "sum(lesson.course.weekHour)," +
+      "sum(lesson.course.weekHour * (lesson.schedule.endWeek - lesson.schedule.startWeek + 1))," +
+      "sum(lesson.course.credits)" +
       ")")
       .where("lesson.semester = :semester", semester)
       .where("lesson.project = :project", project)
@@ -159,14 +148,14 @@ class LessonStatServiceImpl extends BaseServiceImpl with LessonStatService {
     setStatEntities(stats, classOf[Teacher])
   }
 
-  def countByCourseType(project: Project, semester: Semester, dataRealm: DataRealm): List[_] = {
+  def countByCourseType(project: Project, semester: Semester, dataRealm: DataRealm): Seq[_] = {
     val query = OqlBuilder.from(classOf[Lesson], "lesson")
-    query.select("select new org.openurp.edu.eams.util.stat.StatItem(" + 
-      "lesson.courseType.id," + 
-      "count(*)," + 
-      "sum(lesson.course.weekHour)," + 
-      "sum(lesson.course.weekHour * (lesson.schedule.endWeek - lesson.schedule.startWeek + 1))," + 
-      "sum(lesson.course.credits)" + 
+    query.select("select new org.openurp.edu.eams.util.stat.StatItem(" +
+      "lesson.courseType.id," +
+      "count(*)," +
+      "sum(lesson.course.weekHour)," +
+      "sum(lesson.course.weekHour * (lesson.schedule.endWeek - lesson.schedule.startWeek + 1))," +
+      "sum(lesson.course.credits)" +
       ")")
       .where("lesson.semester=:semester", semester)
       .where("lesson.project = :project", project)
@@ -176,14 +165,14 @@ class LessonStatServiceImpl extends BaseServiceImpl with LessonStatService {
     setStatEntities(stats, classOf[CourseType])
   }
 
-  def countByStdType(project: Project, semester: Semester, dataRealm: DataRealm): List[_] = {
+  def countByStdType(project: Project, semester: Semester, dataRealm: DataRealm): Seq[_] = {
     val entityQuery = OqlBuilder.from(classOf[Lesson], "lesson")
-    entityQuery.select("select new  org.openurp.edu.eams.util.stat.StatItem(" + 
-      "lesson.teachClass.stdType.id," + 
-      "count(*)," + 
-      "sum(lesson.course.weekHour)," + 
-      "sum(lesson.course.weekHour * (lesson.schedule.endWeek - lesson.schedule.startWeek + 1))," + 
-      "sum(lesson.course.credits)" + 
+    entityQuery.select("select new  org.openurp.edu.eams.util.stat.StatItem(" +
+      "lesson.teachClass.stdType.id," +
+      "count(*)," +
+      "sum(lesson.course.weekHour)," +
+      "sum(lesson.course.weekHour * (lesson.schedule.endWeek - lesson.schedule.startWeek + 1))," +
+      "sum(lesson.course.credits)" +
       ")")
       .where("lesson.semester = :semester", semester)
       .where("lesson.project = :project", project)
@@ -192,14 +181,14 @@ class LessonStatServiceImpl extends BaseServiceImpl with LessonStatService {
     setStatEntities(stats, classOf[StdType])
   }
 
-  def countByTeachDepart(project: Project, semester: Semester, dataRealm: DataRealm): List[_] = {
+  def countByTeachDepart(project: Project, semester: Semester, dataRealm: DataRealm): Seq[_] = {
     val entityQuery = OqlBuilder.from(classOf[Lesson], "lesson")
-    entityQuery.select("select new  org.openurp.edu.eams.util.stat.StatItem(" + 
-      "lesson.teachDepart.id," + 
-      "count(*)," + 
-      "sum(lesson.course.weekHour)," + 
-      "sum(lesson.course.weekHour * (lesson.schedule.endWeek - lesson.schedule.startWeek + 1))," + 
-      "sum(lesson.course.credits)" + 
+    entityQuery.select("select new  org.openurp.edu.eams.util.stat.StatItem(" +
+      "lesson.teachDepart.id," +
+      "count(*)," +
+      "sum(lesson.course.weekHour)," +
+      "sum(lesson.course.weekHour * (lesson.schedule.endWeek - lesson.schedule.startWeek + 1))," +
+      "sum(lesson.course.credits)" +
       ")")
       .where("lesson.semester = :semester", semester)
       .where("lesson.project = :project", project)
@@ -209,39 +198,39 @@ class LessonStatServiceImpl extends BaseServiceImpl with LessonStatService {
     setStatEntities(stats, classOf[Department])
   }
 
-  def statCourseTypeConfirm(project: Project, semester: Semester, dataRealm: DataRealm): List[_] = {
+  def statCourseTypeConfirm(project: Project, semester: Semester, dataRealm: DataRealm): Seq[_] = {
     statTaskConfirm(project, semester, dataRealm, "lesson.courseType.id", classOf[CourseType])
   }
 
-  def statTeachDepartConfirm(project: Project, semester: Semester, dataRealm: DataRealm): List[_] = {
+  def statTeachDepartConfirm(project: Project, semester: Semester, dataRealm: DataRealm): Seq[_] = {
     statTaskConfirm(project, semester, dataRealm, "lesson.teachDepart.id", classOf[Department])
   }
 
-  private def statQuery(project: Project, 
-      semester: Semester, 
-      dataRealm: DataRealm, 
-      item: String, 
-      index: Int): OqlBuilder = {
+  private def statQuery(project: Project,
+    semester: Semester,
+    dataRealm: DataRealm,
+    item: String,
+    index: Int): OqlBuilder[StatItem] = {
     val entityQuery = OqlBuilder.from(classOf[Lesson], "lesson")
     val arr = Array("0", "0", "0", "0")
     arr(index) = "count(*)"
-    entityQuery.select("select new  org.openurp.edu.eams.util.stat.StatItem(" + 
-      item + 
-      "," + 
-      Strings.join(arr, ",") + 
+    entityQuery.select("select new  org.openurp.edu.eams.util.stat.StatItem(" +
+      item +
+      "," +
+      Strings.join(arr, ",") +
       ")")
       .where("lesson.semester = :semester", semester)
       .where("lesson.project = :project", project)
       .groupBy(item)
     addLessonDataRealm(entityQuery, dataRealm)
-    entityQuery
+    entityQuery.asInstanceOf[OqlBuilder[StatItem]]
   }
 
-  private def statTaskConfirm(project: Project, 
-      semester: Semester, 
-      dataRealm: DataRealm, 
-      item: String, 
-      entityClass: Class[_]): List[_] = {
+  private def statTaskConfirm(project: Project,
+    semester: Semester,
+    dataRealm: DataRealm,
+    item: String,
+    entityClass: Class[_]): Seq[_] = {
     var entityQuery = statQuery(project, semester, dataRealm, item, 0)
     entityQuery.where("lesson.auditStatus = :status", CommonAuditState.UNSUBMITTED)
     val unsubmittedStats = entityDao.search(entityQuery)
@@ -256,72 +245,74 @@ class LessonStatServiceImpl extends BaseServiceImpl with LessonStatService {
     entityQuery.where("lesson.auditStatus = :status", CommonAuditState.REJECTED)
     val rejectedStats = entityDao.search(entityQuery)
     for (submitted <- submittedStats) {
-      val existItem = statMap.get(submitted.getWhat).asInstanceOf[StatItem]
+      val existItem = statMap.get(submitted.what).asInstanceOf[StatItem]
       if (existItem == null) {
-        statMap.put(submitted.getWhat, submitted)
+        statMap.put(submitted.what, submitted)
       } else {
-        existItem.getCountors()(1) = submitted.getCountors()(1)
+        existItem.countors(1) = submitted.countors(1)
       }
     }
     for (accepted <- acceptedStats) {
-      val existItem = statMap.get(accepted.getWhat).asInstanceOf[StatItem]
+      val existItem = statMap.get(accepted.what).asInstanceOf[StatItem]
       if (existItem == null) {
-        statMap.put(accepted.getWhat, accepted)
+        statMap.put(accepted.what, accepted)
       } else {
-        existItem.getCountors()(2) = accepted.getCountors()(2)
+        existItem.countors(2) = accepted.countors(2)
       }
     }
     for (rejected <- rejectedStats) {
-      val existItem = statMap.get(rejected.getWhat).asInstanceOf[StatItem]
+      val existItem = statMap.get(rejected.what).asInstanceOf[StatItem]
       if (existItem == null) {
-        statMap.put(rejected.getWhat, rejected)
+        statMap.put(rejected.what, rejected)
       } else {
-        existItem.getCountors()(3) = rejected.getCountors()(3)
+        existItem.countors(3) = rejected.countors(3)
       }
     }
     setStatEntities(statMap, entityClass)
   }
 
-  private def buildStatMap(stats: Iterable[_]): Map[_,_] = {
-    val statMap = new HashMap()
-    var iter = stats.iterator()
+  private def buildStatMap(stats: Iterable[_]): collection.mutable.Map[Any, Any] = {
+    val statMap = Collections.newMap[Any, Any]
+    var iter = stats.iterator
     while (iter.hasNext) {
       val element = iter.next().asInstanceOf[StatItem]
-      statMap.put(element.getWhat, element)
+      statMap.put(element.what, element)
     }
     statMap
   }
 
-  private def setStatEntities(statMap: Map[_,_], entityClass: Class[_]): List[_] = {
-    val entities = entityDao.get(entityClass, "id", statMap.keySet)
-    var iter = entities.iterator()
+  private def setStatEntities(statMap: collection.mutable.Map[Any, Any], entityClass: Class[_]): Seq[_] = {
+
+    val ec = entityClass.asInstanceOf[Class[Entity[_]]]
+    val entities = entityDao.findBy(ec, "id", statMap.keySet)
+    var iter = entities.iterator
     while (iter.hasNext) {
       val entity = iter.next().asInstanceOf[Entity[_]]
       val stat = statMap.get(entity.id).asInstanceOf[StatItem]
-      stat.setWhat(entity)
+      stat.what = entity
     }
-    new ArrayList(statMap.values)
+    Collections.newBuffer(statMap.values)
   }
 
-  private def setStatEntities(stats: Iterable[_], entityClass: Class[_]): List[_] = {
+  private def setStatEntities(stats: Iterable[_], entityClass: Class[_]): Seq[_] = {
     val statMap = buildStatMap(stats)
     setStatEntities(statMap, entityClass)
   }
 
-  private def addAdminclassDataRealm(query: OqlBuilder, dataRealm: DataRealm) {
+  private def addAdminclassDataRealm(query: OqlBuilder[_], dataRealm: DataRealm) {
     if (null != dataRealm) {
-      if (Strings.isNotBlank(dataRealm.getStudentTypeIdSeq)) {
-        query.where(MessageFormat.format("adminClass.stdType.id (:stdTypeIds{0})", System.currentTimeMillis()), 
-          Strings.splitToInt(dataRealm.getStudentTypeIdSeq))
+      if (Strings.isNotBlank(dataRealm.studentTypeIdSeq)) {
+        query.where(MessageFormat.format("adminClass.stdType.id (:stdTypeIds{0})", new java.lang.Long(System.currentTimeMillis())),
+          Strings.splitToInt(dataRealm.studentTypeIdSeq))
       }
       if (Strings.isNotBlank(dataRealm.departmentIdSeq)) {
-        query.where(MessageFormat.format("adminClass.department.id in(:departIds)", System.currentTimeMillis()), 
+        query.where(MessageFormat.format("adminClass.department.id in(:departIds)", new java.lang.Long(System.currentTimeMillis())),
           Strings.splitToInt(dataRealm.departmentIdSeq))
       }
     }
   }
 
-  private def addLessonDataRealm(query: OqlBuilder, dataRealm: DataRealm) {
+  private def addLessonDataRealm(query: OqlBuilder[_], dataRealm: DataRealm) {
     if (null != dataRealm) {
       if (Strings.isNotBlank(dataRealm.departmentIdSeq)) {
         query.where("lesson.teachDepart.id in(:departIds)", Strings.splitToInt(dataRealm.departmentIdSeq))
@@ -331,7 +322,7 @@ class LessonStatServiceImpl extends BaseServiceImpl with LessonStatService {
 
   def statTeacherTitle(project: Project, semesters: List[_]): List[_] = {
     val stats = lessonStatDao.statTeacherTitle(semesters)
-    new StatHelper(entityDao).replaceIdWith(stats, Array(classOf[Semester], classOf[TeacherTitle]))
+    new StatHelper(entityDao).replaceIdWith(stats, Array(classOf[Semester], classOf[ProfessionalTitle]))
     stats
   }
 
@@ -343,59 +334,42 @@ class LessonStatServiceImpl extends BaseServiceImpl with LessonStatService {
 
   private var semesterService: SemesterService = _
 
-  def getTaskOfCourseTypes(project: Project, 
-      semester: Semester, 
-      dataRealm: DataRealm, 
-      courseTypes: Iterable[_]): List[TaskOfCourseType] = {
-    val courseTypeSet = new HashSet(courseTypes)
-    var plans = Collections.newBuffer[Any]
-    if (!Strings.isEmpty(dataRealm.getStudentTypeIdSeq) && !Strings.isEmpty(dataRealm.departmentIdSeq)) {
+  def getTaskOfCourseTypes(project: Project,
+    semester: Semester,
+    dataRealm: DataRealm,
+    courseTypes: Iterable[CourseType]): Seq[TaskOfCourseType] = {
+    val courseTypeSet = Collections.newSet[CourseType]
+    courseTypeSet ++= (courseTypes)
+    var plans: Seq[MajorPlan] = null
+    if (!Strings.isEmpty(dataRealm.studentTypeIdSeq) && !Strings.isEmpty(dataRealm.departmentIdSeq)) {
       val now = new java.util.Date()
       val planQuery = OqlBuilder.from(classOf[MajorPlan], "plan")
-      planQuery.where("plan.program.stdType.id in (:stdTypeIds)", Strings.splitToInt(dataRealm.getStudentTypeIdSeq))
+      planQuery.where("plan.program.stdType.id in (:stdTypeIds)", Strings.splitToInt(dataRealm.studentTypeIdSeq))
         .where("plan.program.department.id in (:departIds)", Strings.splitToInt(dataRealm.departmentIdSeq))
         .where("plan.program.major.project = :project", project)
         .where(":now < plan.program.invalidOn or plan.program.invalidOn is null", now)
       plans = entityDao.search(planQuery)
     }
     val termCalc = new TermCalculator(semesterService, semester)
-    val taskOfCourseTypes = new LinkedList[TaskOfCourseType]()
+    val taskOfCourseTypes = Collections.newBuffer[TaskOfCourseType]
     for (plan <- plans) {
       val adminClasses = entityDao.search(AdminclassQueryBuilder.build(plan))
-      val term = termCalc.getTerm(plan.getProgram.getEffectiveOn, true)
-      if (term < 0 || term > plan.getTermsCount.intValue()) {
+      val term = termCalc.getTerm(plan.program.beginOn, true)
+      if (term < 0 || term > plan.terms.intValue) {
         //continue
       }
-      var iterator = plan.getGroups.iterator()
+      var iterator = plan.groups.iterator
       while (iterator.hasNext) {
         val group = iterator.next()
-        if (!courseTypeSet.contains(group.getCourseType)) {
-          //continue
-        }
-        if (Collections.isNotEmpty(group.getPlanCourses)) {
-          //continue
-        }
         val credits = PlanUtils.getGroupCredits(group, term)
-        if (credits == 0f) {
-          //continue
-        }
-        for (adminClass <- adminClasses) {
-          taskOfCourseTypes.add(new TaskOfCourseType(group.getCourseType, adminClass, credits))
+        val work = courseTypeSet.contains(group.courseType) || !Collections.isNotEmpty(group.planCourses) || credits != 0f
+        if (work) {
+          for (adminClass <- adminClasses) {
+            taskOfCourseTypes += new TaskOfCourseType(group.courseType, adminClass, credits)
+          }
         }
       }
     }
     taskOfCourseTypes
-  }
-
-  def setMajorPlanService(majorPlanService: MajorPlanService) {
-    this.majorPlanService = majorPlanService
-  }
-
-  def setSemesterService(semesterService: SemesterService) {
-    this.semesterService = semesterService
-  }
-
-  def setLessonLimitService(lessonLimitService: LessonLimitService) {
-    this.lessonLimitService = lessonLimitService
   }
 }

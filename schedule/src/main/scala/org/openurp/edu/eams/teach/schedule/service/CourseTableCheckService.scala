@@ -9,10 +9,10 @@ import org.openurp.edu.eams.system.security.DataRealm
 
 trait CourseTableCheckService {
 
-  def statCheckByDepart(semester: Semester, realm: DataRealm, project: Project): List[_]
+  def statCheckByDepart(semester: Semester, realm: DataRealm, project: Project): Seq[_]
 
   def statCheckBy(semester: Semester, 
       realm: DataRealm, 
       attr: String, 
-      clazz: Class[_]): List[_]
+      clazz: Class[_]): Seq[_]
 }

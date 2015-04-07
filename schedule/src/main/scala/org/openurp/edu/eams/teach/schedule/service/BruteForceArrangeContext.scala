@@ -4,7 +4,6 @@ package org.openurp.edu.eams.teach.schedule.service
 import java.util.LinkedHashMap
 
 
-import org.apache.commons.collections.MapUtils
 import org.beangle.commons.collection.Collections
 import org.openurp.base.Room
 import org.openurp.edu.base.Teacher
@@ -21,15 +20,15 @@ object BruteForceArrangeContext {
   class CommonConflictInfo[T] {
 
     
-    var object2conflictInfo: Map[T, String] = new LinkedHashMap[T, String]()
+    var object2conflictInfo: collection.mutable.Map[T, String] = Collections.newMap[T, String]
 
     def this(`object`: T, conflictInfo: String) {
-      super()
+      this()
       addConflictInfo(`object`, conflictInfo)
     }
 
     def this(objects: Iterable[T], conflictInfo: String) {
-      super()
+      this()
       addConflictInfo(objects, conflictInfo)
     }
 
@@ -53,9 +52,9 @@ class BruteForceArrangeContext( var lesson: Lesson, transientActivities: Iterabl
     {
 
   
-  var lessonOccupiedRooms: Set[Room] = Collections.newSet[Any]
+  var lessonOccupiedRooms: collection.mutable.Set[Room] = Collections.newSet[Room]
 
-  private var activities: Iterable[CourseActivity] = transientActivities
+  var activities: Iterable[CourseActivity] = transientActivities
 
   
   var detectTake: Boolean = true
@@ -73,12 +72,12 @@ class BruteForceArrangeContext( var lesson: Lesson, transientActivities: Iterabl
   var teacherConflictInfo: CommonConflictInfo[Teacher] = new CommonConflictInfo[Teacher]()
 
   
-  var success: Boolean = _
+  var success: Boolean = true
 
   
   var noSuitableRoom: Boolean = false
 
-  for (activity <- lesson.getCourseSchedule.getActivities; classroom <- activity.getRooms) {
+  for (activity <- lesson.schedule.activities; classroom <- activity.rooms) {
     lessonOccupiedRooms.add(classroom)
   }
 
@@ -86,54 +85,11 @@ class BruteForceArrangeContext( var lesson: Lesson, transientActivities: Iterabl
     this.takeConflictInfo.hasCollictInfo() || this.teacherConflictInfo.hasCollictInfo()
   }
 
-  def detectTake(): BruteForceArrangeContext = {
-    this.detectTake = true
-    this
-  }
-
-  def dontDetectTake(): BruteForceArrangeContext = {
-    this.detectTake = false
-    this
-  }
-
-  def detectTeacher(): BruteForceArrangeContext = {
-    this.detectTeacher = true
-    this
-  }
-
-  def dontDetectTeacher(): BruteForceArrangeContext = {
-    this.detectTeacher = false
-    this
-  }
-
-  def detectRoom(): BruteForceArrangeContext = {
-    this.detectRoom = true
-    this
-  }
-
-  def dontDetectRoom(): BruteForceArrangeContext = {
-    this.detectRoom = false
-    this
-  }
 
   def getTransientActivities(): Iterable[CourseActivity] = activities
 
   def buildRoomsConflictInfo(): CommonConflictInfo[Room] = new CommonConflictInfo[Room]()
 
-  def noSuitableRoom() {
-    failed()
-    this.noSuitableRoom = true
-  }
-
-  def succeed() {
-    this.success = true
-  }
-
-  def failed() {
-    this.success = false
-  }
-
-  def isFailed(): Boolean = !isSuccess
 }
 
 

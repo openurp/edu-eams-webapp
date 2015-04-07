@@ -15,7 +15,7 @@ import org.openurp.edu.teach.lesson.Lesson
 
 
 
-@SerialVersionUID(-8117374983277305725L)
+//@SerialVersionUID(-8117374983277305725L)
 
 class CourseTableCheck extends LongIdBean() {
 
@@ -46,7 +46,7 @@ class CourseTableCheck extends LongIdBean() {
   var confirmAt: Date = _
 
   def this(std: Student, semester: Semester) {
-    super()
+    this()
     this.std = std
     this.semester = semester
     this.confirm = false
@@ -57,10 +57,10 @@ class CourseTableCheck extends LongIdBean() {
   def updateCredit(lessons: List[Lesson]): Boolean = {
     var updated = false
     var newCourseNum = 0
-    var newCredits = 0
+    var newCredits = 0F
     for (lesson <- lessons) {
       newCourseNum += 1
-      newCredits += lesson.getCourse.getCredits
+      newCredits += lesson.course.credits
     }
     if (getCourseNum != newCourseNum) {
       setCourseNum(newCourseNum)

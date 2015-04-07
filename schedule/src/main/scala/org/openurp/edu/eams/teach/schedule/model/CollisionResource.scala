@@ -3,7 +3,6 @@ package org.openurp.edu.eams.teach.schedule.model
 
 import org.openurp.base.Semester
 import org.openurp.edu.teach.lesson.Lesson
-
 import org.beangle.data.model.bean.LongIdBean
 
 object CollisionResource {

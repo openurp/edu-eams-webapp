@@ -10,9 +10,9 @@ import scala.collection.mutable.Buffer
 
 object StatGroup {
 
-  def buildStatGroups(datas: List[_]): Seq[_] = buildStatGroups(datas, 1)
+  def buildStatGroups(datas: Seq[_]): Seq[_] = buildStatGroups(datas, 1)
 
-  def buildStatGroup(datas: List[_], counters: Int): StatGroup = {
+  def buildStatGroup(datas: Seq[_], counters: Int): StatGroup = {
     val result = new StatGroup(null)
     if (!(datas == null || datas.isEmpty)) {
       var iter = datas.iterator
@@ -24,7 +24,7 @@ object StatGroup {
     result
   }
 
-  def buildStatGroups(datas: List[_], counters: Int): Seq[_] = {
+  def buildStatGroups(datas: Seq[_], counters: Int): Seq[_] = {
     val stats = Collections.newBuffer[Any]
     if (!Collections.isEmpty(datas)) {
       val rs = Collections.newMap[AnyRef, StatGroup]

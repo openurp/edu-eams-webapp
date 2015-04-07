@@ -8,7 +8,7 @@ import org.openurp.edu.eams.teach.lesson.task.biz.LessonGenPreview
 
 trait TeachTaskGenService {
 
-  def previewLessonGen(planIds: Array[Long], params: TaskGenParams): List[LessonGenPreview]
+  def previewLessonGen(planIds: Array[Long], params: TaskGenParams): Seq[LessonGenPreview]
 
   def genLessons(planIds: Array[Long], observer: TaskGenObserver, params: TaskGenParams): Unit
 }

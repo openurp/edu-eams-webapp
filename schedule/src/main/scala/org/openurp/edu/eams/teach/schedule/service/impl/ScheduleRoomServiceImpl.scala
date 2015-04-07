@@ -25,11 +25,11 @@ import org.openurp.edu.eams.teach.schedule.service.ScheduleRoomService
 
 class ScheduleRoomServiceImpl extends BaseServiceImpl with ScheduleRoomService {
 
-  def getFreeRoomsOf(departments: List[Department], courseTimes: Array[CourseTime], activity: CourseActivity): OqlBuilder[Room] = {
+  def getFreeRoomsOf(departments: Seq[Department], courseTimes: Array[CourseTime], activity: CourseActivity): OqlBuilder[Room] = {
     val hql = new StringBuilder(" from org.openurp.edu.eams.classroom.Occupancy occupancy where occupancy.room = classroom")
-    val params = Collections.newMap[Any]
+    val params = Collections.newMap[String,Any]
     var ocuupy = ""
-    val timeUnits = YearWeekTimeUtil.convertToYearWeekTimes(activity.getLesson, courseTimes)
+    val timeUnits = YearWeekTimeUtil.convertToYearWeekTimes(activity.lesson, courseTimes)
     for (i <- 0 until timeUnits.length) {
       ocuupy = "(bitand(occupancy.time.state," + new java.lang.Long(timeUnits(i).state) + 
         ")>0 and occupancy.time.day = :weekday" + 
@@ -61,42 +61,42 @@ class ScheduleRoomServiceImpl extends BaseServiceImpl with ScheduleRoomService {
       params.put("departments", departments)
     }
     builder.select("select distinct classroom")
-    val iterator = activity.getRooms.iterator()
+    val iterator = activity.rooms.iterator
     if (iterator.hasNext) {
       val classroom = iterator.next()
-      builder.where("classroom.capacity >=:capacity", classroom.getCapacity)
-      params.put("capacity", classroom.getCapacity)
-      if (null != classroom.getCampus) {
-        if (classroom.getCampus.isPersisted) {
+      builder.where("classroom.capacity >=:capacity", classroom.capacity)
+      params.put("capacity", classroom.capacity)
+      if (null != classroom.campus) {
+        if (classroom.campus.persisted) {
           builder.where("classroom.campus = :campus")
-          params.put("campus", classroom.getCampus)
-        } else if (Strings.isNotBlank(classroom.getCampus.getName)) {
+          params.put("campus", classroom.campus)
+        } else if (Strings.isNotBlank(classroom.campus.name)) {
           builder.where("classroom.campus.name like :campusName")
-          params.put("campusName", "%" + classroom.getCampus.getName + "%")
+          params.put("campusName", "%" + classroom.campus.name + "%")
         }
       }
-      if (null != classroom.getBuilding) {
-        if (classroom.getBuilding.isPersisted) {
+      if (null != classroom.building) {
+        if (classroom.building.persisted) {
           builder.where("classroom.building = :building")
-          params.put("building", classroom.getBuilding)
-        } else if (Strings.isNotBlank(classroom.getBuilding.getName)) {
+          params.put("building", classroom.building)
+        } else if (Strings.isNotBlank(classroom.building.name)) {
           builder.where("classroom.building.name like :buildingName")
-          params.put("buildingName", "%" + classroom.getBuilding.getName + "%")
+          params.put("buildingName", "%" + classroom.building.name + "%")
         }
       }
-      if (Strings.isNotEmpty(classroom.getName)) {
-        builder.where(Condition.like("classroom.name", classroom.getName))
+      if (Strings.isNotEmpty(classroom.name)) {
+        builder.where(Condition.like("classroom.name", classroom.name))
       }
-      if (Strings.isNotEmpty(classroom.getCode)) {
-        builder.where(Condition.like("classroom.code", classroom.getCode))
+      if (Strings.isNotEmpty(classroom.code)) {
+        builder.where(Condition.like("classroom.code", classroom.code))
       }
-      if (null != classroom.getType) {
+      if (null != classroom.roomType) {
         builder.where("classroom.type =:type")
-        params.put("type", classroom.getType)
+        params.put("type", classroom.roomType)
       }
-      if (classroom.getFloor != 0) {
+      if (classroom.floor != 0) {
         builder.where("(classroom.floor = :floor)")
-        params.put("floor", classroom.getFloor)
+        params.put("floor", classroom.floor)
       }
     }
     if (courseTimes.length > 0) {
@@ -106,11 +106,11 @@ class ScheduleRoomServiceImpl extends BaseServiceImpl with ScheduleRoomService {
     builder
   }
 
-  def getOccupancyRoomsOf(departments: List[Department], courseTimes: Array[CourseTime], activity: CourseActivity): OqlBuilder[Room] = {
+  def getOccupancyRoomsOf(departments: Seq[Department], courseTimes: Array[CourseTime], activity: CourseActivity): OqlBuilder[Room] = {
     val hql = new StringBuilder(" from org.openurp.edu.eams.classroom.Occupancy occupancy where occupancy.room = classroom")
-    val params = Collections.newMap[Any]
+    val params = Collections.newMap[String,Any]
     var ocuupy = ""
-    val timeUnits = YearWeekTimeUtil.convertToYearWeekTimes(activity.getLesson, courseTimes)
+    val timeUnits = YearWeekTimeUtil.convertToYearWeekTimes(activity.lesson, courseTimes)
     for (i <- 0 until timeUnits.length) {
       ocuupy = "(bitand(occupancy.time.state," + new java.lang.Long(timeUnits(i).state) + 
         ")>0 and occupancy.time.day = :weekday" + 
@@ -142,42 +142,42 @@ class ScheduleRoomServiceImpl extends BaseServiceImpl with ScheduleRoomService {
       params.put("departments", departments)
     }
     builder.select("select distinct classroom")
-    val iterator = activity.getRooms.iterator()
+    val iterator = activity.rooms.iterator
     if (iterator.hasNext) {
       val classroom = iterator.next()
-      builder.where("classroom.capacity >=:capacity", classroom.getCapacity)
-      params.put("capacity", classroom.getCapacity)
-      if (null != classroom.getCampus) {
-        if (classroom.getCampus.isPersisted) {
+      builder.where("classroom.capacity >=:capacity", classroom.capacity)
+      params.put("capacity", classroom.capacity)
+      if (null != classroom.campus) {
+        if (classroom.campus.persisted) {
           builder.where("classroom.campus = :campus")
-          params.put("campus", classroom.getCampus)
-        } else if (Strings.isNotBlank(classroom.getCampus.getName)) {
+          params.put("campus", classroom.campus)
+        } else if (Strings.isNotBlank(classroom.campus.name)) {
           builder.where("classroom.campus.name like :campusName")
-          params.put("campusName", "%" + classroom.getCampus.getName + "%")
+          params.put("campusName", "%" + classroom.campus.name + "%")
         }
       }
-      if (null != classroom.getBuilding) {
-        if (classroom.getBuilding.isPersisted) {
+      if (null != classroom.building) {
+        if (classroom.building.persisted) {
           builder.where("classroom.building = :building")
-          params.put("building", classroom.getBuilding)
-        } else if (Strings.isNotBlank(classroom.getBuilding.getName)) {
+          params.put("building", classroom.building)
+        } else if (Strings.isNotBlank(classroom.building.name)) {
           builder.where("classroom.building.name like :buildingName")
-          params.put("buildingName", "%" + classroom.getBuilding.getName + "%")
+          params.put("buildingName", "%" + classroom.building.name + "%")
         }
       }
-      if (Strings.isNotEmpty(classroom.getName)) {
-        builder.where(Condition.like("classroom.name", classroom.getName))
+      if (Strings.isNotEmpty(classroom.name)) {
+        builder.where(Condition.like("classroom.name", classroom.name))
       }
-      if (Strings.isNotEmpty(classroom.getCode)) {
-        builder.where(Condition.like("classroom.code", classroom.getCode))
+      if (Strings.isNotEmpty(classroom.code)) {
+        builder.where(Condition.like("classroom.code", classroom.code))
       }
-      if (null != classroom.getType) {
+      if (null != classroom.roomType) {
         builder.where("classroom.type =:type")
-        params.put("type", classroom.getType)
+        params.put("type", classroom.roomType)
       }
-      if (classroom.getFloor != 0) {
+      if (classroom.floor != 0) {
         builder.where("(classroom.floor = :floor)")
-        params.put("floor", classroom.getFloor)
+        params.put("floor", classroom.floor)
       }
     }
     if (courseTimes.length > 0) {
@@ -215,7 +215,7 @@ class ScheduleRoomServiceImpl extends BaseServiceImpl with ScheduleRoomService {
     query
   }
 
-  def getRooms(classroom: Room, departments: List[Department], limit: PageLimit): List[Room] = {
+  def getRooms(classroom: Room, departments: List[Department], limit: PageLimit): Seq[Room] = {
     val builder = OqlBuilder.from(classOf[Room], "classroom").where("classroom.effectiveAt <= :now and (classroom.invalidAt is null or classroom.invalidAt >= :now)", 
       new java.util.Date())
       .limit(limit)
@@ -223,25 +223,25 @@ class ScheduleRoomServiceImpl extends BaseServiceImpl with ScheduleRoomService {
       builder.where("classroom.building.department in (:departments)", departments)
     }
     if (null != classroom) {
-      val campus = classroom.getCampus
-      if (null != campus && campus.isPersisted) {
+      val campus = classroom.campus
+      if (null != campus && campus.persisted) {
         builder.where("classroom.campus = :campus", campus)
       }
       if (null != classroom.id) {
         builder.where("(classroom.id = :id)", classroom.id)
       }
-      if (Strings.isNotEmpty(classroom.getCode)) {
-        builder.where(Condition.like("classroom.code", classroom.getCode))
+      if (Strings.isNotEmpty(classroom.code)) {
+        builder.where(Condition.like("classroom.code", classroom.code))
       }
-      if (Strings.isNotEmpty(classroom.getName)) {
-        builder.where(Condition.like("classroom.name", classroom.getName))
+      if (Strings.isNotEmpty(classroom.name)) {
+        builder.where(Condition.like("classroom.name", classroom.name))
       }
-      val `type` = classroom.getType
-      if (null != `type` && `type`.isPersisted) {
+      val `type` = classroom.roomType
+      if (null != `type` && `type`.persisted) {
         builder.where("classroom.type = :type", `type`)
       }
-      val building = classroom.getBuilding
-      if (null != building && building.isPersisted) {
+      val building = classroom.building
+      if (null != building && building.persisted) {
         builder.where("classroom.building=:building", building)
       }
     }

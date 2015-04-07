@@ -4,9 +4,11 @@ package org.openurp.edu.eams.teach.lesson.task.service
 
 import org.beangle.data.model.bean.LongIdBean
 import org.openurp.base.Semester
-import org.openurp.edu.eams.base.code.school.RoomType
 import org.openurp.edu.base.Course
 import org.openurp.edu.base.code.CourseType
+import org.openurp.base.code.RoomType
+import scala.collection.mutable.HashSet
+import org.beangle.commons.collection.Collections
 
 
 
@@ -36,22 +38,17 @@ class TaskGenParams extends LongIdBean {
   var omitSmallTerm: Boolean = true
 
   
-  var onlyGenCourseTypes: Set[CourseType] = new HashSet[CourseType]()
+  var onlyGenCourseTypes: collection.mutable.Set[CourseType] = Collections.newSet[CourseType]
 
   
-  var dontGenCourses: Set[Course] = new HashSet[Course]()
+  var dontGenCourses: collection.mutable.Set[Course] = Collections.newSet[Course]
 
   
-  var onlyGenCourses: Set[Course] = new HashSet[Course]()
+  var onlyGenCourses: collection.mutable.Set[Course] = Collections.newSet[Course]
 
   
   var ignoreCloseRequest: Boolean = false
 
-  private var classroomType: RoomType = _
+  var classroomType: RoomType = _
 
-  def getRoomType(): RoomType = classroomType
-
-  def setRoomType(classroomType: RoomType) {
-    this.classroomType = classroomType
-  }
 }

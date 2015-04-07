@@ -15,9 +15,9 @@ object LessonComparator {
 class LessonComparator private () extends Comparator[Lesson]() {
 
   def compare(o1: Lesson, o2: Lesson): Int = {
-    Objects.compareBuilder().add(o1.getCourseType.getCode, o2.getCourseType.getCode)
-      .add(o1.getCourse.getCode, o2.getCourse.getCode)
-      .add(o1.getNo, o2.getNo)
+    Objects.compareBuilder.add(o1.courseType.code, o2.courseType.code)
+      .add(o1.course.code, o2.course.code)
+      .add(o1.no, o2.no)
       .add(o1.id, o2.id)
       .toComparison()
   }

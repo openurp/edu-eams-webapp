@@ -9,9 +9,9 @@ class ScheduleLogHelper extends BaseServiceImpl {
 
   def log(logDetails: Array[String]) {
     val logEvent = new BusinessEvent(1)
-    logEvent.setDetail(logDetails(0))
-    logEvent.setSubject(logDetails(1))
-    logEvent.setResource("排课日志")
+    logEvent.detail = logDetails(0)
+    logEvent.subject = logDetails(1)
+    logEvent.resource = "排课日志"
     publish(logEvent)
   }
 }

@@ -1,19 +1,17 @@
 package org.openurp.edu.eams.teach.schedule.model
 
 import java.io.Serializable
-
-
-
 import org.beangle.data.model.bean.LongIdBean
 import org.beangle.commons.lang.Numbers
 import org.beangle.commons.lang.Objects
 import org.beangle.commons.lang.Strings
 import org.beangle.commons.text.i18n.TextResource
 import org.openurp.base.Semester
-import org.openurp.edu.eams.base.util.WeekDay
 import org.beangle.commons.lang.time.WeekDays
 import org.beangle.commons.lang.time.WeekDays._
 import AvailableTime._
+import org.openurp.base.Semester
+import org.beangle.commons.lang.time.WeekDays.WeekDay
 
 
 
@@ -35,7 +33,7 @@ object AvailableTime {
   var EMPTY: String = Strings.repeat("0", WeekDays.MAX * Semester.MAXUNITS)
 }
 
-@SerialVersionUID(-3056451280716927057L)
+//@SerialVersionUID(-3056451280716927057L)
 
 class AvailableTime extends LongIdBean with Serializable with Cloneable {
 
@@ -46,10 +44,10 @@ class AvailableTime extends LongIdBean with Serializable with Cloneable {
 
   override def clone(): AvailableTime = {
     val time = new AvailableTime()
-    time.setAvailable(new String(this.available))
-    time.setRemark(this.remark)
-    time.setStruct(this.struct)
-    time.setUnits(this.units)
+    time.available = new String(this.available)
+    time.remark = this.remark
+    time.struct = this.struct
+    time.units = this.units
     time
   }
 
@@ -67,7 +65,7 @@ class AvailableTime extends LongIdBean with Serializable with Cloneable {
   
   var struct: String = AvailableTime.STRUCTS
 
-  private var units: Int = _
+  var units: Int = _
 
   def abbreviate(textResource: TextResource): String = {
     if (Strings.isEmpty(available)) return ""
@@ -174,11 +172,11 @@ class AvailableTime extends LongIdBean with Serializable with Cloneable {
   }
 
   def mergeWith(time: AvailableTime) {
-    if (null != time && Strings.isNotEmpty(time.getAvailable)) {
+    if (null != time && Strings.isNotEmpty(time.available)) {
       val buffer = new StringBuffer()
-      for (i <- 0 until time.getAvailable.length) {
+      for (i <- 0 until time.available.length) {
         val own = getAvailable.charAt(i) - 48
-        val other = time.getAvailable.charAt(i) - 48
+        val other = time.available.charAt(i) - 48
         if (own + other > 9) buffer.append("9") else buffer.append(String.valueOf(own + other))
       }
       setAvailable(buffer.toString)
@@ -186,11 +184,11 @@ class AvailableTime extends LongIdBean with Serializable with Cloneable {
   }
 
   def detachWith(time: AvailableTime) {
-    if (null != time && Strings.isNotEmpty(time.getAvailable)) {
+    if (null != time && Strings.isNotEmpty(time.available)) {
       val buffer = new StringBuffer()
-      for (i <- 0 until time.getAvailable.length) {
+      for (i <- 0 until time.available.length) {
         val own = getAvailable.charAt(i) - 48
-        val other = time.getAvailable.charAt(i) - 48
+        val other = time.available.charAt(i) - 48
         if (own - other < 0) buffer.append("0") else buffer.append(String.valueOf(own - other))
       }
       setAvailable(buffer.toString)
@@ -217,10 +215,6 @@ class AvailableTime extends LongIdBean with Serializable with Cloneable {
     } else {
       units
     }
-  }
-
-  def setUnits(units: Int) {
-    this.units = units
   }
 
   override def toString(): String = {

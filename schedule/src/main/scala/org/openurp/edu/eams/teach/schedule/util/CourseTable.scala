@@ -29,7 +29,7 @@ object CourseTable {
 
   val PROGRAM = "program"
 
-  val resourceClass = Collections.newMap[Any]
+  val resourceClass = Collections.newMap[Any,Any]
 
   resourceClass.put(CLASS, classOf[Adminclass])
 
@@ -53,9 +53,9 @@ object CourseTable {
 
 class CourseTable(var resource: Entity[_], var kind: String) {
 
-  var lessons: List[Lesson] = _
+  var lessons: collection.mutable.Buffer[Lesson] = _
 
-  var activities: List[CourseActivity] = Collections.newBuffer[Any]
+  var activities: collection.mutable.Buffer[CourseActivity] = Collections.newBuffer[CourseActivity]
 
   var credits: java.lang.Float = null
 
@@ -64,9 +64,9 @@ class CourseTable(var resource: Entity[_], var kind: String) {
       if (null == lessons) {
         null
       } else {
-        var credits = 0
+        var credits = 0F
         for (lesson <- lessons) {
-          credits += lesson.getCourse.getCredits
+          credits += lesson.course.credits
         }
         new java.lang.Float(credits)
       }
@@ -79,41 +79,14 @@ class CourseTable(var resource: Entity[_], var kind: String) {
     if (null == activities) {
       return
     }
-    val lessonSet = Collections.newSet[Any]
+    val lessonSet = Collections.newBuffer[Lesson]
     for (activity <- activities) {
-      val taskInActivity = activity.getLesson
+      val taskInActivity = activity.lesson
       if (!lessonSet.contains(taskInActivity)) {
-        lessonSet.add(taskInActivity)
+        lessonSet += taskInActivity
       }
     }
-    lessons = Collections.newBuffer[Any](lessonSet)
-  }
-
-  def getKind(): String = kind
-
-  def setKind(kind: String) {
-    this.kind = kind
-  }
-
-  def getResource(): Entity[_] = resource
-
-  def setResource(resource: Entity[Long]) {
-    this.resource = resource
-  }
-
-  def getLessons(): List[Lesson] = lessons
-
-  def setLessons(lessons: List[Lesson]) {
-    this.lessons = lessons
-  }
-
-  def getActivities(): List[CourseActivity] = activities
-
-  def setActivities(activities: List[CourseActivity]) {
-    this.activities = activities
-  }
-
-  def setCredits(credits: java.lang.Float) {
-    this.credits = credits
+    lessons = Collections.newBuffer[Lesson]
+    lessons ++= lessonSet
   }
 }

@@ -2,9 +2,7 @@ package org.openurp.edu.eams.teach.schedule.util
 
 import java.util.Comparator
 
-import org.apache.commons.beanutils.PropertyUtils
 import org.openurp.edu.teach.lesson.Lesson
-import org.openurp.edu.eams.util.PinyinComparator
 import PropertyCollectionComparator._
 
 
@@ -48,11 +46,11 @@ class PropertyCollectionComparator[T] extends Comparator[T]() {
   
   var pinyinComparator: PinyinComparator = new PinyinComparator(asc)
 
-  private def genStr(lessonProperties: List[_]): String = {
+  private def genStr(lessonProperties: Seq[_]): String = {
     var cmpStr = ""
     try {
       if (!lessonProperties.isEmpty) {
-        cmpStr += PropertyUtils.getProperty(lessonProperties.get(0), "name")
+        cmpStr += PropertyUtils.getProperty(lessonProperties(0), "name")
       }
     } catch {
       case e: Exception => return null
@@ -73,8 +71,8 @@ class PropertyCollectionComparator[T] extends Comparator[T]() {
     val lesson1 = arg1.asInstanceOf[Lesson]
     this.arrangeOrder match {
       case TEACHER => 
-        what0 = genStr(lesson0.getTeachers)
-        what1 = genStr(lesson1.getTeachers)
+        what0 = genStr(lesson0.teachers)
+        what1 = genStr(lesson1.teachers)
 
     }
     (if (asc) 1 else -1) * (pinyinComparator.compare(what0, what1))

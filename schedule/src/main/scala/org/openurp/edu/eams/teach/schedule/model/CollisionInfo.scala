@@ -2,7 +2,6 @@ package org.openurp.edu.eams.teach.schedule.model
 
 
 import org.beangle.commons.collection.Collections
-import org.openurp.edu.eams.teach.lesson.CourseTime
 
 
 class CollisionInfo {
@@ -11,7 +10,7 @@ class CollisionInfo {
   var resource: AnyRef = _
 
   
-  var times: List[CourseTime] = Collections.newBuffer[Any]
+  var times: Seq[CourseTime] = Collections.newBuffer[Any]
 
   
   var reason: String = _

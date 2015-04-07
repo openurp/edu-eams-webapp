@@ -18,7 +18,7 @@ class AvailableTimeConfiguration extends LongIdBean() {
   var isDefault: java.lang.Boolean = false
 
   def this(name: String, availTime: String, isDefault: java.lang.Boolean) {
-    super()
+    this()
     this.name = name
     this.availTime = availTime
     this.isDefault = isDefault

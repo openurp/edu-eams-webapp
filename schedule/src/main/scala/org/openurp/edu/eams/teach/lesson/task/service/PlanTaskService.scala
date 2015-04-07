@@ -13,9 +13,9 @@ import org.openurp.edu.teach.plan.MajorPlan
 
 trait PlanTaskService {
 
-  def checkIsAppropriateClose(planCourseList: List[PlanCourse], planTaskList: List[PlanTask], semester: Semester): List[Array[Any]]
+  def checkIsAppropriateClose(planCourseSeq: Seq[PlanCourse], planTaskSeq: Seq[PlanTask], semester: Semester): Seq[Array[Any]]
 
-  def checkIsAppropriateOpen(planCourseList: List[PlanCourse], planTaskList: List[PlanTask], semester: Semester): List[Array[Any]]
+  def checkIsAppropriateOpen(planCourseSeq: Seq[PlanCourse], planTaskSeq: Seq[PlanTask], semester: Semester): Seq[Array[Any]]
 
   def extractInappropriateTeachPlan(teachPlans: Iterable[MajorPlan], semester: Semester): Map[MajorPlan, Map[CourseGroup, Array[Double]]]
 }

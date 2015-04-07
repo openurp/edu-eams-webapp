@@ -20,16 +20,16 @@ import org.openurp.edu.base.Project
 
 
 
-@SerialVersionUID(306610647928241805L)
+//@SerialVersionUID(306610647928241805L)
 
 class LessonForDepart extends LongIdBean() {
 
-  @ElementCollection(targetClass = classOf[Long])
+//  @ElementCollection(targetClass = classOf[Long])
+//  
+//  @CollectionTable(name = "T_LESSON_FOR_D_L_IDS")
   
-  @CollectionTable(name = "T_LESSON_FOR_D_L_IDS")
   
-  
-  var lessonIds: Set[Long] = Collections.newSet[Any]
+  var lessonIds: collection.mutable.Set[Long] = Collections.newSet[Long]
 
   
   
@@ -52,11 +52,11 @@ class LessonForDepart extends LongIdBean() {
   
   var endAt: Date = _
 
-  def this(lessonIds: Set[Long], 
+  def this(lessonIds: collection.mutable.Set[Long], 
       department: Department, 
       semester: Semester, 
       project: Project) {
-    super()
+    this()
     this.lessonIds = lessonIds
     this.department = department
     this.semester = semester

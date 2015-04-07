@@ -27,7 +27,7 @@ class PlanTask extends LongIdBean {
   
   var semester: Semester = _
 
-  private var teachPlan: MajorPlan = _
+  var teachPlan: MajorPlan = _
 
   
   var course: Course = _
@@ -46,10 +46,4 @@ class PlanTask extends LongIdBean {
 
   
   var assessor: User = _
-
-  def getMajorPlan(): MajorPlan = teachPlan
-
-  def setMajorPlan(teachPlan: MajorPlan) {
-    this.teachPlan = teachPlan
-  }
 }

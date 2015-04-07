@@ -33,16 +33,16 @@ class StatItem(var what: AnyRef) extends StatCountor {
     this(what)
     this.countors = Array(count1, count2)
   }
-
-  def getCountors(): Array[Comparable[_]] = countors
-
-  def setCountors(countor: Array[Comparable[_]]) {
-    this.countors = countor
-  }
-
-  def getWhat(): AnyRef = what
-
-  def setWhat(what: AnyRef) {
-    this.what = what
-  }
+//
+//  def getCountors(): Array[Comparable[_]] = countors
+//
+//  def setCountors(countor: Array[Comparable[_]]) {
+//    this.countors = countor
+//  }
+//
+//  def getWhat(): AnyRef = what
+//
+//  def setWhat(what: AnyRef) {
+//    this.what = what
+//  }
 }

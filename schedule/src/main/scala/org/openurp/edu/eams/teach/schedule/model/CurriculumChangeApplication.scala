@@ -13,7 +13,7 @@ import org.openurp.edu.teach.lesson.Lesson
 
 
 
-@SerialVersionUID(828477765227607522L)
+//@SerialVersionUID(828477765227607522L)
 
 class CurriculumChangeApplication extends LongIdBean {
 

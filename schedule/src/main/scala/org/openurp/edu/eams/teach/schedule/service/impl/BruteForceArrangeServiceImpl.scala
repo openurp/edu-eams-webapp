@@ -3,21 +3,13 @@ package org.openurp.edu.eams.teach.schedule.service.impl
 import java.util.Comparator
 
 
-import javax.servlet.http.HttpServletRequest
-import org.apache.commons.collections.CollectionUtils
-import org.apache.commons.collections.Predicate
-import org.apache.struts2.ServletActionContext
 import org.beangle.commons.collection.Collections
 import org.beangle.commons.dao.impl.BaseServiceImpl
 import org.beangle.commons.lang.Strings
-import org.beangle.commons.web.util.RequestUtils
-import org.beangle.security.blueprint.SecurityUtils
 import org.beangle.security.blueprint.User
 import org.openurp.base.Room
-import org.openurp.edu.eams.classroom.Occupancy
 import org.beangle.commons.lang.time.YearWeekTime
 import org.openurp.base.code.RoomUsage
-import org.openurp.edu.eams.classroom.model.OccupancyBean
 import org.openurp.edu.eams.classroom.util.RoomUseridGenerator
 import org.openurp.edu.eams.classroom.util.RoomUseridGenerator.Usage
 import org.openurp.edu.teach.schedule.CourseActivity
@@ -37,25 +29,25 @@ import org.openurp.edu.eams.teach.schedule.service.ScheduleRoomService
 
 class BruteForceArrangeServiceImpl extends BaseServiceImpl with BruteForceArrangeService {
 
-  protected var courseActivityService: CourseActivityService = _
+  var courseActivityService: CourseActivityService = _
 
-  protected var scheduleRoomService: ScheduleRoomService = _
+  var scheduleRoomService: ScheduleRoomService = _
 
-  protected var scheduleLogHelper: ScheduleLogHelper = _
+  var scheduleLogHelper: ScheduleLogHelper = _
 
   def bruteForceArrange(context: BruteForceArrangeContext, rooms: Iterable[Room]) {
-    val lesson = context.getLesson
+    val lesson = context.lesson
     val filteredRooms = Collections.newBuffer[Any](CollectionUtils.select(rooms, new Predicate() {
 
       def evaluate(`object`: AnyRef): Boolean = {
         var room = `object`.asInstanceOf[Room]
-        return room.getCampus == lesson.getCampus && 
-          room.getCapacity >= lesson.getTeachClass.getLimitCount
+        return room.campus == lesson.campus && 
+          room.capacity >= lesson.teachClass.limitCount
       }
     }))
     Collections.sort(filteredRooms, new Comparator[Room]() {
 
-      def compare(o1: Room, o2: Room): Int = return o1.getCapacity - o2.getCapacity
+      def compare(o1: Room, o2: Room): Int = return o1.capacity - o2.capacity
     })
     if (Collections.isEmpty(filteredRooms)) {
       context.noSuitableRoom()
@@ -95,15 +87,15 @@ class BruteForceArrangeServiceImpl extends BaseServiceImpl with BruteForceArrang
   }
 
   private def saveActivities(context: BruteForceArrangeContext, activities: Iterable[CourseActivity]) {
-    val lesson = context.getLesson
-    val isUpdateOperation = lesson.getCourseSchedule.getActivities.size > 1
+    val lesson = context.lesson
+    val isUpdateOperation = lesson.schedule.activities.size > 1
     val alterationBefore = CourseActivityDigestor.getInstance.digest(null, lesson)
     val occupancies = Collections.newSet[Any]
     var period = 0
     for (activity <- activities) {
-      period += (activity.getTime.getEndUnit - activity.getTime.getStartUnit + 
+      period += (activity.time.endUnit - activity.getTime.getStartUnit + 
         1) * 
-        Strings.count(activity.getTime.getWeekState, "1")
+        Strings.count(activity.time.weekState, "1")
       val timeUnits = YearWeekTimeUtil.convertToYearWeekTimes(lesson, activity.getTime)
       for (timeUnit <- timeUnits) {
         val occupancy = new OccupancyBean()
@@ -118,10 +110,10 @@ class BruteForceArrangeServiceImpl extends BaseServiceImpl with BruteForceArrang
         }
       }
     }
-    lesson.getCourseSchedule.getActivities.clear()
-    courseActivityService.removeActivities(Array(lesson.id), lesson.getSemester)
-    lesson.getCourseSchedule.getActivities.addAll(activities)
-    lesson.getCourseSchedule.setPeriod(period)
+    lesson.schedule.activities.clear()
+    courseActivityService.removeActivities(Array(lesson.id), lesson.semester)
+    lesson.schedule.activities ++= activities
+    lesson.schedule.period += period
     courseActivityService.saveOrUpdateActivity(lesson, occupancies, alterationBefore, false, entityDao.get(classOf[User], 
       SecurityUtils.getUserId), getRemoteAddr)
     scheduleLogHelper.log(if (isUpdateOperation) ScheduleLogBuilder.update(lesson, "手工排课") else ScheduleLogBuilder.create(lesson, 
@@ -136,56 +128,44 @@ class BruteForceArrangeServiceImpl extends BaseServiceImpl with BruteForceArrang
   }
 
   private def detectUnresolvableConflict(context: BruteForceArrangeContext) {
-    if (context.isDetectTake) {
-      val collisionTakes = courseActivityService.collisionTakes(context.getLesson, context.getTransientActivities)
-      context.getTakeConflictInfo.addConflictInfo(collisionTakes, "与本任务上课时间冲突")
+    if (context.detectTake) {
+      val collisionTakes = courseActivityService.collisionTakes(context.lesson, context.getTransientActivities)
+      context.takeConflictInfo.addConflictInfo(collisionTakes, "与本任务上课时间冲突")
     }
-    if (context.isDetectTeacher) {
+    if (context.detectTeacher) {
       for (activity <- context.getTransientActivities if courseActivityService.isCourseActivityTeacherOccupied(activity)) {
         val errMsg = new StringBuilder()
-        errMsg.append(" 周").append(activity.getTime.day)
+        errMsg.append(" 周").append(activity.time.day)
           .append(" 第")
-          .append(activity.getTime.getStartUnit)
+          .append(activity.time.startUnit)
           .append("小节-第")
-          .append(activity.getTime.getEndUnit)
+          .append(activity.time.endUnit)
           .append("小节")
-        context.getTeacherConflictInfo.addConflictInfo(activity.getTeachers, errMsg.toString)
+        context.teacherConflictInfo.addConflictInfo(activity.teachers, errMsg.toString)
       }
     }
   }
 
   private def detectRoomConflict(context: BruteForceArrangeContext, activity: CourseActivity): CommonConflictInfo[Room] = {
     val roomsConflictInfo = context.buildRoomsConflictInfo()
-    if (context.isDetectRoom) {
+    if (context.detectRoom) {
       if (courseActivityService.isCourseActivityRoomOccupied(activity)) {
         val errMsg = new StringBuilder()
-        errMsg.append(" 周").append(activity.getTime.day)
+        errMsg.append(" 周").append(activity.time.day)
           .append(" 第")
           .append(activity.getTime.getStartUnit)
           .append("小节-第")
           .append(activity.getTime.getEndUnit)
           .append("小节")
-        roomsConflictInfo.addConflictInfo(activity.getRooms, errMsg.toString)
+        roomsConflictInfo.addConflictInfo(activity.rooms, errMsg.toString)
       }
-      val timeUnits = YearWeekTimeUtil.convertToYearWeekTimes(activity.getLesson, activity.getTime)
+      val timeUnits = YearWeekTimeUtil.convertToYearWeekTimes(activity.lesson, activity.time)
       val freerooms = entityDao.search(scheduleRoomService.getFreeRoomsOfConditions(timeUnits)
-        .where("classroom in (:rooms)", activity.getRooms))
-      for (room <- activity.getRooms if !freerooms.contains(room) && !context.getLessonOccupiedRooms.contains(room)) {
+        .where("classroom in (:rooms)", activity.rooms))
+      for (room <- activity.rooms if !freerooms.contains(room) && !context.lessonOccupiedRooms.contains(room)) {
         roomsConflictInfo.addConflictInfo(room, "被排考或者教室借用占用")
       }
     }
     roomsConflictInfo
-  }
-
-  def setCourseActivityService(courseActivityService: CourseActivityService) {
-    this.courseActivityService = courseActivityService
-  }
-
-  def setScheduleRoomService(scheduleRoomService: ScheduleRoomService) {
-    this.scheduleRoomService = scheduleRoomService
-  }
-
-  def setScheduleLogHelper(scheduleLogHelper: ScheduleLogHelper) {
-    this.scheduleLogHelper = scheduleLogHelper
   }
 }

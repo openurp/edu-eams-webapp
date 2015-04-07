@@ -12,7 +12,7 @@ import org.openurp.edu.eams.teach.lesson.task.service.genstrategy.LessonGenStrat
 
 class LessonGenServiceImpl extends BaseServiceImpl with LessonGenService {
 
-  private var strategies: List[LessonGenStrategy] = Collections.newBuffer[Any]
+  var strategies = Collections.newBuffer[Any]
 
   def gen(source: String, context: Map[String, Any], progressBar: TaskGenObserver) {
     for (strategy <- strategies) {
@@ -28,9 +28,5 @@ class LessonGenServiceImpl extends BaseServiceImpl with LessonGenService {
       }
     }
     null
-  }
-
-  def setStrategies(strategies: List[LessonGenStrategy]) {
-    this.strategies = strategies
   }
 }

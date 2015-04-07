@@ -7,7 +7,7 @@ import org.openurp.edu.eams.teach.schedule.model.CourseMailSetting
 
 trait CourseTableMailService {
 
-  def sendCourseTableChangeMsg(courseArrangeAlteration: CourseArrangeAlteration, courseMailSetting: CourseMailSetting, userIds: Array[Long]): String
+  def sendCourseTableChangeMsg(courseArrangeAlteration: CourseArrangeAlteration, courseMailSetting: CourseMailSetting, userIds: Array[java.lang.Long]): String
 
   def sendCourseTableChangeMsgToTeacher(courseArrangeAlteration: CourseArrangeAlteration, courseMailSetting: CourseMailSetting): String
 

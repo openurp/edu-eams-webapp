@@ -38,7 +38,7 @@ trait LessonDao extends EntityDao {
 
   def saveGenResult(plan: MajorPlan,
     semester: Semester,
-    lessons: List[Lesson],
+    lessons: collection.mutable.Buffer[Lesson],
     removeExists: Boolean): Unit
 
 }

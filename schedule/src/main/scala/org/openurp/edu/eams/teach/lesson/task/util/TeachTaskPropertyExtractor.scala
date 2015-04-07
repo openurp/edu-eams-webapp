@@ -1,76 +1,60 @@
 package org.openurp.edu.eams.teach.lesson.task.util
 
 import java.text.MessageFormat
-
-
-
-
-
-
-import org.apache.commons.collections.CollectionUtils
-import org.apache.commons.collections.Transformer
 import org.beangle.commons.collection.Collections
 import org.beangle.data.model.dao.EntityDao
 import org.beangle.data.jpa.dao.OqlBuilder
 import org.beangle.commons.lang.Strings
-
 import org.beangle.commons.text.i18n.TextResource
-import org.beangle.commons.transfer.exporter.DefaultPropertyExtractor
 import org.openurp.base.Room
 import org.openurp.edu.base.Teacher
 import org.openurp.code.edu.Education
 import org.openurp.edu.eams.core.service.SemesterService
-import org.openurp.edu.eams.teach.Textbook
-import org.openurp.edu.eams.teach.code.industry.ExamType
-import org.openurp.edu.eams.teach.code.school.CourseHourType
-import org.openurp.edu.eams.teach.lesson.ArrangeSuggest
 import org.openurp.edu.teach.schedule.CourseActivity
-import org.openurp.edu.teach.lesson.LessonLimitMeta.Operator
-import org.openurp.edu.eams.teach.lesson.CourseMaterial
 import org.openurp.edu.teach.exam.ExamActivity
 import org.openurp.edu.teach.exam.ExamRoom
 import org.openurp.edu.teach.lesson.Lesson
-import org.openurp.edu.teach.lesson.LessonMaterial
 import org.openurp.edu.eams.teach.lesson.service.LessonLimitService
 import org.openurp.edu.eams.teach.lesson.task.service.LessonPlanRelationService
 import org.openurp.edu.eams.teach.lesson.util.CourseActivityDigestor
 import org.openurp.edu.eams.teach.lesson.util.ExamActivityDigestor
-import org.openurp.edu.eams.teach.lesson.util.SuggestActivityDigestor
 import org.openurp.edu.eams.teach.time.util.TermCalculator
+import org.openurp.edu.base.code.CourseHourType
+import org.openurp.edu.teach.code.ExamType
 
 
 
 class TeachTaskPropertyExtractor(resource: TextResource) extends DefaultPropertyExtractor(resource) {
 
-  protected var courseActivityFormat: String = _
+  var courseActivityFormat: String = _
 
-  protected var examActivityFormat: String = _
+  var examActivityFormat: String = _
 
-  protected var examType: ExamType = _
+  var examType: ExamType = _
 
-  protected var semesterService: SemesterService = _
+  var semesterService: SemesterService = _
 
-  protected var lessonLimitService: LessonLimitService = _
+  var lessonLimitService: LessonLimitService = _
 
-  protected var lessonPlanRelationService: LessonPlanRelationService = _
+  var lessonPlanRelationService: LessonPlanRelationService = _
 
-  protected var entityDao: EntityDao = _
+  var entityDao: EntityDao = _
 
-  protected var hourTypes: List[CourseHourType] = new ArrayList[CourseHourType]()
+  var hourTypes: Seq[CourseHourType] = Collections.newBuffer[CourseHourType]
 
-  private var currLimitContents: Pair[Long, Map[String, String]] = null
+  var currLimitContents: Pair[Long, collection.mutable.Map[String, String]] = null
 
-  def getPropertyValue(target: AnyRef, property: String): AnyRef = {
+  def getPropertyValue(target: Any, property: String): AnyRef = {
     val lesson = target.asInstanceOf[Lesson]
     val digestor = CourseActivityDigestor.getInstance
     val suggestDigestor = SuggestActivityDigestor.getInstance
     val examDigestor = ExamActivityDigestor.getInstance
     if ("fake.teachers" == property) {
       val sb = new StringBuilder()
-      var iter = lesson.getTeachers.iterator()
+      var iter = lesson.teachers.iterator
       while (iter.hasNext) {
         val teacher = iter.next()
-        sb.append(teacher.getName).append('[').append(teacher.getCode)
+        sb.append(teacher.name).append('[').append(teacher.code)
           .append(']')
         if (iter.hasNext) {
           sb.append(',')
@@ -79,9 +63,9 @@ class TeachTaskPropertyExtractor(resource: TextResource) extends DefaultProperty
       sb.toString
     } else if ("teachers.eduDegreeInside" == property) {
       var eduDegreeNames = ""
-      if (lesson.getTeachers != null) {
-        val singleTeacher = if (lesson.getTeachers.size == 1) true else false
-        var iter = lesson.getTeachers.iterator()
+      if (lesson.teachers != null) {
+        val singleTeacher = if (lesson.teachers.size == 1) true else false
+        var iter = lesson.teachers.iterator
         while (iter.hasNext) {
           val teacher = iter.next().asInstanceOf[Teacher]
           if (singleTeacher) {
@@ -96,9 +80,9 @@ class TeachTaskPropertyExtractor(resource: TextResource) extends DefaultProperty
       eduDegreeNames
     } else if ("teachers.degree" == property) {
       var degreeNames = ""
-      if (lesson.getTeachers != null) {
-        val singleTeacher = if (lesson.getTeachers.size == 1) true else false
-        var iter = lesson.getTeachers.iterator()
+      if (lesson.teachers != null) {
+        val singleTeacher = if (lesson.teachers.size == 1) true else false
+        var iter = lesson.teachers.iterator
         while (iter.hasNext) {
           val teacher = iter.next().asInstanceOf[Teacher]
           if (singleTeacher) {
@@ -112,9 +96,9 @@ class TeachTaskPropertyExtractor(resource: TextResource) extends DefaultProperty
       }
       degreeNames
     } else if ("teachers.teacherType" == property) {
-      getPropertyIn(lesson.getTeachers, "teacherType.name")
+      getPropertyIn(lesson.teachers, "teacherType.name")
     } else if ("teachers.department.name" == property) {
-      getPropertyIn(lesson.getTeachers, "department.name")
+      getPropertyIn(lesson.teachers, "department.name")
     } else if ("fake.grades" == property) {
       val result = getContents(lesson).get("年级")
       if (null == result) "" else result
@@ -137,9 +121,9 @@ class TeachTaskPropertyExtractor(resource: TextResource) extends DefaultProperty
       val result = getContents(lesson).get("班级")
       if (null == result) "" else result
     } else if ("fake.semester" == property) {
-      lesson.getSemester.getSchoolYear + '-' + lesson.getSemester.getName
+      lesson.semester.schoolYear + '-' + lesson.semester.name
     } else if ("fake.auditStatus" == property) {
-      lesson.getAuditStatus.getFullName
+      lesson.auditStatus.fullName
     } else if ("fake.arrangesuggest" == property) {
       val arrangeSuggestQuery = OqlBuilder.from(classOf[ArrangeSuggest], "suggest")
       arrangeSuggestQuery.where("suggest.lesson = :lesson", lesson)
@@ -172,44 +156,44 @@ class TeachTaskPropertyExtractor(resource: TextResource) extends DefaultProperty
       }
       ""
     } else if ("semester" == property) {
-      lesson.getSemester.getSchoolYear + " " + lesson.getSemester.getName
+      lesson.semester.schoolYear + " " + lesson.semester.name
     } else if ("courseSchedule.activities.weeks" == property) {
       digestor.digest(textResource, lesson, CourseActivityDigestor.weeks)
     } else if ("fake.weeks" == property) {
-      String.valueOf(lesson.getCourseSchedule.getEndWeek - lesson.getCourseSchedule.getStartWeek + 
+      String.valueOf(lesson.schedule.endWeek - lesson.schedule.startWeek + 
         1)
     } else if ("fake.arrange" == property) {
       digestor.digest(textResource, lesson)
     } else if ("roomType.name" == property) {
-      if (lesson.getCourseSchedule.getRoomType != null) {
-        return lesson.getCourseSchedule.getRoomType.getName
+      if (lesson.schedule.roomType != null) {
+        return lesson.schedule.roomType.name
       }
       ""
     } else if ("fake.courseSchedule.practiceHour" == property) {
       var `type`: CourseHourType = null
-      for (hourType <- hourTypes if hourType.getName.indexOf("实践") != -1) {
+      for (hourType <- hourTypes if hourType.name.indexOf("实践") != -1) {
         `type` = hourType
       }
       if (`type` != null) {
-        return lesson.getCourse.getHour(`type`)
+        lesson.course.getHour(`type`)
       }
       null
     } else if ("fake.courseSchedule.theoryHour" == property) {
       var `type`: CourseHourType = null
-      for (hourType <- hourTypes if hourType.getName.indexOf("理论") != -1) {
+      for (hourType <- hourTypes if hourType.name.indexOf("理论") != -1) {
         `type` = hourType
       }
       if (`type` != null) {
-        return lesson.getCourse.getHour(`type`)
+        lesson.course.getHour(`type`)
       }
       null
     } else if ("fake.courseSchedule.operateHour" == property) {
       var `type`: CourseHourType = null
-      for (hourType <- hourTypes if hourType.getName.indexOf("上机") != -1 || hourType.getName.indexOf("操作") != -1) {
+      for (hourType <- hourTypes if hourType.name.indexOf("上机") != -1 || hourType.name.indexOf("操作") != -1) {
         `type` = hourType
       }
       if (`type` != null) {
-        return lesson.getCourse.getHour(`type`)
+        return lesson.course.getHour(`type`)
       }
       null
     } else if ("fake.materials" == property) {
@@ -247,37 +231,37 @@ class TeachTaskPropertyExtractor(resource: TextResource) extends DefaultProperty
       }
       sb.toString
     } else if ("courseSchedule.activities.room.capacityOfCourse" == property) {
-      val rooms = new HashSet[Room]()
-      for (activity <- lesson.getCourseSchedule.getActivities) {
-        rooms.addAll(activity.getRooms)
+      val rooms = Collections.newSet[Room]
+      for (activity <- lesson.schedule.activities) {
+        rooms ++= activity.rooms
       }
       val seats = Array.ofDim[Integer](rooms.size)
       val i = 0
       for (room <- rooms) {
-        seats(i += 1) = room.getCapacity
+        seats(i += 1) = room.capacity
       }
       Strings.join(seats, ',')
     } else if ("courseSchedule.activities.time" == property) {
       digestor.digest(textResource, lesson, ":day :units")
     } else if ("courseSchedule.activities.room" == property) {
-      val rooms = new HashSet[Room]()
-      for (activity <- lesson.getCourseSchedule.getActivities) {
-        rooms.addAll(activity.getRooms)
+      val rooms = Collections.newSet[Room]
+      for (activity <- lesson.schedule.activities) {
+        rooms ++= activity.rooms
       }
       val names = Array.ofDim[String](rooms.size)
       val i = 0
       for (room <- rooms) {
-        names(i += 1) = room.getName
+        names(i += 1) = room.name
       }
       Strings.join(names, ",")
     } else if ("exam.date" == property) {
-      examDigestor.digest(lesson.getExamSchedule.getActivity(examType), textResource, ExamActivityDigestor.weeks + " " + ExamActivityDigestor.day)
+      examDigestor.digest(lesson.exam.activities(examType), textResource, ExamActivityDigestor.weeks + " " + ExamActivityDigestor.day)
     } else if ("exam.time" == property) {
       val format = new StringBuilder()
       format.append(ExamActivityDigestor.weeks)
       format.append(" ")
       format.append(ExamActivityDigestor.day)
-      examDigestor.digest(lesson.getExamSchedule.getActivity(examType), textResource, format.toString)
+      examDigestor.digest(lesson.exam.activities(examType), textResource, format.toString)
     } else if ("exam.rooms" == property) {
       val format = new StringBuilder()
       format.append(ExamActivityDigestor.room)
@@ -285,10 +269,10 @@ class TeachTaskPropertyExtractor(resource: TextResource) extends DefaultProperty
         .append(", ")
         .append(ExamActivityDigestor.building)
         .append(")")
-      examDigestor.digest(lesson.getExamSchedule.getActivity(examType), textResource, format.toString)
+      examDigestor.digest(lesson.exam.activities(examType), textResource, format.toString)
     } else if ("exam.department.name" == property) {
       val value = new StringBuilder()
-      val activity = lesson.getExamSchedule.getActivity(examType)
+      val activity = lesson.exam.activities(examType)
       if (null != activity) {
         for (er <- activity.getExamRooms) {
           if (value.length > 0) {
@@ -299,28 +283,28 @@ class TeachTaskPropertyExtractor(resource: TextResource) extends DefaultProperty
       }
       value.toString
     } else if ("exam.teachers" == property) {
-      getPropertyIn(lesson.getExamSchedule.getExaminers(examType), "name")
+      getPropertyIn(lesson.exam .getExaminers(examType), "name")
     } else if ("task.term" == property) {
       var term = 0
-      val termCalc = new TermCalculator(semesterService, lesson.getSemester)
-      term = termCalc.getTerm(lesson.getTeachClass.grade, true)
+      val termCalc = new TermCalculator(semesterService, lesson.semester)
+      term = termCalc.getTerm(lesson.teachClass.grade, true)
       new java.lang.Long(term)
     } else if ("task.courseSchedule" == property) {
       var arrangeInfo = ""
-      val weeks = lesson.getCourseSchedule.getWeeks
-      val weekUnits = lesson.getCourseSchedule.getWeekHour
+      val weeks = lesson.schedule.weeks
+      val weekUnits = lesson.schedule.weekHour
       if (0 != weeks && 0 != weekUnits) {
         arrangeInfo = weeks + "*" + weekUnits
       }
       arrangeInfo
     } else if ("education.name" == property) {
-      val pair = lessonLimitService.xtractEducationLimit(lesson.getTeachClass)
+      val pair = lessonLimitService.xtractEducationLimit(lesson.teachClass)
       var educationStr = ""
       if (pair._1 == Operator.NOT_IN || pair._1 == Operator.NOT_EQUAL) {
-        val educationsForCurrPorject = lesson.getProject.educations
-        educationsForCurrPorject.removeAll(pair._2)
+        val educationsForCurrPorject = lesson.project.educations.asInstanceOf[collection.mutable.Buffer[Education]]
+        educationsForCurrPorject --= pair._2
         for (education <- educationsForCurrPorject) {
-          educationStr += education.getName + ","
+          educationStr += education.name + ","
         }
         if (educationStr.length > 0) {
           educationStr = educationStr.substring(0, educationStr.length - 1)
@@ -329,7 +313,7 @@ class TeachTaskPropertyExtractor(resource: TextResource) extends DefaultProperty
       }
       if (pair._1 == Operator.IN || pair._1 == Operator.Equals) {
         for (education <- pair._2) {
-          educationStr += education.getName + ","
+          educationStr += education.name + ","
         }
         if (educationStr.length > 0) {
           educationStr = educationStr.substring(0, educationStr.length - 1)
@@ -338,8 +322,8 @@ class TeachTaskPropertyExtractor(resource: TextResource) extends DefaultProperty
       }
       super.getPropertyValue(target, property)
     } else if ("teachLang.name" == property) {
-      if (lesson.getLangType != null) {
-        return lesson.getLangType.getName
+      if (lesson.langType != null) {
+        return lesson.langType.name
       }
       ""
     } else {
@@ -347,18 +331,18 @@ class TeachTaskPropertyExtractor(resource: TextResource) extends DefaultProperty
     }
   }
 
-  private def getContents(lesson: Lesson): Map[String, String] = {
+  private def getContents(lesson: Lesson): collection.mutable.Map[String, String] = {
     val lessonId = lesson.id
-    var contents: Map[String, String] = null
-    if (null == currLimitContents || currLimitContents.getLeft != lessonId) {
-      var fullname = lesson.getTeachClass.getFullname
+    var contents: collection.mutable.Map[String, String] = null
+    if (null == currLimitContents || currLimitContents._1  != lessonId) {
+      var fullname = lesson.teachClass.fullname
       if (fullname.endsWith("...")) {
         fullname = fullname.substring(0, fullname.length - 3)
       }
       if (fullname.startsWith(",")) {
         fullname = fullname.substring(1)
       }
-      contents = Collections.newMap[Any]
+      contents = Collections.newMap[String,String]
       val groups = fullname.split(";")
       for (group <- groups) {
         val items = group.split(",")
@@ -375,32 +359,9 @@ class TeachTaskPropertyExtractor(resource: TextResource) extends DefaultProperty
           }
         }
       }
-      currLimitContents = new Pair[Long, Map[String, String]](lessonId, contents)
-      return contents
+      currLimitContents = new Pair[Long, collection.mutable.Map[String, String]](lessonId, contents)
+      contents
     }
-    currLimitContents.getRight
-  }
-
-  def setSemesterService(semesterService: SemesterService) {
-    this.semesterService = semesterService
-  }
-
-  def setLessonLimitService(lessonLimitService: LessonLimitService) {
-    this.lessonLimitService = lessonLimitService
-  }
-
-  def getLessonPlanRelationService(): LessonPlanRelationService = lessonPlanRelationService
-
-  def setLessonPlanRelationService(lessonPlanRelationService: LessonPlanRelationService) {
-    this.lessonPlanRelationService = lessonPlanRelationService
-  }
-
-  def setCourseActivityFormat(courseActivityFormat: String) {
-    this.courseActivityFormat = courseActivityFormat
-  }
-
-  def setEntityDao(entityDao: EntityDao) {
-    this.entityDao = entityDao
-    hourTypes = entityDao.getAll(classOf[CourseHourType])
+    currLimitContents._2 
   }
 }

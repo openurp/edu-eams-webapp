@@ -12,24 +12,24 @@ import org.openurp.edu.eams.util.stat.StatGroup
 
 trait LessonStatService {
 
-  def countByAdminclass(project: Project, semester: Semester, dataRealm: DataRealm): List[_]
+  def countByAdminclass(project: Project, semester: Semester, dataRealm: DataRealm): Seq[_]
 
-  def countByTeacher(project: Project, semester: Semester, dataRealm: DataRealm): List[_]
+  def countByTeacher(project: Project, semester: Semester, dataRealm: DataRealm): Seq[_]
 
-  def countByCourseType(project: Project, semester: Semester, dataRealm: DataRealm): List[_]
+  def countByCourseType(project: Project, semester: Semester, dataRealm: DataRealm): Seq[_]
 
-  def countByStdType(project: Project, semester: Semester, dataRealm: DataRealm): List[_]
+  def countByStdType(project: Project, semester: Semester, dataRealm: DataRealm): Seq[_]
 
-  def countByTeachDepart(project: Project, semester: Semester, dataRealm: DataRealm): List[_]
+  def countByTeachDepart(project: Project, semester: Semester, dataRealm: DataRealm): Seq[_]
 
-  def statTeachDepartConfirm(project: Project, semester: Semester, dataRealm: DataRealm): List[_]
+  def statTeachDepartConfirm(project: Project, semester: Semester, dataRealm: DataRealm): Seq[_]
 
-  def statCourseTypeConfirm(project: Project, semester: Semester, dataRealm: DataRealm): List[_]
+  def statCourseTypeConfirm(project: Project, semester: Semester, dataRealm: DataRealm): Seq[_]
 
-  def statTeacherTitle(project: Project, semesters: List[_]): List[_]
+  def statTeacherTitle(project: Project, semesters: Seq[_]): Seq[_]
 
   def getTaskOfCourseTypes(project: Project, 
       semester: Semester, 
       dataRealm: DataRealm, 
-      courseTypes: Iterable[_]): List[TaskOfCourseType]
+      courseTypes: Iterable[_]): Seq[TaskOfCourseType]
 }
