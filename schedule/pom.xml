@@ -20,7 +20,7 @@
     <dependency>
       <groupId>org.openurp.code</groupId>
       <artifactId>openurp-code-model-job</artifactId>
-      <version>0.0.2-SNAPSHOT</version>
+      <version>0.0.2</version>
     </dependency>
 	</dependencies>
 </project>

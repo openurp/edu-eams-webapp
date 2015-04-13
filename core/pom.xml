@@ -12,10 +12,10 @@
 	<name>Openurp Education EAMS Core</name>
 
 	<properties>
-		<openurp.edu.version>0.0.1-SNAPSHOT</openurp.edu.version>
-		<openurp.base.version>0.0.1-SNAPSHOT</openurp.base.version>
-		<openurp.peopleapi.version>0.0.1-SNAPSHOT</openurp.peopleapi.version>
-		<openurp.lgapi.version>0.0.1-SNAPSHOT</openurp.lgapi.version>
+		<openurp.edu.version>0.0.1</openurp.edu.version>
+		<openurp.base.version>0.0.1</openurp.base.version>
+		<openurp.peopleapi.version>0.0.1</openurp.peopleapi.version>
+		<openurp.lgapi.version>0.0.1</openurp.lgapi.version>
 		<spring.version>4.0.4.RELEASE</spring.version>
 	</properties>
 
